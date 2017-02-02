@@ -19,6 +19,7 @@ parameters {
   matrix[K,N] x; #vector[N] x[P]; # random walk-trends
   vector[nZ] z[N]; # estimated loadings in vec/matrix form
   real<lower=0> sigma[nVariances];
+  real<lower=0> tau[P,K];
 }
 transformed parameters {
   matrix[P,N] pred;
@@ -76,11 +77,15 @@ model {
   for(n in 2:N) {
     for(k in 1:K) {
       for(p in 1:P) {
-        Z[n,p,k] ~ normal(Z[n-1,p,k], 1); # random walk
+        Z[n,p,k] ~ normal(Z[n-1,p,k], tau[p,k]); # random walk
       }
     }
   }
 
+  for(k in 1:K) {
+    tau[k] ~ student_t(3, 0, 2);
+  }
+  
   # prior on loadings
   for(n in 1:N) {
     z[n] ~ normal(0, 1);
@@ -96,4 +101,9 @@ model {
     y[i] ~ normal(pred[row_indx_pos[i], col_indx_pos[i]], sigma[varIndx[row_indx_pos[i]]]);
   }
 
+}
+generated quantities {
+  vector[n_pos] log_lik;
+  # regresssion example in loo() package 
+  for (n in 1:n_pos) log_lik[n] = normal_lpdf(y[n] | pred[row_indx_pos[n], col_indx_pos[n]], sigma[varIndx[row_indx_pos[n]]]);
 }

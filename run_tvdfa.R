@@ -8,8 +8,8 @@ source("rotate_trends.r")
 data(harborSealWA)
 y <- t(harborSealWA[, c("SJF", "SJI", "EBays", "PSnd", "HC")])
 
-m <- fit_dfa(y = y, num_trends = 1, iter = 1000, model = "tvdfa.stan")
-m_ntv <- fit_dfa(y = y, num_trends = 1, iter = 2000, model = "dfa.stan")
+m <- fit_dfa(y = y, num_trends = 2, iter = 2000, model = "tvdfa.stan")
+m_ntv <- fit_dfa(y = y, num_trends = 2, iter = 2000, model = "dfa.stan")
 
 # fit1
 b <- broom::tidyMCMC(m, rhat = TRUE, ess = TRUE, conf.int = TRUE, conf.method = "quantile")
@@ -44,21 +44,20 @@ b2 <- filter(b2, !is.na(rhat)) # fixed at 0
 max(b2$rhat)
 min(b2$ess)
 
-z <- filter(b2, grepl("Z\\[", term))
-z <- mutate(z, 
-  ts = as.numeric(gsub("Z\\[([0-9])+,([0-9]+)]", "\\1", z$term)),
-  trend = as.numeric(gsub("Z\\[([0-9])+,([0-9]+)]", "\\2", z$term))
+z2 <- filter(b2, grepl("Z\\[", term))
+z2 <- mutate(z2, 
+  ts = gsub("Z\\[([0-9])+,([0-9]+)]", "\\1", z$term),
+  trend = gsub("Z\\[([0-9])+,([0-9]+)]", "\\2", z$term)
 )
-# ggplot(z, aes(time, estimate, colour = as.factor(ts))) + geom_bar() +
-  # theme_light() +
-  # facet_wrap(~trend)
+ggplot(z2, aes(ts, estimate)) + geom_bar(stat = "identity") +
+  theme_light() +
+  facet_wrap(~trend)
 
-
-x <- filter(b2, grepl("x\\[", term))
-x <- mutate(x, 
+x2 <- filter(b2, grepl("x\\[", term))
+x2 <- mutate(x2, 
   time = as.numeric(gsub("x\\[([0-9]+),([0-9]+)]", "\\2", x$term)),
   trend = as.numeric(gsub("x\\[([0-9]+),([0-9])+]", "\\1", x$term))
 )
-ggplot(x, aes(time, estimate, colour = as.factor(trend))) + geom_line() +
+ggplot(x2, aes(time, estimate, colour = as.factor(trend))) + geom_line() +
   theme_light() +
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high, fill = as.factor(trend)), alpha = 0.1, lwd = 0)
