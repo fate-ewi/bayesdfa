@@ -68,7 +68,7 @@ fit_dfa = function(y = y,
   )
   mod = stan(
     data = data_list,
-    pars = c("x", "Z", "sigma"),
+    pars = c("x", "Z", "sigma", "log_lik"),
     file = model[[1]],
     chains = chains,
     iter = iter,

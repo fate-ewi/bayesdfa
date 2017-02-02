@@ -59,4 +59,8 @@ model {
   }
 
 }
-
+generated quantities {
+  vector[n_pos] log_lik;
+  # regresssion example in loo() package 
+  for (n in 1:n_pos) log_lik[n] = normal_lpdf(y[n] | pred[row_indx_pos[n], col_indx_pos[n]], sigma[varIndx[row_indx_pos[n]]]);
+}
