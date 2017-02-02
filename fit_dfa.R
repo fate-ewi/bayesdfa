@@ -4,7 +4,8 @@ fit_dfa = function(y = y,
   zscore = TRUE,
   iter = 4000,
   chains = 1,
-  control = list(adapt_delta = 0.99)) {
+  control = list(adapt_delta = 0.99),
+  model = c("dfa.stan", "tvdfa.stan")) {
   # parameters for DFA
   N = ncol(y)
   P = nrow(y)
@@ -68,7 +69,7 @@ fit_dfa = function(y = y,
   mod = stan(
     data = data_list,
     pars = c("x", "Z", "sigma"),
-    file = "dfa.stan",
+    file = model[[1]],
     chains = chains,
     iter = iter,
     control = control
