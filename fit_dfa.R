@@ -33,9 +33,15 @@ fit_dfa = function(y = y, num_trends = 2, varIndx = NULL, zscore=TRUE) {
   if(is.null(varIndx)) varIndx = rep(1,P)
   nVariances = length(unique(varIndx))
   
+  # indices of positive values - stan can't handle NAs
+  row_indx_pos = matrix((rep(1:P, N)), P, N)[which(!is.na(y))]
+  col_indx_pos = matrix(sort(rep(1:N, P)), P, N)[which(!is.na(y))]  
+  n_pos = length(row_indx_pos)
+  y = y[which(!is.na(y))]
+  
   data_list = list("N","P","K","nZ","y","row_indx",
     "col_indx","nZero","row_indx_z","col_indx_z","nZero",
-    "row_indx_z", "col_indx_z")
+    "row_indx_z", "col_indx_z", "row_indx_pos", "col_indx_pos", "n_pos")
   mod = stan(data = data_list, 
     pars = c("x", "Z", "sigma"), file="dfa.stan", 
     chains = 1, iter=500, thin=1)

@@ -3,14 +3,17 @@ data {
   int<lower=0> P; # number of time series of data
   int<lower=0> K; # number of trends
   int<lower=0> nZ; # number of unique z elements
-  vector[N] y[P]; # matrix of observations
   int<lower=0> row_indx[nZ];
   int<lower=0> col_indx[nZ];
   int<lower=0> nVariances;
   int<lower=0> varIndx[P];
   int<lower=0> nZero;  
   int<lower=0> row_indx_z[nZero];
-  int<lower=0> col_indx_z[nZero];  
+  int<lower=0> col_indx_z[nZero];
+  int<lower=0> n_pos;
+  real y[n_pos]; # vectorized matrix of observations  
+  int<lower=0> row_indx_pos[n_pos];
+  int<lower=0> col_indx_pos[n_pos];  
 }
 parameters {
   matrix[K,N] x; #vector[N] x[P]; # random walk-trends
@@ -51,10 +54,9 @@ model {
   }
   
   # likelihood
-  for(p in 1:P) {
-  y[p,] ~ normal(pred[p,], sigma[varIndx[p]]);
+  for(i in 1:n_pos) {
+    y[i] ~ normal(pred[row_indx_pos[i], col_indx_pos[i]], sigma[varIndx[row_indx_pos[i]]]);
   }
-
 
 }
 
