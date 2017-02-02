@@ -1,7 +1,3 @@
-library(rstan)
-
-y = matrix(runif(10*3), 3, 10) # 3 time series, 10 years
-
 fit_dfa = function(y = y, num_trends = 2, varIndx = NULL) {
   
   # parameters for DFA
@@ -38,6 +34,3 @@ fit_dfa = function(y = y, num_trends = 2, varIndx = NULL) {
     pars = c("x", "Z", "sigma"), file="dfa.stan", 
     chains = 1, iter=500, thin=1)
 }
-
-
-
