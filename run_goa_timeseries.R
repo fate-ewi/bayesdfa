@@ -1,5 +1,6 @@
 library(rstan)
 library(MARSS)
+library(loo)
 rstan_options(auto_write = TRUE)
 options(mc.cores = parallel::detectCores())
 

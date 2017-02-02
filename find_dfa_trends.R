@@ -14,7 +14,7 @@ find_dfa_trends = function(y = y, kmin=1, kmax=5, iter=2000) {
     model = fit_dfa(y = y, num_trends = k, iter=iter, varIndx = seq(1,nrow(y)))
     df$num_trends[indx] = i
     df$looic[indx] = loo(extract_log_lik(model))$looic
-    df$cor[indx] = "equal"
+    df$cor[indx] = "independent"
     indx = indx + 1
   }
   return(df)
