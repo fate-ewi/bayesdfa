@@ -1,10 +1,16 @@
-fit_dfa = function(y = y, num_trends = 2, varIndx = NULL) {
+fit_dfa = function(y = y, num_trends = 2, varIndx = NULL, zscore=TRUE) {
   
   # parameters for DFA
   N = ncol(y)
   P = nrow(y)
   K = num_trends # number of dfa trends
   nZ = P*K - sum(1:K) + K
+  
+  if(zscore==TRUE){
+  for(i in 1:P) {
+    y[i,] = scale(y[i,], center=TRUE, scale=TRUE)
+  }
+  }
   
   mat_indx = matrix(0, P, K)
   start = 1
