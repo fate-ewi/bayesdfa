@@ -5,6 +5,7 @@ options(mc.cores = parallel::detectCores())
 
 source("fit_dfa.r")
 source("rotate_trends.r")
+source("find_dfa_trends.r")
 # 
 ak_full = read.csv("/users/eric.ward/downloads/fate data Litzow 2-1_working.csv")
 ak_full = ak_full[which(!is.na(ak_full$year)),]
@@ -17,6 +18,7 @@ ak_full = ak_full[,which(names(ak_full)%in%meta$Code)]
 
 for(i in 1:ncol(ak_full)) ak_full[,i] = as.numeric(ak_full[,i])
 
+df = find_dfa_trends(y = t(ak_full))
 # 5 models with equal errors
 mod1 = fit_dfa(y = t(ak_full), num_trends = 1, iter=2000)
 mod2 = fit_dfa(y = t(ak_full), num_trends = 2, iter=2000)
@@ -31,21 +33,8 @@ mod8 = fit_dfa(y = t(ak_full), num_trends = 3, iter=2000, varIndx = seq(1,ncol(a
 mod9 = fit_dfa(y = t(ak_full), num_trends = 4, iter=2000, varIndx = seq(1,ncol(ak_full)))
 mod10 = fit_dfa(y = t(ak_full), num_trends = 5, iter=2000, varIndx = seq(1,ncol(ak_full)))
 
-loodf = data.frame("loo"=c(loo(extract_log_lik(mod1))$looic, 
-  loo(extract_log_lik(mod2))$looic,
-  loo(extract_log_lik(mod3))$looic,
-  loo(extract_log_lik(mod4))$looic,
-  loo(extract_log_lik(mod5))$looic,
-  loo(extract_log_lik(mod5))$looic,
-  loo(extract_log_lik(mod6))$looic,
-  loo(extract_log_lik(mod7))$looic,
-  loo(extract_log_lik(mod8))$looic,
-  loo(extract_log_lik(mod9))$looic))
-
 # best model = independent errors, 3 trends
 rt = rotate_trends(mod8)  
-
-
 
 par(mfrow = c(2,2), mai=c(0.5,0.7,0.1,0.1))
 plot(1950:2016, apply(rt$trends[,1,],2,mean), type="l", ylim=c(-4,4), lwd=3)
