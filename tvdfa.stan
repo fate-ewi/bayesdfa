@@ -21,7 +21,7 @@ parameters {
   real<lower=0> sigma[nVariances];
 }
 transformed parameters {
-  matrix[P,N] pred; #vector[P] pred[N];
+  matrix[P,N] pred;
   matrix[P,K] Z[N];
   
   // print("Z=", Z);
@@ -44,7 +44,18 @@ transformed parameters {
   # N is sample size, P = time series, K = number trends
   # [PxN] = [PxK] * [KxN]
   for(n in 1:N) {
-    pred = Z[n] * x;
+    for(p in 1:P) {
+        pred[p,n] = Z[n,p,1] * x[1,n];
+    }
+  }
+  if (K > 1) {
+    for(n in 1:N) {
+      for(p in 1:P) {
+        for(k in 2:K) {
+          pred[p,n] = pred[p,n] + Z[n,p,k] * x[k,n];
+        }
+      }
+    }
   }
 }
 model {
@@ -57,11 +68,9 @@ model {
   }
 
   # initial state for each load trend
-  for(n in 1:N) {
-    for(k in 1:K) {
-      for(p in 1:P) {
-        Z[1,p,k] ~ normal(0, 1);
-      }
+  for(k in 1:K) {
+    for(p in 1:P) {
+      Z[1,p,k] ~ normal(0, 1);
     }
   }
   for(n in 2:N) {
