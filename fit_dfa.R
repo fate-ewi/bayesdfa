@@ -2,8 +2,8 @@ fit_dfa = function(y = y,
   num_trends = 2,
   varIndx = NULL,
   zscore = TRUE,
-  iter = 2000,
-  chains = 4,
+  iter = 4000,
+  chains = 1,
   control = list(adapt_delta = 0.99)) {
   # parameters for DFA
   N = ncol(y)
