@@ -24,10 +24,11 @@ transformed parameters {
     Z[row_indx[i],col_indx[i]] = z[i];
   }
   # fill in zero elements
-  #for(i in 1:nZero) {
-  #  Z[row_indx_z[i],col_indx_z[i]] = 0;
-  #}
-  Z[1,2] = 0;
+  if(nZero > 2) {
+    for(i in 1:(nZero-2)) {
+      Z[row_indx_z[i],col_indx_z[i]] = 0;
+    }
+  }
   
   # N is sample size, P = time series, K = number trends
   # [PxN] = [PxK] * [KxN]

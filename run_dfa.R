@@ -22,6 +22,8 @@ fit_dfa = function(y = y, num_trends = 2, varIndx = NULL) {
   col_indx = rep(1:K, times = P:(P-K+1))
   row_indx_z = matrix((rep(1:P, K)), P, K)[which(mat_indx == 0)]
   col_indx_z = matrix(sort(rep(1:K, P)), P, K)[which(mat_indx == 0)]
+  row_indx_z = c(row_indx_z, 0, 0)# +2 zeros for making stan ok with data types
+  col_indx_z = c(col_indx_z, 0, 0)# +2 zeros for making stan ok with data types
   nZero = length(row_indx_z)
   
   # set the model up to have shared variances between first two time series,
@@ -33,7 +35,7 @@ fit_dfa = function(y = y, num_trends = 2, varIndx = NULL) {
     "col_indx","nZero","row_indx_z","col_indx_z","nZero",
     "row_indx_z", "col_indx_z")
   mod = stan(data = data_list, 
-    pars = c("Z","sigma"), file="dfa.stan", 
+    pars = c("x", "Z", "sigma"), file="dfa.stan", 
     chains = 1, iter=500, thin=1)
 }
 
