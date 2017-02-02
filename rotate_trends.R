@@ -23,5 +23,9 @@ rotate_trends = function(fitted_model) {
     trends.rot = solve(H.inv) %*% states
     mcmc_trends_rot[i,,] = trends.rot
   }
-  return(list("Z_rot"=mcmc_Z_rot, "trends"=mcmc_trends_rot))
+  return(list("Z_rot"=mcmc_Z_rot, "trends"=mcmc_trends_rot,
+    "Z_rot_mean" = apply(mcmc_Z_rot,c(2,3),mean)),
+    "trends_mean" = apply(mcmc_trends_rot,c(2,3),mean)),
+  "trends_lower" = apply(mcmc_trends_rot,c(2,3),quantile,0.025)),
+"trends_upper" = apply(mcmc_trends_rot,c(2,3),quantile,0.975)))
 }
