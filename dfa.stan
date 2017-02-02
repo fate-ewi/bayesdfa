@@ -40,17 +40,17 @@ transformed parameters {
 model {
   # initial state for each trend
   for(k in 1:K) {
-    x[k,1] ~ normal(0,3);
+    x[k,1] ~ normal(0, 1);
     for(t in 2:N) {
       x[k,t] ~ normal(x[k,t-1],1); # random walk
     }
   }
   # prior on loadings
-  for(i in 1:nZ) {z[i] ~ normal(0,1);}
+  z ~ normal(0, 1);
   
   # observation variance
   for(i in 1:nVariances) {
-  sigma[i] ~ cauchy(0, 5);
+  sigma[i] ~ student_t(3, 0, 2);
   }
   
   # likelihood
