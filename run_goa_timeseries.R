@@ -18,23 +18,12 @@ ak_full = ak_full[,which(names(ak_full)%in%meta$Code)]
 
 for(i in 1:ncol(ak_full)) ak_full[,i] = as.numeric(ak_full[,i])
 
-df = find_dfa_trends(y = t(ak_full))
-# 5 models with equal errors
-mod1 = fit_dfa(y = t(ak_full), num_trends = 1, iter=2000)
-mod2 = fit_dfa(y = t(ak_full), num_trends = 2, iter=2000)
-mod3 = fit_dfa(y = t(ak_full), num_trends = 3, iter=2000)
-mod4 = fit_dfa(y = t(ak_full), num_trends = 4, iter=2000)
-mod5 = fit_dfa(y = t(ak_full), num_trends = 5, iter=2000)
+mod1 = fit_dfa(y = t(ak_full), num_trends = 2, iter=200)
+rt = rotate_trends(mod1)
 
-# same 5 models with independent errors
-mod6 = fit_dfa(y = t(ak_full), num_trends = 1, iter=2000, varIndx = seq(1,ncol(ak_full)))
-mod7 = fit_dfa(y = t(ak_full), num_trends = 2, iter=2000, varIndx = seq(1,ncol(ak_full)))
-mod8 = fit_dfa(y = t(ak_full), num_trends = 3, iter=2000, varIndx = seq(1,ncol(ak_full)))
-mod9 = fit_dfa(y = t(ak_full), num_trends = 4, iter=2000, varIndx = seq(1,ncol(ak_full)))
-mod10 = fit_dfa(y = t(ak_full), num_trends = 5, iter=2000, varIndx = seq(1,ncol(ak_full)))
+df = find_dfa_trends(y = t(ak_full), iter=200)
 
-# best model = independent errors, 3 trends
-rt = rotate_trends(mod8)  
+
 
 par(mfrow = c(2,2), mai=c(0.5,0.7,0.1,0.1))
 plot(1950:2016, apply(rt$trends[,1,],2,mean), type="l", ylim=c(-4,4), lwd=3)
