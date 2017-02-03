@@ -14,7 +14,9 @@ gather(d, size, value, - time) %>%
   ggplot(aes(time, value, colour = size)) + geom_line()
 d <- t(ivesDataLP[,c("LargePhyto", "SmallPhyto")])
 
-m <- fit_dfa(y = log(d), num_trends = 1, iter = 3000, model = "tvdfa.stan", varIndx = 1:nrow(d))
+m <- fit_dfa(y = log(d), num_trends = 1, iter = 4000, model = "tvdfa.stan", varIndx = 1:nrow(d))
+m <- fit_dfa(y = log(d), num_trends = 1, iter = 4000, model = "tvdfa_fixed.stan", varIndx = 1:nrow(d))
+
 m_ntv <- fit_dfa(y = log(d), num_trends = 1, iter = 4000, model = "dfa.stan", varIndx = 1:nrow(d),
   nu = 1e6)
 m_ntv_nu1 <- fit_dfa(y = log(d), num_trends = 1, iter = 4000, model = "dfa.stan", varIndx = 1:nrow(d),

@@ -6,6 +6,7 @@ fit_dfa = function(y = y,
   chains = 1,
   control = list(adapt_delta = 0.99),
   nu = 7,
+  tau = 0.1,
   model = c("dfa.stan", "tvdfa.stan")) {
   # parameters for DFA
   N = ncol(y)
@@ -66,7 +67,8 @@ fit_dfa = function(y = y,
     row_indx_pos,
     col_indx_pos,
     n_pos,
-    nu
+    nu, 
+    tau
   )
   pars <- c("x", "Z", "sigma", "log_lik")
   if (model[[1]] == "tvdfa.stan") pars <- c(pars, "tau")

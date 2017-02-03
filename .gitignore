@@ -2,10 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-<<<<<<< Updated upstream
-
 dfa.rds
-=======
->>>>>>> Stashed changes
-
 tvdfa.rds
+tvdfa_fixed.rds
