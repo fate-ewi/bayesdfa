@@ -18,21 +18,30 @@ data {
 parameters {
   matrix[K,N] x; #vector[N] x[P]; # random walk-trends
   vector[nZ] z[N]; # estimated loadings in vec/matrix form
+  real<lower=0> tau_free[K,P-1];
   real<lower=0> sigma[nVariances];
-  real<lower=0> tau[P,K];
 }
 transformed parameters {
   matrix[P,N] pred;
   matrix[P,K] Z[N];
+  real<lower=0> tau[K,P];
+
+  # fix first:
+  for (k in 1:K) {
+    tau[k,1] = 1.0;
+  }
+  for (k in 1:K) {
+    for (p in 1:(P-1)) {
+      tau[k,p+1] = tau_free[k,p];
+    }
+  }
   
-  // print("Z=", Z);
   for(n in 1:N) {
     for(i in 1:nZ) {
       Z[n, row_indx[i], col_indx[i]] = z[n][i];
     }
   }
 
-  
   # fill in zero elements
   if(nZero > 2) {
     for(n in 1:N) {
@@ -71,19 +80,19 @@ model {
   # initial state for each load trend
   for(k in 1:K) {
     for(p in 1:P) {
-      Z[1,p,k] ~ normal(0, 1);
+      Z[1,p,k] ~ normal(0, 0.5);
     }
   }
   for(n in 2:N) {
     for(k in 1:K) {
       for(p in 1:P) {
-        Z[n,p,k] ~ normal(Z[n-1,p,k], tau[p,k]); # random walk
+        Z[n,p,k] ~ normal(Z[n-1,p,k], tau[k,p]); # random walk
       }
     }
   }
 
   for(k in 1:K) {
-    tau[k] ~ student_t(3, 0, 2);
+    tau_free[k] ~ student_t(3, 0, 2);
   }
   
   # prior on loadings
