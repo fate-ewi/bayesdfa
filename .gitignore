@@ -5,3 +5,5 @@
 dfa.rds
 tvdfa.rds
 tvdfa_fixed.rds
+run_tvdfa_*
+*.html
