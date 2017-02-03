@@ -49,9 +49,7 @@ model {
   z ~ normal(0, 1);
   
   # observation variance
-  for(i in 1:nVariances) {
-  sigma[i] ~ student_t(3, 0, 2);
-  }
+  sigma ~ student_t(3, 0, 2);
   
   # likelihood
   for(i in 1:n_pos) {
