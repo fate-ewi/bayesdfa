@@ -66,9 +66,11 @@ fit_dfa = function(y = y,
     col_indx_pos,
     n_pos
   )
+  pars <- c("x", "Z", "sigma", "log_lik")
+  if (model[[1]] == "tvdfa.stan") pars <- c(pars, "tau")
   mod = stan(
     data = data_list,
-    pars = c("x", "Z", "sigma", "log_lik"),
+    pars = pars,
     file = model[[1]],
     chains = chains,
     iter = iter,
