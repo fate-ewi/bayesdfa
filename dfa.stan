@@ -13,12 +13,14 @@ data {
   int<lower=0> n_pos;
   real y[n_pos]; # vectorized matrix of observations  
   int<lower=0> row_indx_pos[n_pos];
-  int<lower=0> col_indx_pos[n_pos];  
+  int<lower=0> col_indx_pos[n_pos];
+  int<lower=1> nu; // df on student-t
 }
 parameters {
   matrix[K,N] x; #vector[N] x[P]; # random walk-trends
   vector[nZ] z; # estimated loadings in vec form
   real<lower=0> sigma[nVariances];
+  // real<lower=2> nu;
 }
 transformed parameters {
   matrix[P,N] pred; #vector[P] pred[N];
@@ -42,9 +44,11 @@ model {
   for(k in 1:K) {
     x[k,1] ~ normal(0, 1);
     for(t in 2:N) {
-      x[k,t] ~ normal(x[k,t-1],1); # random walk
+      x[k,t] ~ student_t(nu, x[k,t-1], 1); # random walk
     }
   }
+  // nu ~ gamma(2, 0.1);
+
   # prior on loadings
   z ~ normal(0, 1);
   
@@ -60,5 +64,7 @@ model {
 generated quantities {
   vector[n_pos] log_lik;
   # regresssion example in loo() package 
-  for (n in 1:n_pos) log_lik[n] = normal_lpdf(y[n] | pred[row_indx_pos[n], col_indx_pos[n]], sigma[varIndx[row_indx_pos[n]]]);
+  for (n in 1:n_pos)
+    log_lik[n] = normal_lpdf(y[n] | pred[row_indx_pos[n], col_indx_pos[n]],
+                             sigma[varIndx[row_indx_pos[n]]]);
 }
