@@ -80,7 +80,7 @@ model {
   # initial state for each load trend
   for(k in 1:K) {
     for(p in 1:P) {
-      Z[1,p,k] ~ normal(0, 0.5);
+      Z[1,p,k] ~ normal(0, 1);
     }
   }
   for(n in 2:N) {
