@@ -7,3 +7,7 @@ tvdfa.rds
 tvdfa_fixed.rds
 run_tvdfa_*
 *.html
+
+.Rapp.history
+
+.DS_Store

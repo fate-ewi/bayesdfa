@@ -1,4 +1,6 @@
 fit_dfa = function(y = y,
+  covar=NULL,
+  covar_index=NULL,
   num_trends = 2,
   varIndx = NULL,
   zscore = TRUE,
@@ -18,6 +20,22 @@ fit_dfa = function(y = y,
     for (i in 1:P) {
       y[i, ] = scale(y[i, ], center = TRUE, scale = TRUE)
     }
+  }
+  
+  # Deal with covariates
+  d_covar = covar;
+  num_covar = nrow(d_covar)
+  covar_indexing = covar_index
+  if(!is.null(d_covar) & is.null(covar_indexing)) {
+    # covariates included but index matrix not, assume independent for all elements
+    covar_indexing = matrix(seq(1,num_covar*P),P,num_covar)
+    num_unique_covar = max(covar_indexing)
+  }
+  if(is.null(d_covar)) {
+    covar_indexing = matrix(0,P,0)
+    d_covar = matrix(0,0,N)
+    num_covar = 0
+    num_unique_covar = 0
   }
   
   mat_indx = matrix(0, P, K)
@@ -68,10 +86,15 @@ fit_dfa = function(y = y,
     col_indx_pos,
     n_pos,
     nu, 
-    tau
+    tau,
+    d_covar,
+    num_covar,
+    covar_indexing,
+    num_unique_covar
   )
   pars <- c("x", "Z", "sigma", "log_lik")
   if (model[[1]] == "tvdfa.stan") pars <- c(pars, "tau")
+  if(!is.null(covar)) pars = c(pars, "D")
   mod = stan(
     data = data_list,
     pars = pars,

@@ -15,6 +15,10 @@ data {
   int<lower=0> row_indx_pos[n_pos];
   int<lower=0> col_indx_pos[n_pos];
   int<lower=1> nu; // df on student-t
+  int<lower=0> num_covar; # number of unique covariates
+  int<lower=0> num_unique_covar; # number of covar parameters to estimate
+  matrix[num_covar,N] d_covar; # inputted covariate matrix
+  int covar_indexing[P,num_covar]; # index of covariates to estimate 
 }
 parameters {
   matrix[K,N] x; #vector[N] x[P]; # random walk-trends
@@ -64,7 +68,7 @@ model {
 generated quantities {
   vector[n_pos] log_lik;
   # regresssion example in loo() package 
-  for (n in 1:n_pos)
-    log_lik[n] = normal_lpdf(y[n] | pred[row_indx_pos[n], col_indx_pos[n]],
-                             sigma[varIndx[row_indx_pos[n]]]);
+  for (n in 1:n_pos) {
+    log_lik[n] = normal_lpdf(y[n] | pred[row_indx_pos[n], col_indx_pos[n]], sigma[varIndx[row_indx_pos[n]]]);
+  }
 }
