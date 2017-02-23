@@ -1,11 +1,21 @@
 find_dfa_trends = function(y = y, kmin=1, kmax=5, iter=2000) {
 
   df = data.frame("model"=seq(1,2*length(kmin:kmax)), "num_trends"=NA, "looic"=NA, "cor"=NA)
+  best_model=NULL
+  best_loo = 1.0e50
+  
   indx = 1
   for(i in kmin:kmax) {
   model = fit_dfa(y = y, num_trends = i, iter=iter)
   df$num_trends[indx] = i
   df$looic[indx] = loo(extract_log_lik(model))$looic
+  
+  # if model is best, keep it
+  if(df$looic[indx] < best_loo) {
+    best_model=model
+    best_loo = df$looic[indx]
+  }
+  
   df$cor[indx] = "equal"
   indx = indx + 1
   }
@@ -14,8 +24,15 @@ find_dfa_trends = function(y = y, kmin=1, kmax=5, iter=2000) {
     model = fit_dfa(y = y, num_trends = i, iter=iter, varIndx = seq(1,nrow(y)))
     df$num_trends[indx] = i
     df$looic[indx] = loo(extract_log_lik(model))$looic
+    
+    # if model is best, keep it
+    if(df$looic[indx] < best_loo) {
+      best_model=model
+      best_loo = df$looic[indx]
+    }
+    
     df$cor[indx] = "independent"
     indx = indx + 1
   }
-  return(df)
+  return(list("summary"=df, "best_model"=best_model))
 }
