@@ -7,7 +7,7 @@
 fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 2,
   varIndx = NULL, zscore = TRUE, iter = 4000, chains = 1,
   control = list(adapt_delta = 0.99), nu = 7, tau = 0.1,
-  model = c("dfa.stan", "tvdfa.stan"))
+  timevarying = FALSE)
 }
 \arguments{
 \item{y}{A matrix of data to fit. Columns represent time element.}
@@ -30,9 +30,12 @@ fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 2,
 
 \item{nu}{Student t degrees of freedom parameter}
 
-\item{tau}{A fixed parameter for time varying DFA. Currently ignored.}
+\item{tau}{A fixed parameter describing the standard deviation on the random
+walk for the factor loadings in the case of time varying DFA.}
 
-\item{model}{Regular or time varying DFA. Only regular DFA is included right now.}
+\item{timevarying}{Logical. If \code{TRUE}, a time varying DFA. Note that the
+time varying DFA has not been extensively tested and may not return
+sensible answers.}
 }
 \description{
 Fit a Bayesian DFA

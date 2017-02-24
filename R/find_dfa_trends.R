@@ -16,8 +16,13 @@
 
 find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000) {
 
-  df = data.frame("model"=seq(1,2*length(kmin:kmax)), "num_trends"=NA, "looic"=NA, "cor"=NA)
-  best_model=NULL
+  df = data.frame(
+    model = seq(1, 2 * length(kmin:kmax)),
+    num_trends = NA,
+    looic = NA,
+    cor = NA
+  )
+  best_model = NULL
   best_loo = 1.0e50
 
   indx = 1
@@ -54,5 +59,5 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000) {
 
   df <- dplyr::arrange_(df, ~ looic)
 
-  return(list("summary"=df, "best_model"=best_model))
+  list(summary = df, best_model = best_model)
 }

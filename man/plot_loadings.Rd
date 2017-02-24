@@ -26,4 +26,8 @@ r <- rotate_trends(m)
 p <- plot_loadings(r, threshold = 0.01)
 print(p)
 }
+\references{
+Del Negro, M., & Otrok, C. (2008). Dynamic factor models with time-varying
+parameters: measuring changes in international business cycles.
+}
 

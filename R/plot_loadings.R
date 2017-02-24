@@ -11,6 +11,10 @@
 #'   element_blank
 #'   element_line element_text geom_line
 #'
+#' @references
+#' Del Negro, M., & Otrok, C. (2008). Dynamic factor models with time-varying
+#' parameters: measuring changes in international business cycles.
+#'
 #' @examples
 #' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
 #' m <- fit_dfa(y = y, num_trends = 2, iter = 500)
@@ -41,6 +45,7 @@ plot_loadings = function(rotated_modelfit,
   # replace low values with NAs
   df$x = ifelse(abs(df$x) < threshold, NA, df$x)
 
+  browser()
   # make faceted ribbon plot of trends
   if (facet) {
     p1 = ggplot(df, aes_string(x = "name", y = "x")) +

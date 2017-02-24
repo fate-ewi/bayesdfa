@@ -10,8 +10,11 @@
 #' @param chains Number of chains in Stan sampling.
 #' @param control A list of options to pass to Stan sampling.
 #' @param nu Student t degrees of freedom parameter
-#' @param tau A fixed parameter for time varying DFA. Currently ignored.
-#' @param model Regular or time varying DFA. Only regular DFA is included right now.
+#' @param tau A fixed parameter describing the standard deviation on the random
+#'   walk for the factor loadings in the case of time varying DFA.
+#' @param timevarying Logical. If \code{TRUE}, a time varying DFA. Note that the
+#'   time varying DFA has not been extensively tested and may not return
+#'   sensible answers.
 #'
 #' @export
 #'
@@ -29,7 +32,7 @@ fit_dfa = function(y = y,
   control = list(adapt_delta = 0.99),
   nu = 7,
   tau = 0.1,
-  model = c("dfa.stan", "tvdfa.stan")) {
+  timevarying = FALSE) {
   # parameters for DFA
   N = ncol(y)
   P = nrow(y)
@@ -114,11 +117,13 @@ fit_dfa = function(y = y,
     num_unique_covar
   )
   pars <- c("x", "Z", "sigma", "log_lik")
-  if (model[[1]] == "tvdfa.stan") pars <- c(pars, "tau")
-  if(!is.null(covar)) pars = c(pars, "D")
+  # if (timevarying) pars <- c(pars, "tau")
+  if (!is.null(covar)) pars <- c(pars, "D")
+
+  object <- ifelse(timevarying, stanmodels$tvdfa_fixed, stanmodels$dfa)
 
   sampling_args <- list(
-    object = stanmodels$dfa,
+    object = object,
     data = data_list,
     pars = pars,
     control = control,
