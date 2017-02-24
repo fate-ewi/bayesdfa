@@ -16,6 +16,7 @@
 #' @export
 #'
 #' @importFrom rstan sampling
+#' @import Rcpp
 
 fit_dfa = function(y = y,
   covar=NULL,
