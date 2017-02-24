@@ -1,6 +1,4 @@
-library(MARSS)
-data(harborSealWA)
-y <- t(harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
+y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
 
 set.seed(1)
 

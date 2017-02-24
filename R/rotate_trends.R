@@ -2,6 +2,7 @@
 #'
 #' @param fitted_model Output from \code{\link{fit_dfa}}.
 #' @param conf_level Probability level for CI.
+#' @importFrom stats median quantile
 #'
 #' @export
 #'

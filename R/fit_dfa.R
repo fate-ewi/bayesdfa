@@ -120,10 +120,14 @@ fit_dfa = function(y = y,
   # if (timevarying) pars <- c(pars, "tau")
   if (!is.null(covar)) pars <- c(pars, "D")
 
-  object <- ifelse(timevarying, stanmodels$tvdfa_fixed, stanmodels$dfa)
+  if (timevarying) {
+    m <- stanmodels$tvdfa_fixed
+  } else {
+    m <- stanmodels$dfa
+  }
 
   sampling_args <- list(
-    object = object,
+    object = m,
     data = data_list,
     pars = pars,
     control = control,
