@@ -1,3 +1,22 @@
+#' Fit a Bayesian DFA
+#'
+#' @param y A matrix of data to fit. Columns represent time element.
+#' @param covar A matrix of covariates
+#' @param covar_index Indices assigning ??
+#' @param num_trends Number of trends to fit.
+#' @param varIndx Indices indicating which timeseries should have shared variances.
+#' @param zscore Logical. Should the data be standardized first?
+#' @param iter Number of iterations in Stan sampling.
+#' @param chains Number of chains in Stan sampling.
+#' @param control A list of options to pass to Stan sampling.
+#' @param nu Student t degrees of freedom parameter
+#' @param tau A fixed parameter for time varying DFA. Currently ignored.
+#' @param model Regular or time varying DFA. Only regular DFA is included right now.
+#'
+#' @export
+#'
+#' @importFrom rstan sampling
+
 fit_dfa = function(y = y,
   covar=NULL,
   covar_index=NULL,
@@ -15,13 +34,13 @@ fit_dfa = function(y = y,
   P = nrow(y)
   K = num_trends # number of dfa trends
   nZ = P * K - sum(1:K) + K
-  
+
   if (zscore == TRUE) {
     for (i in 1:P) {
       y[i, ] = scale(y[i, ], center = TRUE, scale = TRUE)
     }
   }
-  
+
   # Deal with covariates
   d_covar = covar;
   num_covar = nrow(d_covar)
@@ -37,7 +56,7 @@ fit_dfa = function(y = y,
     num_covar = 0
     num_unique_covar = 0
   }
-  
+
   mat_indx = matrix(0, P, K)
   start = 1
   for (k in 1:K) {
@@ -47,7 +66,7 @@ fit_dfa = function(y = y,
       mat_indx[-c(0:(k - 1)), k] = (1:nZ)[start:(start + P - k)]
     start = start + (P - k + 1)
   }
-  
+
   row_indx = matrix((rep(1:P, K)), P, K)[which(mat_indx > 0)]
   col_indx = rep(1:K, times = P:(P - K + 1))
   row_indx_z = matrix((rep(1:P, K)), P, K)[which(mat_indx == 0)]
@@ -55,19 +74,19 @@ fit_dfa = function(y = y,
   row_indx_z = c(row_indx_z, 0, 0)# +2 zeros for making stan ok with data types
   col_indx_z = c(col_indx_z, 0, 0)# +2 zeros for making stan ok with data types
   nZero = length(row_indx_z)
-  
+
   # set the model up to have shared variances between first two time series,
   # third is different
   if (is.null(varIndx))
     varIndx = rep(1, P)
   nVariances = length(unique(varIndx))
-  
+
   # indices of positive values - stan can't handle NAs
   row_indx_pos = matrix((rep(1:P, N)), P, N)[which(!is.na(y))]
   col_indx_pos = matrix(sort(rep(1:N, P)), P, N)[which(!is.na(y))]
   n_pos = length(row_indx_pos)
   y = y[which(!is.na(y))]
-  
+
   data_list = list(
     N,
     P,
@@ -85,7 +104,7 @@ fit_dfa = function(y = y,
     row_indx_pos,
     col_indx_pos,
     n_pos,
-    nu, 
+    nu,
     tau,
     d_covar,
     num_covar,
@@ -95,12 +114,16 @@ fit_dfa = function(y = y,
   pars <- c("x", "Z", "sigma", "log_lik")
   if (model[[1]] == "tvdfa.stan") pars <- c(pars, "tau")
   if(!is.null(covar)) pars = c(pars, "D")
-  mod = stan(
+
+  sampling_args <- list(
+    object = stanmodels$dfa,
     data = data_list,
     pars = pars,
-    file = model[[1]],
+    control = control,
     chains = chains,
-    iter = iter,
-    control = control
-  )
+    iter = iter)
+
+  mod <- do.call(sampling, sampling_args)
+
+  mod
 }

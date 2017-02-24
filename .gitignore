@@ -7,7 +7,12 @@ tvdfa.rds
 tvdfa_fixed.rds
 run_tvdfa_*
 *.html
-
+vignettes/*.R
+vignettes/*.html
 .Rapp.history
-
+*.o
+*.so
+*.bak
+.DS_Store
+*.html
 .DS_Store

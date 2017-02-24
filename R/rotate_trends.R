@@ -1,5 +1,13 @@
+#' Rotate the trends from a DFA
+#'
+#' @param fitted_model Output from \code{\link{fit_dfa}}
+#'
+#' @export
+#'
+#' @importFrom rstan extract
+
 rotate_trends = function(fitted_model) {
-  
+
   # Illustrate how to get the trends out of the model
   # get the inverse of the rotation matrix
   n_mcmc = dim(extract(fitted_model)$Z)[1]
@@ -15,22 +23,22 @@ rotate_trends = function(fitted_model) {
   for(i in 1:n_mcmc) {
     Zest = Z[i,,]
     H.inv = varimax(Zest)$rotmat
-  
+
     # rotate factor loadings
     Z.rot = Zest %*% H.inv
     mcmc_Z_rot[i,,] = Z.rot
-    
+
     # rotate trends
     states = x[i,,]
     trends.rot = solve(H.inv) %*% states
     mcmc_trends_rot[i,,] = trends.rot
   }
-  
+
   return(list("Z_rot"=mcmc_Z_rot, "trends"=mcmc_trends_rot,
     "Z_rot_mean" = apply(mcmc_Z_rot,c(2,3),mean),
     "trends_mean" = apply(mcmc_trends_rot,c(2,3),mean),
   "trends_lower" = apply(mcmc_trends_rot,c(2,3),quantile,0.025),
 "trends_upper" = apply(mcmc_trends_rot,c(2,3),quantile,0.975)))
-  
-  
+
+
 }
