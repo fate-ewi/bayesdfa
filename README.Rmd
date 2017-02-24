@@ -18,3 +18,12 @@ knitr::opts_chunk$set(
 # bayesdfa
 
 [![Travis-CI Build Status](https://travis-ci.org/fate-ewi/tvdfa.svg?branch=master)](https://travis-ci.org/fate-ewi/tvdfa)
+
+bayesdfa implements Bayesian Dynamic Factor Analysis (DFA) with Stan.
+
+You can install the development version of the package with:
+
+```{r, eval=FALSE}
+# install.packages("devtools")
+devtools::install_github("fate-ewi/bayesdfa")
+```
