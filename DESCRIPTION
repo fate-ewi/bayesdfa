@@ -15,8 +15,7 @@ Imports:
     rstan (>= 2.12.0),
     ggplot2 (>= 2.2.0),
     loo,
-    methods,
-    Rcpp (>= 0.11.0)
+    methods
 LinkingTo: StanHeaders (>= 2.12.0), rstan (>= 2.9.0), BH (>= 1.60.0), Rcpp (>=
     0.12.0), RcppEigen
 Suggests:

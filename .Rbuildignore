@@ -1,2 +1,7 @@
+cleanup*
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^README-*
+^README\.Rmd
+^\.travis\.yml$
+^appveyor\.yml$
