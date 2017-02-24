@@ -1,14 +1,14 @@
 #' Rotate the trends from a DFA
 #'
-#' @param fitted_model Output from \code{\link{fit_dfa}}
+#' @param fitted_model Output from \code{\link{fit_dfa}}.
+#' @param conf_level Probability level for CI.
 #'
 #' @export
 #'
 #' @importFrom rstan extract
 
-rotate_trends = function(fitted_model) {
+rotate_trends = function(fitted_model, conf_level = 0.95) {
 
-  # Illustrate how to get the trends out of the model
   # get the inverse of the rotation matrix
   n_mcmc = dim(extract(fitted_model)$Z)[1]
   Z = extract(fitted_model)$Z
@@ -20,7 +20,7 @@ rotate_trends = function(fitted_model) {
   # do rotation for each MCMC draw (slow)
   mcmc_trends_rot = array(0, dim = c(n_mcmc, n_trends, n_years))
   mcmc_Z_rot = array(0, dim = c(n_mcmc, n_ts, n_trends))
-  for(i in 1:n_mcmc) {
+  for(i in seq_len(n_mcmc)) {
     Zest = Z[i,,]
     H.inv = varimax(Zest)$rotmat
 
@@ -34,11 +34,15 @@ rotate_trends = function(fitted_model) {
     mcmc_trends_rot[i,,] = trends.rot
   }
 
-  return(list("Z_rot"=mcmc_Z_rot, "trends"=mcmc_trends_rot,
-    "Z_rot_mean" = apply(mcmc_Z_rot,c(2,3),mean),
-    "trends_mean" = apply(mcmc_trends_rot,c(2,3),mean),
-  "trends_lower" = apply(mcmc_trends_rot,c(2,3),quantile,0.025),
-"trends_upper" = apply(mcmc_trends_rot,c(2,3),quantile,0.975)))
-
+    list(
+      Z_rot = mcmc_Z_rot,
+      trends = mcmc_trends_rot,
+      Z_rot_mean = apply(mcmc_Z_rot, c(2, 3), mean),
+      Z_rot_median = apply(mcmc_Z_rot, c(2, 3), median),
+      trends_mean = apply(mcmc_trends_rot, c(2, 3), mean),
+      trends_median = apply(mcmc_trends_rot, c(2, 3), median),
+      trends_lower = apply(mcmc_trends_rot, c(2, 3), quantile, (1 - conf_level) / 2),
+      trends_upper = apply(mcmc_trends_rot, c(2, 3), quantile, 1 - (1 - conf_level) / 2)
+    )
 
 }

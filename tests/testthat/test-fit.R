@@ -5,7 +5,7 @@ y <- t(harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
 set.seed(1)
 
 test_that("Basic model fits", {
-  fit1 <- fit_dfa(y = y, num_trends = 1)
+  fit1 <- fit_dfa(y = y, num_trends = 1, iter = 1000)
   expect_output(print(fit1), "Inference for Stan model")
 })
 

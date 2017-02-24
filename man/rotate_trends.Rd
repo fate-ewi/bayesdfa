@@ -4,10 +4,12 @@
 \alias{rotate_trends}
 \title{Rotate the trends from a DFA}
 \usage{
-rotate_trends(fitted_model)
+rotate_trends(fitted_model, conf_level = 0.95)
 }
 \arguments{
-\item{fitted_model}{Output from \code{\link{fit_dfa}}}
+\item{fitted_model}{Output from \code{\link{fit_dfa}}.}
+
+\item{conf_level}{Probability level for CI.}
 }
 \description{
 Rotate the trends from a DFA

@@ -14,7 +14,7 @@
 #' @importFrom loo loo extract_log_lik
 #' @importFrom stats quantile time varimax
 
-find_dfa_trends = function(y = y, kmin=1, kmax=5, iter=2000) {
+find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000) {
 
   df = data.frame("model"=seq(1,2*length(kmin:kmax)), "num_trends"=NA, "looic"=NA, "cor"=NA)
   best_model=NULL
