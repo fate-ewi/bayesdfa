@@ -36,24 +36,25 @@ fit_dfa = function(y = y,
   K = num_trends # number of dfa trends
   nZ = P * K - sum(1:K) + K
 
-  if (zscore == TRUE) {
-    for (i in 1:P) {
-      y[i, ] = scale(y[i, ], center = TRUE, scale = TRUE)
+  if (zscore) {
+    for (i in seq_len(P)) {
+      y[i, ] <- scale(y[i, ], center = TRUE, scale = TRUE)
     }
   }
 
   # Deal with covariates
-  d_covar = covar;
+  d_covar = covar
+
   num_covar = nrow(d_covar)
   covar_indexing = covar_index
-  if(!is.null(d_covar) & is.null(covar_indexing)) {
+  if (!is.null(d_covar) & is.null(covar_indexing)) {
     # covariates included but index matrix not, assume independent for all elements
-    covar_indexing = matrix(seq(1,num_covar*P),P,num_covar)
+    covar_indexing = matrix(seq(1, num_covar * P), P, num_covar)
     num_unique_covar = max(covar_indexing)
   }
-  if(is.null(d_covar)) {
-    covar_indexing = matrix(0,P,0)
-    d_covar = matrix(0,0,N)
+  if (is.null(d_covar)) {
+    covar_indexing = matrix(0, P, 0)
+    d_covar = matrix(0, 0, N)
     num_covar = 0
     num_unique_covar = 0
   }
@@ -62,16 +63,16 @@ fit_dfa = function(y = y,
   start = 1
   for (k in 1:K) {
     if (k == 1)
-      mat_indx[, k] = (1:nZ)[start:(start + P - k)]
+      mat_indx[, k] = (seq_len(nZ))[start:(start + P - k)]
     if (k > 1)
-      mat_indx[-c(0:(k - 1)), k] = (1:nZ)[start:(start + P - k)]
+      mat_indx[-c(0:(k - 1)), k] = (seq_len(nZ))[start:(start + P - k)]
     start = start + (P - k + 1)
   }
 
-  row_indx = matrix((rep(1:P, K)), P, K)[which(mat_indx > 0)]
+  row_indx = matrix((rep(seq_len(P), K)), P, K)[which(mat_indx > 0)]
   col_indx = rep(1:K, times = P:(P - K + 1))
-  row_indx_z = matrix((rep(1:P, K)), P, K)[which(mat_indx == 0)]
-  col_indx_z = matrix(sort(rep(1:K, P)), P, K)[which(mat_indx == 0)]
+  row_indx_z = matrix((rep(seq_len(P), K)), P, K)[which(mat_indx == 0)]
+  col_indx_z = matrix(sort(rep(seq_len(K), P)), P, K)[which(mat_indx == 0)]
   row_indx_z = c(row_indx_z, 0, 0)# +2 zeros for making stan ok with data types
   col_indx_z = c(col_indx_z, 0, 0)# +2 zeros for making stan ok with data types
   nZero = length(row_indx_z)
@@ -83,8 +84,8 @@ fit_dfa = function(y = y,
   nVariances = length(unique(varIndx))
 
   # indices of positive values - stan can't handle NAs
-  row_indx_pos = matrix((rep(1:P, N)), P, N)[which(!is.na(y))]
-  col_indx_pos = matrix(sort(rep(1:N, P)), P, N)[which(!is.na(y))]
+  row_indx_pos = matrix((rep(seq_len(P), N)), P, N)[which(!is.na(y))]
+  col_indx_pos = matrix(sort(rep(seq_len(N), P)), P, N)[which(!is.na(y))]
   n_pos = length(row_indx_pos)
   y = y[which(!is.na(y))]
 

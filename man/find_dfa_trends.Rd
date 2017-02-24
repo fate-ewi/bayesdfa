@@ -16,6 +16,8 @@ find_dfa_trends(y = y, kmin = 1, kmax = 5, iter = 2000)
 \item{iter}{Iterations when sampling from each Stan model.}
 }
 \description{
-Find the best number of trends according to LOO
+Fit a DFA with different number of trends and return the leave one out (LOO)
+value as calculated by the loo package. Note that the models will be fit once
+with shared variances and once with independent variances.
 }
 
