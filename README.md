@@ -2,7 +2,7 @@
 bayesdfa
 ========
 
-[![Travis-CI Build Status](https://travis-ci.org/fate-ewi/tvdfa.svg?branch=master)](https://travis-ci.org/fate-ewi/tvdfa)
+[![Travis-CI Build Status](https://travis-ci.org/fate-ewi/bayesdfa.svg?branch=master)](https://travis-ci.org/fate-ewi/bayesdfa)
 
 bayesdfa implements Bayesian Dynamic Factor Analysis (DFA) with Stan.
 
