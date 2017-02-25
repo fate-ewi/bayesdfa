@@ -45,17 +45,18 @@ plot_loadings = function(rotated_modelfit,
   # replace low values with NAs
   df$x = ifelse(abs(df$x) < threshold, NA, df$x)
 
-  browser()
   # make faceted ribbon plot of trends
   if (facet) {
     p1 = ggplot(df, aes_string(x = "name", y = "x")) +
       geom_point() + facet_wrap("trend") +
-      xlab("Time Series") + ylab("Loading")
+      xlab("Time Series") + ylab("Loading") + 
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))
   }
   if (!facet) {
     p1 = ggplot(df, aes_string(x = "name", y = "x", col = "trend")) +
       geom_point(size = 3, alpha = 0.5) +
-      xlab("Time Series") + ylab("Loading")
+      xlab("Time Series") + ylab("Loading") + 
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))
   }
   p1
 }
