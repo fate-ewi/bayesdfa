@@ -16,3 +16,9 @@ vignettes/*.html
 .DS_Store
 *.html
 .DS_Store
+
+DFA.pdf
+
+DFA.Rmd
+
+applications/4 trends.pdf
