@@ -39,22 +39,28 @@ plot_loadings = function(rotated_modelfit,
   df = data.frame(
     x = c(rotated$Z_rot_mean),
     trend = paste0("Trend ", sort(rep(seq_len(n_trends), n_ts))),
-    name = rep(names, n_trends)
+    name = rep(names, n_trends),
+    lower = c(rotated$Z_rot_mean) - c(apply(rotated$Z_rot,c(2,3),sd)),
+    upper = c(rotated$Z_rot_mean) + c(apply(rotated$Z_rot,c(2,3),sd))
   )
 
   # replace low values with NAs
   df$x = ifelse(abs(df$x) < threshold, NA, df$x)
-
+  df$lower = ifelse(is.na(df$x), NA, df$lower)
+  df$upper = ifelse(is.na(df$x), NA, df$upper)
+  
   # make faceted ribbon plot of trends
   if (facet) {
     p1 = ggplot(df, aes_string(x = "name", y = "x")) +
-      geom_point() + facet_wrap("trend") +
+      geom_point(position=position_dodge(0.3)) + facet_wrap("trend") +
+      geom_errorbar(aes(ymin=lower, ymax=upper),alpha=0.5,position=position_dodge(0.3)) + 
       xlab("Time Series") + ylab("Loading") + 
       theme(axis.text.x = element_text(angle = 90, hjust = 1))
   }
   if (!facet) {
     p1 = ggplot(df, aes_string(x = "name", y = "x", col = "trend")) +
-      geom_point(size = 3, alpha = 0.5) +
+      geom_point(size = 3, alpha = 0.5,position=position_dodge(0.3)) +
+      geom_errorbar(aes(ymin=lower, ymax=upper),alpha=0.5,position=position_dodge(0.3)) + 
       xlab("Time Series") + ylab("Loading") + 
       theme(axis.text.x = element_text(angle = 90, hjust = 1))
   }
