@@ -8,16 +8,16 @@
 #' @param kmin Minimum number of trends.
 #' @param kmax Maximum number of trans.
 #' @param iter Iterations when sampling from each Stan model.
-#' @param compare_t If TRUE, does model selection comparison of Normal vs Student-t errors
+#' @param compare_normal If TRUE, does model selection comparison of Normal vs Student-t errors
 #' @export
 #'
 #' @importFrom loo loo extract_log_lik
 #' @importFrom stats quantile time varimax
 
-find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_t=TRUE) {
+find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_normal=TRUE) {
 
   df = data.frame(
-    model = seq(1, ifelse(compare_t==FALSE, 2 * length(kmin:kmax), 4 * length(kmin:kmax))),
+    model = seq(1, ifelse(compare_normal==FALSE, 2 * length(kmin:kmax), 4 * length(kmin:kmax))),
     num_trends = NA,
     looic = NA,
     cor = NA,
@@ -28,7 +28,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_t=TRU
 
   indx = 1
   for (i in kmin:kmax) {
-    model = fit_dfa(y = y, num_trends = i, iter = iter, nu = 100)
+    model = fit_dfa(y = y, num_trends = i, iter = iter, nu = 7)
     df$num_trends[indx] = i
     df$looic[indx] = loo(extract_log_lik(model))$looic
 
@@ -37,13 +37,13 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_t=TRU
       best_model = model
       best_loo = df$looic[indx]
     }
-    df$error[indx] = "normal"
+    df$error[indx] = "student-t"
     df$cor[indx] = "equal"
     indx = indx + 1
   }
 
   for (i in kmin:kmax) {
-    model = fit_dfa(y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)), nu=100
+    model = fit_dfa(y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)), nu=7
     )
     df$num_trends[indx] = i
     df$looic[indx] = loo::loo(loo::extract_log_lik(model))$looic
@@ -53,14 +53,14 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_t=TRU
       best_model = model
       best_loo = df$looic[indx]
     }
-    df$error[indx] = "normal"
+    df$error[indx] = "student-t"
     df$cor[indx] = "independent"
     indx = indx + 1
   }
 
-  if(compare_t==TRUE) {
+  if(compare_normal==TRUE) {
     for (i in kmin:kmax) {
-      model = fit_dfa(y = y, num_trends = i, iter = iter, nu = 7)
+      model = fit_dfa(y = y, num_trends = i, iter = iter, nu = 100)
       df$num_trends[indx] = i
       df$looic[indx] = loo(extract_log_lik(model))$looic
       
@@ -69,13 +69,13 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_t=TRU
         best_model = model
         best_loo = df$looic[indx]
       }
-      df$error[indx] = "student-t"
+      df$error[indx] = "normal"
       df$cor[indx] = "equal"
       indx = indx + 1
     }
     
     for (i in kmin:kmax) {
-      model = fit_dfa(y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)), nu=7
+      model = fit_dfa(y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)), nu=100
       )
       df$num_trends[indx] = i
       df$looic[indx] = loo::loo(loo::extract_log_lik(model))$looic
@@ -85,7 +85,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_t=TRU
         best_model = model
         best_loo = df$looic[indx]
       }
-      df$error[indx] = "student-t"
+      df$error[indx] = "normal"
       df$cor[indx] = "independent"
       indx = indx + 1
     }
