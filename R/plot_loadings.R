@@ -48,7 +48,9 @@ plot_loadings = function(rotated_modelfit,
   
   # replace low values with NAs
   df$x = ifelse((df$q_lower > threshold | df$q_upper > threshold), df$x, NA)
-
+  df$lower = ifelse((df$q_lower > threshold | df$q_upper > threshold), df$lower, NA)
+  df$upper = ifelse((df$q_lower > threshold | df$q_upper > threshold), df$upper, NA)
+  
   # make faceted ribbon plot of trends
   if (facet) {
     #p1 = ggplot(df[!is.na(df$x),], aes_string(x = "name", y = "x")) +
@@ -78,7 +80,7 @@ plot_loadings = function(rotated_modelfit,
     p1 = eval(parse(text=textstr))
   }
   if (!facet) {
-    p1 = ggplot(df, aes_string(x = "name", y = "x", col = "trend")) +
+    p1 = ggplot(df[!is.na(df$x),], aes_string(x = "name", y = "x", col = "trend")) +
       geom_point(size = 3, alpha = 0.5,position=position_dodge(0.3)) +
       geom_errorbar(aes(ymin=lower, ymax=upper),alpha=0.5,position=position_dodge(0.3)) + 
       xlab("Time Series") + ylab("Loading") + 
