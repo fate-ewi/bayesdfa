@@ -4,10 +4,12 @@
 \alias{plot_trends}
 \title{Plot the trends from a DFA}
 \usage{
-plot_trends(rotated_modelfit)
+plot_trends(rotated_modelfit, years = NULL)
 }
 \arguments{
 \item{rotated_modelfit}{Output from \code{\link{rotate_trends}}}
+
+\item{years}{Optional numeric vector of years for the plot}
 }
 \description{
 Plot the trends from a DFA
@@ -19,4 +21,3 @@ r <- rotate_trends(m)
 p <- plot_trends(r)
 print(p)
 }
-

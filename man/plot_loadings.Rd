@@ -4,7 +4,7 @@
 \alias{plot_loadings}
 \title{Plot the loadings from a DFA}
 \usage{
-plot_loadings(rotated_modelfit, names = NULL, threshold = 0.1,
+plot_loadings(rotated_modelfit, names = NULL, threshold = 0.8,
   facet = TRUE)
 }
 \arguments{
@@ -12,7 +12,7 @@ plot_loadings(rotated_modelfit, names = NULL, threshold = 0.1,
 
 \item{names}{An optional vector of names for plotting the loadings.}
 
-\item{threshold}{Threshold above which to plot the loadings.}
+\item{threshold}{Numeric (0-1). Optional, if included, only plot loadings who have Pr(<0) or Pr(>0) > threshold}
 
 \item{facet}{Logical. Should there be a separate facet for each trend?}
 }
@@ -30,4 +30,3 @@ print(p)
 Del Negro, M., & Otrok, C. (2008). Dynamic factor models with time-varying
 parameters: measuring changes in international business cycles.
 }
-

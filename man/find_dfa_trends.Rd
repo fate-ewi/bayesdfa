@@ -4,7 +4,8 @@
 \alias{find_dfa_trends}
 \title{Find the best number of trends according to LOO}
 \usage{
-find_dfa_trends(y = y, kmin = 1, kmax = 5, iter = 2000)
+find_dfa_trends(y = y, kmin = 1, kmax = 5, iter = 2000,
+  compare_normal = TRUE, convergence_threshold = 1.05)
 }
 \arguments{
 \item{y}{A matrix of data to fit. Columns represent time element.}
@@ -14,10 +15,13 @@ find_dfa_trends(y = y, kmin = 1, kmax = 5, iter = 2000)
 \item{kmax}{Maximum number of trans.}
 
 \item{iter}{Iterations when sampling from each Stan model.}
+
+\item{compare_normal}{If TRUE, does model selection comparison of Normal vs Student-t errors}
+
+\item{convergence_threshold}{The maximum allowed value of Rhat to determine convergence of parameters}
 }
 \description{
 Fit a DFA with different number of trends and return the leave one out (LOO)
 value as calculated by the loo package. Note that the models will be fit once
 with shared variances and once with independent variances.
 }
-
