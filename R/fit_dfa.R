@@ -9,7 +9,7 @@
 #' @param iter Number of iterations in Stan sampling.
 #' @param chains Number of chains in Stan sampling.
 #' @param control A list of options to pass to Stan sampling.
-#' @param nu Student t degrees of freedom parameter
+#' @param nu_fixed Student t degrees of freedom parameter
 #' @param tau A fixed parameter describing the standard deviation on the random
 #'   walk for the factor loadings in the case of time varying DFA.
 #' @param timevarying Logical. If \code{TRUE}, a time varying DFA. Note that the
@@ -30,9 +30,10 @@ fit_dfa = function(y = y,
   iter = 4000,
   chains = 1,
   control = list(adapt_delta = 0.99),
-  nu = 7,
+  nu_fixed = 7,
   tau = 0.1,
-  timevarying = FALSE) {
+  timevarying = FALSE,
+  estimate_nu = FALSE) {
   # parameters for DFA
   N = ncol(y)
   P = nrow(y)
@@ -109,16 +110,17 @@ fit_dfa = function(y = y,
     row_indx_pos,
     col_indx_pos,
     n_pos,
-    nu,
+    nu_fixed,
     tau,
     d_covar,
     num_covar,
     covar_indexing,
-    num_unique_covar
+    num_unique_covar,
+    est_df = as.integer(estimate_nu)
   )
   pars <- c("x", "Z", "sigma", "log_lik")
-  # if (timevarying) pars <- c(pars, "tau")
   if (!is.null(covar)) pars <- c(pars, "D")
+  if (estimate_nu) pars <- c(pars, "nu")
 
   if (timevarying) {
     m <- stanmodels$tvdfa_fixed

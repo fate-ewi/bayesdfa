@@ -31,7 +31,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
 
   indx = 1
   for (i in kmin:kmax) {
-    model = fit_dfa(y = y, num_trends = i, iter = iter, nu = 7)
+    model = fit_dfa(y = y, num_trends = i, iter = iter, nu_fixed = 7)
     df$num_trends[indx] = i
     df$looic[indx] = loo(extract_log_lik(model))$looic
 
@@ -47,7 +47,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
   }
 
   for (i in kmin:kmax) {
-    model = fit_dfa(y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)), nu=7
+    model = fit_dfa(y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)), nu_fixed=7
     )
     df$num_trends[indx] = i
     df$looic[indx] = loo::loo(loo::extract_log_lik(model))$looic
@@ -65,10 +65,10 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
 
   if(compare_normal==TRUE) {
     for (i in kmin:kmax) {
-      model = fit_dfa(y = y, num_trends = i, iter = iter, nu = 100)
+      model = fit_dfa(y = y, num_trends = i, iter = iter, nu_fixed = 100)
       df$num_trends[indx] = i
       df$looic[indx] = loo(extract_log_lik(model))$looic
-      
+
       df$converge[indx] = converge_rhat(model, convergence_threshold)
       # if model is best, keep it
       if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
@@ -79,13 +79,13 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
       df$cor[indx] = "equal"
       indx = indx + 1
     }
-    
+
     for (i in kmin:kmax) {
-      model = fit_dfa(y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)), nu=100
+      model = fit_dfa(y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)), nu_fixed=100
       )
       df$num_trends[indx] = i
       df$looic[indx] = loo::loo(loo::extract_log_lik(model))$looic
-      
+
       df$converge[indx] = converge_rhat(model, convergence_threshold)
       # if model is best, keep it
       if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
@@ -97,7 +97,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
       indx = indx + 1
     }
   }
-  
+
   df <- dplyr::arrange_(df, ~ looic)
 
   # return best model = one that converges

@@ -6,8 +6,8 @@
 \usage{
 fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 2,
   varIndx = NULL, zscore = TRUE, iter = 4000, chains = 1,
-  control = list(adapt_delta = 0.99), nu = 7, tau = 0.1,
-  timevarying = FALSE)
+  control = list(adapt_delta = 0.99), nu_fixed = 7, tau = 0.1,
+  timevarying = FALSE, estimate_nu = FALSE)
 }
 \arguments{
 \item{y}{A matrix of data to fit. Columns represent time element.}
@@ -28,7 +28,7 @@ fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 2,
 
 \item{control}{A list of options to pass to Stan sampling.}
 
-\item{nu}{Student t degrees of freedom parameter}
+\item{nu_fixed}{Student t degrees of freedom parameter}
 
 \item{tau}{A fixed parameter describing the standard deviation on the random
 walk for the factor loadings in the case of time varying DFA.}

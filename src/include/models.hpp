@@ -41,11 +41,12 @@ private:
     vector<double> y;
     vector<int> row_indx_pos;
     vector<int> col_indx_pos;
-    int nu;
+    double nu_fixed;
     int num_covar;
     int num_unique_covar;
     matrix_d d_covar;
     vector<vector<int> > covar_indexing;
+    int estimate_nu;
 public:
     model_dfa(stan::io::var_context& context__,
         std::ostream* pstream__ = 0)
@@ -186,11 +187,11 @@ public:
         for (size_t i_0__ = 0; i_0__ < col_indx_pos_limit_0__; ++i_0__) {
             col_indx_pos[i_0__] = vals_i__[pos__++];
         }
-        context__.validate_dims("data initialization", "nu", "int", context__.to_vec());
-        nu = int(0);
-        vals_i__ = context__.vals_i("nu");
+        context__.validate_dims("data initialization", "nu_fixed", "double", context__.to_vec());
+        nu_fixed = double(0);
+        vals_r__ = context__.vals_r("nu_fixed");
         pos__ = 0;
-        nu = vals_i__[pos__++];
+        nu_fixed = vals_r__[pos__++];
         context__.validate_dims("data initialization", "num_covar", "int", context__.to_vec());
         num_covar = int(0);
         vals_i__ = context__.vals_i("num_covar");
@@ -227,6 +228,11 @@ public:
                 covar_indexing[i_0__][i_1__] = vals_i__[pos__++];
             }
         }
+        context__.validate_dims("data initialization", "estimate_nu", "int", context__.to_vec());
+        estimate_nu = int(0);
+        vals_i__ = context__.vals_i("estimate_nu");
+        pos__ = 0;
+        estimate_nu = vals_i__[pos__++];
 
         // validate, data variables
         check_greater_or_equal(function__,"N",N,0);
@@ -257,7 +263,7 @@ public:
         for (int k0__ = 0; k0__ < n_pos; ++k0__) {
             check_greater_or_equal(function__,"col_indx_pos[k0__]",col_indx_pos[k0__],0);
         }
-        check_greater_or_equal(function__,"nu",nu,1);
+        check_greater_or_equal(function__,"nu_fixed",nu_fixed,1);
         check_greater_or_equal(function__,"num_covar",num_covar,0);
         check_greater_or_equal(function__,"num_unique_covar",num_unique_covar,0);
         // initialize data variables
@@ -277,6 +283,7 @@ public:
         num_params_r__ += K * N;
         num_params_r__ += nZ;
         num_params_r__ += nVariances;
+        num_params_r__ += estimate_nu;
     }
 
     ~model_dfa() { }
@@ -339,6 +346,22 @@ public:
             throw std::runtime_error(std::string("Error transforming variable sigma: ") + e.what());
         }
 
+        if (!(context__.contains_r("nu")))
+            throw std::runtime_error("variable nu missing");
+        vals_r__ = context__.vals_r("nu");
+        pos__ = 0U;
+        context__.validate_dims("initialization", "nu", "double", context__.to_vec(estimate_nu));
+        // generate_declaration nu
+        std::vector<double> nu(estimate_nu,double(0));
+        for (int i0__ = 0U; i0__ < estimate_nu; ++i0__)
+            nu[i0__] = vals_r__[pos__++];
+        for (int i0__ = 0U; i0__ < estimate_nu; ++i0__)
+            try {
+            writer__.scalar_lb_unconstrain(2,nu[i0__]);
+        } catch (const std::exception& e) { 
+            throw std::runtime_error(std::string("Error transforming variable nu: ") + e.what());
+        }
+
         params_r__ = writer__.data_r();
         params_i__ = writer__.data_i();
     }
@@ -391,6 +414,16 @@ public:
                 sigma.push_back(in__.scalar_lb_constrain(0,lp__));
             else
                 sigma.push_back(in__.scalar_lb_constrain(0));
+        }
+
+        vector<T__> nu;
+        size_t dim_nu_0__ = estimate_nu;
+        nu.reserve(dim_nu_0__);
+        for (size_t k_0__ = 0; k_0__ < dim_nu_0__; ++k_0__) {
+            if (jacobian__)
+                nu.push_back(in__.scalar_lb_constrain(2,lp__));
+            else
+                nu.push_back(in__.scalar_lb_constrain(2));
         }
 
 
@@ -455,8 +488,18 @@ public:
                 lp_accum__.add(normal_log<propto__>(get_base1(x,k,1,"x",1), 0, 1));
                 for (int t = 2; t <= N; ++t) {
 
-                    lp_accum__.add(student_t_log<propto__>(get_base1(x,k,t,"x",1), nu, get_base1(x,k,(t - 1),"x",1), 1));
+                    if (as_bool(logical_eq(estimate_nu,1))) {
+
+                        lp_accum__.add(student_t_log<propto__>(get_base1(x,k,t,"x",1), get_base1(nu,1,"nu",1), get_base1(x,k,(t - 1),"x",1), 1));
+                    } else {
+
+                        lp_accum__.add(student_t_log<propto__>(get_base1(x,k,t,"x",1), nu_fixed, get_base1(x,k,(t - 1),"x",1), 1));
+                    }
                 }
+            }
+            if (as_bool(logical_eq(estimate_nu,1))) {
+
+                lp_accum__.add(gamma_log<propto__>(get_base1(nu,1,"nu",1), 2, 0.10000000000000001));
             }
             lp_accum__.add(normal_log<propto__>(z, 0, 1));
             lp_accum__.add(student_t_log<propto__>(sigma, 3, 0, 2));
@@ -492,6 +535,7 @@ public:
         names__.push_back("x");
         names__.push_back("z");
         names__.push_back("sigma");
+        names__.push_back("nu");
         names__.push_back("pred");
         names__.push_back("Z");
         names__.push_back("log_lik");
@@ -510,6 +554,9 @@ public:
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(nVariances);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(estimate_nu);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(P);
@@ -544,6 +591,11 @@ public:
         for (size_t k_0__ = 0; k_0__ < dim_sigma_0__; ++k_0__) {
             sigma.push_back(in__.scalar_lb_constrain(0));
         }
+        vector<double> nu;
+        size_t dim_nu_0__ = estimate_nu;
+        for (size_t k_0__ = 0; k_0__ < dim_nu_0__; ++k_0__) {
+            nu.push_back(in__.scalar_lb_constrain(2));
+        }
         for (int k_1__ = 0; k_1__ < N; ++k_1__) {
             for (int k_0__ = 0; k_0__ < K; ++k_0__) {
                 vars__.push_back(x(k_0__, k_1__));
@@ -554,6 +606,9 @@ public:
         }
         for (int k_0__ = 0; k_0__ < nVariances; ++k_0__) {
             vars__.push_back(sigma[k_0__]);
+        }
+        for (int k_0__ = 0; k_0__ < estimate_nu; ++k_0__) {
+            vars__.push_back(nu[k_0__]);
         }
 
         if (!include_tparams__) return;
@@ -680,6 +735,11 @@ public:
             param_name_stream__ << "sigma" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
         }
+        for (int k_0__ = 1; k_0__ <= estimate_nu; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "nu" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
 
         if (!include_gqs__ && !include_tparams__) return;
         for (int k_1__ = 1; k_1__ <= N; ++k_1__) {
@@ -725,6 +785,11 @@ public:
         for (int k_0__ = 1; k_0__ <= nVariances; ++k_0__) {
             param_name_stream__.str(std::string());
             param_name_stream__ << "sigma" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_0__ = 1; k_0__ <= estimate_nu; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "nu" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
         }
 
