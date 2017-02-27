@@ -2,14 +2,17 @@
 #'
 #' @param rotated_modelfit Output from \code{\link{rotate_trends}}.
 #' @param names An optional vector of names for plotting the loadings.
-#' @param threshold Numeric (0-1). Optional, if included, only plot loadings who have Pr(<0) or Pr(>0) > threshold
+#' @param threshold Numeric (0-1). Optional, if included, only plot loadings who
+#'   have Pr(<0) or Pr(>0) > threshold
 #' @param facet Logical. Should there be a separate facet for each trend?
+#' @param violin Logical. Should the full posterior densities be shown as a
+#'   violin plot?
 #'
 #' @export
 #'
 #' @importFrom ggplot2 ggplot geom_point xlab ylab theme_bw theme aes_string
 #'   element_blank position_dodge ggtitle geom_errorbar
-#'   element_line element_text geom_line
+#'   element_line element_text geom_line geom_violin coord_flip geom_hline
 #'
 #' @references
 #' Del Negro, M., & Otrok, C. (2008). Dynamic factor models with time-varying
@@ -20,12 +23,16 @@
 #' m <- fit_dfa(y = y, num_trends = 2, iter = 500)
 #' r <- rotate_trends(m)
 #' plot_loadings(r, threshold = 0.01, facet = TRUE)
-# plot_loadings(r, threshold = 0.01, facet = FALSE)
+#' plot_loadings(r, threshold = 0.01, facet = FALSE)
+#' plot_loadings(r, threshold = 0.01, violin = TRUE, facet = FALSE)
+#' plot_loadings(r, threshold = 0.01, violin = TRUE, facet = TRUE)
 
 plot_loadings = function(rotated_modelfit,
   names = NULL,
   threshold = 0.8,
-  facet = TRUE) {
+  facet = TRUE,
+  violin = FALSE) {
+
   # rotate the trends
   rotated <- rotated_modelfit
 
@@ -53,23 +60,29 @@ plot_loadings = function(rotated_modelfit,
 
   # make faceted ribbon plot of trends
   df <- df[!is.na(df$x), ]
-  if (facet) {
-      p1 <- ggplot(df, aes_string(x = "name", y = "x")) +
-        geom_point(position = position_dodge(0.3)) +
-        geom_errorbar(aes_string(ymin = "lower", ymax = "upper"), alpha = 0.5, width = 0) +
-        xlab("") + ylab("Loading") +
-        geom_hline(yintercept = 0, lty = 2) +
-        facet_wrap(~trend, scales = "free_x") +
-        coord_flip()
-  }
-  if (!facet) {
+
+  if (!violin) {
     p1 <- ggplot(df, aes_string(x = "name", y = "x", col = "trend")) +
-      geom_point(size = 3, alpha = 0.5, position = position_dodge(0.3)) +
+      geom_point(size = 3, alpha = 0.95, position = position_dodge(0.3)) +
       geom_errorbar(aes_string(ymin = "lower", ymax = "upper"),
-        alpha = 0.5, position = position_dodge(0.3), width = 0) +
-      xlab("Time Series") + ylab("Loading") +
+        alpha = 0.6, position = position_dodge(0.3), width = 0) +
       geom_hline(yintercept = 0, lty = 2) +
-      coord_flip()
+      coord_flip() + xlab("Time Series") + ylab("Loading")
   }
+
+  if (violin) {
+    v <- reshape2::melt(rotated$Z_rot, varnames = c("iter", "ts_name", "trend"))
+    v$trend <- as.factor(v$trend)
+    if (!is.null(names)) v$ts_name <- names[v$ts_name]
+    v$ts_name <- as.factor(v$ts_name)
+    p1 <- ggplot(v, aes_string(x = "ts_name", y = "value", fill = "trend")) +
+      geom_violin(color = NA) +
+      geom_hline(yintercept = 0, lty = 2) +
+      coord_flip() + xlab("Time Series") + ylab("Loading")
+  }
+
+  if (facet)
+    p1 <- p1 + facet_wrap(~trend, scales = "free_x")
+
   p1
 }
