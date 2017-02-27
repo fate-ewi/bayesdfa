@@ -16,9 +16,11 @@ find_dfa_trends(y = y, kmin = 1, kmax = 5, iter = 2000,
 
 \item{iter}{Iterations when sampling from each Stan model.}
 
-\item{compare_normal}{If TRUE, does model selection comparison of Normal vs Student-t errors}
+\item{compare_normal}{If TRUE, does model selection comparison of Normal vs
+Student-t errors}
 
-\item{convergence_threshold}{The maximum allowed value of Rhat to determine convergence of parameters}
+\item{convergence_threshold}{The maximum allowed value of Rhat to determine
+convergence of parameters}
 }
 \description{
 Fit a DFA with different number of trends and return the leave one out (LOO)

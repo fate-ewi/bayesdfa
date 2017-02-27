@@ -8,8 +8,10 @@
 #' @param kmin Minimum number of trends.
 #' @param kmax Maximum number of trans.
 #' @param iter Iterations when sampling from each Stan model.
-#' @param compare_normal If TRUE, does model selection comparison of Normal vs Student-t errors
-#' @param convergence_threshold The maximum allowed value of Rhat to determine convergence of parameters
+#' @param compare_normal If TRUE, does model selection comparison of Normal vs
+#'   Student-t errors
+#' @param convergence_threshold The maximum allowed value of Rhat to determine
+#'   convergence of parameters
 #' @export
 #'
 #' @importFrom loo loo extract_log_lik
@@ -35,7 +37,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
     df$num_trends[indx] = i
     df$looic[indx] = loo(extract_log_lik(model))$looic
 
-    df$converge[indx] = converge_rhat(model, convergence_threshold)
+    df$converge[indx] = is_converged(model, convergence_threshold)
     # if model is best, keep it
     if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
       best_model = model
@@ -52,7 +54,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
     df$num_trends[indx] = i
     df$looic[indx] = loo::loo(loo::extract_log_lik(model))$looic
 
-    df$converge[indx] = converge_rhat(model, convergence_threshold)
+    df$converge[indx] = is_converged(model, convergence_threshold)
     # if model is best, keep it
     if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
       best_model = model
@@ -69,7 +71,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
       df$num_trends[indx] = i
       df$looic[indx] = loo(extract_log_lik(model))$looic
 
-      df$converge[indx] = converge_rhat(model, convergence_threshold)
+      df$converge[indx] = is_converged(model, convergence_threshold)
       # if model is best, keep it
       if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
         best_model = model
@@ -86,7 +88,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
       df$num_trends[indx] = i
       df$looic[indx] = loo::loo(loo::extract_log_lik(model))$looic
 
-      df$converge[indx] = converge_rhat(model, convergence_threshold)
+      df$converge[indx] = is_converged(model, convergence_threshold)
       # if model is best, keep it
       if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
         best_model = model
