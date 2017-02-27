@@ -4,16 +4,13 @@
 \alias{plot_loadings}
 \title{Plot the loadings from a DFA}
 \usage{
-plot_loadings(rotated_modelfit, names = NULL, threshold = 0.8,
-  facet = TRUE, violin = TRUE, conf_level = 0.95)
+plot_loadings(rotated_modelfit, names = NULL, facet = TRUE, violin = TRUE,
+  conf_level = 0.95)
 }
 \arguments{
 \item{rotated_modelfit}{Output from \code{\link{rotate_trends}}.}
 
 \item{names}{An optional vector of names for plotting the loadings.}
-
-\item{threshold}{Numeric (0-1). Optional, if included, only plot loadings who
-have Pr(<0) or Pr(>0) > threshold}
 
 \item{facet}{Logical. Should there be a separate facet for each trend?}
 
@@ -27,10 +24,10 @@ Plot the loadings from a DFA
 y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
 m <- fit_dfa(y = y, num_trends = 2, iter = 2000)
 r <- rotate_trends(m)
-plot_loadings(r, threshold = 0.01, violin = FALSE, facet = TRUE)
-plot_loadings(r, threshold = 0.01, violin = FALSE, facet = FALSE)
-plot_loadings(r, threshold = 0.01, violin = TRUE, facet = FALSE)
-plot_loadings(r, threshold = 0.01, violin = TRUE, facet = TRUE)
+plot_loadings(r, violin = FALSE, facet = TRUE)
+plot_loadings(r, violin = FALSE, facet = FALSE)
+plot_loadings(r, violin = TRUE, facet = FALSE)
+plot_loadings(r, violin = TRUE, facet = TRUE)
 }
 \references{
 Del Negro, M., & Otrok, C. (2008). Dynamic factor models with time-varying
