@@ -8,6 +8,6 @@
 #'
 #' @importFrom rstan
 converge_rhat = function(fitted_model, threshold = 1.05) {
-  Rhats = summary(fitted_model)$summary[,"Rhat"]
+  Rhats = rstan::summary(fitted_model)$summary[,"Rhat"]
   return(ifelse(max(Rhats, na.rm=T) < threshold, TRUE, FALSE))
 }

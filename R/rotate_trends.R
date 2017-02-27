@@ -21,20 +21,24 @@ rotate_trends = function(fitted_model, conf_level = 0.95) {
   # do rotation for each MCMC draw (slow)
   mcmc_trends_rot = array(0, dim = c(n_mcmc, n_trends, n_years))
   mcmc_Z_rot = array(0, dim = c(n_mcmc, n_ts, n_trends))
-  for(i in seq_len(n_mcmc)) {
-    Zest = Z[i,,]
-    H.inv = varimax(Zest)$rotmat
-
-    # rotate factor loadings
-    Z.rot = Zest %*% H.inv
-    mcmc_Z_rot[i,,] = Z.rot
-
-    # rotate trends
-    states = x[i,,]
-    trends.rot = solve(H.inv) %*% states
-    mcmc_trends_rot[i,,] = trends.rot
-  }
-
+  if(n_trends > 1) {  
+    for(i in seq_len(n_mcmc)) {
+      Zest = Z[i,,]
+      H.inv = varimax(Zest)$rotmat
+      # rotate factor loadings
+      Z.rot = Zest %*% H.inv
+      mcmc_Z_rot[i,,] = Z.rot
+      # rotate trends
+      states = x[i,,]
+      trends.rot = solve(H.inv) %*% states
+      mcmc_trends_rot[i,,] = trends.rot      
+    }
+   }
+   if(n_trends==1) {
+     mcmc_trends_rot = x
+     mcmc_Z_rot = Z
+   }
+  
     list(
       Z_rot = mcmc_Z_rot,
       trends = mcmc_trends_rot,
