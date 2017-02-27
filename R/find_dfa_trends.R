@@ -9,12 +9,13 @@
 #' @param kmax Maximum number of trans.
 #' @param iter Iterations when sampling from each Stan model.
 #' @param compare_normal If TRUE, does model selection comparison of Normal vs Student-t errors
+#' @param convergence_threshold The maximum allowed value of Rhat to determine convergence of parameters
 #' @export
 #'
 #' @importFrom loo loo extract_log_lik
 #' @importFrom stats quantile time varimax
 
-find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_normal=TRUE) {
+find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_normal=TRUE, convergence_threshold=1.05) {
 
   df = data.frame(
     model = seq(1, ifelse(compare_normal==FALSE, 2 * length(kmin:kmax), 4 * length(kmin:kmax))),
@@ -22,7 +23,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
     looic = NA,
     cor = NA,
     error=NA,
-    converge="N",
+    converge=FALSE,
     stringsAsFactors=FALSE
   )
   best_model = NULL
@@ -34,10 +35,9 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
     df$num_trends[indx] = i
     df$looic[indx] = loo(extract_log_lik(model))$looic
 
-    Rhats = summary(model)$summary[,"Rhat"]
-    if(max(Rhats[grep("Z",names(Rhats))], na.rm=T) < 1.05) df$converge[indx] = "Y"
+    df$converge[indx] = converge(Rhat, convergence_threshold)
     # if model is best, keep it
-    if (df$looic[indx] < best_loo & df$converge[indx] == "Y") {
+    if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
       best_model = model
       best_loo = df$looic[indx]
     }
@@ -52,10 +52,9 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
     df$num_trends[indx] = i
     df$looic[indx] = loo::loo(loo::extract_log_lik(model))$looic
 
-    Rhats = summary(model)$summary[,"Rhat"]
-    if(max(Rhats[grep("Z",names(Rhats))], na.rm=T) < 1.05) df$converge[indx] = "Y"
+    df$converge[indx] = converge(Rhat, convergence_threshold)
     # if model is best, keep it
-    if (df$looic[indx] < best_loo & df$converge[indx] == "Y") {
+    if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
       best_model = model
       best_loo = df$looic[indx]
     }
@@ -70,10 +69,9 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
       df$num_trends[indx] = i
       df$looic[indx] = loo(extract_log_lik(model))$looic
       
-      Rhats = summary(model)$summary[,"Rhat"]
-      if(max(Rhats[grep("Z",names(Rhats))], na.rm=T) < 1.05) df$converge[indx] = "Y"
+      df$converge[indx] = converge(Rhat, convergence_threshold)
       # if model is best, keep it
-      if (df$looic[indx] < best_loo & df$converge[indx] == "Y") {
+      if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
         best_model = model
         best_loo = df$looic[indx]
       }
@@ -88,10 +86,9 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
       df$num_trends[indx] = i
       df$looic[indx] = loo::loo(loo::extract_log_lik(model))$looic
       
-      Rhats = summary(model)$summary[,"Rhat"]
-      if(max(Rhats[grep("Z",names(Rhats))], na.rm=T) < 1.05) df$converge[indx] = "Y"
+      df$converge[indx] = converge(Rhat, convergence_threshold)
       # if model is best, keep it
-      if (df$looic[indx] < best_loo & df$converge[indx] == "Y") {
+      if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
         best_model = model
         best_loo = df$looic[indx]
       }
