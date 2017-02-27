@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @importFrom ggplot2 ggplot geom_point xlab ylab theme_bw theme aes_string
-#'   element_blank
+#'   element_blank position_dodge ggtitle geom_errorbar
 #'   element_line element_text geom_line
 #'
 #' @references
@@ -45,28 +45,28 @@ plot_loadings = function(rotated_modelfit,
     q_lower = c(apply(rotated$Z_rot,c(2,3),function(x) {return(length(which(x<0))/length(x))}))
   )
   df$q_upper = 1 - df$q_lower
-  
+
   # replace low values with NAs
   df$x = ifelse((df$q_lower > threshold | df$q_upper > threshold), df$x, NA)
   df$lower = ifelse((df$q_lower > threshold | df$q_upper > threshold), df$lower, NA)
   df$upper = ifelse((df$q_lower > threshold | df$q_upper > threshold), df$upper, NA)
-  
+
   # make faceted ribbon plot of trends
   if (facet) {
     #p1 = ggplot(df[!is.na(df$x),], aes_string(x = "name", y = "x")) +
     #  geom_point(position=position_dodge(0.3)) + facet_wrap("trend") +
-    #  geom_errorbar(aes(ymin=lower, ymax=upper),alpha=0.5,position=position_dodge(0.3)) + 
-    #  xlab("Time Series") + ylab("Loading") + 
-    #  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+    #  geom_errorbar(aes(ymin=lower, ymax=upper),alpha=0.5,position=position_dodge(0.3)) +
+    #  xlab("Time Series") + ylab("Loading") +
+    #  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
     #  theme(axis.text=element_text(size=5))
-    
+
     loadings_plot = list()
     for(i in 1:n_trends) {
       loadings_plot[[i]] = ggplot(df[!is.na(df$x) & df$trend==paste0("Trend ",i),], aes_string(x = "name", y = "x")) +
         geom_point(position=position_dodge(0.3)) +
-        geom_errorbar(aes(ymin=lower, ymax=upper),alpha=0.5,position=position_dodge(0.3)) + 
+        geom_errorbar(aes_string(ymin="lower", ymax="upper"),alpha=0.5,position=position_dodge(0.3)) +
         xlab("") + ylab("Loading") + ggtitle(paste0("Trend ",i)) +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
         theme(axis.text=element_text(size=5))
     }
     textstr = "gridExtra::grid.arrange(loadings_plot[[1]]"
@@ -82,9 +82,9 @@ plot_loadings = function(rotated_modelfit,
   if (!facet) {
     p1 = ggplot(df[!is.na(df$x),], aes_string(x = "name", y = "x", col = "trend")) +
       geom_point(size = 3, alpha = 0.5,position=position_dodge(0.3)) +
-      geom_errorbar(aes(ymin=lower, ymax=upper),alpha=0.5,position=position_dodge(0.3)) + 
-      xlab("Time Series") + ylab("Loading") + 
-      theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+      geom_errorbar(aes_string(ymin="lower", ymax="upper"),alpha=0.5,position=position_dodge(0.3)) +
+      xlab("Time Series") + ylab("Loading") +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
       theme(axis.text=element_text(size=5))
   }
   p1

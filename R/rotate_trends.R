@@ -2,7 +2,7 @@
 #'
 #' @param fitted_model Output from \code{\link{fit_dfa}}.
 #' @param conf_level Probability level for CI.
-#' @importFrom stats median quantile
+#' @importFrom stats median quantile sd
 #'
 #' @export
 #'
@@ -21,7 +21,7 @@ rotate_trends = function(fitted_model, conf_level = 0.95) {
   # do rotation for each MCMC draw (slow)
   mcmc_trends_rot = array(0, dim = c(n_mcmc, n_trends, n_years))
   mcmc_Z_rot = array(0, dim = c(n_mcmc, n_ts, n_trends))
-  if(n_trends > 1) {  
+  if(n_trends > 1) {
     for(i in seq_len(n_mcmc)) {
       Zest = Z[i,,]
       H.inv = varimax(Zest)$rotmat
@@ -31,14 +31,14 @@ rotate_trends = function(fitted_model, conf_level = 0.95) {
       # rotate trends
       states = x[i,,]
       trends.rot = solve(H.inv) %*% states
-      mcmc_trends_rot[i,,] = trends.rot      
+      mcmc_trends_rot[i,,] = trends.rot
     }
    }
    if(n_trends==1) {
      mcmc_trends_rot = x
      mcmc_Z_rot = Z
    }
-  
+
     list(
       Z_rot = mcmc_Z_rot,
       trends = mcmc_trends_rot,

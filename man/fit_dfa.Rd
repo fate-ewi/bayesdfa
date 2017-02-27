@@ -36,6 +36,8 @@ walk for the factor loadings in the case of time varying DFA.}
 \item{timevarying}{Logical. If \code{TRUE}, a time varying DFA. Note that the
 time varying DFA has not been extensively tested and may not return
 sensible answers.}
+
+\item{estimate_nu}{Logical. Estimate the student t degrees of freedom parameter?}
 }
 \description{
 Fit a Bayesian DFA
