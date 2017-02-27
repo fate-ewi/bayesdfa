@@ -21,7 +21,9 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
     num_trends = NA,
     looic = NA,
     cor = NA,
-    error=NA
+    error=NA,
+    converge="N",
+    stringsAsFactors=FALSE
   )
   best_model = NULL
   best_loo = 1.0e50
@@ -32,8 +34,10 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
     df$num_trends[indx] = i
     df$looic[indx] = loo(extract_log_lik(model))$looic
 
+    Rhats = summary(model)$summary[,"Rhat"]
+    if(max(Rhats[grep("Z",names(Rhats))], na.rm=T) < 1.05) df$converge[indx] = "Y"
     # if model is best, keep it
-    if (df$looic[indx] < best_loo) {
+    if (df$looic[indx] < best_loo & df$converge[indx] == "Y") {
       best_model = model
       best_loo = df$looic[indx]
     }
@@ -48,8 +52,10 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
     df$num_trends[indx] = i
     df$looic[indx] = loo::loo(loo::extract_log_lik(model))$looic
 
+    Rhats = summary(model)$summary[,"Rhat"]
+    if(max(Rhats[grep("Z",names(Rhats))], na.rm=T) < 1.05) df$converge[indx] = "Y"
     # if model is best, keep it
-    if (df$looic[indx] < best_loo) {
+    if (df$looic[indx] < best_loo & df$converge[indx] == "Y") {
       best_model = model
       best_loo = df$looic[indx]
     }
@@ -64,8 +70,10 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
       df$num_trends[indx] = i
       df$looic[indx] = loo(extract_log_lik(model))$looic
       
+      Rhats = summary(model)$summary[,"Rhat"]
+      if(max(Rhats[grep("Z",names(Rhats))], na.rm=T) < 1.05) df$converge[indx] = "Y"
       # if model is best, keep it
-      if (df$looic[indx] < best_loo) {
+      if (df$looic[indx] < best_loo & df$converge[indx] == "Y") {
         best_model = model
         best_loo = df$looic[indx]
       }
@@ -80,8 +88,10 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
       df$num_trends[indx] = i
       df$looic[indx] = loo::loo(loo::extract_log_lik(model))$looic
       
+      Rhats = summary(model)$summary[,"Rhat"]
+      if(max(Rhats[grep("Z",names(Rhats))], na.rm=T) < 1.05) df$converge[indx] = "Y"
       # if model is best, keep it
-      if (df$looic[indx] < best_loo) {
+      if (df$looic[indx] < best_loo & df$converge[indx] == "Y") {
         best_model = model
         best_loo = df$looic[indx]
       }
@@ -91,9 +101,8 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
     }
   }
   
-  
-  
   df <- dplyr::arrange_(df, ~ looic)
 
+  # return best model = one that converges
   list(summary = df, best_model = best_model)
 }
