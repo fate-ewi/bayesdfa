@@ -23,7 +23,7 @@ Plot the loadings from a DFA
 y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
 m <- fit_dfa(y = y, num_trends = 2, iter = 500)
 r <- rotate_trends(m)
-p <- plot_loadings(r, threshold = 0.01)
+p <- plot_loadings(r, threshold = 0.01, facet = FALSE)
 print(p)
 }
 \references{
