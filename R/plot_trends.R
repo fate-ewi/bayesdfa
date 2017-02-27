@@ -2,14 +2,14 @@
 #'
 #' @param rotated_modelfit Output from \code{\link{rotate_trends}}
 #' @param years Optional numeric vector of years for the plot
-#' 
+#'
 #' @export
 #'
 #' @importFrom ggplot2 geom_ribbon facet_wrap
 #'
 #' @examples
 #' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
-#' m <- fit_dfa(y = y, num_trends = 2, iter = 500)
+#' m <- fit_dfa(y = y, num_trends = 2, iter = 1000)
 #' r <- rotate_trends(m)
 #' p <- plot_trends(r)
 #' print(p)
@@ -22,7 +22,7 @@ plot_trends = function(rotated_modelfit, years=NULL) {
   n_trends = dim(rotated$Z_rot)[3]
   n_years = dim(rotated$trends_mean)[2]
   if(is.null(years)) years = 1:n_years
-  
+
   # convert to df for ggplot
   df = data.frame(
     x = c(t(rotated$trends_mean)),

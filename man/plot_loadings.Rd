@@ -24,7 +24,7 @@ Plot the loadings from a DFA
 }
 \examples{
 y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
-m <- fit_dfa(y = y, num_trends = 2, iter = 2000)
+m <- fit_dfa(y = y, num_trends = 2, iter = 800)
 r <- rotate_trends(m)
 plot_loadings(r, violin = FALSE, facet = TRUE)
 plot_loadings(r, violin = FALSE, facet = FALSE)

@@ -21,7 +21,7 @@
 #'
 #' @examples
 #' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
-#' m <- fit_dfa(y = y, num_trends = 2, iter = 2000)
+#' m <- fit_dfa(y = y, num_trends = 2, iter = 800)
 #' r <- rotate_trends(m)
 #' plot_loadings(r, violin = FALSE, facet = TRUE)
 #' plot_loadings(r, violin = FALSE, facet = FALSE)
@@ -42,20 +42,20 @@ plot_loadings = function(rotated_modelfit,
   v$name <- as.factor(v$name)
 
   v <- dplyr::group_by_(v, "name", "trend")
-  v <- dplyr::mutate(v,
-    q_lower = sum(value < 0) / length(value),
-    q_upper = 1 - q_lower,
-    prob_diff0 = max(q_lower, q_upper))
+  v <- dplyr::mutate_(v,
+    q_lower = ~sum(value < 0) / length(value),
+    q_upper = ~1 - q_lower,
+    prob_diff0 = ~max(q_lower, q_upper))
   v <- dplyr::ungroup(v)
 
   vsum <- dplyr::group_by_(v, "name", "trend")
-  vsum <- dplyr::summarize(vsum,
-    lower = quantile(value, probs = (1 - conf_level) / 2),
-    upper = quantile(value, probs = 1 - (1 - conf_level) / 2),
-    median = median(value),
-    q_lower = sum(value < 0) / length(value),
-    q_upper = 1 - q_lower,
-    prob_diff0 = max(q_lower, q_upper))
+  vsum <- dplyr::summarize_(vsum,
+    lower = ~quantile(value, probs = (1 - conf_level) / 2),
+    upper = ~quantile(value, probs = 1 - (1 - conf_level) / 2),
+    median = ~median(value),
+    q_lower = ~sum(value < 0) / length(value),
+    q_upper = ~1 - q_lower,
+    prob_diff0 = ~max(q_lower, q_upper))
   df <- dplyr::ungroup(vsum)
 
   # replace low values with NAs
