@@ -25,3 +25,4 @@ Fit a DFA with different number of trends and return the leave one out (LOO)
 value as calculated by the loo package. Note that the models will be fit once
 with shared variances and once with independent variances.
 }
+

@@ -40,3 +40,4 @@ sensible answers.}
 \description{
 Fit a Bayesian DFA
 }
+

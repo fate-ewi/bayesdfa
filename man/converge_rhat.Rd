@@ -14,3 +14,4 @@ converge_rhat(fitted_model, threshold = 1.05)
 \description{
 Pass in rstanfit model object, and optional threshold value for convergence. Returns boolean
 }
+

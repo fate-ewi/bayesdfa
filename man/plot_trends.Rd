@@ -21,3 +21,4 @@ r <- rotate_trends(m)
 p <- plot_trends(r)
 print(p)
 }
+

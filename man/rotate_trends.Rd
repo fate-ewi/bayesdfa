@@ -14,3 +14,4 @@ rotate_trends(fitted_model, conf_level = 0.95)
 \description{
 Rotate the trends from a DFA
 }
+
