@@ -12,15 +12,16 @@
 #'   Student-t errors
 #' @param convergence_threshold The maximum allowed value of Rhat to determine
 #'   convergence of parameters
+#' @param variance Vector of variance arguments for searching over large groups of models. Can be either or both of ("equal","unequal")
 #' @export
 #'
 #' @importFrom loo loo extract_log_lik
 #' @importFrom stats quantile time varimax
 
-find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_normal=TRUE, convergence_threshold=1.05) {
+find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_normal=TRUE, convergence_threshold=1.05, variance=c("equal","unequal")) {
 
   df = data.frame(
-    model = seq(1, ifelse(compare_normal==FALSE, 2 * length(kmin:kmax), 4 * length(kmin:kmax))),
+    model = seq(1, ifelse(compare_normal==FALSE, length(variance) * length(kmin:kmax), 2 * length(variance) * length(kmin:kmax))),
     num_trends = NA,
     looic = NA,
     cor = NA,
@@ -32,6 +33,8 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
   best_loo = 1.0e50
 
   indx = 1
+  
+  if(length(which(variance%in%"equal")) > 0) {
   for (i in kmin:kmax) {
     model = fit_dfa(y = y, num_trends = i, iter = iter, nu_fixed = 7)
     df$num_trends[indx] = i
@@ -47,7 +50,9 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
     df$cor[indx] = "equal"
     indx = indx + 1
   }
-
+  }
+  
+  if(length(which(variance%in%"unequal")) > 0) {
   for (i in kmin:kmax) {
     model = fit_dfa(y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)), nu_fixed=7
     )
@@ -64,7 +69,9 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
     df$cor[indx] = "independent"
     indx = indx + 1
   }
-
+  }
+  
+  if(length(which(variance%in%"equal")) > 0) {
   if(compare_normal==TRUE) {
     for (i in kmin:kmax) {
       model = fit_dfa(y = y, num_trends = i, iter = iter, nu_fixed = 100)
@@ -81,7 +88,9 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
       df$cor[indx] = "equal"
       indx = indx + 1
     }
-
+    }
+    
+    if(length(which(variance%in%"unequal")) > 0) {
     for (i in kmin:kmax) {
       model = fit_dfa(y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)), nu_fixed=100
       )
@@ -97,8 +106,9 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000, compare_norma
       df$error[indx] = "normal"
       df$cor[indx] = "independent"
       indx = indx + 1
-    }
-  }
+      }
+     }
+   }  
 
   df <- dplyr::arrange_(df, ~ looic)
 
