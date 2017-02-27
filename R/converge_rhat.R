@@ -6,7 +6,6 @@
 #' @param threshold Threshold for maximum Rhat, default = 1.05
 #' @export
 #'
-#' @importFrom rstan
 converge_rhat = function(fitted_model, threshold = 1.05) {
   Rhats = rstan::summary(fitted_model)$summary[,"Rhat"]
   return(ifelse(max(Rhats, na.rm=T) < threshold, TRUE, FALSE))
