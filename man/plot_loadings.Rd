@@ -16,6 +16,8 @@ plot_loadings(rotated_modelfit, names = NULL, facet = TRUE, violin = TRUE,
 
 \item{violin}{Logical. Should the full posterior densities be shown as a
 violin plot?}
+
+\item{conf_level}{Confidence level for credible intervals.}
 }
 \description{
 Plot the loadings from a DFA

@@ -7,6 +7,7 @@
 #' @param facet Logical. Should there be a separate facet for each trend?
 #' @param violin Logical. Should the full posterior densities be shown as a
 #'   violin plot?
+#' @param conf_level Confidence level for credible intervals.
 #'
 #' @export
 #'
