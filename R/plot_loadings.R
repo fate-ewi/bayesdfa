@@ -19,8 +19,8 @@
 #' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
 #' m <- fit_dfa(y = y, num_trends = 2, iter = 500)
 #' r <- rotate_trends(m)
-#' p <- plot_loadings(r, threshold = 0.01, facet = FALSE)
-#' print(p)
+#' plot_loadings(r, threshold = 0.01, facet = TRUE)
+# plot_loadings(r, threshold = 0.01, facet = FALSE)
 
 plot_loadings = function(rotated_modelfit,
   names = NULL,
@@ -52,37 +52,24 @@ plot_loadings = function(rotated_modelfit,
   df$upper <- ifelse((df$q_lower > threshold | df$q_upper > threshold), df$upper, NA)
 
   # make faceted ribbon plot of trends
+  df <- df[!is.na(df$x), ]
   if (facet) {
-    loadings_plot <- list()
-    for(i in 1:n_trends) {
-      loadings_plot[[i]] <-
-        ggplot(df[!is.na(df$x) & df$trend == paste0("Trend ", i), ],
-          aes_string(x = "name", y = "x")) +
+      p1 <- ggplot(df, aes_string(x = "name", y = "x")) +
         geom_point(position = position_dodge(0.3)) +
-        geom_errorbar(aes_string(ymin = "lower", ymax = "upper"),
-          alpha = 0.5, position = position_dodge(0.3), width = 0) +
-        xlab("") + ylab("Loading") + ggtitle(paste0("Trend ", i)) +
-        theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-        theme(axis.text = element_text(size = 5))
-    }
-    textstr <- "gridExtra::grid.arrange(loadings_plot[[1]]"
-    for(i in 2:n_trends) {
-      # only show trends with > 1 loading
-      if(nrow(df[!is.na(df$x) & df$trend==paste0("Trend ",i),]) > 0) {
-        textstr <- paste0(textstr, ", loadings_plot[[",i,"]]")
-      }
-    }
-    textstr <- paste0(textstr, ")")
-    p1 <- eval(parse(text=textstr))
+        geom_errorbar(aes_string(ymin = "lower", ymax = "upper"), alpha = 0.5, width = 0) +
+        xlab("") + ylab("Loading") +
+        geom_hline(yintercept = 0, lty = 2) +
+        facet_wrap(~trend, scales = "free_x") +
+        coord_flip()
   }
   if (!facet) {
-    p1 <- ggplot(df[!is.na(df$x),], aes_string(x = "name", y = "x", col = "trend")) +
+    p1 <- ggplot(df, aes_string(x = "name", y = "x", col = "trend")) +
       geom_point(size = 3, alpha = 0.5, position = position_dodge(0.3)) +
       geom_errorbar(aes_string(ymin = "lower", ymax = "upper"),
         alpha = 0.5, position = position_dodge(0.3), width = 0) +
       xlab("Time Series") + ylab("Loading") +
-      theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-      theme(axis.text = element_text(size = 5))
+      geom_hline(yintercept = 0, lty = 2) +
+      coord_flip()
   }
   p1
 }
