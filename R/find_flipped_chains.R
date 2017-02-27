@@ -25,7 +25,7 @@ find_flipped_chains <- function(model, trend = 1, thresh = 0.8, plot = FALSE) {
   e <- extract(model, permuted = FALSE)
   v <- reshape2::melt(e)
 
-  vv <- v[grepl(paste0("x\\[", v$trend), v$parameters), ]
+  vv <- v[grepl(paste0("x\\[", trend), v$parameters), ]
   vv <- dplyr::group_by_(vv, "chains", "parameters")
   vv <- dplyr::summarize_(vv, estimate = "stats::median(value)")
 
