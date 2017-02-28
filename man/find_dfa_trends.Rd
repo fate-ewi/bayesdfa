@@ -6,7 +6,7 @@
 \usage{
 find_dfa_trends(y = y, kmin = 1, kmax = 5, iter = 2000,
   compare_normal = TRUE, convergence_threshold = 1.05,
-  variance = c("equal", "unequal"))
+  variance = c("equal", "unequal"), ...)
 }
 \arguments{
 \item{y}{A matrix of data to fit. Columns represent time element.}
@@ -25,6 +25,8 @@ convergence of parameters}
 
 \item{variance}{Vector of variance arguments for searching over large groups
 of models. Can be either or both of ("equal","unequal")}
+
+\item{...}{Other arguments to pass to \code{\link{fit_dfa}}}
 }
 \description{
 Fit a DFA with different number of trends and return the leave one out (LOO)

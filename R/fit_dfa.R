@@ -139,5 +139,12 @@ fit_dfa = function(y = y,
 
   mod <- do.call(sampling, sampling_args)
 
-  mod
+  if (chains > 1) {
+    out <- invert_chains(mod, trends = num_trends, print = FALSE)
+  } else {
+    e <- rstan::extract(mod, permuted = FALSE)
+    out <- list(model = mod, samples = e, monitor = rstan::monitor(e))
+  }
+
+  out <- structure(out, class = "bayesdfa")
 }

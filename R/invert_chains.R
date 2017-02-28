@@ -82,7 +82,7 @@ find_inverted_chains <- function(model, trend = 1, thresh = 0.8, plot = FALSE) {
 #' @param model A Stan model.
 #' @param trends The number of trends in the DFA.
 #' @param print Logical indicating whether the summary should be printed.
-#' @param ... Other arguments to pass to \code{\link{find_flipped_chains}}.
+#' @param ... Other arguments to pass to \code{\link{find_inverted_chains}}.
 #'
 #' @export
 invert_chains <- function(model, trends = 1, print = FALSE, ...) {
@@ -104,6 +104,6 @@ invert_chains <- function(model, trends = 1, print = FALSE, ...) {
     }
   }
 
-  mon <- rstan::monitor(e, print = print)
-  invisible(e)
+  mon <- rstan::monitor(e, print = print, warmup = 0)
+  invisible(list(model = model, samples = e, monitor = mon))
 }

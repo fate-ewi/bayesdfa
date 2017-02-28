@@ -7,7 +7,8 @@
 is_converged(fitted_model, threshold = 1.05)
 }
 \arguments{
-\item{fitted_model}{A Stan model. E.g. a model from \code{\link{fit_dfa}}.}
+\item{fitted_model}{Samples extracted (with permuted = FALSE) from a Stan model.
+E.g. output from \code{\link{invert_chains}}.}
 
 \item{threshold}{Threshold for maximum Rhat, default = 1.05}
 }

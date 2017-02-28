@@ -13,7 +13,7 @@ invert_chains(model, trends = 1, print = FALSE, ...)
 
 \item{print}{Logical indicating whether the summary should be printed.}
 
-\item{...}{Other arguments to pass to \code{\link{find_flipped_chains}}.}
+\item{...}{Other arguments to pass to \code{\link{find_inverted_chains}}.}
 }
 \description{
 Invert chains
