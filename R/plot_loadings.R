@@ -2,12 +2,13 @@
 #'
 #' @param rotated_modelfit Output from \code{\link{rotate_trends}}.
 #' @param names An optional vector of names for plotting the loadings.
-# @param threshold Numeric (0-1). Optional, if included, only plot loadings who
-#   have Pr(<0) or Pr(>0) > threshold
 #' @param facet Logical. Should there be a separate facet for each trend?
 #' @param violin Logical. Should the full posterior densities be shown as a
 #'   violin plot?
 #' @param conf_level Confidence level for credible intervals.
+#' @param threshold Numeric (0-1). Optional for plots, if included, only plot loadings who
+#   have Pr(<0) or Pr(>0) > threshold. For example threshold=0.8 would only display estimates where 80% of
+#   posterior density was above/below zero.
 #'
 #' @seealso plot_trends fit_dfa rotate_trends
 #'
@@ -28,10 +29,10 @@
 
 plot_loadings = function(rotated_modelfit,
   names = NULL,
-  # threshold = 0.8,
   facet = TRUE,
   violin = TRUE,
-  conf_level = 0.95) {
+  conf_level = 0.95,
+  threshold=NULL) {
 
   v <- reshape2::melt(rotated_modelfit$Z_rot, varnames = c("iter", "name", "trend"))
   v$trend <- paste0("Trend ", v$trend)
@@ -56,12 +57,12 @@ plot_loadings = function(rotated_modelfit,
     prob_diff0 = ~max(q_lower, q_upper))
   df <- dplyr::ungroup(vsum)
 
-  # replace low values with NAs
-  # df$median <- ifelse((df$q_lower > threshold | df$q_upper > threshold), df$median, NA)
-  # df$lower <- ifelse((df$q_lower > threshold | df$q_upper > threshold), df$lower, NA)
-  # df$upper <- ifelse((df$q_lower > threshold | df$q_upper > threshold), df$upper, NA)
-  # df <- df[!is.na(df$median), ]
-
+  # filter values below threshold
+  if(!is.null(threshold)) {
+    df = df[df$prob_diff0 >= threshold,]
+    v = v[v$prob_diff0 >= threshold,]
+  }
+  
   if (!violin) {
     p1 <- ggplot(df, aes_string(x = "name", y = "median", col = "trend", alpha = "prob_diff0")) +
       geom_point(size = 3, position = position_dodge(0.3)) +
