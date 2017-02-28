@@ -17,6 +17,20 @@
 #'   sensible answers.
 #' @param estimate_nu Logical. Estimate the student t degrees of freedom parameter?
 #'
+#' @details Note that there is nothing restricting the loadings and trends from
+#'   being inverted (multiplied by -1) for a given chain. Therefore, if you fit
+#'   multiple chains, the package will attempt to determine which chains need to
+#'   be inverted based on which chain inversions result in the best agreement
+#'   across chains (based on the standard deviation of median estimates at each
+#'   point in time). This it done by the function
+#'   \code{\link{find_inverted_chains}}. If it is difficult to determine which
+#'   chains should be inverted, that function well return a warning. The package
+#'   will go ahead with whatever inversions seemed best, but we would strongly
+#'   advise not trusting the results if this is the case. You may want to try
+#'   increasing the number of iterations, or changing the model, or reverting to
+#'   a single long chain and running it multiple times to ensure your results
+#'   are stable.
+#'
 #' @export
 #'
 #' @importFrom rstan sampling
@@ -30,6 +44,7 @@ fit_dfa = function(y = y,
   zscore = TRUE,
   iter = 2000,
   chains = 4,
+  control = list(adapt_delta = 0.95),
   nu_fixed = 7,
   tau = 0.1,
   timevarying = FALSE,
