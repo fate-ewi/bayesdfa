@@ -23,10 +23,13 @@ multiply by -1 to minimize the standard deviation of the trends across the
 chains.
 }
 \examples{
+\dontrun{
 y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
 set.seed(1)
-m <- fit_dfa(y = y, num_trends = 3, iter = 600, chains = 4)
-find_inverted_chains(m, trend = 1, plot = TRUE)
+m <- fit_dfa(y = y, num_trends = 2, iter = 2000, chains = 4)
+# chains were already inverted, but we can redo that, as an example, with:
+find_inverted_chains(m$model, trend = 1, plot = TRUE)
+}
 }
 \seealso{
 invert_chains
