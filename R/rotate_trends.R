@@ -14,12 +14,12 @@ rotate_trends = function(fitted_model, conf_level = 0.95) {
   n_mcmc = dim(fitted_model$samples)[2] * dim(fitted_model$samples)[1]
 
   s <- reshape2::melt(fitted_model$samples)
-  z <- dplyr::filter(s, grepl("Z\\[", parameters))
+  z <- dplyr::filter_(s, ~grepl("Z\\[", parameters))
   z$trend <- as.numeric(gsub("Z\\[[0-9]+,([0-9]+)\\]", "\\1", z$parameters))
   z$ts <- as.numeric(gsub("Z\\[([0-9]+),([0-9]+)\\]", "\\1", z$parameters))
   Z <- reshape2::acast(z, iterations + chains~ ts ~ trend, value.var = "value")
 
-  x <- dplyr::filter(s, grepl("x\\[", parameters))
+  x <- dplyr::filter_(s, ~grepl("x\\[", parameters))
   x$trend <- as.numeric(gsub("x\\[([0-9]+),([0-9]+)\\]", "\\1", x$parameters))
   x$time <- as.numeric(gsub("x\\[([0-9]+),([0-9]+)\\]", "\\2", x$parameters))
   x <- reshape2::acast(x, iterations + chains ~ trend ~ time, value.var = "value")
