@@ -9,15 +9,13 @@
 #'   violin plot?
 #' @param conf_level Confidence level for credible intervals.
 #'
+#' @seealso plot_trends fit_dfa rotate_trends
+#'
 #' @export
 #'
 #' @importFrom ggplot2 ggplot geom_point xlab ylab theme_bw theme aes_string
 #'   element_blank position_dodge ggtitle geom_errorbar
 #'   element_line element_text geom_line geom_violin coord_flip geom_hline
-#'
-#' @references
-#' Del Negro, M., & Otrok, C. (2008). Dynamic factor models with time-varying
-#' parameters: measuring changes in international business cycles.
 #'
 #' @examples
 #' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])

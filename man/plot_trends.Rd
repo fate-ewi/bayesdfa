@@ -21,4 +21,7 @@ r <- rotate_trends(m)
 p <- plot_trends(r)
 print(p)
 }
+\seealso{
+plot_loadings fit_dfa rotate_trends
+}
 

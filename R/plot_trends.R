@@ -4,6 +4,7 @@
 #' @param years Optional numeric vector of years for the plot
 #'
 #' @export
+#' @seealso plot_loadings fit_dfa rotate_trends
 #'
 #' @importFrom ggplot2 geom_ribbon facet_wrap
 #'

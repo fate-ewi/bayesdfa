@@ -57,4 +57,11 @@ Note that there is nothing restricting the loadings and trends from
   a single long chain and running it multiple times to ensure your results
   are stable.
 }
+\references{
+Del Negro, M., & Otrok, C. (2008). Dynamic factor models with time-varying
+parameters: measuring changes in international business cycles.
+}
+\seealso{
+plot_loadings plot_trends rotate_trends
+}
 

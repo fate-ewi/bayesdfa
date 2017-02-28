@@ -18,4 +18,7 @@ invert_chains(model, trends = 1, print = FALSE, ...)
 \description{
 Invert chains
 }
+\seealso{
+find_inverted_chains
+}
 

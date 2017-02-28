@@ -13,6 +13,7 @@
 #'
 #' @importFrom ggplot2 geom_line
 #' @importFrom utils combn
+#' @seealso invert_chains
 #' @export
 #'
 #' @examples
@@ -85,6 +86,7 @@ find_inverted_chains <- function(model, trend = 1, thresh = 0.8, plot = FALSE) {
 #' @param ... Other arguments to pass to \code{\link{find_inverted_chains}}.
 #'
 #' @export
+#' @seealso find_inverted_chains
 invert_chains <- function(model, trends = 1, print = FALSE, ...) {
 
   e <- rstan::extract(model, permuted = FALSE)

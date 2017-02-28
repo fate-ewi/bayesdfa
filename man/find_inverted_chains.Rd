@@ -28,4 +28,7 @@ set.seed(1)
 m <- fit_dfa(y = y, num_trends = 3, iter = 600, chains = 4)
 find_inverted_chains(m, trend = 1, plot = TRUE)
 }
+\seealso{
+invert_chains
+}
 

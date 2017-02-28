@@ -31,8 +31,7 @@ plot_loadings(r, violin = FALSE, facet = FALSE)
 plot_loadings(r, violin = TRUE, facet = FALSE)
 plot_loadings(r, violin = TRUE, facet = TRUE)
 }
-\references{
-Del Negro, M., & Otrok, C. (2008). Dynamic factor models with time-varying
-parameters: measuring changes in international business cycles.
+\seealso{
+plot_trends fit_dfa rotate_trends
 }
 
