@@ -47,7 +47,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000,
     df$converge[indx] = is_converged(monitor(invert_chains(model), print=FALSE), 
       convergence_threshold)
     df$num_trends[indx] = i
-    df$looic[indx] = loo::loo(loo::extract_log_lik(model))$looic
+    df$looic[indx] = loo::loo(loo::extract_log_lik(model$model))$looic
 
     # if model is best, keep it
     if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
@@ -65,7 +65,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000,
     model = fit_dfa(y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)),
       estimate_nu = TRUE, ...)
     df$num_trends[indx] = i
-    df$looic[indx] = loo::loo(loo::extract_log_lik(model))$looic
+    df$looic[indx] = loo::loo(loo::extract_log_lik(model$model))$looic
 
     df$converge[indx] = is_converged(monitor(invert_chains(model), print=FALSE), 
       convergence_threshold)
@@ -85,7 +85,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000,
     for (i in kmin:kmax) {
       model = fit_dfa(y = y, num_trends = i, iter = iter, nu_fixed = 100, estimate_nu=FALSE, ...)
       df$num_trends[indx] = i
-      df$looic[indx] = loo::loo(loo::extract_log_lik(model))$looic
+      df$looic[indx] = loo::loo(loo::extract_log_lik(model$model))$looic
 
       df$converge[indx] = is_converged(monitor(invert_chains(model), print=FALSE), 
         convergence_threshold)
@@ -105,7 +105,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000,
       model = fit_dfa(y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)),
         nu_fixed=100, estimate_nu=FALSE, ...)
       df$num_trends[indx] = i
-      df$looic[indx] = loo::loo(loo::extract_log_lik(model))$looic
+      df$looic[indx] = loo::loo(loo::extract_log_lik(model$model))$looic
 
       df$converge[indx] = is_converged(monitor(invert_chains(model), print=FALSE), 
         convergence_threshold)
