@@ -19,9 +19,9 @@
 #' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
 #' set.seed(1)
 #' m <- fit_dfa(y = y, num_trends = 3, iter = 600, chains = 4)
-#' find_flipped_chains(m, trend = 1, plot = TRUE)
+#' find_inverted_chains(m, trend = 1, plot = TRUE)
 
-find_flipped_chains <- function(model, trend = 1, thresh = 0.8, plot = FALSE) {
+find_inverted_chains <- function(model, trend = 1, thresh = 0.8, plot = FALSE) {
   e <- rstan::extract(model, permuted = FALSE)
   v <- reshape2::melt(e)
 
@@ -77,21 +77,21 @@ find_flipped_chains <- function(model, trend = 1, thresh = 0.8, plot = FALSE) {
   as.numeric(strsplit(out_df$neg[1], " ")[[1]])
 }
 
-#' Flip chains
+#' Invert chains
 #'
 #' @param model A Stan model.
 #' @param trends The number of trends in the DFA
 #' @param ... Other arguments to pass to \code{\link{find_flipped_chains}}.
 #'
 #' @export
-flip_chains <- function(model, trends = 1, print = FALSE, ...) {
+invert_chains <- function(model, trends = 1, print = FALSE, ...) {
 
   e <- rstan::extract(model, permuted = FALSE)
   pars <- colnames(e[1,,])
 
   for (k in seq_len(trends)) {
-    f <- find_flipped_chains(model, trend = k)
-    message(paste("Flipping chains", paste(f, collapse = " & "), "for trend", k))
+    f <- find_inverted_chains(model, trend = k)
+    message(paste("Inverting chains", paste(f, collapse = " & "), "for trend", k))
 
     for (f_ in f) {
       for (i in grep(paste0("x\\[", k), pars)) {
