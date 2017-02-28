@@ -5,7 +5,7 @@
 \title{Find the best number of trends according to LOO}
 \usage{
 find_dfa_trends(y = y, kmin = 1, kmax = 5, iter = 2000,
-  compare_normal = TRUE, convergence_threshold = 1.05,
+  compare_normal = FALSE, convergence_threshold = 1.05,
   variance = c("equal", "unequal"), ...)
 }
 \arguments{

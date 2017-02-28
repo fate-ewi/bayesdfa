@@ -18,7 +18,8 @@ fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 2,
 
 \item{num_trends}{Number of trends to fit.}
 
-\item{varIndx}{Indices indicating which timeseries should have shared variances.}
+\item{varIndx}{Indices indicating which timeseries should have shared
+variances.}
 
 \item{zscore}{Logical. Should the data be standardized first?}
 
@@ -37,7 +38,8 @@ walk for the factor loadings in the case of time varying DFA.}
 time varying DFA has not been extensively tested and may not return
 sensible answers.}
 
-\item{estimate_nu}{Logical. Estimate the student t degrees of freedom parameter?}
+\item{estimate_nu}{Logical. Estimate the student t degrees of freedom
+parameter?}
 }
 \description{
 Fit a Bayesian DFA

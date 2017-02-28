@@ -1,6 +1,7 @@
 #' Summarize Rhat convergence statistics across parameters
 #'
-#' Pass in rstanfit model object, and optional threshold value for convergence. Returns boolean
+#' Pass in rstanfit model object, and optional threshold value for
+#' convergence. Returns boolean.
 #'
 #' @param fitted_model Samples extracted (with permuted = FALSE) from a Stan model.
 #'   E.g. output from \code{\link{invert_chains}}.

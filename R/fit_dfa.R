@@ -4,7 +4,8 @@
 #' @param covar A matrix of covariates
 #' @param covar_index Indices assigning ??
 #' @param num_trends Number of trends to fit.
-#' @param varIndx Indices indicating which timeseries should have shared variances.
+#' @param varIndx Indices indicating which timeseries should have shared
+#' variances.
 #' @param zscore Logical. Should the data be standardized first?
 #' @param iter Number of iterations in Stan sampling.
 #' @param chains Number of chains in Stan sampling.
@@ -15,7 +16,8 @@
 #' @param timevarying Logical. If \code{TRUE}, a time varying DFA. Note that the
 #'   time varying DFA has not been extensively tested and may not return
 #'   sensible answers.
-#' @param estimate_nu Logical. Estimate the student t degrees of freedom parameter?
+#' @param estimate_nu Logical. Estimate the student t degrees of freedom
+#' parameter?
 #'
 #' @details Note that there is nothing restricting the loadings and trends from
 #'   being inverted (multiplied by -1) for a given chain. Therefore, if you fit
