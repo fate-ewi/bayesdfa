@@ -25,7 +25,7 @@
 #' find_inverted_chains(m$model, trend = 1, plot = TRUE)
 #' }
 
-find_inverted_chains <- function(model, trend = 1, thresh = 0.5, plot = FALSE) {
+find_inverted_chains <- function(model, trend = 1, thresh = 0.4, plot = FALSE) {
   e <- rstan::extract(model, permuted = FALSE)
   v <- reshape2::melt(e)
 
@@ -74,8 +74,10 @@ find_inverted_chains <- function(model, trend = 1, thresh = 0.5, plot = FALSE) {
   out_df <- dplyr::arrange_(out_df, "mean_diff", "nchar")
 
   if (nrow(out_df) > 1) {
-    if (abs(out_df$mean_diff[1] - out_df$mean_diff[3]) < thresh) {
-      warning("Best permutation does not exceed threshold!")
+    diff_ <- abs(out_df$mean_diff[1] - out_df$mean_diff[3])
+    if (diff_ < thresh) {
+      warning(paste0("Best permutation does not exceed threshold for trend ",
+        trend, ". (", round(diff_, 2), " difference in mean SD)"))
     }
   }
 
