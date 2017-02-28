@@ -4,7 +4,7 @@
 \alias{find_inverted_chains}
 \title{Find which chains to invert}
 \usage{
-find_inverted_chains(model, trend = 1, thresh = 0.5, plot = FALSE)
+find_inverted_chains(model, trend = 1, thresh = 0.4, plot = FALSE)
 }
 \arguments{
 \item{model}{A Stan model}

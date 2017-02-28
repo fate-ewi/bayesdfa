@@ -5,7 +5,7 @@
 \title{Plot the loadings from a DFA}
 \usage{
 plot_loadings(rotated_modelfit, names = NULL, facet = TRUE, violin = TRUE,
-  conf_level = 0.95)
+  conf_level = 0.95, threshold = NULL)
 }
 \arguments{
 \item{rotated_modelfit}{Output from \code{\link{rotate_trends}}.}
@@ -18,6 +18,8 @@ plot_loadings(rotated_modelfit, names = NULL, facet = TRUE, violin = TRUE,
 violin plot?}
 
 \item{conf_level}{Confidence level for credible intervals.}
+
+\item{threshold}{Numeric (0-1). Optional for plots, if included, only plot loadings who}
 }
 \description{
 Plot the loadings from a DFA
