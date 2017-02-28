@@ -5,8 +5,8 @@ y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
 set.seed(1)
 
 test_that("Basic model fits", {
-  fit1 <- fit_dfa(y = y, num_trends = 1, iter = 1000)
-  expect_output(print(fit1), "Inference for Stan model")
+  fit1 <- fit_dfa(y = y, num_trends = 1, iter = 1000, chains = 1)
+  expect_output(print(fit1), "n_eff")
 })
 
 # test_that("find_dfa_trends works", {

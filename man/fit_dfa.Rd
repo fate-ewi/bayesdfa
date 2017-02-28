@@ -5,8 +5,8 @@
 \title{Fit a Bayesian DFA}
 \usage{
 fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 2,
-  varIndx = NULL, zscore = TRUE, iter = 4000, chains = 1,
-  control = list(adapt_delta = 0.99), nu_fixed = 7, tau = 0.1,
+  varIndx = NULL, zscore = TRUE, iter = 2000, chains = 4,
+  control = list(adapt_delta = 0.95), nu_fixed = 7, tau = 0.1,
   timevarying = FALSE, estimate_nu = FALSE)
 }
 \arguments{
