@@ -97,7 +97,7 @@ invert_chains <- function(model, trends = 1, print = FALSE, ...) {
   pars <- colnames(e[1,,])
   n_mcmc <- dim(ep$Z)[1]
   n_chains <- dim(e)[2]
-  ii <- c(seq(1, n_mcmc, n_mcmc/n_chains), n_mcmc)
+  ii <- c(seq(1, n_mcmc, n_mcmc/n_chains), n_mcmc + 1)
 
   for (k in seq_len(trends)) {
     f <- find_inverted_chains(model, trend = k)
