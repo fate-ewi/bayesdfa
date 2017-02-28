@@ -165,7 +165,7 @@ fit_dfa = function(y = y,
   } else {
     e <- rstan::extract(mod, permuted = FALSE)
     ep <- rstan::extract(mod, permuted = TRUE)
-    out <- list(model = mod, examples_permuted = ep, amples = e,
+    out <- list(model = mod, samples_permuted = ep, samples = e,
       monitor = rstan::monitor(e))
   }
 
