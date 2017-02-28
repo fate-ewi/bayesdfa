@@ -9,7 +9,9 @@ invert_chains(model, trends = 1, print = FALSE, ...)
 \arguments{
 \item{model}{A Stan model.}
 
-\item{trends}{The number of trends in the DFA}
+\item{trends}{The number of trends in the DFA.}
+
+\item{print}{Logical indicating whether the summary should be printed.}
 
 \item{...}{Other arguments to pass to \code{\link{find_flipped_chains}}.}
 }

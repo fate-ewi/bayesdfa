@@ -23,7 +23,8 @@ Student-t errors}
 \item{convergence_threshold}{The maximum allowed value of Rhat to determine
 convergence of parameters}
 
-\item{variance}{Vector of variance arguments for searching over large groups of models. Can be either or both of ("equal","unequal")}
+\item{variance}{Vector of variance arguments for searching over large groups
+of models. Can be either or both of ("equal","unequal")}
 }
 \description{
 Fit a DFA with different number of trends and return the leave one out (LOO)
