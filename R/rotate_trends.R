@@ -11,9 +11,9 @@
 rotate_trends = function(fitted_model, conf_level = 0.95) {
 
   # get the inverse of the rotation matrix
-  n_mcmc = dim(extract(fitted_model)$Z)[1]
-  Z = extract(fitted_model)$Z
-  x = extract(fitted_model)$x
+  n_mcmc = dim(fitted_model$samples_permuted$Z)[1]
+  Z = fitted_model$samples_permuted$Z
+  x = fitted_model$samples_permuted$x
   n_ts = dim(Z)[2]
   n_trends = dim(x)[2]
   n_years = dim(x)[3]

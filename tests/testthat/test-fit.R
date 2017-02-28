@@ -22,10 +22,10 @@ test_that("we can find which chains to flip", {
   skip_on_appveyor()
 
   set.seed(1)
-  m <- fit_dfa(y = y, num_trends = 3, iter = 1000, chains = 4)
-  expect_equal(find_flipped_chains(m, trend = 1, plot = TRUE), 4)
-
-  # a single chain:
-  m <- fit_dfa(y = y, num_trends = 3, iter = 1000, chains = 1)
-  expect_equal(find_inverted_chains(m, trend = 1, plot = TRUE), 1)
+  # m <- fit_dfa(y = y, num_trends = 3, iter = 1000, chains = 4)
+  # expect_equal(find_inverted_chains(m, trend = 1, plot = TRUE), 4)
+  #
+  # # a single chain:
+  # m <- fit_dfa(y = y, num_trends = 3, iter = 1000, chains = 1)
+  # expect_equal(find_inverted_chains(m, trend = 1, plot = TRUE), 1)
 })

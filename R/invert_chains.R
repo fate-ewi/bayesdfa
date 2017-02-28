@@ -88,7 +88,11 @@ find_inverted_chains <- function(model, trend = 1, thresh = 0.8, plot = FALSE) {
 invert_chains <- function(model, trends = 1, print = FALSE, ...) {
 
   e <- rstan::extract(model, permuted = FALSE)
+  ep <- rstan::extract(model, permuted = TRUE)
   pars <- colnames(e[1,,])
+  n_mcmc <- dim(ep$Z)[1]
+  n_chains <- dim(e)[2]
+  ii <- c(seq(1, n_mcmc, n_mcmc/n_chains), n_mcmc)
 
   for (k in seq_len(trends)) {
     f <- find_inverted_chains(model, trend = k)
@@ -102,8 +106,12 @@ invert_chains <- function(model, trends = 1, print = FALSE, ...) {
         e[,f_,i] <- e[,f_,i] * -1
       }
     }
+
+    # permuted
+    ep$Z[seq(ii[f_], ii[f_ +1] - 1),,k] <- ep$Z[seq(ii[f_], ii[f_ +1] - 1),,k] * -1
+    ep$x[seq(ii[f_], ii[f_ +1] - 1),,k] <- ep$x[seq(ii[f_], ii[f_ +1] - 1),,k] * -1
   }
 
   mon <- rstan::monitor(e, print = print, warmup = 0)
-  invisible(list(model = model, samples = e, monitor = mon))
+  invisible(list(model = model, samples_permuted = ep, samples = e, monitor = mon))
 }
