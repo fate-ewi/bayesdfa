@@ -78,8 +78,9 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000,
   }
   }
 
-  if(length(which(variance%in%"equal")) > 0) {
+
   if(compare_normal==TRUE) {
+    if(length(which(variance%in%"equal")) > 0) {
     for (i in kmin:kmax) {
       model = fit_dfa(y = y, num_trends = i, iter = iter, nu_fixed = 100, estimate_nu=FALSE, ...)
       df$num_trends[indx] = i
