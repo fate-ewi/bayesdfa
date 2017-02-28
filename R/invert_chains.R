@@ -25,11 +25,12 @@
 #' find_inverted_chains(m$model, trend = 1, plot = TRUE)
 #' }
 
-find_inverted_chains <- function(model, trend = 1, thresh = 0.8, plot = FALSE) {
+find_inverted_chains <- function(model, trend = 1, thresh = 0.5, plot = FALSE) {
   e <- rstan::extract(model, permuted = FALSE)
   v <- reshape2::melt(e)
 
   vv <- v[grepl(paste0("x\\[", trend), v$parameters), ]
+  # vv <- v[grepl(paste0("Z\\[[0-9]+,", trend, "\\]"), v$parameters), ]
   vv <- dplyr::group_by_(vv, "chains", "parameters")
   vv <- dplyr::summarize_(vv, estimate = "stats::median(value)")
 
@@ -110,12 +111,13 @@ invert_chains <- function(model, trends = 1, print = FALSE, ...) {
       for (i in grep(paste0("Z\\[[0-9]+,", k, "\\]"), pars)) {
         e[,f_,i] <- e[,f_,i] * -1
       }
+      # permuted
+      # ep$Z[seq(ii[f_], ii[f_ +1] - 1),,k] <- ep$Z[seq(ii[f_], ii[f_ +1] - 1),,k] * -1
+      # ep$x[seq(ii[f_], ii[f_ +1] - 1),,k] <- ep$x[seq(ii[f_], ii[f_ +1] - 1),,k] * -1
     }
-
-    # permuted
-    ep$Z[seq(ii[f_], ii[f_ +1] - 1),,k] <- ep$Z[seq(ii[f_], ii[f_ +1] - 1),,k] * -1
-    ep$x[seq(ii[f_], ii[f_ +1] - 1),,k] <- ep$x[seq(ii[f_], ii[f_ +1] - 1),,k] * -1
   }
+  # plot(ep$x[,,1])
+  # plot(ep$x[,,2])
 
   mon <- rstan::monitor(e, print = print, warmup = 0)
   invisible(list(model = model, samples_permuted = ep, samples = e, monitor = mon))
