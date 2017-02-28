@@ -22,7 +22,7 @@
 #' find_flipped_chains(m, trend = 1, plot = TRUE)
 
 find_flipped_chains <- function(model, trend = 1, thresh = 0.8, plot = FALSE) {
-  e <- extract(model, permuted = FALSE)
+  e <- rstan::extract(model, permuted = FALSE)
   v <- reshape2::melt(e)
 
   vv <- v[grepl(paste0("x\\[", trend), v$parameters), ]
@@ -76,7 +76,33 @@ find_flipped_chains <- function(model, trend = 1, thresh = 0.8, plot = FALSE) {
 
   as.numeric(strsplit(out_df$neg[1], " ")[[1]])
 }
-#
-# flip_chains <- function(model, chains_to_invert = c(1)) {
-#
-# }
+
+#' Flip chains
+#'
+#' @param model A Stan model.
+#' @param trends The number of trends in the DFA
+#' @param ... Other arguments to pass to \code{\link{find_flipped_chains}}.
+#'
+#' @export
+flip_chains <- function(model, trends = 1, print = FALSE, ...) {
+
+  e <- rstan::extract(model, permuted = FALSE)
+  pars <- colnames(e[1,,])
+
+  for (k in seq_len(trends)) {
+    f <- find_flipped_chains(model, trend = k)
+    message(paste("Flipping chains", paste(f, collapse = " & "), "for trend", k))
+
+    for (f_ in f) {
+      for (i in grep(paste0("x\\[", k), pars)) {
+        e[,f_,i] <- e[,f_,i] * -1
+      }
+      for (i in grep(paste0("Z\\[[0-9]+,", k, "\\]"), pars)) {
+        e[,f_,i] <- e[,f_,i] * -1
+      }
+    }
+  }
+
+  if (print) print(rstan::monitor(e))
+  invisible(e)
+}
