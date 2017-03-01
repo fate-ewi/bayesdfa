@@ -103,8 +103,7 @@ fit_dfa = function(y = y,
   col_indx_z = c(col_indx_z, 0, 0)# +2 zeros for making stan ok with data types
   nZero = length(row_indx_z)
 
-  # set the model up to have shared variances between first two time series,
-  # third is different
+  # set the model up to have shared variances
   if (is.null(varIndx))
     varIndx = rep(1, P)
   nVariances = length(unique(varIndx))
