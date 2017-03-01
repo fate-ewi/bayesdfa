@@ -28,12 +28,18 @@
 find_inverted_chains <- function(model, trend = 1, thresh = 0.4, plot = FALSE) {
   e <- rstan::extract(model, permuted = FALSE)
   v <- reshape2::melt(e)
-
   vv <- v[grepl(paste0("x\\[", trend), v$parameters), ]
+  # vv <- v[grepl(paste0("x\\[", trend), v$parameters), ]
   # vv <- v[grepl(paste0("Z\\[[0-9]+,", trend, "\\]"), v$parameters), ]
   vv <- dplyr::group_by_(vv, "chains", "parameters")
   vv <- dplyr::summarize_(vv, estimate = "stats::median(value)")
-
+  zz <- v[grepl(paste0("Z\\["), v$parameters), ]
+  zz <- zz[grepl(paste0(trend,"]"), zz$parameters), ]
+  zz <- dplyr::group_by_(zz, "chains", "parameters")
+  zz <- dplyr::summarize_(zz, estimate = "stats::median(value)")  
+  ## vv is dimensioned nchains * nyears (x[1:nyears,trend=i])
+  ## zz is dimensioned n_time series  (Z[1:time series,trend=i])
+  
   if (plot) {
     p <- ggplot(vv, aes_string("as.numeric(parameters)", "estimate",
       color = "chains")) +
@@ -41,47 +47,67 @@ find_inverted_chains <- function(model, trend = 1, thresh = 0.4, plot = FALSE) {
     print(p)
   }
 
+  # cast parameters to df 
   vvv <- reshape2::dcast(vv, parameters ~ chains, value.var = "estimate")
   vvv$parameters <- NULL
-
+  zzz <- reshape2::dcast(zz, parameters ~ chains, value.var = "estimate")
+  zzz$parameters <- NULL
+  
   nchains <- ncol(vvv)
 
-  check <- combn(seq_len(nchains), 1, simplify = FALSE)
-
-  if (nchains > 1) {
-    for (i in seq(2, nchains)) {
-      check <- c(check, combn(seq_len(nchains), i, simplify = FALSE))
+  # n_ts x n_years prediction matrix of product of trends and loadings
+  flipped_chains = 0
+  pred0_loadings = zzz[,1]
+  pred0_trend = vvv[,1]
+  if(nchains > 1) {
+    for(i in seq(2, nchains)) {
+      pred1_loadings = zzz[,i]
+      pred1_trend = vvv[,i]
+      # see if flipped trend + loadings are more similar to chain 1 than not flipped
+      if((sum((-1*pred1_loadings-pred0_loadings)^2) + sum((-1*pred1_trend-pred0_trend)^2)) < 
+        (sum((pred1_loadings-pred0_loadings)^2) + sum((pred1_trend-pred0_trend)^2))) {
+        # flip this chain
+        flipped_chains = ifelse(flipped_chains == 0, i, c(flipped_chains, i))
+      }
     }
   }
+  return(flipped_chains)
+  #check <- combn(seq_len(nchains), 1, simplify = FALSE) # nchains element list
 
-  mean_diff <- vector(mode = "numeric", length = length(check))
+  #if (nchains > 1) {
+  #  for (i in seq(2, nchains)) {
+  #    check <- c(check, combn(seq_len(nchains), i, simplify = FALSE))
+  #  }
+  #}
 
-  out_df <- data.frame(mean_diff)
-  out_df$neg <- NA
+  #mean_diff <- vector(mode = "numeric", length = length(check))
 
-  for (k in seq_along(check)) {
-    rs <- vector(mode = "numeric", length = nchains^2)
-    l <- 1
-    x_temp <- vvv
-    for (q in seq_along(check[[k]])) {
-      x_temp[check[[k]][q]] <- -1 * x_temp[check[[k]][q]]
-    }
-    out_df[k, "mean_diff"] <- mean(apply(x_temp, 1, sd))
-    out_df[k, "neg"] <- paste(check[[k]], collapse = " ")
-  }
+  #out_df <- data.frame(mean_diff)
+  #out_df$neg <- NA
 
-  out_df$nchar <- nchar(out_df$neg)
-  out_df <- dplyr::arrange_(out_df, "mean_diff", "nchar")
+  #for (k in seq_along(check)) {
+  #  rs <- vector(mode = "numeric", length = nchains^2)
+  #  l <- 1
+  #  x_temp <- vvv
+  #  for (q in seq_along(check[[k]])) {
+  #    x_temp[check[[k]][q]] <- -1 * x_temp[check[[k]][q]]
+  #  }
+  #  out_df[k, "mean_diff"] <- mean(apply(x_temp, 1, sd))
+  #  out_df[k, "neg"] <- paste(check[[k]], collapse = " ")
+  #}
 
-  if (nrow(out_df) > 1) {
-    diff_ <- abs(out_df$mean_diff[1] - out_df$mean_diff[3])
-    if (diff_ < thresh) {
-      warning(paste0("Best permutation does not exceed threshold for trend ",
-        trend, ". (", round(diff_, 2), " difference in mean SD)"))
-    }
-  }
+  #out_df$nchar <- nchar(out_df$neg)
+  #out_df <- dplyr::arrange_(out_df, "mean_diff", "nchar")
 
-  as.numeric(strsplit(out_df$neg[1], " ")[[1]])
+  #if (nrow(out_df) > 1) {
+  #  diff_ <- abs(out_df$mean_diff[1] - out_df$mean_diff[3])
+  #  if (diff_ < thresh) {
+  #    warning(paste0("Best permutation does not exceed threshold for trend ",
+  #      trend, ". (", round(diff_, 2), " difference in mean SD)"))
+  #  }
+  #}
+
+  #as.numeric(strsplit(out_df$neg[1], " ")[[1]])
 }
 
 #' Invert chains
