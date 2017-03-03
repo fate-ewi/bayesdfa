@@ -21,4 +21,3 @@ Invert chains
 \seealso{
 find_inverted_chains
 }
-

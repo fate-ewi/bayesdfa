@@ -16,7 +16,7 @@ Plot the trends from a DFA
 }
 \examples{
 y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
-m <- fit_dfa(y = y, num_trends = 2, iter = 1000)
+m <- fit_dfa(y = y, num_trends = 2, iter = 600)
 r <- rotate_trends(m)
 p <- plot_trends(r)
 print(p)
@@ -24,4 +24,3 @@ print(p)
 \seealso{
 plot_loadings fit_dfa rotate_trends
 }
-

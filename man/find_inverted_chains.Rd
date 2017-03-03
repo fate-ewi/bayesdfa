@@ -34,4 +34,3 @@ find_inverted_chains(m$model, trend = 1, plot = TRUE)
 \seealso{
 invert_chains
 }
-

@@ -16,4 +16,3 @@ E.g. output from \code{\link{invert_chains}}.}
 Pass in rstanfit model object, and optional threshold value for
 convergence. Returns boolean.
 }
-

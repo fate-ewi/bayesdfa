@@ -10,26 +10,27 @@
 #'
 #' @examples
 #' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
-#' m <- fit_dfa(y = y, num_trends = 2, iter = 1000)
+#' m <- fit_dfa(y = y, num_trends = 2, iter = 600)
 #' r <- rotate_trends(m)
 #' p <- plot_trends(r)
 #' print(p)
 
-plot_trends = function(rotated_modelfit, years=NULL) {
+plot_trends = function(rotated_modelfit, years = NULL) {
   # rotate the trends
-  rotated = rotated_modelfit
+  rotated <- rotated_modelfit
 
-  n_ts = dim(rotated$Z_rot)[2]
-  n_trends = dim(rotated$Z_rot)[3]
-  n_years = dim(rotated$trends_mean)[2]
-  if(is.null(years)) years = 1:n_years
+  n_ts <- dim(rotated$Z_rot)[2]
+  n_trends <- dim(rotated$Z_rot)[3]
+
+  n_years <- dim(rotated$trends_mean)[2]
+  if(is.null(years)) years <- seq_len(n_years)
 
   # convert to df for ggplot
-  df = data.frame(
+  df <- data.frame(
     x = c(t(rotated$trends_mean)),
     lo = c(t(rotated$trends_lower)),
     hi = c(t(rotated$trends_upper)),
-    trend = paste0("Trend ", sort(rep(1:n_trends, n_years))),
+    trend = paste0("Trend ", sort(rep(seq_len(n_trends), n_years))),
     time = rep(years, n_trends))
 
   # make faceted ribbon plot of trends

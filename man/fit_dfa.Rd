@@ -66,4 +66,3 @@ parameters: measuring changes in international business cycles.
 \seealso{
 plot_loadings plot_trends rotate_trends
 }
-

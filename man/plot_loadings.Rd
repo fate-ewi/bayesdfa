@@ -36,4 +36,3 @@ plot_loadings(r, violin = TRUE, facet = TRUE)
 \seealso{
 plot_trends fit_dfa rotate_trends
 }
-
