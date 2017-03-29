@@ -1,6 +1,7 @@
 #' Plot the trends from a DFA
 #'
 #' @param modelfit Output from \code{\link{fit_dfa}}
+#' @param names Optional vector of names for plotting labels
 #'
 #' @export
 #' @seealso plot_loadings fit_dfa rotate_trends
@@ -13,7 +14,7 @@
 #' p <- plot_fitted(m)
 #' print(p)
 
-plot_fitted = function(modelfit) {
+plot_fitted = function(modelfit, names = NULL) {
   n_ts <- dim(modelfit$data)[1]
   n_years <- dim(modelfit$data)[2]
 
@@ -29,6 +30,10 @@ plot_fitted = function(modelfit) {
     "y" = c(modelfit$data)
   )
 
+  if(!is.null(names)) {
+    df$ID = names[df$ID]
+  }
+  
   # make faceted ribbon plot of trends
   p1 = ggplot(df, aes_string(x = "Time", y = "mean")) +
     geom_ribbon(aes_string(ymin = "lo", ymax = "hi"), alpha = 0.4) +

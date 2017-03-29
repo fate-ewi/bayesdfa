@@ -26,7 +26,7 @@ Suggests:
     knitr,
     rmarkdown,
     MARSS
-URL: https://github.com/seananderson/rrfields
-BugReports: https://github.com/seananderson/rrfields/issues
+URL: https://github.com/fate-ewi/bayesdfa
+BugReports: https://github.com/fate-ewi/bayesdfa/issues
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr

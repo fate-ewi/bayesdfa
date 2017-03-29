@@ -4,10 +4,12 @@
 \alias{plot_fitted}
 \title{Plot the trends from a DFA}
 \usage{
-plot_fitted(modelfit)
+plot_fitted(modelfit, names = NULL)
 }
 \arguments{
 \item{modelfit}{Output from \code{\link{fit_dfa}}}
+
+\item{names}{Optional vector of names for plotting labels}
 }
 \description{
 Plot the trends from a DFA
