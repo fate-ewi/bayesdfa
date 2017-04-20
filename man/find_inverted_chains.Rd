@@ -4,23 +4,18 @@
 \alias{find_inverted_chains}
 \title{Find which chains to invert}
 \usage{
-find_inverted_chains(model, trend = 1, thresh = 0.4, plot = FALSE)
+find_inverted_chains(model, trend = 1, plot = FALSE)
 }
 \arguments{
 \item{model}{A Stan model}
 
 \item{trend}{Which trend to check}
 
-\item{thresh}{A threshold for the required absolute difference in mean
-standard deviation between the best permutation and the next best
-permutation.}
-
 \item{plot}{Should a plot of the trend for each chain be made?}
 }
 \description{
-Finds which chains to invert by finding the best combination of chains to
-multiply by -1 to minimize the standard deviation of the trends across the
-chains.
+Find which chains to invert by checking the sum of the squared 
+deviations between the first chain and each other chain.
 }
 \examples{
 \dontrun{
