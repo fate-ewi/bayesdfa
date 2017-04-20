@@ -4,21 +4,30 @@
 \alias{plot_trends}
 \title{Plot the trends from a DFA}
 \usage{
-plot_trends(rotated_modelfit, years = NULL)
+plot_trends(rotated_modelfit, years = NULL, highlight_outliers = FALSE,
+  threshold = 0.01)
 }
 \arguments{
 \item{rotated_modelfit}{Output from \code{\link{rotate_trends}}}
 
 \item{years}{Optional numeric vector of years for the plot}
+
+\item{highlight_outliers}{Logical. Should trend events 
+that exceed the probability of occurring with a normal distribution as
+defined by \code{threshold} be highlighted?}
+
+\item{threshold}{A probability threshold below which to 
+flag trend events as extreme}
 }
 \description{
 Plot the trends from a DFA
 }
 \examples{
 y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
-m <- fit_dfa(y = y, num_trends = 2, iter = 600)
+y[,10] <- y[,10] + 2
+m <- fit_dfa(y = y, num_trends = 2, iter = 600, nu_fixed = 5)
 r <- rotate_trends(m)
-p <- plot_trends(r)
+p <- plot_trends(r, highlight_outliers = TRUE)
 print(p)
 }
 \seealso{
