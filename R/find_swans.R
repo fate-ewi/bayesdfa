@@ -19,7 +19,13 @@
 find_swans <- function(rotated_modelfit, threshold = 0.01) {
   x <- rotated_modelfit$trends_mean
   d <- apply(x, 1, function(xx) c(NA, diff(xx)))
-  prob <- 1 - apply(d, 2, function(xx) pnorm(abs(xx), 0, 1))
+  sds = apply(d, 2, sd, na.rm=T) # sds != 1
+  
+  prob = matrix(NA, nrow(d), ncol(d))
+  for(i in 1:ncol(d)) {
+    prob[,i] <- 1 - pnorm(abs(d[,i]), 0, sds[i])
+  }
+  #prob <- 1 - apply(d, 2, function(xx) pnorm(abs(xx), 0, 1))
   prob <- as.data.frame(prob)
   trends <- as.data.frame(t(x))
   trends$time <- seq_len(nrow(trends))
