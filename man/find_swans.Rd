@@ -9,7 +9,7 @@ find_swans(rotated_modelfit, threshold = 0.01)
 \arguments{
 \item{rotated_modelfit}{Output from \code{\link{rotate_trends}}}
 
-\item{threshold}{A probability threshold below which to 
+\item{threshold}{A probability threshold below which to
 flag trend events as extreme}
 }
 \description{

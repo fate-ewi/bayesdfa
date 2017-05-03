@@ -1,8 +1,16 @@
 if (interactive()) options(mc.cores = parallel::detectCores())
 
-y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
+y <- t(scale(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")]))
 
 set.seed(1)
+
+test_that("MARSS comparison", {
+  fit1 <- fit_dfa(y = y, num_trends = 1, iter = 1000, chains = 1)
+  ml_fit = MARSS::MARSS(y, form="dfa", model=list(m=1))
+  ml_means = c(ml_fit$states)
+  bayes_means = apply(extract(fit1$model, "x")$x[,1,], 2, mean)
+  expect_equal(cor(abs(bayes_means), abs(ml_means)), 0.999, tolerance=0.001)
+})
 
 test_that("Basic model fits", {
   fit1 <- fit_dfa(y = y, num_trends = 1, iter = 1000, chains = 1)

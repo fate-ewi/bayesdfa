@@ -1,8 +1,8 @@
-#' Find outlying "black swan" jumps in trends 
+#' Find outlying "black swan" jumps in trends
 #'
 #' @param rotated_modelfit Output from \code{\link{rotate_trends}}
-#' @param threshold A probability threshold below which to 
-#'   flag trend events as extreme 
+#' @param threshold A probability threshold below which to
+#'   flag trend events as extreme
 #' @examples
 #' \dontrun{
 #' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays")])
@@ -20,7 +20,7 @@ find_swans <- function(rotated_modelfit, threshold = 0.01) {
   x <- rotated_modelfit$trends_mean
   d <- apply(x, 1, function(xx) c(NA, diff(xx)))
   sds = apply(d, 2, sd, na.rm=T) # sds != 1
-  
+
   prob = matrix(NA, nrow(d), ncol(d))
   for(i in 1:ncol(d)) {
     prob[,i] <- 1 - pnorm(abs(d[,i]), 0, sds[i])
@@ -41,7 +41,7 @@ find_swans <- function(rotated_modelfit, threshold = 0.01) {
   trends
   # ggplot(trends, aes(time, trend_value, color = below_threshold)) + geom_point() + facet_wrap(~trend_number)
   # ggplot(trends, aes(time, probability, color = below_threshold)) + geom_point() + facet_wrap(~trend_number)
- 
+
 }
 # library(mvtnorm)
 
