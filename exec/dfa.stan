@@ -40,6 +40,12 @@ transformed parameters {
       Z[row_indx_z[i],col_indx_z[i]] = 0;
     }
   }
+  Z[1,1] = 1; // add constraint for Z diagonal
+  if(K > 1) {
+    for(k in 2:K) {
+      Z[k,k] = 1;
+    }
+  }
   # N is sample size, P = time series, K = number trends
   # [PxN] = [PxK] * [KxN]
   pred = Z * x;
