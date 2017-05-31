@@ -450,6 +450,10 @@ public:
                     stan::math::assign(get_base1_lhs(Z,get_base1(row_indx_z,i,"row_indx_z",1),get_base1(col_indx_z,i,"col_indx_z",1),"Z",1), 0);
                 }
             }
+            for (int k = 1; k <= K; ++k) {
+
+                stan::math::assign(get_base1_lhs(Z,k,k,"Z",1), 1);
+            }
             stan::math::assign(pred, multiply(Z,x));
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e,current_statement_begin__);
@@ -501,7 +505,11 @@ public:
 
                 lp_accum__.add(gamma_log<propto__>(get_base1(nu,1,"nu",1), 2, 0.10000000000000001));
             }
-            lp_accum__.add(normal_log<propto__>(z, 0, 1));
+            lp_accum__.add(normal_log<propto__>(get_base1(z,1,"z",1), 0.5, 0.5));
+            for (int i = 2; i <= nZ; ++i) {
+
+                lp_accum__.add(normal_log<propto__>(get_base1(z,i,"z",1), 0, 1));
+            }
             lp_accum__.add(student_t_log<propto__>(sigma, 3, 0, 2));
             for (int i = 1; i <= n_pos; ++i) {
 
@@ -641,6 +649,10 @@ public:
 
                     stan::math::assign(get_base1_lhs(Z,get_base1(row_indx_z,i,"row_indx_z",1),get_base1(col_indx_z,i,"col_indx_z",1),"Z",1), 0);
                 }
+            }
+            for (int k = 1; k <= K; ++k) {
+
+                stan::math::assign(get_base1_lhs(Z,k,k,"Z",1), 1);
             }
             stan::math::assign(pred, multiply(Z,x));
         } catch (const std::exception& e) {
