@@ -66,10 +66,7 @@ model {
   }
 
   # prior on loadings
-  z[1] ~ normal(0.5, 0.5);
-  for (i in 2:nZ) {
-    z[i] ~ normal(0, 1);
-  }
+  z ~ normal(0, 1);
 
   # observation variance
   sigma ~ student_t(3, 0, 2);
