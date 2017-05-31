@@ -42,7 +42,7 @@ transformed parameters {
   }
 
   for(k in 1:K) {
-    Z[k,k] = 1 + 0*Z[k,k];// add constraint for Z diagonal
+    Z[k,k] = 1;// add constraint for Z diagonal
   }
   # N is sample size, P = time series, K = number trends
   # [PxN] = [PxK] * [KxN]
