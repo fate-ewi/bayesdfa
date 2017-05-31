@@ -48,10 +48,10 @@ fit_dfa = function(y = y,
   timevarying = FALSE,
   estimate_nu = FALSE) {
   # parameters for DFA
-  N = ncol(y)
-  P = nrow(y)
+  N = ncol(y) # number of time steps
+  P = nrow(y) # number of time series
   K = num_trends # number of dfa trends
-  nZ = P * K - sum(1:K) + K
+  nZ = P * K - sum(1:K) + K # number of non-zero parameters
 
   if (zscore) {
     for (i in seq_len(P)) {
