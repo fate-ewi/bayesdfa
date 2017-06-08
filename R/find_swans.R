@@ -3,6 +3,7 @@
 #' @param rotated_modelfit Output from \code{\link{rotate_trends}}
 #' @param threshold A probability threshold below which to
 #'   flag trend events as extreme
+#' @param plot Logical: should a plot be made?
 #' @examples
 #' \dontrun{
 #' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays")])
@@ -12,11 +13,11 @@
 #' r <- rotate_trends(m)
 #' p <- plot_trends(r)
 #' print(p)
-#' find_swans(r)
+#' find_swans(r, plot = TRUE)
 #' }
 #' @export
 
-find_swans <- function(rotated_modelfit, threshold = 0.01) {
+find_swans <- function(rotated_modelfit, threshold = 0.01, plot = FALSE) {
   x <- rotated_modelfit$trends_mean
   d <- apply(x, 1, function(xx) c(NA, diff(xx)))
   sds = apply(d, 2, sd, na.rm=T) # sds != 1
@@ -25,7 +26,6 @@ find_swans <- function(rotated_modelfit, threshold = 0.01) {
   for(i in 1:ncol(d)) {
     prob[,i] <- 1 - pnorm(abs(d[,i]), 0, sds[i])
   }
-  #prob <- 1 - apply(d, 2, function(xx) pnorm(abs(xx), 0, 1))
   prob <- as.data.frame(prob)
   trends <- as.data.frame(t(x))
   trends$time <- seq_len(nrow(trends))
@@ -38,10 +38,11 @@ find_swans <- function(rotated_modelfit, threshold = 0.01) {
   trends <- dplyr::inner_join(trends, prob)
   trends$trend_number <- as.numeric(sub("V", "", trends$trend_number))
   trends$below_threshold <- trends$probability < threshold
+  if (plot) {
+    g <- ggplot(trends, aes(time, trend_value, color = below_threshold)) +
+      geom_point() + facet_wrap(~trend_number)
+    print(g)
+  }
   trends
-  # ggplot(trends, aes(time, trend_value, color = below_threshold)) + geom_point() + facet_wrap(~trend_number)
-  # ggplot(trends, aes(time, probability, color = below_threshold)) + geom_point() + facet_wrap(~trend_number)
-
 }
-# library(mvtnorm)
 

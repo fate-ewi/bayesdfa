@@ -4,13 +4,15 @@
 \alias{find_swans}
 \title{Find outlying "black swan" jumps in trends}
 \usage{
-find_swans(rotated_modelfit, threshold = 0.01)
+find_swans(rotated_modelfit, threshold = 0.01, plot = FALSE)
 }
 \arguments{
 \item{rotated_modelfit}{Output from \code{\link{rotate_trends}}}
 
 \item{threshold}{A probability threshold below which to
 flag trend events as extreme}
+
+\item{plot}{Logical: should a plot be made?}
 }
 \description{
 Find outlying "black swan" jumps in trends
@@ -24,6 +26,6 @@ m <- fit_dfa(y = y, num_trends = 2, iter = 1000, chains = 1, nu_fixed = 2)
 r <- rotate_trends(m)
 p <- plot_trends(r)
 print(p)
-find_swans(r)
+find_swans(r, plot = TRUE)
 }
 }
