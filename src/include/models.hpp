@@ -533,11 +533,7 @@ public:
 
                 lp_accum__.add(gamma_log<propto__>(get_base1(nu,1,"nu",1), 2, 0.10000000000000001));
             }
-            lp_accum__.add(normal_log<propto__>(get_base1(z,1,"z",1), 0.5, 0.5));
-            for (int i = 2; i <= nZ; ++i) {
-
-                lp_accum__.add(normal_log<propto__>(get_base1(z,i,"z",1), 0, 1));
-            }
+            lp_accum__.add(normal_log<propto__>(z, 0, 1));
             lp_accum__.add(student_t_log<propto__>(sigma, 3, 0, 2));
             for (int i = 1; i <= n_pos; ++i) {
 
