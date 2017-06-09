@@ -16,6 +16,7 @@
 #' find_swans(r, plot = TRUE)
 #' }
 #' @export
+#' @importFrom stats pnorm
 
 find_swans <- function(rotated_modelfit, threshold = 0.01, plot = FALSE) {
   x <- rotated_modelfit$trends_mean
@@ -39,7 +40,8 @@ find_swans <- function(rotated_modelfit, threshold = 0.01, plot = FALSE) {
   trends$trend_number <- as.numeric(sub("V", "", trends$trend_number))
   trends$below_threshold <- trends$probability < threshold
   if (plot) {
-    g <- ggplot(trends, aes(time, trend_value, color = below_threshold)) +
+    g <- ggplot(trends, aes_string(x = "time", y = "trend_value",
+      color = "below_threshold")) +
       geom_point() + facet_wrap(~trend_number)
     print(g)
   }

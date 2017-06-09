@@ -17,10 +17,12 @@
 #' @param ... Other arguments to pass to \code{\link{fit_dfa}}
 #' @export
 #' @examples
+#' \dontrun{
 #' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays")])
 #' set.seed(1)
-#' m <- find_dfa_trends(y = y, kmin = 1, kmax = 2, 
+#' m <- find_dfa_trends(y = y, kmin = 1, kmax = 2,
 #'   iter = 1000, chains = 1)
+#' }
 #' @importFrom loo loo extract_log_lik
 #' @importFrom stats quantile time varimax
 
@@ -47,7 +49,7 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000,
   if(length(which(variance%in%"equal")) > 0) {
   for (i in kmin:kmax) {
     model = fit_dfa(y = y, num_trends = i, iter = iter, estimate_nu=TRUE, ...)
-    
+
     df$converge[indx] = is_converged(model, convergence_threshold)
     df$num_trends[indx] = i
     df$looic[indx] = loo::loo(loo::extract_log_lik(model$model))$looic

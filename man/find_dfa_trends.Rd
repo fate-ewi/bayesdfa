@@ -34,8 +34,10 @@ value as calculated by the loo package. Note that the models will be fit once
 with shared variances and once with independent variances.
 }
 \examples{
+\dontrun{
 y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays")])
 set.seed(1)
-m <- find_dfa_trends(y = y, kmin = 1, kmax = 2, 
+m <- find_dfa_trends(y = y, kmin = 1, kmax = 2,
   iter = 1000, chains = 1)
+}
 }
