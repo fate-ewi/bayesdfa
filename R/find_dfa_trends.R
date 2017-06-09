@@ -16,7 +16,11 @@
 #'   of models. Can be either or both of ("equal","unequal")
 #' @param ... Other arguments to pass to \code{\link{fit_dfa}}
 #' @export
-#'
+#' @examples
+#' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays")])
+#' set.seed(1)
+#' m <- find_dfa_trends(y = y, kmin = 1, kmax = 2, 
+#'   iter = 1000, chains = 1)
 #' @importFrom loo loo extract_log_lik
 #' @importFrom stats quantile time varimax
 
@@ -94,6 +98,8 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000,
       }
       df$error[indx] = "normal"
       df$cor[indx] = "equal"
+      df$max_rhat[indx] <- max(summary(model$model)$summary[, "Rhat"])
+      df$min_neff[indx] <- min(summary(model$model)$summary[, "n_eff"])
       indx = indx + 1
     }
     }
@@ -113,6 +119,8 @@ find_dfa_trends = function(y = y, kmin = 1, kmax = 5, iter = 2000,
       }
       df$error[indx] = "normal"
       df$cor[indx] = "independent"
+      df$max_rhat[indx] <- max(summary(model$model)$summary[, "Rhat"])
+      df$min_neff[indx] <- min(summary(model$model)$summary[, "n_eff"])
       indx = indx + 1
       }
      }
