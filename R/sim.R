@@ -11,6 +11,7 @@
 #'   \code{Z} in the returned list is to see the manipulated loadings matrix.
 #' @param sigma A vector of standard deviations on the observation error. Should
 #'   be of the same length as the number of trends.
+#' @param varIndx Indices of unique observation variances.
 #'
 #' @return A list with the following elements: y_sim is the simulated data, pred
 #'   is the true underlying data without observation error added, x is the
@@ -23,11 +24,14 @@ sim_dfa <- function(
   num_ts = 4,
   loadings_matrix = matrix(nrow = num_ts, ncol = num_trends,
     rnorm(num_ts * num_trends, 0, 1)),
-  sigma = rlnorm(num_trends, meanlog = log(0.2), 0.1)
+  sigma = rlnorm(1, meanlog = log(0.2), 0.1),
+  varIndx = rep(1, num_ts)
 ) {
 
   y_ignore <- matrix(rnorm(num_ts * num_years), nrow = num_ts, ncol = num_years)
-  d <- fit_dfa(y_ignore, num_trends = num_trends, sample = FALSE, zscore = FALSE)
+
+  d <- fit_dfa(y_ignore, num_trends = num_trends, sample = FALSE, zscore = FALSE,
+    varIndx = varIndx)
 
   Z <- matrix(nrow = d$P, ncol = d$K)
   y <- vector(mode = "numeric", length = d$N)
@@ -62,5 +66,5 @@ sim_dfa <- function(
       sigma[d$varIndx[d$row_indx_pos[i]]])
   }
   y_sim <- matrix(y, nrow = d$P)
-  list(y_sim = y_sim, pred = pred, x = x, Z = Z)
+  list(y_sim = y_sim, pred = pred, x = x, Z = Z, sigma = sigma)
 }

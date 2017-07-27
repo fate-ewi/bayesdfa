@@ -16,7 +16,7 @@ dat <- sim_dfa(
   num_years = num_years,
   num_ts = num_ts,
   loadings_matrix = loadings_matrix,
-  sigma = rlnorm(num_trends, meanlog = log(0.4), 0.4))
+  sigma = rlnorm(1, meanlog = log(0.4), 0.4))
 
 m <- fit_dfa(dat$y_sim, num_trends = num_trends, zscore = FALSE)
 
@@ -27,6 +27,11 @@ Zhat_u <- apply(s$Z, c(2, 3), quantile, probs = 0.975)
 xhat_m <- apply(s$x, c(2, 3), median)
 xhat_l <- apply(s$x, c(2, 3), quantile, probs = 0.025)
 xhat_u <- apply(s$x, c(2, 3), quantile, probs = 0.975)
+
+# Note I am assuming a single shared sigma here:
+sigmahat_m <- apply(extract(m$model)$sigma, 2, median)
+sigmahat_l <- apply(extract(m$model)$sigma, 2, quantile, probs = 0.025)
+sigmahat_u <- apply(extract(m$model)$sigma, 2, quantile, probs = 0.975)
 
 # ------------------------------
 # Plot the trends:
