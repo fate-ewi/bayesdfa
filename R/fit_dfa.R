@@ -18,6 +18,9 @@
 #'   sensible answers.
 #' @param estimate_nu Logical. Estimate the student t degrees of freedom
 #' parameter?
+#' @param sample Logical. Should the model be sampled from? If \code{FALSE},
+#'   then the data list object that would have been passed to Stan is returned
+#'   instead. This is useful for debugging and simulation.
 #'
 #' @details Note that there is nothing restricting the loadings and trends from
 #'   being inverted (multiplied by -1) for a given chain. Therefore, if you fit
@@ -46,7 +49,8 @@ fit_dfa = function(y = y,
   nu_fixed = 7,
   tau = 0.1,
   timevarying = FALSE,
-  estimate_nu = FALSE) {
+  estimate_nu = FALSE,
+  sample = TRUE) {
   # parameters for DFA
   N = ncol(y) # number of time steps
   P = nrow(y) # number of time series
@@ -148,17 +152,22 @@ fit_dfa = function(y = y,
     chains = chains,
     iter = iter)
 
-  mod <- do.call(sampling, sampling_args)
+  if (sample) {
+    mod <- do.call(sampling, sampling_args)
 
-  if (chains > 1) {
-    out <- invert_chains(mod, trends = num_trends, print = FALSE)
+    if (chains > 1) {
+      out <- invert_chains(mod, trends = num_trends, print = FALSE)
+    } else {
+      e <- rstan::extract(mod, permuted = FALSE)
+      ep <- rstan::extract(mod, permuted = TRUE)
+      out <- list(model = mod, samples_permuted = ep, samples = e,
+        monitor = rstan::monitor(e))
+    }
+
+    out[["data"]]=Y # keep data attached
+    out <- structure(out, class = "bayesdfa")
   } else {
-    e <- rstan::extract(mod, permuted = FALSE)
-    ep <- rstan::extract(mod, permuted = TRUE)
-    out <- list(model = mod, samples_permuted = ep, samples = e,
-      monitor = rstan::monitor(e))
+    out <- data_list
   }
-
-  out[["data"]]=Y # keep data attached
-  out <- structure(out, class = "bayesdfa")
+  out
 }

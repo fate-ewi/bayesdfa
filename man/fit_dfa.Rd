@@ -7,7 +7,7 @@
 fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 2,
   varIndx = NULL, zscore = TRUE, iter = 2000, chains = 4,
   control = list(adapt_delta = 0.99), nu_fixed = 7, tau = 0.1,
-  timevarying = FALSE, estimate_nu = FALSE)
+  timevarying = FALSE, estimate_nu = FALSE, sample = TRUE)
 }
 \arguments{
 \item{y}{A matrix of data to fit. Columns represent time element.}
@@ -40,6 +40,10 @@ sensible answers.}
 
 \item{estimate_nu}{Logical. Estimate the student t degrees of freedom
 parameter?}
+
+\item{sample}{Logical. Should the model be sampled from? If \code{FALSE},
+then the data list object that would have been passed to Stan is returned
+instead. This is useful for debugging and simulation.}
 }
 \description{
 Fit a Bayesian DFA
