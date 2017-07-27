@@ -2,9 +2,9 @@
 
 if (interactive()) options(mc.cores = parallel::detectCores())
 
-set.seed(1)
-num_trends <- 3
-num_ts <- 6
+set.seed(42)
+num_trends <- 2
+num_ts <- 5
 num_years <- 25
 loadings_matrix <- matrix(nrow = num_ts, ncol = num_trends,
   rnorm(num_ts * num_trends, 0, 0.6))
@@ -51,10 +51,10 @@ p1 <- ggplot(df, aes_string(x = "time", y = "x")) +
 # ------------------------------
 # Plot the loadings:
 df2 <- data.frame(
-  z = c(t(Zhat_m)),
-  lo = c(t(Zhat_l)),
-  hi = c(t(Zhat_u)),
-  true = c(t(dat$Z)),
+  z = c(Zhat_m),
+  lo = c(Zhat_l),
+  hi = c(Zhat_u),
+  true = c(dat$Z),
   trend = rep(seq_len(num_trends), each = num_ts),
   ts = rep(seq_len(num_ts), num_trends))
 p2 <- ggplot(df2, aes_string(x = "ts", y = "z")) +
