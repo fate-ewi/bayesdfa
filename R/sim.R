@@ -33,31 +33,31 @@ sim_dfa <- function(
   y <- vector(mode = "numeric", length = d$N)
   z <- as.numeric(loadings_matrix)
 
-  for(i in 1:d$nZ) {
+  for(i in seq_len(d$nZ)) {
     Z[d$row_indx[i],d$col_indx[i]] <- z[i];
   }
 
   # fill in zero elements
   if(d$nZero > 2) {
-    for(i in 1:(d$nZero-2)) {
+    for(i in seq_len(d$nZero-2)) {
       Z[d$row_indx_z[i],d$col_indx_z[i]] <- 0;
     }
   }
-  for (k in 1:d$K) {
+  for (k in seq_len(d$K)) {
     Z[k, k] <- 1 # add constraint for Z diagonal
   }
 
   x <- matrix(nrow = d$K, ncol = d$N) # random walk-trends
 
   # initial state for each trend
-  for (k in 1:d$K) {
+  for (k in seq_len(d$K)) {
     x[k, 1] <- rnorm(1, 0, 1)
     for (t in 2:d$N) {
       x[k, t] <- x[k, t - 1] + rt(1, df = d$nu_fixed) # random walk
     }
   }
   pred <- Z %*% x
-  for (i in 1:d$n_pos) {
+  for (i in seq_len(d$n_pos)) {
     y[i] <- rnorm(1, pred[d$row_indx_pos[i], d$col_indx_pos[i]],
       sigma[d$varIndx[d$row_indx_pos[i]]])
   }
