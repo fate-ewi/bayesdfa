@@ -20,6 +20,7 @@ data {
   matrix[num_covar,N] d_covar; // inputted covariate matrix
   int covar_indexing[P,num_covar]; // index of covariates to estimate
   int estimate_nu; // Estimate degrees of freedom?
+  int<lower=0> use_normal; // flag, for large values of nu > 100, use normal instead
 }
 parameters {
   matrix[K,N] x; //vector[N] x[P]; // random walk-trends
@@ -42,7 +43,7 @@ transformed parameters {
   }
 
   for(k in 1:K) {
-    Z[k,k] = 1;// add constraint for Z diagonal
+    Z[k,k] = fabs(Z[k,k]);// add constraint for Z diagonal
   }
   // N is sample size, P = time series, K = number trends
   // [PxN] = [PxK] * [KxN]
@@ -52,13 +53,18 @@ model {
   // initial state for each trend
   for(k in 1:K) {
     x[k,1] ~ normal(0, 1);
-    for(t in 2:N) {
-      if (estimate_nu == 1) {
-        x[k,t] ~ student_t(nu[1], x[k,t-1], 1); // random walk
-      } else {
-        x[k,t] ~ student_t(nu_fixed, x[k,t-1], 1); // random walk
+    if(use_normal == 0) {
+      for(t in 2:N) {
+        if (estimate_nu == 1) {
+          x[k,t] ~ student_t(nu[1], x[k,t-1], 1); // random walk
+        } else {
+          x[k,t] ~ student_t(nu_fixed, x[k,t-1], 1); // random walk
+        }
       }
+    } else {
+       x[k,t] ~ normal(x[k,t-1], 1);
     }
+
   }
   if (estimate_nu == 1) {
     nu[1] ~ gamma(2, 0.1);

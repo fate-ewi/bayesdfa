@@ -10,7 +10,8 @@
 #' @param iter Number of iterations in Stan sampling.
 #' @param chains Number of chains in Stan sampling.
 #' @param control A list of options to pass to Stan sampling.
-#' @param nu_fixed Student t degrees of freedom parameter
+#' @param nu_fixed Student t degrees of freedom parameter. If specified as greater than 100,
+#'   a normal random walk is used instead of a random walk with a t-distribution.
 #' @param tau A fixed parameter describing the standard deviation on the random
 #'   walk for the factor loadings in the case of time varying DFA.
 #' @param timevarying Logical. If \code{TRUE}, a time varying DFA. Note that the
@@ -109,6 +110,9 @@ fit_dfa = function(y = y,
   n_pos = length(row_indx_pos)
   y = y[which(!is.na(y))]
 
+  # flag for whether to use a normal dist
+  use_normal = ifelse(nu_fixed > 100, 1, 0)
+
   data_list = list(
     N = N,
     P = P,
@@ -134,7 +138,8 @@ fit_dfa = function(y = y,
     num_covar = num_covar,
     covar_indexing = covar_indexing,
     num_unique_covar = num_unique_covar,
-    est_df = as.integer(estimate_nu)
+    est_df = as.integer(estimate_nu),
+    use_normal = as.integer(use_normal)
   )
   pars <- c("x", "Z", "pred", "sigma", "log_lik")
   if (!is.null(covar)) pars <- c(pars, "D")

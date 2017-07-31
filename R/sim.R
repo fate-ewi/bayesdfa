@@ -48,7 +48,7 @@ sim_dfa <- function(
     }
   }
   for (k in seq_len(d$K)) {
-    Z[k, k] <- 1 # add constraint for Z diagonal
+    Z[k, k] <- abs(Z[k,k]); # add constraint for Z diagonal
   }
 
   x <- matrix(nrow = d$K, ncol = d$N) # random walk-trends
