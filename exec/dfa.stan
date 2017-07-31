@@ -20,7 +20,7 @@ data {
   matrix[num_covar,N] d_covar; // inputted covariate matrix
   int covar_indexing[P,num_covar]; // index of covariates to estimate
   int estimate_nu; // Estimate degrees of freedom?
-  int<lower=0> use_normal; // flag, for large values of nu > 100, use normal instead
+  int use_normal; // flag, for large values of nu > 100, use normal instead
 }
 parameters {
   matrix[K,N] x; //vector[N] x[P]; // random walk-trends
@@ -62,7 +62,9 @@ model {
         }
       }
     } else {
-       x[k,t] ~ normal(x[k,t-1], 1);
+      for(t in 2:N) {
+        x[k,t] ~ normal(x[k,t-1], 1);
+      }
     }
 
   }

@@ -111,7 +111,7 @@ fit_dfa = function(y = y,
   y = y[which(!is.na(y))]
 
   # flag for whether to use a normal dist
-  use_normal = ifelse(nu_fixed > 100, 1, 0)
+  use_normal = 1#ifelse(nu_fixed > 100, 1, 0)
 
   data_list = list(
     N = N,
@@ -139,7 +139,7 @@ fit_dfa = function(y = y,
     covar_indexing = covar_indexing,
     num_unique_covar = num_unique_covar,
     est_df = as.integer(estimate_nu),
-    use_normal = as.integer(use_normal)
+    use_normal
   )
   pars <- c("x", "Z", "pred", "sigma", "log_lik")
   if (!is.null(covar)) pars <- c(pars, "D")

@@ -29,7 +29,8 @@ variances.}
 
 \item{control}{A list of options to pass to Stan sampling.}
 
-\item{nu_fixed}{Student t degrees of freedom parameter}
+\item{nu_fixed}{Student t degrees of freedom parameter. If specified as greater than 100,
+a normal random walk is used instead of a random walk with a t-distribution.}
 
 \item{tau}{A fixed parameter describing the standard deviation on the random
 walk for the factor loadings in the case of time varying DFA.}
