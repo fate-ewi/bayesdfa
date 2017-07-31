@@ -111,7 +111,7 @@ fit_dfa = function(y = y,
   y = y[which(!is.na(y))]
 
   # flag for whether to use a normal dist
-  use_normal = 1#ifelse(nu_fixed > 100, 1, 0)
+  use_normal = ifelse(nu_fixed > 100, 1, 0)
 
   data_list = list(
     N = N,
