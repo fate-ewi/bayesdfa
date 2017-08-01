@@ -1,0 +1,40 @@
+# Test ordering of data
+
+```{r}
+library(bayesdfa)
+options(mc.cores = parallel::detectCores())
+```
+
+
+```{r}
+set.seed(12345)
+num_trends <- 2
+num_ts <- 4
+num_years <- 20
+loadings_matrix <- matrix(nrow = num_ts, ncol = num_trends,
+  rnorm(num_ts * num_trends, 0, 0.6))
+
+dat <- bayesdfa:::sim_dfa(
+  num_trends = num_trends,
+  num_years = num_years,
+  num_ts = num_ts,
+  loadings_matrix = loadings_matrix,
+  sigma = rlnorm(1, meanlog = log(0.4), 0.4))
+
+m <- fit_dfa(dat$y_sim, num_trends = num_trends, zscore = T)
+print(plot_trends(rotate_trends(m)))
+
+m2 <- fit_dfa(dat$y_sim[c(3, 2, 1),], num_trends = num_trends, zscore = T)
+print(plot_trends(rotate_trends(m2)))
+```
+
+```{r, fig.height=8}
+par(mfrow = c(2, 1))
+ml_fit = MARSS::MARSS(dat$y_sim, form="dfa", model=list(m=2))
+ml_means = ml_fit$states
+matplot(t(ml_means),  type = "l")
+
+ml_fit2 = MARSS::MARSS(dat$y_sim[c(3,2,1),], form="dfa", model=list(m=2))
+ml_means2 = ml_fit2$states
+matplot(t(ml_means2), type = "l")
+```
