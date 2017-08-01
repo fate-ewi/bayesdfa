@@ -27,7 +27,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_dfa");
-    reader.add_event(87, 87, "end", "model_dfa");
+    reader.add_event(94, 94, "end", "model_dfa");
     return reader;
 }
 
@@ -54,6 +54,7 @@ private:
     matrix_d d_covar;
     vector<vector<int> > covar_indexing;
     int estimate_nu;
+    int use_normal;
 public:
     model_dfa(stan::io::var_context& context__,
         std::ostream* pstream__ = 0)
@@ -252,6 +253,11 @@ public:
         vals_i__ = context__.vals_i("estimate_nu");
         pos__ = 0;
         estimate_nu = vals_i__[pos__++];
+        context__.validate_dims("data initialization", "use_normal", "int", context__.to_vec());
+        use_normal = int(0);
+        vals_i__ = context__.vals_i("use_normal");
+        pos__ = 0;
+        use_normal = vals_i__[pos__++];
 
         // validate, data variables
         check_greater_or_equal(function__,"N",N,0);
@@ -485,6 +491,10 @@ public:
                     stan::math::assign(get_base1_lhs(Z,get_base1(row_indx_z,i,"row_indx_z",1),get_base1(col_indx_z,i,"col_indx_z",1),"Z",1), 0);
                 }
             }
+            for (int k = 1; k <= K; ++k) {
+
+                stan::math::assign(get_base1_lhs(Z,k,k,"Z",1), fabs(get_base1(Z,k,k,"Z",1)));
+            }
             stan::math::assign(pred, multiply(Z,x));
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -521,9 +531,24 @@ public:
             for (int k = 1; k <= K; ++k) {
 
                 lp_accum__.add(normal_log<propto__>(get_base1(x,k,1,"x",1), 0, 1));
-                for (int t = 2; t <= N; ++t) {
+                if (as_bool(logical_eq(use_normal,0))) {
 
-                    lp_accum__.add(normal_log<propto__>(get_base1(x,k,t,"x",1), get_base1(x,k,(t - 1),"x",1), 1));
+                    for (int t = 2; t <= N; ++t) {
+
+                        if (as_bool(logical_eq(estimate_nu,1))) {
+
+                            lp_accum__.add(student_t_log<propto__>(get_base1(x,k,t,"x",1), get_base1(nu,1,"nu",1), get_base1(x,k,(t - 1),"x",1), 1));
+                        } else {
+
+                            lp_accum__.add(student_t_log<propto__>(get_base1(x,k,t,"x",1), nu_fixed, get_base1(x,k,(t - 1),"x",1), 1));
+                        }
+                    }
+                } else {
+
+                    for (int t = 2; t <= N; ++t) {
+
+                        lp_accum__.add(normal_log<propto__>(get_base1(x,k,t,"x",1), get_base1(x,k,(t - 1),"x",1), 1));
+                    }
                 }
             }
             if (as_bool(logical_eq(estimate_nu,1))) {
@@ -676,6 +701,10 @@ public:
 
                     stan::math::assign(get_base1_lhs(Z,get_base1(row_indx_z,i,"row_indx_z",1),get_base1(col_indx_z,i,"col_indx_z",1),"Z",1), 0);
                 }
+            }
+            for (int k = 1; k <= K; ++k) {
+
+                stan::math::assign(get_base1_lhs(Z,k,k,"Z",1), fabs(get_base1(Z,k,k,"Z",1)));
             }
             stan::math::assign(pred, multiply(Z,x));
         } catch (const std::exception& e) {
