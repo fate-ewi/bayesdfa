@@ -7,7 +7,7 @@
 sim_dfa(num_trends = 2, num_years = 20, num_ts = 4,
   loadings_matrix = matrix(nrow = num_ts, ncol = num_trends, rnorm(num_ts *
   num_trends, 0, 1)), sigma = rlnorm(1, meanlog = log(0.2), 0.1),
-  varIndx = rep(1, num_ts))
+  varIndx = rep(1, num_ts), extreme_value = NULL, extreme_loc = NULL)
 }
 \arguments{
 \item{num_trends}{The number of trends}
@@ -27,6 +27,10 @@ model can be fitted. See \code{\link{fit_dfa}}. See the outfit element
 be of the same length as the number of trends.}
 
 \item{varIndx}{Indices of unique observation variances.}
+
+\item{extreme_value}{Value added to the random walk in the extreme time step}
+
+\item{extreme_loc}{Location of single extreme event in the process. The same for all processes, and defaults to round(n_t/2) where n_t is the time series length}
 }
 \value{
 A list with the following elements: y_sim is the simulated data, pred
