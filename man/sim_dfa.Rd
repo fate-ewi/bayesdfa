@@ -7,7 +7,8 @@
 sim_dfa(num_trends = 2, num_years = 20, num_ts = 4,
   loadings_matrix = matrix(nrow = num_ts, ncol = num_trends, rnorm(num_ts *
   num_trends, 0, 1)), sigma = rlnorm(1, meanlog = log(0.2), 0.1),
-  varIndx = rep(1, num_ts), extreme_value = NULL, extreme_loc = NULL)
+  varIndx = rep(1, num_ts), extreme_value = NULL, extreme_loc = NULL,
+  nu_fixed = 7)
 }
 \arguments{
 \item{num_trends}{The number of trends}
@@ -31,6 +32,8 @@ be of the same length as the number of trends.}
 \item{extreme_value}{Value added to the random walk in the extreme time step}
 
 \item{extreme_loc}{Location of single extreme event in the process. The same for all processes, and defaults to round(n_t/2) where n_t is the time series length}
+
+\item{nu_fixed}{Nu is the df parameter for the t-distribution, defaults to 7}
 }
 \value{
 A list with the following elements: y_sim is the simulated data, pred

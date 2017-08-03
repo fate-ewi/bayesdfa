@@ -14,6 +14,7 @@
 #' @param varIndx Indices of unique observation variances.
 #' @param extreme_value Value added to the random walk in the extreme time step
 #' @param extreme_loc Location of single extreme event in the process. The same for all processes, and defaults to round(n_t/2) where n_t is the time series length
+#' @param nu_fixed Nu is the df parameter for the t-distribution, defaults to 7
 #' @export
 #' @return A list with the following elements: y_sim is the simulated data, pred
 #'   is the true underlying data without observation error added, x is the
@@ -31,13 +32,14 @@ sim_dfa <- function(
   sigma = rlnorm(1, meanlog = log(0.2), 0.1),
   varIndx = rep(1, num_ts),
   extreme_value = NULL,
-  extreme_loc = NULL
+  extreme_loc = NULL,
+  nu_fixed = 7
 ) {
 
   y_ignore <- matrix(rnorm(num_ts * num_years), nrow = num_ts, ncol = num_years)
 
   d <- fit_dfa(y_ignore, num_trends = num_trends, sample = FALSE, zscore = FALSE,
-    varIndx = varIndx)
+    varIndx = varIndx, nu_fixed = nu_fixed)
 
   Z <- matrix(nrow = d$P, ncol = d$K)
   y <- vector(mode = "numeric", length = d$N)
