@@ -71,7 +71,7 @@ sim_dfa <- function(
       for (t in 2:(extreme_loc-1)) {
         x[k, t] <- x[k, t - 1] + rt(1, df = d$nu_fixed) # random walk
       }
-      x[k, extreme_loc] = x[k, extreme_loc - 1] + extreme_value
+      x[k, extreme_loc] = x[k, extreme_loc - 1] + extreme_value + rt(1, df = d$nu_fixed)
       for(t in (extreme_loc+1):d$N) {
         x[k, t] <- x[k, t - 1] + rt(1, df = d$nu_fixed) # random walk
       }
