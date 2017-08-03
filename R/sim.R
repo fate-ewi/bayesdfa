@@ -12,6 +12,8 @@
 #' @param sigma A vector of standard deviations on the observation error. Should
 #'   be of the same length as the number of trends.
 #' @param varIndx Indices of unique observation variances.
+#' @param extreme_value Value added to the random walk in the extreme time step
+#' @param extreme_loc Location of single extreme event in the process. The same for all processes, and defaults to round(n_t/2) where n_t is the time series length
 #' @export
 #' @return A list with the following elements: y_sim is the simulated data, pred
 #'   is the true underlying data without observation error added, x is the
@@ -27,7 +29,9 @@ sim_dfa <- function(
   loadings_matrix = matrix(nrow = num_ts, ncol = num_trends,
     rnorm(num_ts * num_trends, 0, 1)),
   sigma = rlnorm(1, meanlog = log(0.2), 0.1),
-  varIndx = rep(1, num_ts)
+  varIndx = rep(1, num_ts),
+  extreme_value = NULL,
+  extreme_loc = NULL
 ) {
 
   y_ignore <- matrix(rnorm(num_ts * num_years), nrow = num_ts, ncol = num_years)
@@ -58,10 +62,22 @@ sim_dfa <- function(
   # initial state for each trend
   for (k in seq_len(d$K)) {
     x[k, 1] <- rnorm(1, 0, 1)
-    for (t in 2:d$N) {
-      x[k, t] <- x[k, t - 1] + rt(1, df = d$nu_fixed) # random walk
+    if(is.null(extreme_value)) {
+      for (t in 2:d$N) {
+        x[k, t] <- x[k, t - 1] + rt(1, df = d$nu_fixed) # random walk
+      }
+    } else {
+      if(is.null(extreme_loc)) extreme_loc = round(num_years/2)
+      for (t in 2:(extreme_loc-1)) {
+        x[k, t] <- x[k, t - 1] + rt(1, df = d$nu_fixed) # random walk
+      }
+      x[k, extreme_loc] = x[k, extreme_loc - 1] + extreme_value
+      for(t in (extreme_loc+1):d$N) {
+        x[k, t] <- x[k, t - 1] + rt(1, df = d$nu_fixed) # random walk
+      }
     }
   }
+
   pred <- Z %*% x
   for (i in seq_len(d$n_pos)) {
     y[i] <- rnorm(1, pred[d$row_indx_pos[i], d$col_indx_pos[i]],
