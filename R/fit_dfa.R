@@ -56,7 +56,7 @@ fit_dfa = function(y = y,
   N = ncol(y) # number of time steps
   P = nrow(y) # number of time series
   K = num_trends # number of dfa trends
-  nZ = P * K - sum(1:K) + K # number of non-zero parameters
+  nZ = P * K - sum(1:K)  # number of non-zero parameters that are unconstrained
 
   if (zscore) {
     for (i in seq_len(P)) {
@@ -81,18 +81,20 @@ fit_dfa = function(y = y,
     num_unique_covar = 0
   }
 
+  # mat_indx now references the unconstrained values of the Z matrix.
   mat_indx = matrix(0, P, K)
   start = 1
-  for (k in 1:K) {
-    if (k == 1)
-      mat_indx[, k] = (seq_len(nZ))[start:(start + P - k)]
-    if (k > 1)
-      mat_indx[-c(0:(k - 1)), k] = (seq_len(nZ))[start:(start + P - k)]
-    start = start + (P - k + 1)
+  for(k in 1:K) {
+    for(p in (k+1):P) {
+      mat_indx[p,k] = start
+      start = start + 1
+    }
   }
-
+  # row_indx and col_indx now references the unconstrained values of the Z matrix.
   row_indx = matrix((rep(seq_len(P), K)), P, K)[which(mat_indx > 0)]
-  col_indx = rep(1:K, times = P:(P - K + 1))
+  col_indx = matrix(sort(rep(seq_len(K), P)), P, K)[which(mat_indx > 0)]
+
+  diag(mat_indx) = 1
   row_indx_z = matrix((rep(seq_len(P), K)), P, K)[which(mat_indx == 0)]
   col_indx_z = matrix(sort(rep(seq_len(K), P)), P, K)[which(mat_indx == 0)]
   row_indx_z = c(row_indx_z, 0, 0)# +2 zeros for making stan ok with data types

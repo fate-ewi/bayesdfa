@@ -25,6 +25,7 @@ data {
 parameters {
   matrix[K,N] x; //vector[N] x[P]; // random walk-trends
   vector[nZ] z; // estimated loadings in vec form
+  vector<lower=0>[K] zpos; // constrained positive values
   real<lower=0> sigma[nVariances];
   // real<lower=2> nu;
   real<lower=2> nu[estimate_nu]; // df on student-t
@@ -43,7 +44,7 @@ transformed parameters {
   }
 
   for(k in 1:K) {
-    Z[k,k] = fabs(Z[k,k]);// add constraint for Z diagonal
+    Z[k,k] = zpos[k];// add constraint for Z diagonal
   }
   // N is sample size, P = time series, K = number trends
   // [PxN] = [PxK] * [KxN]
@@ -75,6 +76,7 @@ model {
 
   // prior on loadings
   z ~ normal(0, 1);
+  zpos ~ normal(0, 1);
 
   // observation variance
   sigma ~ student_t(3, 0, 2);
