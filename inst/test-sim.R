@@ -2,12 +2,12 @@
 
 if (interactive()) options(mc.cores = parallel::detectCores())
 
-set.seed(42)
+set.seed(1)
 num_trends <- 2
-num_ts <- 5
-num_years <- 25
+num_ts <- 4
+num_years <- 20
 loadings_matrix <- matrix(nrow = num_ts, ncol = num_trends,
-  rnorm(num_ts * num_trends, 0, 0.6))
+  rnorm(num_ts * num_trends, 0, 1))
 # loadings_matrix[loadings_matrix > 1] <- 1
 # loadings_matrix[loadings_matrix > -1] <- -1
 
@@ -16,9 +16,10 @@ dat <- sim_dfa(
   num_years = num_years,
   num_ts = num_ts,
   loadings_matrix = loadings_matrix,
-  sigma = rlnorm(1, meanlog = log(0.4), 0.4))
+  sigma = 0.2, nu_fixed = 1000)
 
-m <- fit_dfa(dat$y_sim, num_trends = num_trends, zscore = FALSE)
+m <- fit_dfa(dat$y_sim, num_trends = num_trends, zscore = FALSE,
+  nu_fixed = 200, control = list(adapt_delta = 0.99, max_treedepth = 25))
 
 s <- reshape_samples(m$samples)
 Zhat_m <- apply(s$Z, c(2, 3), median)
