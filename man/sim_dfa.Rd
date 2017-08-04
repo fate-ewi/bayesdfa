@@ -8,7 +8,7 @@ sim_dfa(num_trends = 2, num_years = 20, num_ts = 4,
   loadings_matrix = matrix(nrow = num_ts, ncol = num_trends, rnorm(num_ts *
   num_trends, 0, 1)), sigma = rlnorm(1, meanlog = log(0.2), 0.1),
   varIndx = rep(1, num_ts), extreme_value = NULL, extreme_loc = NULL,
-  nu_fixed = 7)
+  nu_fixed = 100)
 }
 \arguments{
 \item{num_trends}{The number of trends}

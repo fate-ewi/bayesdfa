@@ -48,7 +48,7 @@ sim_dfa <- function(
   varIndx = rep(1, num_ts),
   extreme_value = NULL,
   extreme_loc = NULL,
-  nu_fixed = 7
+  nu_fixed = 100
 ) {
 
   y_ignore <- matrix(rnorm(num_ts * num_years), nrow = num_ts, ncol = num_years)
