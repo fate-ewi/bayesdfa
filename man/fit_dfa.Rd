@@ -6,8 +6,8 @@
 \usage{
 fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 2,
   varIndx = NULL, zscore = TRUE, iter = 2000, chains = 4,
-  control = list(adapt_delta = 0.99), nu_fixed = 7, tau = 0.1,
-  timevarying = FALSE, estimate_nu = FALSE, sample = TRUE)
+  control = list(adapt_delta = 0.99, max_treedepth = 20), nu_fixed = 101,
+  tau = 0.1, timevarying = FALSE, estimate_nu = FALSE, sample = TRUE)
 }
 \arguments{
 \item{y}{A matrix of data to fit. Columns represent time element.}
