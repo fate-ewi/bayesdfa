@@ -21,7 +21,7 @@ dat <- sim_dfa(
 m <- fit_dfa(dat$y_sim, num_trends = num_trends, zscore = FALSE,
   nu_fixed = 200, control = list(adapt_delta = 0.99, max_treedepth = 25))
 
-s <- reshape_samples(m$samples)
+s <- bayesdfa:::reshape_samples(m$samples)
 Zhat_m <- apply(s$Z, c(2, 3), median)
 Zhat_l <- apply(s$Z, c(2, 3), quantile, probs = 0.025)
 Zhat_u <- apply(s$Z, c(2, 3), quantile, probs = 0.975)
