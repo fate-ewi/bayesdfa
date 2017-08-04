@@ -56,22 +56,17 @@ sim_dfa <- function(
   d <- fit_dfa(y_ignore, num_trends = num_trends, sample = FALSE, zscore = FALSE,
     varIndx = varIndx, nu_fixed = nu_fixed)
 
-  Z <- matrix(nrow = d$P, ncol = d$K)
+  Z <- loadings_matrix
   y <- vector(mode = "numeric", length = d$N)
-  z <- as.numeric(loadings_matrix)
 
-  for(i in seq_len(d$nZ)) {
-    Z[d$row_indx[i],d$col_indx[i]] <- z[i];
-  }
-
-  # fill in zero elements
-  if(d$nZero > 2) {
-    for(i in seq_len(d$nZero-2)) {
-      Z[d$row_indx_z[i],d$col_indx_z[i]] <- 0;
-    }
-  }
   for (k in seq_len(d$K)) {
     Z[k, k] <- abs(Z[k,k]); # add constraint for Z diagonal
+  }
+  # fill in 0s
+  for(k in seq_len(d$K)) {
+    for(p in seq_len(d$P)) {
+      if(p < k) Z[p,k] = 0
+    }
   }
 
   x <- matrix(nrow = d$K, ncol = d$N) # random walk-trends

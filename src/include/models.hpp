@@ -27,7 +27,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_dfa");
-    reader.add_event(94, 94, "end", "model_dfa");
+    reader.add_event(96, 96, "end", "model_dfa");
     return reader;
 }
 
@@ -310,6 +310,8 @@ public:
         num_params_r__ += K * N;
         validate_non_negative_index("z", "nZ", nZ);
         num_params_r__ += nZ;
+        validate_non_negative_index("zpos", "K", K);
+        num_params_r__ += K;
         validate_non_negative_index("sigma", "nVariances", nVariances);
         num_params_r__ += nVariances;
         validate_non_negative_index("nu", "estimate_nu", estimate_nu);
@@ -361,6 +363,22 @@ public:
             writer__.vector_unconstrain(z);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable z: ") + e.what());
+        }
+
+        if (!(context__.contains_r("zpos")))
+            throw std::runtime_error("variable zpos missing");
+        vals_r__ = context__.vals_r("zpos");
+        pos__ = 0U;
+        validate_non_negative_index("zpos", "K", K);
+        context__.validate_dims("initialization", "zpos", "vector_d", context__.to_vec(K));
+        // generate_declaration zpos
+        vector_d zpos(static_cast<Eigen::VectorXd::Index>(K));
+        for (int j1__ = 0U; j1__ < K; ++j1__)
+            zpos(j1__) = vals_r__[pos__++];
+        try {
+            writer__.vector_lb_unconstrain(0,zpos);
+        } catch (const std::exception& e) { 
+            throw std::runtime_error(std::string("Error transforming variable zpos: ") + e.what());
         }
 
         if (!(context__.contains_r("sigma")))
@@ -441,6 +459,13 @@ public:
         else
             z = in__.vector_constrain(nZ);
 
+        Eigen::Matrix<T__,Eigen::Dynamic,1>  zpos;
+        (void) zpos;  // dummy to suppress unused var warning
+        if (jacobian__)
+            zpos = in__.vector_lb_constrain(0,K,lp__);
+        else
+            zpos = in__.vector_lb_constrain(0,K);
+
         vector<T__> sigma;
         size_t dim_sigma_0__ = nVariances;
         sigma.reserve(dim_sigma_0__);
@@ -493,7 +518,7 @@ public:
             }
             for (int k = 1; k <= K; ++k) {
 
-                stan::math::assign(get_base1_lhs(Z,k,k,"Z",1), fabs(get_base1(Z,k,k,"Z",1)));
+                stan::math::assign(get_base1_lhs(Z,k,k,"Z",1), get_base1(zpos,k,"zpos",1));
             }
             stan::math::assign(pred, multiply(Z,x));
         } catch (const std::exception& e) {
@@ -556,6 +581,7 @@ public:
                 lp_accum__.add(gamma_log<propto__>(get_base1(nu,1,"nu",1), 2, 0.10000000000000001));
             }
             lp_accum__.add(normal_log<propto__>(z, 0, 1));
+            lp_accum__.add(normal_log<propto__>(zpos, 0, 1));
             lp_accum__.add(student_t_log<propto__>(sigma, 3, 0, 2));
             for (int i = 1; i <= n_pos; ++i) {
 
@@ -588,6 +614,7 @@ public:
         names__.resize(0);
         names__.push_back("x");
         names__.push_back("z");
+        names__.push_back("zpos");
         names__.push_back("sigma");
         names__.push_back("nu");
         names__.push_back("pred");
@@ -605,6 +632,9 @@ public:
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(nZ);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(K);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(nVariances);
@@ -640,6 +670,7 @@ public:
         // read-transform, write parameters
         matrix_d x = in__.matrix_constrain(K,N);
         vector_d z = in__.vector_constrain(nZ);
+        vector_d zpos = in__.vector_lb_constrain(0,K);
         vector<double> sigma;
         size_t dim_sigma_0__ = nVariances;
         for (size_t k_0__ = 0; k_0__ < dim_sigma_0__; ++k_0__) {
@@ -657,6 +688,9 @@ public:
         }
         for (int k_0__ = 0; k_0__ < nZ; ++k_0__) {
             vars__.push_back(z[k_0__]);
+        }
+        for (int k_0__ = 0; k_0__ < K; ++k_0__) {
+            vars__.push_back(zpos[k_0__]);
         }
         for (int k_0__ = 0; k_0__ < nVariances; ++k_0__) {
             vars__.push_back(sigma[k_0__]);
@@ -704,7 +738,7 @@ public:
             }
             for (int k = 1; k <= K; ++k) {
 
-                stan::math::assign(get_base1_lhs(Z,k,k,"Z",1), fabs(get_base1(Z,k,k,"Z",1)));
+                stan::math::assign(get_base1_lhs(Z,k,k,"Z",1), get_base1(zpos,k,"zpos",1));
             }
             stan::math::assign(pred, multiply(Z,x));
         } catch (const std::exception& e) {
@@ -796,6 +830,11 @@ public:
             param_name_stream__ << "z" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
         }
+        for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "zpos" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
         for (int k_0__ = 1; k_0__ <= nVariances; ++k_0__) {
             param_name_stream__.str(std::string());
             param_name_stream__ << "sigma" << '.' << k_0__;
@@ -846,6 +885,11 @@ public:
         for (int k_0__ = 1; k_0__ <= nZ; ++k_0__) {
             param_name_stream__.str(std::string());
             param_name_stream__ << "z" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "zpos" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
         }
         for (int k_0__ = 1; k_0__ <= nVariances; ++k_0__) {
