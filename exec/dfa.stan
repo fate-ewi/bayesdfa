@@ -53,7 +53,7 @@ transformed parameters {
 model {
   // initial state for each trend
   for(k in 1:K) {
-    x[k,1] ~ normal(0, 1);
+    x[k,1] ~ cauchy(0,3);//normal(0, 1);
     if(use_normal == 0) {
       for(t in 2:N) {
         if (estimate_nu == 1) {

@@ -555,7 +555,7 @@ public:
 
             for (int k = 1; k <= K; ++k) {
 
-                lp_accum__.add(normal_log<propto__>(get_base1(x,k,1,"x",1), 0, 1));
+                lp_accum__.add(cauchy_log<propto__>(get_base1(x,k,1,"x",1), 0, 3));
                 if (as_bool(logical_eq(use_normal,0))) {
 
                     for (int t = 2; t <= N; ++t) {
