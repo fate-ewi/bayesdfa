@@ -140,7 +140,7 @@ fit_dfa = function(y = y,
     num_covar = num_covar,
     covar_indexing = covar_indexing,
     num_unique_covar = num_unique_covar,
-    est_df = as.integer(estimate_nu),
+    estimate_nu = as.integer(estimate_nu),
     use_normal
   )
   pars <- c("x", "Z", "pred", "sigma", "log_lik")
