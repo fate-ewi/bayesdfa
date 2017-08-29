@@ -114,6 +114,7 @@ fit_dfa = function(y = y,
 
   # flag for whether to use a normal dist
   use_normal = ifelse(nu_fixed > 100, 1, 0)
+  if(estimate_nu == TRUE) use_normal = 0 # competing flags
 
   data_list = list(
     N = N,
