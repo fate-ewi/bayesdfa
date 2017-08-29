@@ -83,7 +83,12 @@ sim_dfa <- function(
       for (t in 2:(extreme_loc-1)) {
         x[k, t] <- x[k, t - 1] + rt(1, df = d$nu_fixed) # random walk
       }
-      x[k, extreme_loc] = x[k, extreme_loc - 1] + extreme_value
+      # only include extreme in first trend
+      if(k == 1) {
+        x[1, extreme_loc] = x[1, extreme_loc - 1] + extreme_value
+      } else {
+        x[k, extreme_loc] = x[k, extreme_loc - 1] + rt(1, df = d$nu_fixed)
+      }
       for(t in (extreme_loc+1):d$N) {
         x[k, t] <- x[k, t - 1] + rt(1, df = d$nu_fixed) # random walk
       }
