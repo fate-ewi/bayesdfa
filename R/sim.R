@@ -20,6 +20,7 @@
 #'   is the true underlying data without observation error added, x is the
 #'   underlying trends, Z is the manipulated loadings matrix that is fed to the
 #'   model.
+#' @importFrom stats rlnorm rnorm rt
 #' @examples
 #' x <- sim_dfa()
 #' names(x)
