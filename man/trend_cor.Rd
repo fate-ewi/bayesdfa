@@ -4,8 +4,8 @@
 \alias{trend_cor}
 \title{Estimate the correlation between a DFA trend and some other timeseries}
 \usage{
-trend_cor(rotated_modelfit, y, trend = 1, trend_samples = 100,
-  stan_iter = 300, stan_chains = 1, ...)
+trend_cor(rotated_modelfit, y, trend = 1, time_window = seq_len(length(y)),
+  trend_samples = 100, stan_iter = 300, stan_chains = 1, ...)
 }
 \arguments{
 \item{rotated_modelfit}{Output from \code{\link{rotate_trends}}}
@@ -14,6 +14,10 @@ trend_cor(rotated_modelfit, y, trend = 1, trend_samples = 100,
 length as the DFA trend.}
 
 \item{trend}{A number corresponding to which trend to use.}
+
+\item{time_window}{Indices indicating a time window slice to use in the
+correlation. Defaults to using the entire time window. Can be used to walk
+through the timeseries and test the cross correlations.}
 
 \item{trend_samples}{The number of samples from the trend posterior to use. A
 model will be run for each trend sample so this value shouldn't be too
@@ -38,6 +42,9 @@ y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
 m <- fit_dfa(y = y, num_trends = 1, iter = 600, nu_fixed = 100)
 r <- rotate_trends(m)
 correlation <- trend_cor(r, y = rnorm(ncol(r$trends[,1,]), 0, 1))
+hist(correlation)
+correlation <- trend_cor(r, y = rnorm(ncol(r$trends[,1,]), 0, 1),
+  time_window = 5:15)
 hist(correlation)
 }
 }
