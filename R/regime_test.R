@@ -24,11 +24,14 @@ hist(extract(m)$l)
 hist(extract(m)$e)
 hist(extract(m)$sigma)
 
-y <- c(rnorm(10, 1.5, 0.3), rnorm(10, 0.5, 0.3), rnorm(10, -1, 0.3))
+set.seed(1)
+y <- c(rnorm(15, 1, 0.3), rnorm(15, 0.5, 0.3), rnorm(15, -.5, 0.3))
 plot(y)
 m <- stan("R/cp_norm_multiple.stan",
   data = list(T = length(y), D = y),
-  cores = 1, chains = 1, iter = 500)
+  cores = 4, chains = 4, iter = 250,
+  pars = "lp", include = FALSE)
+print(m)
 # hist(extract(m)$s)
 # x <- extract(m)$expectations
 # plot(apply(x, 2, mean), type = "l")
