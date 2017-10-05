@@ -45,4 +45,7 @@ image(x = seq_along(y), y = seq_along(y), z = ex)
 abline(v = 16)
 abline(v = 31)
 
-plot(apply(ex, 1, mean), type = "l")
+plot(y)
+plot(apply(x, 2, mean), type = "l")
+abline(v = 16)
+abline(v = 31)
