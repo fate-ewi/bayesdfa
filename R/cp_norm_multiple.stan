@@ -28,7 +28,11 @@ model {
   sigma ~ student_t(3, 0, 1);
   target += log_sum_exp(to_vector(lp));
 }
-// generated quantities {
-//   int<lower=1,upper=T> s;
-//   s = categorical_logit_rng(to_vector(lp));
-// }
+generated quantities {
+  // int<lower=1,upper=T> s;
+  matrix[T, T] expectations;
+   for (s1 in 1:T) {
+    // s = categorical_logit_rng(lp[,i]);
+      expectations[,s1] = softmax(lp[,s1]);
+   }
+}
