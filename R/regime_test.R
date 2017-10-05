@@ -1,30 +1,20 @@
 library(rstan)
-data(Nile)
-y = log(Nile)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
 
-pars = c("u", "pred", "sigma", "log_lik")
+y <- c(rpois(50, 2.5), rpois(50, 0.5))
+plot(y)
+m <- stan("R/cp.stan",
+  data = list(r_e = 2.5, r_l = 0.5, T = length(y), D = y),
+  cores = 2, chains = 2, iter = 500)
+hist(extract(m)$s)
+plot(apply(x, 2, mean), type = "l")
 
-# fit null model with 1 regime
-data_list = list(N = length(y), y = y)
-fit_1 = stan("exec/regime_1.stan", data = data_list, iter = 2000,
-  chains = 3, verbose = TRUE)
-loo::loo(loo::extract_log_lik(fit_1))$looic
 
-# fit model with 2 regimes
-data_list = list(N = length(y), y = y)
-fit_2 = stan("exec/regime_2.stan", data = data_list, iter = 2000,
-  chains = 3, verbose = TRUE)
-loo::loo(loo::extract_log_lik(fit_2))$looic
-
-# fit the model with 3 regimes
-regimes=3
-data_list = list(N = length(y), n_regime = regimes, y = y, ones = rep(1, regimes-1))
-fit_3 = stan("exec/regime_3plus.stan", data = data_list, iter = 2000,
-  chains = 3, verbose = TRUE)
-loo::loo(loo::extract_log_lik(fit_3))$looic
-
-regimes=4
-data_list = list(N = length(y), n_regime = regimes, y = y, ones = rep(1, regimes-1))
-fit_4 = stan("exec/regime_3plus.stan", data = data_list, iter = 2000,
-  chains = 3, verbose = TRUE)
-loo::loo(loo::extract_log_lik(fit_4))$looic
+y <- c(rnorm(50, 1.5, 0.3), rnorm(50, 0.5, 0.3))
+plot(y)
+m <- stan("R/cp_norm.stan",
+  data = list(T = length(y), D = y),
+  cores = 2, chains = 2, iter = 500)
+hist(extract(m)$s)
+plot(apply(x, 2, mean), type = "l")
