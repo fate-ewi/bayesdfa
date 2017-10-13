@@ -1,0 +1,76 @@
+---
+title: "HMMs2"
+output: html_document
+---
+
+```{r}
+library(rstan)
+library(ggplot2)
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+```
+
+```{r}
+# some code copied from https://github.com/luisdamiano/stancon18
+# under CC-BY 4.0
+hmm_init <- function(K, x_t) {
+  clasif <- kmeans(x_t, K)
+  init.mu <- by(x_t, clasif$cluster, mean)
+  init.sigma <- by(x_t, clasif$cluster, sd)
+  init.order <- order(init.mu)
+  
+  list(
+    mu_k = init.mu[init.order],
+    sigma_k = init.sigma[init.order]
+  )
+}
+
+hmm_fit <- function(K, x_t) {
+  
+  stan.model = 'hmm_gaussian.stan'
+  stan.data = list(
+    T = length(x_t),
+    K = K,
+    x_t = x_t
+  )
+  
+  stan(file = stan.model,
+    data = stan.data,
+    iter = 800,
+    thin = 1, chains = 1,
+    cores = 1,
+    control = list(adapt_delta = 0.9, max_treedepth = 25),
+    init = function(){hmm_init(K, x_t)})
+}
+```
+
+```{r}
+# y <- c(rnorm(40, 0, 0.2))
+y <- c(rnorm(20, 0, 0.2), rnorm(20, 0.9, 0.2), rnorm(20, -0.6, 0.2))
+# y <- c(rnorm(20, 0, 0.2), rnorm(20, 0.9, 0.2))
+plot(y)
+m <- hmm_fit(3, y)
+m
+# alpha_tk <- extract(m, pars = 'alpha_tk')[[1]]
+gamma_tk <- extract(m, pars = 'gamma_tk')[[1]]
+# matplot(apply(gamma_tk, 2:3, mean), type = "l")
+# xx <- apply(alpha_tk, c(2, 3), mean)
+# gr <- apply(xx, 1, which.max)
+# plot(y, col = RColorBrewer::brewer.pal(3, "Dark2")[gr])
+
+l <- apply(gamma_tk, 2:3, quantile, probs = 0.1)
+u <- apply(gamma_tk, 2:3, quantile, probs = 0.9)
+med <- apply(gamma_tk, 2:3, quantile, probs = 0.5)
+range01 <- function(x) (x-min(x))/(max(x)-min(x))
+
+par(mfrow = c(1, ncol(med)))
+for (i in 1:ncol(med)) {
+  plot(l[,i], ylim = c(0, 1), col = "grey40", lty = 2, type = "n",
+    main = paste("State", LETTERS[i]))
+  # lines(1:nrow(u), u[,i], col = "grey40", lty = 2)
+  polygon(c(1:nrow(u), nrow(u):1), c(l[,i], rev(u[,i])), col = "grey70", border = "grey70")
+  lines(1:nrow(u), med[,i], col = "black", lwd = 2)
+  points(1:nrow(u), range01(y), col = "#FF000070", pch = 3)
+}
+```
+
