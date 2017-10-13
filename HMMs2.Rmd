@@ -74,3 +74,14 @@ for (i in 1:ncol(med)) {
 }
 ```
 
+Plot states and means 
+```{r}
+par(mfrow = c(1, 2))
+plot(colMeans(apply(gamma_tk, c(1,2), which.max)), main="States", ylab="States")
+
+u_k <- extract(m, pars = 'mu_k')[[1]]
+plot(colMeans(u_k)[round(colMeans(apply(gamma_tk, c(1,2), which.max)))], main="States", ylab="Y")
+points(y, col="red")
+```
+
+
