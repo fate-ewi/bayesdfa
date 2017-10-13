@@ -36,10 +36,10 @@ hmm_fit <- function(K, x_t) {
   
   stan(file = stan.model,
     data = stan.data,
-    iter = 800,
+    iter = 600,
     thin = 1, chains = 1,
     cores = 1,
-    control = list(adapt_delta = 0.9, max_treedepth = 25),
+    control = list(adapt_delta = 0.8, max_treedepth = 25),
     init = function(){hmm_init(K, x_t)})
 }
 ```
@@ -66,7 +66,8 @@ range01 <- function(x) (x-min(x))/(max(x)-min(x))
 par(mfrow = c(1, ncol(med)))
 for (i in 1:ncol(med)) {
   plot(l[,i], ylim = c(0, 1), col = "grey40", lty = 2, type = "n",
-    main = paste("State", LETTERS[i]))
+    main = paste("State", LETTERS[i]), ylab = "Prob.",
+    xlab = "Time")
   # lines(1:nrow(u), u[,i], col = "grey40", lty = 2)
   polygon(c(1:nrow(u), nrow(u):1), c(l[,i], rev(u[,i])), col = "grey70", border = "grey70")
   lines(1:nrow(u), med[,i], col = "black", lwd = 2)
