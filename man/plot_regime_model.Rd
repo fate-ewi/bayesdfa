@@ -4,12 +4,16 @@
 \alias{plot_regime_model}
 \title{Plot the state probabilities from \code{find_regimes2}}
 \usage{
-plot_regime_model(model, probs = c(0.1, 0.9))
+plot_regime_model(model, probs = c(0.05, 0.95), type = c("probability",
+  "means"), regime_prob_threshold = 0.9)
 }
 \arguments{
 \item{model}{A model returned by \code{\link{find_regimes2}}.}
 
 \item{probs}{A numeric vector of quantiles to plot the credible intervals at.}
+
+\item{regime_prob_threshold}{The probability density that must be above 0.5
+before we classify a regime (only affects \code{"means"} plot).}
 }
 \description{
 Plot the state probabilities from \code{find_regimes2}
@@ -22,5 +26,18 @@ Note that the original timeseries data (dots) are shown scaled between 0 and 1.
 data(Nile)
 m <- find_regimes2(log(Nile))
 plot_regime_model(m)
+plot_regime_model(m, type = "means")
+
+set.seed(1)
+y <- c(rnorm(20, 0, 0.2), rnorm(20, 0.5, 0.2), rnorm(20, 1, 0.2))
+m <- find_regimes2(y, n_regimes = 2)
+plot_regime_model(m)
+plot_regime_model(m, type = "means", regime_prob_threshold = 0.95)
+
+set.seed(1)
+y <- c(rnorm(20, 0, 0.1), rnorm(20, 0.5, 0.1), rnorm(20, 1, 0.1))
+m <- find_regimes2(y, n_regimes = 3)
+plot_regime_model(m)
+plot_regime_model(m, type = "means", regime_prob_threshold = 0.95)
 }
 }

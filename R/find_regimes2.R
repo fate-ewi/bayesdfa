@@ -47,7 +47,8 @@ find_regimes2 <- function(y, n_regimes = 2, iter = 2000, chains = 1, ...) {
 #'
 #' @param model A model returned by \code{\link{find_regimes2}}.
 #' @param probs A numeric vector of quantiles to plot the credible intervals at.
-#'
+#' @param regime_prob_threshold The probability density that must be above 0.5
+#'   before we classify a regime (only affects \code{"means"} plot).
 #' @details
 #' Note that the original timeseries data (dots) are shown scaled between 0 and 1.
 #'
@@ -58,8 +59,22 @@ find_regimes2 <- function(y, n_regimes = 2, iter = 2000, chains = 1, ...) {
 #' m <- find_regimes2(log(Nile))
 #' plot_regime_model(m)
 #' plot_regime_model(m, type = "means")
+#'
+#' set.seed(1)
+#' y <- c(rnorm(20, 0, 0.2), rnorm(20, 0.5, 0.2), rnorm(20, 1, 0.2))
+#' m <- find_regimes2(y, n_regimes = 2)
+#' plot_regime_model(m)
+#' plot_regime_model(m, type = "means", regime_prob_threshold = 0.95)
+#'
+#' set.seed(1)
+#' y <- c(rnorm(20, 0, 0.1), rnorm(20, 0.5, 0.1), rnorm(20, 1, 0.1))
+#' m <- find_regimes2(y, n_regimes = 3)
+#' plot_regime_model(m)
+#' plot_regime_model(m, type = "means", regime_prob_threshold = 0.95)
 #' }
-plot_regime_model <- function(model, probs = c(0.1, 0.9), type = c("probability", "means")) {
+plot_regime_model <- function(model, probs = c(0.05, 0.95),
+  type = c("probability", "means"),
+  regime_prob_threshold = 0.9) {
 
   gamma_tk <- rstan::extract(model$model, pars = 'gamma_tk')[[1]]
   mu_k <- rstan::extract(model$model, pars = 'mu_k')[[1]]
@@ -70,8 +85,11 @@ plot_regime_model <- function(model, probs = c(0.1, 0.9), type = c("probability"
   mu_k_low <- apply(mu_k, 2, quantile, probs = probs[[1]])
   mu_k_high <- apply(mu_k, 2, quantile, probs = probs[[2]])
   mu_k <- apply(mu_k, 2, median)
-  confident_regimes <- apply(gamma_tk, 2:3, function(x) mean(x > 0.5) > 0.8)
-  regime_indexes <- apply(confident_regimes, 1, which.max)
+  confident_regimes <- apply(gamma_tk, 2:3, function(x) mean(x > 0.5) > regime_prob_threshold)
+  regime_indexes <- apply(confident_regimes, 1, function(x) {
+    w <- which(x)
+    ifelse(length(w) == 0, NA, w)
+  })
 
   if (type[[1]] == "probability") {
     oldpar <- par("mfrow")
@@ -89,12 +107,14 @@ plot_regime_model <- function(model, probs = c(0.1, 0.9), type = c("probability"
   } else {
     plot(as.numeric(model$y), col = "#FF000070", pch = 3, ylab = "Time series value",
       xlab = "Time")
-    for (i in seq_len(max(regime_indexes))) {
-      x <- seq_len(length(model$y))[which(regime_indexes == i)]
-      y_length <- sum(regime_indexes == i)
-      polygon(c(x, rev(x)), c(rep(mu_k_low[i], y_length), rep(mu_k_high[i], y_length)),
-        border = NA, col = "#00000050")
-      lines(x, rep(mu_k[i], y_length), main = "States", ylab = "Y")
+    if (!all(is.na(regime_indexes))) {
+      for (i in seq_along(regime_indexes)) {
+        segments(x0 = i-0.5, x1 = i+0.5, y0 = mu_k[regime_indexes[i]], y1 = mu_k[regime_indexes[i]])
+        polygon(c(i-0.5, i-0.5, i+0.5, i+0.5),
+          c(mu_k_low[regime_indexes[i]], mu_k_high[regime_indexes[i]],
+            mu_k_high[regime_indexes[i]], mu_k_low[regime_indexes[i]]),
+          border = NA, col = "#00000050")
+      }
     }
   }
 }
