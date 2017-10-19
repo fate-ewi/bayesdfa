@@ -3,7 +3,6 @@
 S3method(print,bayesdfa)
 export(find_dfa_trends)
 export(find_inverted_chains)
-export(find_regimes)
 export(find_regimes2)
 export(find_swans)
 export(fit_dfa)
