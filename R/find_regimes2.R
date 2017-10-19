@@ -12,6 +12,7 @@ hmm_init <- function(K, x_t) {
 #' Fit models with differing numbers of regimes to trend data
 #'
 #' @param y Data, time series or trend from fitted DFA model.
+#' @param sds, Optional time series of standard deviations of estimates. If passed in, residual variance not estimated
 #' @param n_regimes Number of regimes to evaluate
 #' @param ... Other parameters to pass to \code{\link[rstan]{sampling}}
 #' @param iter MCMC iterations, defaults to 2000
@@ -26,12 +27,21 @@ hmm_init <- function(K, x_t) {
 #' find_regimes2(log(Nile))
 #' }
 
-find_regimes2 <- function(y, n_regimes = 2, iter = 2000, chains = 1, ...) {
+find_regimes2 <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, ...) {
+
+  est_sigma = 0
+  if(sds == NULL) {
+    # estimate sigma, instead of using fixed values
+    sds = rep(0, length(y))
+    est_sigma = 1
+  }
 
   stan_data = list(
     T = length(y),
     K = n_regimes,
-    x_t = y)
+    x_t = y,
+    sigma_t = sds,
+    est_sigma = est_sigma)
 
   m <- rstan::sampling(stanmodels$hmm_gaussian,
     data = stan_data,

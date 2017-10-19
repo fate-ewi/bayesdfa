@@ -4,10 +4,13 @@
 \alias{find_regimes2}
 \title{Fit models with differing numbers of regimes to trend data}
 \usage{
-find_regimes2(y, n_regimes = 2, iter = 2000, chains = 1, ...)
+find_regimes2(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1,
+  ...)
 }
 \arguments{
 \item{y}{Data, time series or trend from fitted DFA model.}
+
+\item{sds, }{Optional time series of standard deviations of estimates. If passed in, residual variance not estimated}
 
 \item{n_regimes}{Number of regimes to evaluate}
 
