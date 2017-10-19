@@ -27,10 +27,10 @@ hmm_init <- function(K, x_t) {
 #' @examples
 #' \dontrun{
 #' data(Nile)
-#' find_regimes2(log(Nile))
+#' find_regimes(log(Nile))
 #' }
 
-find_regimes2 <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, ...) {
+find_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, ...) {
 
   est_sigma = 0
   if(is.null(sds)) {
@@ -56,9 +56,9 @@ find_regimes2 <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1,
   list(model = m, y = y)
 }
 
-#' Plot the state probabilities from \code{find_regimes2}
+#' Plot the state probabilities from \code{find_regimes}
 #'
-#' @param model A model returned by \code{\link{find_regimes2}}.
+#' @param model A model returned by \code{\link{find_regimes}}.
 #' @param probs A numeric vector of quantiles to plot the credible intervals at.
 #' @param regime_prob_threshold The probability density that must be above 0.5
 #'   before we classify a regime (only affects \code{"means"} plot).
@@ -69,19 +69,19 @@ find_regimes2 <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1,
 #' @examples
 #' \dontrun{
 #' data(Nile)
-#' m <- find_regimes2(log(Nile))
+#' m <- find_regimes(log(Nile))
 #' plot_regime_model(m)
 #' plot_regime_model(m, type = "means")
 #'
 #' set.seed(1)
 #' y <- c(rnorm(20, 0, 0.2), rnorm(20, 0.5, 0.2), rnorm(20, 1, 0.2))
-#' m <- find_regimes2(y, n_regimes = 2)
+#' m <- find_regimes(y, n_regimes = 2)
 #' plot_regime_model(m)
 #' plot_regime_model(m, type = "means", regime_prob_threshold = 0.95)
 #'
 #' set.seed(1)
 #' y <- c(rnorm(20, 0, 0.1), rnorm(20, 0.5, 0.1), rnorm(20, 1, 0.1))
-#' m <- find_regimes2(y, n_regimes = 3)
+#' m <- find_regimes(y, n_regimes = 3)
 #' plot_regime_model(m)
 #' plot_regime_model(m, type = "means", regime_prob_threshold = 0.95)
 #' }
