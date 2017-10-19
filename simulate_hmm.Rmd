@@ -36,7 +36,7 @@ for(i in 1:n_sims) {
   # simulate observed data
   y = rnorm(n_t, u[x], sigma)
 
-  fit = find_regimes(y)
+  fit = find_regimes(y, iter = 4000, chains = 1)
   
 }
 ```

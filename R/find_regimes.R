@@ -44,7 +44,9 @@ find_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, 
     K = n_regimes,
     x_t = y,
     sigma_t = sds,
-    est_sigma = est_sigma)
+    est_sigma = est_sigma,
+    pars = c("p_1k", "A_ij", "mu_k", "sigma_k", "log_lik", "unalpha_tk", "gamma_tk",
+      "unbeta_tk","ungamma_tk","alpha_tk", "beta_tk", "zstar_t", "logp_zstar_t"))
 
   m <- rstan::sampling(stanmodels$hmm_gaussian,
     data = stan_data,

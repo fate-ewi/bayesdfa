@@ -72,7 +72,7 @@ generated quantities {
   vector[K] alpha_tk[T];
   vector[K] beta_tk[T];
   vector[K] gamma_tk[T];
-
+  vector[T] log_lik; // added to store log-likelihood for calculation of LOOIC
   int<lower=1, upper=K> zstar_t[T];
   real logp_zstar_t;
 
@@ -115,8 +115,21 @@ generated quantities {
         ungamma_tk[t] = alpha_tk[t] .* beta_tk[t];
     }
 
-    for(t in 1:T)
+    for(t in 1:T) {
+      # gamma_tk is vector of normalized probability of state given all data, p(z_t = j | x_{1:T})
       gamma_tk[t] = normalize(ungamma_tk[t]);
+      log_lik[t] = 0; // initialize
+      // log_lik is log[L(x[1] | z[1]) * p(z[1]) + L(x[2] | z[2]) * p(z[2]) + ...]
+      if(est_sigma == 1) {
+        for (j in 1:K)
+          log_lik[t] = log_lik[t] + gamma_tk[t, j] * exp(normal_lpdf(x_t[t] | mu_k[j], sigma_k[j]));
+      } else {
+        for (j in 1:K)
+          log_lik[t] = log_lik[t] + gamma_tk[t, j] * exp(normal_lpdf(x_t[t] | mu_k[j], sigma_t[t]));
+      }
+      log_lik[t] = log(log_lik[t]);
+    }
+
   } // Forwards-backwards
 
   { // Viterbi algorithm
