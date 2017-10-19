@@ -21,6 +21,9 @@ hmm_init <- function(K, x_t) {
 #'   with different IDs across chains).
 #' @export
 #'
+#' @importFrom rstan sampling
+#' @import Rcpp
+#'
 #' @examples
 #' \dontrun{
 #' data(Nile)
@@ -30,7 +33,7 @@ hmm_init <- function(K, x_t) {
 find_regimes2 <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, ...) {
 
   est_sigma = 0
-  if(sds == NULL) {
+  if(is.null(sds)) {
     # estimate sigma, instead of using fixed values
     sds = rep(0, length(y))
     est_sigma = 1
