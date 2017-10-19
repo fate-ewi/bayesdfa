@@ -12,7 +12,7 @@ hmm_init <- function(K, x_t) {
 #' Fit models with differing numbers of regimes to trend data
 #'
 #' @param y Data, time series or trend from fitted DFA model.
-#' @param sds, Optional time series of standard deviations of estimates. If passed in, residual variance not estimated
+#' @param sds Optional time series of standard deviations of estimates. If passed in, residual variance not estimated
 #' @param n_regimes Number of regimes to evaluate
 #' @param ... Other parameters to pass to \code{\link[rstan]{sampling}}
 #' @param iter MCMC iterations, defaults to 2000
