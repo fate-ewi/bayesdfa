@@ -1334,7 +1334,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_hmm_gaussian");
-    reader.add_event(135, 135, "end", "model_hmm_gaussian");
+    reader.add_event(162, 162, "end", "model_hmm_gaussian");
     return reader;
 }
 
@@ -1373,6 +1373,8 @@ private:
     int T;
     int K;
     vector<double> x_t;
+    int est_sigma;
+    vector<double> sigma_t;
 public:
     model_hmm_gaussian(stan::io::var_context& context__,
         std::ostream* pstream__ = 0)
@@ -1426,10 +1428,26 @@ public:
         for (size_t i_0__ = 0; i_0__ < x_t_limit_0__; ++i_0__) {
             x_t[i_0__] = vals_r__[pos__++];
         }
+        context__.validate_dims("data initialization", "est_sigma", "int", context__.to_vec());
+        est_sigma = int(0);
+        vals_i__ = context__.vals_i("est_sigma");
+        pos__ = 0;
+        est_sigma = vals_i__[pos__++];
+        validate_non_negative_index("sigma_t", "T", T);
+        context__.validate_dims("data initialization", "sigma_t", "double", context__.to_vec(T));
+        validate_non_negative_index("sigma_t", "T", T);
+        sigma_t = std::vector<double>(T,double(0));
+        vals_r__ = context__.vals_r("sigma_t");
+        pos__ = 0;
+        size_t sigma_t_limit_0__ = T;
+        for (size_t i_0__ = 0; i_0__ < sigma_t_limit_0__; ++i_0__) {
+            sigma_t[i_0__] = vals_r__[pos__++];
+        }
 
         // validate, data variables
         check_greater_or_equal(function__,"T",T,1);
         check_greater_or_equal(function__,"K",K,1);
+        check_greater_or_equal(function__,"est_sigma",est_sigma,0);
         // initialize data variables
 
         try {
@@ -1617,14 +1635,26 @@ public:
                 stan::math::fill(accumulator,DUMMY_VAR__);
 
 
-                stan::math::assign(get_base1_lhs(unalpha_tk,1,"unalpha_tk",1), add(log(p_1k),normal_log(get_base1(x_t,1,"x_t",1),mu_k,sigma_k)));
+                if (as_bool(logical_eq(est_sigma,1))) {
+
+                    stan::math::assign(get_base1_lhs(unalpha_tk,1,"unalpha_tk",1), add(log(p_1k),normal_log(get_base1(x_t,1,"x_t",1),mu_k,sigma_k)));
+                } else {
+
+                    stan::math::assign(get_base1_lhs(unalpha_tk,1,"unalpha_tk",1), add(log(p_1k),normal_log(get_base1(x_t,1,"x_t",1),mu_k,get_base1(sigma_t,1,"sigma_t",1))));
+                }
                 for (int t = 2; t <= T; ++t) {
 
                     for (int j = 1; j <= K; ++j) {
 
                         for (int i = 1; i <= K; ++i) {
 
-                            stan::math::assign(get_base1_lhs(accumulator,i,"accumulator",1), ((get_base1(get_base1(unalpha_tk,(t - 1),"unalpha_tk",1),i,"unalpha_tk",2) + log(get_base1(get_base1(A_ij,i,"A_ij",1),j,"A_ij",2))) + normal_log(get_base1(x_t,t,"x_t",1),get_base1(mu_k,j,"mu_k",1),get_base1(sigma_k,j,"sigma_k",1))));
+                            if (as_bool(logical_eq(est_sigma,1))) {
+
+                                stan::math::assign(get_base1_lhs(accumulator,i,"accumulator",1), ((get_base1(get_base1(unalpha_tk,(t - 1),"unalpha_tk",1),i,"unalpha_tk",2) + log(get_base1(get_base1(A_ij,i,"A_ij",1),j,"A_ij",2))) + normal_log(get_base1(x_t,t,"x_t",1),get_base1(mu_k,j,"mu_k",1),get_base1(sigma_k,j,"sigma_k",1))));
+                            } else {
+
+                                stan::math::assign(get_base1_lhs(accumulator,i,"accumulator",1), ((get_base1(get_base1(unalpha_tk,(t - 1),"unalpha_tk",1),i,"unalpha_tk",2) + log(get_base1(get_base1(A_ij,i,"A_ij",1),j,"A_ij",2))) + normal_log(get_base1(x_t,t,"x_t",1),get_base1(mu_k,j,"mu_k",1),get_base1(sigma_t,t,"sigma_t",1))));
+                            }
                         }
                         stan::math::assign(get_base1_lhs(get_base1_lhs(unalpha_tk,t,"unalpha_tk",1),j,"unalpha_tk",2), log_sum_exp(accumulator));
                     }
@@ -1807,14 +1837,26 @@ public:
                 stan::math::fill(accumulator,DUMMY_VAR__);
 
 
-                stan::math::assign(get_base1_lhs(unalpha_tk,1,"unalpha_tk",1), add(log(p_1k),normal_log(get_base1(x_t,1,"x_t",1),mu_k,sigma_k)));
+                if (as_bool(logical_eq(est_sigma,1))) {
+
+                    stan::math::assign(get_base1_lhs(unalpha_tk,1,"unalpha_tk",1), add(log(p_1k),normal_log(get_base1(x_t,1,"x_t",1),mu_k,sigma_k)));
+                } else {
+
+                    stan::math::assign(get_base1_lhs(unalpha_tk,1,"unalpha_tk",1), add(log(p_1k),normal_log(get_base1(x_t,1,"x_t",1),mu_k,get_base1(sigma_t,1,"sigma_t",1))));
+                }
                 for (int t = 2; t <= T; ++t) {
 
                     for (int j = 1; j <= K; ++j) {
 
                         for (int i = 1; i <= K; ++i) {
 
-                            stan::math::assign(get_base1_lhs(accumulator,i,"accumulator",1), ((get_base1(get_base1(unalpha_tk,(t - 1),"unalpha_tk",1),i,"unalpha_tk",2) + log(get_base1(get_base1(A_ij,i,"A_ij",1),j,"A_ij",2))) + normal_log(get_base1(x_t,t,"x_t",1),get_base1(mu_k,j,"mu_k",1),get_base1(sigma_k,j,"sigma_k",1))));
+                            if (as_bool(logical_eq(est_sigma,1))) {
+
+                                stan::math::assign(get_base1_lhs(accumulator,i,"accumulator",1), ((get_base1(get_base1(unalpha_tk,(t - 1),"unalpha_tk",1),i,"unalpha_tk",2) + log(get_base1(get_base1(A_ij,i,"A_ij",1),j,"A_ij",2))) + normal_log(get_base1(x_t,t,"x_t",1),get_base1(mu_k,j,"mu_k",1),get_base1(sigma_k,j,"sigma_k",1))));
+                            } else {
+
+                                stan::math::assign(get_base1_lhs(accumulator,i,"accumulator",1), ((get_base1(get_base1(unalpha_tk,(t - 1),"unalpha_tk",1),i,"unalpha_tk",2) + log(get_base1(get_base1(A_ij,i,"A_ij",1),j,"A_ij",2))) + normal_log(get_base1(x_t,t,"x_t",1),get_base1(mu_k,j,"mu_k",1),get_base1(sigma_t,t,"sigma_t",1))));
+                            }
                         }
                         stan::math::assign(get_base1_lhs(get_base1_lhs(unalpha_tk,t,"unalpha_tk",1),j,"unalpha_tk",2), log_sum_exp(accumulator));
                     }
@@ -1900,7 +1942,13 @@ public:
 
                             for (int i = 1; i <= K; ++i) {
 
-                                stan::math::assign(get_base1_lhs(accumulator,i,"accumulator",1), ((get_base1(get_base1(unbeta_tk,t,"unbeta_tk",1),i,"unbeta_tk",2) + log(get_base1(get_base1(A_ij,j,"A_ij",1),i,"A_ij",2))) + normal_log(get_base1(x_t,t,"x_t",1),get_base1(mu_k,i,"mu_k",1),get_base1(sigma_k,i,"sigma_k",1))));
+                                if (as_bool(logical_eq(est_sigma,1))) {
+
+                                    stan::math::assign(get_base1_lhs(accumulator,i,"accumulator",1), ((get_base1(get_base1(unbeta_tk,t,"unbeta_tk",1),i,"unbeta_tk",2) + log(get_base1(get_base1(A_ij,j,"A_ij",1),i,"A_ij",2))) + normal_log(get_base1(x_t,t,"x_t",1),get_base1(mu_k,i,"mu_k",1),get_base1(sigma_k,i,"sigma_k",1))));
+                                } else {
+
+                                    stan::math::assign(get_base1_lhs(accumulator,i,"accumulator",1), ((get_base1(get_base1(unbeta_tk,t,"unbeta_tk",1),i,"unbeta_tk",2) + log(get_base1(get_base1(A_ij,j,"A_ij",1),i,"A_ij",2))) + normal_log(get_base1(x_t,t,"x_t",1),get_base1(mu_k,i,"mu_k",1),get_base1(sigma_t,t,"sigma_t",1))));
+                                }
                             }
                             stan::math::assign(get_base1_lhs(get_base1_lhs(unbeta_tk,(t - 1),"unbeta_tk",1),j,"unbeta_tk",2), log_sum_exp(accumulator));
                         }
@@ -1930,8 +1978,16 @@ public:
                 stan::math::fill(delta_tk,DUMMY_VAR__);
 
 
-                for (int j = 1; j <= K; ++j) {
-                    stan::math::assign(get_base1_lhs(get_base1_lhs(delta_tk,1,"delta_tk",1),K,"delta_tk",2), normal_log(get_base1(x_t,1,"x_t",1),get_base1(mu_k,j,"mu_k",1),get_base1(sigma_k,j,"sigma_k",1)));
+                if (as_bool(logical_eq(est_sigma,1))) {
+
+                    for (int j = 1; j <= K; ++j) {
+                        stan::math::assign(get_base1_lhs(get_base1_lhs(delta_tk,1,"delta_tk",1),K,"delta_tk",2), normal_log(get_base1(x_t,1,"x_t",1),get_base1(mu_k,j,"mu_k",1),get_base1(sigma_k,j,"sigma_k",1)));
+                    }
+                } else {
+
+                    for (int j = 1; j <= K; ++j) {
+                        stan::math::assign(get_base1_lhs(get_base1_lhs(delta_tk,1,"delta_tk",1),K,"delta_tk",2), normal_log(get_base1(x_t,1,"x_t",1),get_base1(mu_k,j,"mu_k",1),get_base1(sigma_t,1,"sigma_t",1)));
+                    }
                 }
                 for (int t = 2; t <= T; ++t) {
 
@@ -1947,7 +2003,13 @@ public:
                                 stan::math::fill(logp,DUMMY_VAR__);
 
 
-                                stan::math::assign(logp, ((get_base1(get_base1(delta_tk,(t - 1),"delta_tk",1),i,"delta_tk",2) + log(get_base1(get_base1(A_ij,i,"A_ij",1),j,"A_ij",2))) + normal_log(get_base1(x_t,t,"x_t",1),get_base1(mu_k,j,"mu_k",1),get_base1(sigma_k,j,"sigma_k",1))));
+                                if (as_bool(logical_eq(est_sigma,1))) {
+
+                                    stan::math::assign(logp, ((get_base1(get_base1(delta_tk,(t - 1),"delta_tk",1),i,"delta_tk",2) + log(get_base1(get_base1(A_ij,i,"A_ij",1),j,"A_ij",2))) + normal_log(get_base1(x_t,t,"x_t",1),get_base1(mu_k,j,"mu_k",1),get_base1(sigma_k,j,"sigma_k",1))));
+                                } else {
+
+                                    stan::math::assign(logp, ((get_base1(get_base1(delta_tk,(t - 1),"delta_tk",1),i,"delta_tk",2) + log(get_base1(get_base1(A_ij,i,"A_ij",1),j,"A_ij",2))) + normal_log(get_base1(x_t,t,"x_t",1),get_base1(mu_k,j,"mu_k",1),get_base1(sigma_t,t,"sigma_t",1))));
+                                }
                                 if (as_bool(logical_gt(logp,get_base1(get_base1(delta_tk,t,"delta_tk",1),j,"delta_tk",2)))) {
 
                                     stan::math::assign(get_base1_lhs(get_base1_lhs(a_tk,t,"a_tk",1),j,"a_tk",2), i);

@@ -11,6 +11,8 @@ data {
   int<lower=1> T;                   // number of observations (length)
   int<lower=1> K;                   // number of hidden states
   real x_t[T];                      // observations
+  int<lower=0> est_sigma;           // flag, whether to estimate sigma (1) or use values passed in (0)
+  real sigma_t[T];               // estimated sigma for each observation
 }
 
 parameters {
@@ -18,10 +20,9 @@ parameters {
   simplex[K] p_1k;                  // initial state probabilities
   simplex[K] A_ij[K];               // transition probabilities
                                     // A_ij[i][j] = p(z_t = j | z_{t-1} = i)
-
   // Continuous observation model
   ordered[K] mu_k;                  // observation means
-  real<lower=0> sigma_k[K];         // observation standard deviations
+  real<lower=0> sigma_k[K];         // observation standard deviations, optionally estimated if est_sigma == 1. Can the quantity K * est_sigma be used to dimension sigma_k?
 }
 
 transformed parameters {
@@ -30,14 +31,27 @@ transformed parameters {
   { // Forward algorithm log p(z_t = j | x_{1:t})
     real accumulator[K];
 
-    unalpha_tk[1] = log(p_1k) + normal_lpdf(x_t[1] | mu_k, sigma_k);
+    if(est_sigma == 1) {
+      // use estimated sigma values
+      unalpha_tk[1] = log(p_1k) + normal_lpdf(x_t[1] | mu_k, sigma_k);
+    } else {
+      // otherwise use values passed in by user, fixed
+      unalpha_tk[1] = log(p_1k) + normal_lpdf(x_t[1] | mu_k, sigma_t[1]);
+    }
 
     for (t in 2:T) {
       for (j in 1:K) { // j = current (t)
         for (i in 1:K) { // i = previous (t-1)
                          // Murphy (2012) Eq. 17.48
                          // belief state      + transition prob + local evidence at t
-          accumulator[i] = unalpha_tk[t-1, i] + log(A_ij[i, j]) + normal_lpdf(x_t[t] | mu_k[j], sigma_k[j]);
+            if(est_sigma == 1) {
+              // use estimated sigma values
+              accumulator[i] = unalpha_tk[t-1, i] + log(A_ij[i, j]) + normal_lpdf(x_t[t] | mu_k[j], sigma_k[j]);
+            } else {
+              // otherwise use values passed in by user, fixed
+              accumulator[i] = unalpha_tk[t-1, i] + log(A_ij[i, j]) + normal_lpdf(x_t[t] | mu_k[j], sigma_t[t]);
+            }
+
         }
         unalpha_tk[t, j] = log_sum_exp(accumulator);
       }
@@ -81,7 +95,12 @@ generated quantities {
         for (i in 1:K) { // i = next (t)
                          // Murphy (2012) Eq. 17.58
                          // backwards t    + transition prob + local evidence at t
-          accumulator[i] = unbeta_tk[t, i] + log(A_ij[j, i]) + normal_lpdf(x_t[t] | mu_k[i], sigma_k[i]);
+            if(est_sigma == 1) {
+              accumulator[i] = unbeta_tk[t, i] + log(A_ij[j, i]) + normal_lpdf(x_t[t] | mu_k[i], sigma_k[i]);
+            } else {
+              accumulator[i] = unbeta_tk[t, i] + log(A_ij[j, i]) + normal_lpdf(x_t[t] | mu_k[i], sigma_t[t]);
+            }
+
           }
         unbeta_tk[t-1, j] = log_sum_exp(accumulator);
       }
@@ -104,16 +123,24 @@ generated quantities {
     int a_tk[T, K];                 // backpointer to the most likely previous state on the most probable path
     real delta_tk[T, K];            // max prob for the seq up to t
                                     // with final output from state k for time t
-
+    if(est_sigma == 1) {
     for (j in 1:K)
       delta_tk[1, K] = normal_lpdf(x_t[1] | mu_k[j], sigma_k[j]);
+    } else {
+    for (j in 1:K)
+      delta_tk[1, K] = normal_lpdf(x_t[1] | mu_k[j], sigma_t[1]);
+    }
 
     for (t in 2:T) {
       for (j in 1:K) { // j = current (t)
         delta_tk[t, j] = negative_infinity();
         for (i in 1:K) { // i = previous (t-1)
           real logp;
+          if(est_sigma == 1) {
           logp = delta_tk[t-1, i] + log(A_ij[i, j]) + normal_lpdf(x_t[t] | mu_k[j], sigma_k[j]);
+          } else {
+            logp = delta_tk[t-1, i] + log(A_ij[i, j]) + normal_lpdf(x_t[t] | mu_k[j], sigma_t[t]);
+          }
           if (logp > delta_tk[t, j]) {
             a_tk[t, j] = i;
             delta_tk[t, j] = logp;
