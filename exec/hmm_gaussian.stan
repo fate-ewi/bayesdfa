@@ -116,7 +116,7 @@ generated quantities {
     }
 
     for(t in 1:T) {
-      # gamma_tk is vector of normalized probability of state given all data, p(z_t = j | x_{1:T})
+      // gamma_tk is vector of normalized probability of state given all data, p(z_t = j | x_{1:T})
       gamma_tk[t] = normalize(ungamma_tk[t]);
       log_lik[t] = 0; // initialize
       // log_lik is log[L(x[1] | z[1]) * p(z[1]) + L(x[2] | z[2]) * p(z[2]) + ...]

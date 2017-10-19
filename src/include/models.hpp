@@ -1334,7 +1334,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_hmm_gaussian");
-    reader.add_event(162, 162, "end", "model_hmm_gaussian");
+    reader.add_event(175, 175, "end", "model_hmm_gaussian");
     return reader;
 }
 
@@ -1721,6 +1721,7 @@ public:
         names__.push_back("alpha_tk");
         names__.push_back("beta_tk");
         names__.push_back("gamma_tk");
+        names__.push_back("log_lik");
         names__.push_back("zstar_t");
         names__.push_back("logp_zstar_t");
     }
@@ -1765,6 +1766,9 @@ public:
         dims__.resize(0);
         dims__.push_back(T);
         dims__.push_back(K);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(T);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(T);
@@ -1904,6 +1908,12 @@ public:
         vector<vector_d> gamma_tk(T, (vector_d(static_cast<Eigen::VectorXd::Index>(K))));
         stan::math::initialize(gamma_tk, std::numeric_limits<double>::quiet_NaN());
         stan::math::fill(gamma_tk,DUMMY_VAR__);
+        validate_non_negative_index("log_lik", "T", T);
+        vector_d log_lik(static_cast<Eigen::VectorXd::Index>(T));
+        (void) log_lik;  // dummy to suppress unused var warning
+
+        stan::math::initialize(log_lik, std::numeric_limits<double>::quiet_NaN());
+        stan::math::fill(log_lik,DUMMY_VAR__);
         validate_non_negative_index("zstar_t", "T", T);
         vector<int> zstar_t(T, 0);
         stan::math::fill(zstar_t, std::numeric_limits<int>::min());
@@ -1964,7 +1974,21 @@ public:
                 stan::math::assign(get_base1_lhs(ungamma_tk,t,"ungamma_tk",1), elt_multiply(get_base1(alpha_tk,t,"alpha_tk",1),get_base1(beta_tk,t,"beta_tk",1)));
             }
             for (int t = 1; t <= T; ++t) {
+
                 stan::math::assign(get_base1_lhs(gamma_tk,t,"gamma_tk",1), normalize(get_base1(ungamma_tk,t,"ungamma_tk",1), pstream__));
+                stan::math::assign(get_base1_lhs(log_lik,t,"log_lik",1), 0);
+                if (as_bool(logical_eq(est_sigma,1))) {
+
+                    for (int j = 1; j <= K; ++j) {
+                        stan::math::assign(get_base1_lhs(log_lik,t,"log_lik",1), (get_base1(log_lik,t,"log_lik",1) + (get_base1(get_base1(gamma_tk,t,"gamma_tk",1),j,"gamma_tk",2) * exp(normal_log(get_base1(x_t,t,"x_t",1),get_base1(mu_k,j,"mu_k",1),get_base1(sigma_k,j,"sigma_k",1))))));
+                    }
+                } else {
+
+                    for (int j = 1; j <= K; ++j) {
+                        stan::math::assign(get_base1_lhs(log_lik,t,"log_lik",1), (get_base1(log_lik,t,"log_lik",1) + (get_base1(get_base1(gamma_tk,t,"gamma_tk",1),j,"gamma_tk",2) * exp(normal_log(get_base1(x_t,t,"x_t",1),get_base1(mu_k,j,"mu_k",1),get_base1(sigma_t,t,"sigma_t",1))))));
+                    }
+                }
+                stan::math::assign(get_base1_lhs(log_lik,t,"log_lik",1), log(get_base1(log_lik,t,"log_lik",1)));
             }
             {
                 validate_non_negative_index("a_tk", "T", T);
@@ -2067,6 +2091,9 @@ public:
             for (int k_0__ = 0; k_0__ < T; ++k_0__) {
                 vars__.push_back(gamma_tk[k_0__][k_1__]);
             }
+        }
+        for (int k_0__ = 0; k_0__ < T; ++k_0__) {
+            vars__.push_back(log_lik[k_0__]);
         }
         for (int k_0__ = 0; k_0__ < T; ++k_0__) {
             vars__.push_back(zstar_t[k_0__]);
@@ -2172,6 +2199,11 @@ public:
         }
         for (int k_0__ = 1; k_0__ <= T; ++k_0__) {
             param_name_stream__.str(std::string());
+            param_name_stream__ << "log_lik" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_0__ = 1; k_0__ <= T; ++k_0__) {
+            param_name_stream__.str(std::string());
             param_name_stream__ << "zstar_t" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
         }
@@ -2252,6 +2284,11 @@ public:
                 param_name_stream__ << "gamma_tk" << '.' << k_0__ << '.' << k_1__;
                 param_names__.push_back(param_name_stream__.str());
             }
+        }
+        for (int k_0__ = 1; k_0__ <= T; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "log_lik" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
         }
         for (int k_0__ = 1; k_0__ <= T; ++k_0__) {
             param_name_stream__.str(std::string());
