@@ -39,6 +39,24 @@ find_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, 
     est_sigma = 1
   }
 
+  if(n_regimes == 1) {
+    stan_data = list(
+      T = length(y),
+      K = 1,
+      x_t = y,
+      sigma_t = sds,
+      est_sigma = est_sigma,
+      pars = c("mu_k", "sigma_k", "log_lik"))
+
+    m <- rstan::sampling(stanmodels$regime_1,
+      data = stan_data,
+      iter = iter,
+      chains = chains,
+      init = function() {hmm_init(n_regimes, y)},
+      ...)
+  }
+
+  if(n_regimes > 1) {
   stan_data = list(
     T = length(y),
     K = n_regimes,
@@ -54,6 +72,7 @@ find_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, 
     chains = chains,
     init = function() {hmm_init(n_regimes, y)},
     ...)
+  }
 
   list(model = m, y = y)
 }
