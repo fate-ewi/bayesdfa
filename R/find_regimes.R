@@ -9,6 +9,43 @@ hmm_init <- function(K, x_t) {
   list(mu_k = init.mu[init.order], sigma_k = init.sigma[init.order])
 }
 
+
+#' Fit multiple models with differing numbers of regimes to trend data
+#'
+#' @param y Data, time series or trend from fitted DFA model.
+#' @param sds Optional time series of standard deviations of estimates. If passed in, residual variance not estimated
+#' @param min_regimes Smallest of regimes to evaluate, defaults to 1
+#' @param max_regimes Biggest of regimes to evaluate, defaults to 5
+#' @param ... Other parameters to pass to \code{\link[rstan]{sampling}}
+#' @param iter MCMC iterations, defaults to 2000
+#' @param chains MCMC chains, defaults to 1 (note that running multiple chains
+#'   may result in a label switching problem where the regimes are identified
+#'   with different IDs across chains).
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' data(Nile)
+#' find_regimes(log(Nile))
+#' }
+find_regimes <- function(y, sds = NULL, min_regimes = 1, max_regimes = 5, iter = 2000, chains = 1, ...) {
+  df = data.frame("regimes" = min_regimes:max_regimes, "looic" = NA)
+
+  best_loo = 1.0e10
+  best_model = NA
+  for(regime in min_regimes:max_regimes) {
+    fit = fit_regimes(y=y, sds = sds, n_regimes = regime, iter = iter, chains = chains, ...)
+    df$looic[which(df$regimes==regime)] = fit$looic
+    if(fit$looic < best_loo) {
+      best_loo = fit$looic
+      best_model = fit
+    }
+  }
+
+  return(list(table = df, best_model = best_model))
+
+}
+
 #' Fit models with differing numbers of regimes to trend data
 #'
 #' @param y Data, time series or trend from fitted DFA model.
@@ -31,7 +68,7 @@ hmm_init <- function(K, x_t) {
 #' find_regimes(log(Nile))
 #' }
 
-find_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, ...) {
+fit_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, ...) {
 
   est_sigma = 0
   if(is.null(sds)) {
@@ -74,8 +111,8 @@ find_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, 
     init = function() {hmm_init(n_regimes, y)},
     ...)
   }
-
-  list(model = m, y = y, looic = loo::loo(loo::extract_log_lik(m))$looic)
+  looic = loo::loo(loo::extract_log_lik(m))$looic
+  list(model = m, y = y, looic = looic)
 }
 
 #' Plot the state probabilities from \code{find_regimes}

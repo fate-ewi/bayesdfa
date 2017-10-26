@@ -1334,7 +1334,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_hmm_gaussian");
-    reader.add_event(176, 176, "end", "model_hmm_gaussian");
+    reader.add_event(178, 178, "end", "model_hmm_gaussian");
     return reader;
 }
 
