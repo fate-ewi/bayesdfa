@@ -120,13 +120,15 @@ generated quantities {
       // gamma_tk is vector of normalized probability of state given all data, p(z_t = j | x_{1:T})
 
       log_lik[t] = 0; // initialize
-      // log_lik is log[L(x[1] | z[1]) * p(z[1]) + L(x[2] | z[2]) * p(z[2]) + ...]
+      // log_lik accumulator. need to sum to integrate over states,
+      // p(x_t) = p(x_t | z_t = 1) * p(z_t = 1)...
+      // gamma_tk is p(x_t | z_t = k), alpha_tk is p(z_t = k | x[1:T])
       if(est_sigma == 1) {
         for (j in 1:K)
-          log_lik[t] = log_lik[t] + gamma_tk[t,j]*alpha_tk[t,j];//normal_lpdf(x_t[t] | mu_k[j], sigma_k[j]);
+          log_lik[t] = log_lik[t] + gamma_tk[t,j]*alpha_tk[t,j];
       } else {
         for (j in 1:K)
-          log_lik[t] = log_lik[t] + gamma_tk[t,j]*alpha_tk[t,j];//normal_lpdf(x_t[t] | mu_k[j], sigma_t[t]);
+          log_lik[t] = log_lik[t] + gamma_tk[t,j]*alpha_tk[t,j];
       }
       log_lik[t] = log(log_lik[t]);
     }

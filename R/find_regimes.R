@@ -22,6 +22,7 @@ hmm_init <- function(K, x_t) {
 #' @export
 #'
 #' @importFrom rstan sampling
+#' @importFrom loo extract_log_lik loo
 #' @import Rcpp
 #'
 #' @examples
@@ -74,7 +75,7 @@ find_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, 
     ...)
   }
 
-  list(model = m, y = y)
+  list(model = m, y = y, looic = loo::loo(loo::extract_log_lik(m))$looic)
 }
 
 #' Plot the state probabilities from \code{find_regimes}
