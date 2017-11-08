@@ -2,7 +2,7 @@
 % Please edit documentation in R/find_regimes.R
 \name{plot_regime_model}
 \alias{plot_regime_model}
-\title{Plot the state probabilities from \code{find_regimes}}
+\title{Plot the state probabilities from \code{\link{find_regimes}}}
 \usage{
 plot_regime_model(model, probs = c(0.05, 0.95), type = c("probability",
   "means"), regime_prob_threshold = 0.9)
@@ -16,7 +16,7 @@ plot_regime_model(model, probs = c(0.05, 0.95), type = c("probability",
 before we classify a regime (only affects \code{"means"} plot).}
 }
 \description{
-Plot the state probabilities from \code{find_regimes}
+Plot the state probabilities from \code{\link{find_regimes}}
 }
 \details{
 Note that the original timeseries data (dots) are shown scaled between 0 and 1.

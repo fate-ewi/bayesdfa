@@ -4,17 +4,18 @@
 \alias{find_regimes}
 \title{Fit multiple models with differing numbers of regimes to trend data}
 \usage{
-find_regimes(y, sds = NULL, min_regimes = 1, max_regimes = 5,
+find_regimes(y, sds = NULL, min_regimes = 1, max_regimes = 3,
   iter = 2000, chains = 1, ...)
 }
 \arguments{
 \item{y}{Data, time series or trend from fitted DFA model.}
 
-\item{sds}{Optional time series of standard deviations of estimates. If passed in, residual variance not estimated}
+\item{sds}{Optional time series of standard deviations of estimates. If
+passed in, residual variance not estimated}
 
 \item{min_regimes}{Smallest of regimes to evaluate, defaults to 1}
 
-\item{max_regimes}{Biggest of regimes to evaluate, defaults to 5}
+\item{max_regimes}{Biggest of regimes to evaluate, defaults to 3}
 
 \item{iter}{MCMC iterations, defaults to 2000}
 
