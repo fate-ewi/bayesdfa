@@ -1,0 +1,86 @@
+# DFA trend-climate regression example
+
+```{r, message=FALSE, warning=FALSE}
+library(bayesdfa)
+library(assertthat)
+library(rstanarm)
+library(dplyr)
+cli <- read.csv("~/Downloads/SCC_BiologyEnvTrends.csv", stringsAsFactors = TRUE, strip.white = TRUE)
+dfa <- readRDS("~/Downloads/GOA_biol_77.rds")
+```
+
+```{r}
+dfa$summary
+m <- dfa$best_model
+```
+
+```{r}
+rot <- rotate_trends(m)
+plot_trends(rot)
+dim(rot$trends)
+matplot(t(rot$trends[1:50,1,]), type = "l", col = "#00000030", lty = 1)
+matplot(t(rot$trends[1:50,2,]), type = "l", col = "#00000030", lty = 1)
+matplot(t(rot$trends[1:50,3,]), type = "l", col = "#00000030", lty = 1)
+matplot(t(rot$trends[1:50,4,]), type = "l", col = "#00000030", lty = 1)
+```
+
+```{r}
+names(cli)
+years <- as.numeric(colnames(dfa$best_model$data))
+cli_dat <- select(cli, Year, PDO, NPGO) 
+cli_dat <- filter(cli_dat, Year %in% years)
+```
+
+```{r, message=FALSE, results='hide'}
+trend_lm <- function(rotated_modelfit, trend_number = 1L, samples = 50L, ITER = 1000L, 
+  CHAINS = 1L, n_eff = 50, rhat = 1.1, show_plot = TRUE) {
+  
+  total_mcmc <- dim(rotated_modelfit$trends)[1]
+  draws <- sample(seq_len(total_mcmc), samples)
+  
+  post <- list()
+  for (i in seq_along(draws)) {
+    dd <- data.frame(cli_dat, dfa_trend_draw = rot$trends[draws[i],trend_number,])
+    m_temp <- stan_glm(dfa_trend_draw ~ PDO + NPGO, data = dd, 
+      iter = ITER, chains = CHAINS,
+      prior = normal(0, 2, autoscale = FALSE),
+      prior_intercept = normal(0, 5, autoscale = FALSE),
+      prior_aux = student_t(df = 3, 0, 5, autoscale = FALSE))
+    assert_that(all(m_temp$stan_summary[,"Rhat"] < rhat))
+    assert_that(all(m_temp$stan_summary[,"n_eff"] > n_eff))
+    post[[i]] <- as.data.frame(as.matrix(m_temp))
+  }
+  post_all <- dplyr::bind_rows(post)
+  
+  if (show_plot) {
+    plot_range <- c(-1.5, 1.5)
+    par(mfrow = c(2, 2))
+    plot(post_all$PDO, type = "l", col = "#00000080", lwd = 0.5)
+    abline(v = seq(0, ITER * length(draws), ITER), col = "#FF000050")
+    plot(post_all$NPGO, type = "l", col = "#00000080", lwd = 0.5)
+    abline(v = seq(0, ITER * length(draws), ITER), col = "#FF000050")
+    hist(post_all$PDO, breaks = seq(plot_range[1], plot_range[2], 0.01), 
+      col = "grey60", border = "grey70", ylab = "", 
+      xlim = plot_range)
+    hist(post_all$NPGO, breaks = seq(plot_range[1], plot_range[2], 0.01), 
+      col = "grey60", border = "grey70", ylab = "", 
+      xlim = plot_range)
+  }
+  invisible(post_all)
+}
+```
+
+```{r, message=FALSE, results='hide', warning=FALSE}
+set.seed(1)
+m1 <- trend_lm(rot, trend_number = 1L)
+m2 <- trend_lm(rot, trend_number = 2L)
+m3 <- trend_lm(rot, trend_number = 3L)
+m4 <- trend_lm(rot, trend_number = 4L)
+```
+
+Access the posterior draws:
+
+```{r}
+head(m1)
+```
+
