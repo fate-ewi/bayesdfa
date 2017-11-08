@@ -28,7 +28,10 @@ matplot(t(rot$trends[1:50,4,]), type = "l", col = "#00000030", lty = 1)
 names(cli)
 years <- as.numeric(colnames(dfa$best_model$data))
 cli_dat <- select(cli, Year, PDO, NPGO) 
-cli_dat <- filter(cli_dat, Year %in% years)
+cli_dat <- filter(cli_dat, Year %in% years) %>% 
+  mutate(PDO = arm::rescale(PDO), NPGO = arm::rescale(NPGO))
+sd(cli_dat$NPGO)
+sd(cli_dat$PDO)
 ```
 
 ```{r, message=FALSE, results='hide'}
@@ -43,8 +46,8 @@ trend_lm <- function(rotated_modelfit, trend_number = 1L, samples = 50L, ITER = 
     dd <- data.frame(cli_dat, dfa_trend_draw = rot$trends[draws[i],trend_number,])
     m_temp <- stan_glm(dfa_trend_draw ~ PDO + NPGO, data = dd, 
       iter = ITER, chains = CHAINS,
-      prior = normal(0, 2, autoscale = FALSE),
-      prior_intercept = normal(0, 5, autoscale = FALSE),
+      prior = normal(0, 5, autoscale = FALSE),
+      prior_intercept = normal(0, 10, autoscale = FALSE),
       prior_aux = student_t(df = 3, 0, 5, autoscale = FALSE))
     assert_that(all(m_temp$stan_summary[,"Rhat"] < rhat))
     assert_that(all(m_temp$stan_summary[,"n_eff"] > n_eff))
@@ -59,12 +62,10 @@ trend_lm <- function(rotated_modelfit, trend_number = 1L, samples = 50L, ITER = 
     abline(v = seq(0, ITER * length(draws), ITER), col = "#FF000050")
     plot(post_all$NPGO, type = "l", col = "#00000080", lwd = 0.5)
     abline(v = seq(0, ITER * length(draws), ITER), col = "#FF000050")
-    hist(post_all$PDO, breaks = seq(plot_range[1], plot_range[2], 0.01), 
-      col = "grey60", border = "grey70", ylab = "", 
-      xlim = plot_range)
-    hist(post_all$NPGO, breaks = seq(plot_range[1], plot_range[2], 0.01), 
-      col = "grey60", border = "grey70", ylab = "", 
-      xlim = plot_range)
+    plot(density(post_all$PDO), xlim = plot_range)
+    abline(v = 0, col = "#00000050")
+    plot(density(post_all$NPGO), xlim = plot_range)
+    abline(v = 0, col = "#00000050")
   }
   invisible(post_all)
 }
