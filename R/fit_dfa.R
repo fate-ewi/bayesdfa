@@ -14,6 +14,7 @@
 #'   a normal random walk is used instead of a random walk with a t-distribution.
 #' @param tau A fixed parameter describing the standard deviation on the random
 #'   walk for the factor loadings in the case of time varying DFA.
+#' @param est_correlation Boolean, whether to estimate correlation of observation error. Defaults to FALSE
 #' @param timevarying Logical. If \code{TRUE}, a time varying DFA. Note that the
 #'   time varying DFA has not been extensively tested and may not return
 #'   sensible answers.
@@ -49,6 +50,7 @@ fit_dfa = function(y = y,
   control = list(adapt_delta = 0.99, max_treedepth = 20),
   nu_fixed = 101,
   tau = 0.1,
+  est_correlation = FALSE,
   timevarying = FALSE,
   estimate_nu = FALSE,
   sample = TRUE) {
@@ -110,7 +112,12 @@ fit_dfa = function(y = y,
   row_indx_pos = matrix((rep(seq_len(P), N)), P, N)[which(!is.na(y))]
   col_indx_pos = matrix(sort(rep(seq_len(N), P)), P, N)[which(!is.na(y))]
   n_pos = length(row_indx_pos)
-  y = y[which(!is.na(y))]
+
+  row_indx_na = matrix((rep(seq_len(P), N)), P, N)[which(is.na(y))]
+  col_indx_na = matrix(sort(rep(seq_len(N), P)), P, N)[which(is.na(y))]
+  n_na = length(row_indx_na)
+
+  y = y[which(!is.na(y))] # don't vectorize y anymore
 
   # flag for whether to use a normal dist
   use_normal = ifelse(nu_fixed > 100, 1, 0)
@@ -135,6 +142,9 @@ fit_dfa = function(y = y,
     row_indx_pos = row_indx_pos,
     col_indx_pos = col_indx_pos,
     n_pos = n_pos,
+    row_indx_na = row_indx_na,
+    col_indx_na = col_indx_na,
+    n_na = n_na,
     nu_fixed = nu_fixed,
     tau = tau,
     d_covar = d_covar,
@@ -142,9 +152,12 @@ fit_dfa = function(y = y,
     covar_indexing = covar_indexing,
     num_unique_covar = num_unique_covar,
     estimate_nu = as.integer(estimate_nu),
-    use_normal
+    use_normal = use_normal,
+    est_cor = as.numeric(est_correlation)
   )
   pars <- c("x", "Z", "pred", "sigma", "log_lik")
+  if(est_correlation) pars = c(pars, "Omega") # add correlation matrix
+
   if (!is.null(covar)) pars <- c(pars, "D")
   if (estimate_nu) pars <- c(pars, "nu")
 

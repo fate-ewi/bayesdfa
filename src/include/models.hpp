@@ -403,7 +403,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_dfa");
-    reader.add_event(96, 96, "end", "model_dfa");
+    reader.add_event(152, 152, "end", "model_dfa");
     return reader;
 }
 
@@ -421,9 +421,12 @@ private:
     vector<int> row_indx_z;
     vector<int> col_indx_z;
     int n_pos;
-    vector<double> y;
     vector<int> row_indx_pos;
     vector<int> col_indx_pos;
+    vector<double> y;
+    int n_na;
+    vector<int> row_indx_na;
+    vector<int> col_indx_na;
     double nu_fixed;
     int num_covar;
     int num_unique_covar;
@@ -431,6 +434,8 @@ private:
     vector<vector<int> > covar_indexing;
     int estimate_nu;
     int use_normal;
+    int est_cor;
+    int n_pcor;
 public:
     model_dfa(stan::io::var_context& context__,
         std::ostream* pstream__ = 0)
@@ -549,16 +554,6 @@ public:
         vals_i__ = context__.vals_i("n_pos");
         pos__ = 0;
         n_pos = vals_i__[pos__++];
-        validate_non_negative_index("y", "n_pos", n_pos);
-        context__.validate_dims("data initialization", "y", "double", context__.to_vec(n_pos));
-        validate_non_negative_index("y", "n_pos", n_pos);
-        y = std::vector<double>(n_pos,double(0));
-        vals_r__ = context__.vals_r("y");
-        pos__ = 0;
-        size_t y_limit_0__ = n_pos;
-        for (size_t i_0__ = 0; i_0__ < y_limit_0__; ++i_0__) {
-            y[i_0__] = vals_r__[pos__++];
-        }
         validate_non_negative_index("row_indx_pos", "n_pos", n_pos);
         context__.validate_dims("data initialization", "row_indx_pos", "int", context__.to_vec(n_pos));
         validate_non_negative_index("row_indx_pos", "n_pos", n_pos);
@@ -578,6 +573,41 @@ public:
         size_t col_indx_pos_limit_0__ = n_pos;
         for (size_t i_0__ = 0; i_0__ < col_indx_pos_limit_0__; ++i_0__) {
             col_indx_pos[i_0__] = vals_i__[pos__++];
+        }
+        validate_non_negative_index("y", "n_pos", n_pos);
+        context__.validate_dims("data initialization", "y", "double", context__.to_vec(n_pos));
+        validate_non_negative_index("y", "n_pos", n_pos);
+        y = std::vector<double>(n_pos,double(0));
+        vals_r__ = context__.vals_r("y");
+        pos__ = 0;
+        size_t y_limit_0__ = n_pos;
+        for (size_t i_0__ = 0; i_0__ < y_limit_0__; ++i_0__) {
+            y[i_0__] = vals_r__[pos__++];
+        }
+        context__.validate_dims("data initialization", "n_na", "int", context__.to_vec());
+        n_na = int(0);
+        vals_i__ = context__.vals_i("n_na");
+        pos__ = 0;
+        n_na = vals_i__[pos__++];
+        validate_non_negative_index("row_indx_na", "n_na", n_na);
+        context__.validate_dims("data initialization", "row_indx_na", "int", context__.to_vec(n_na));
+        validate_non_negative_index("row_indx_na", "n_na", n_na);
+        row_indx_na = std::vector<int>(n_na,int(0));
+        vals_i__ = context__.vals_i("row_indx_na");
+        pos__ = 0;
+        size_t row_indx_na_limit_0__ = n_na;
+        for (size_t i_0__ = 0; i_0__ < row_indx_na_limit_0__; ++i_0__) {
+            row_indx_na[i_0__] = vals_i__[pos__++];
+        }
+        validate_non_negative_index("col_indx_na", "n_na", n_na);
+        context__.validate_dims("data initialization", "col_indx_na", "int", context__.to_vec(n_na));
+        validate_non_negative_index("col_indx_na", "n_na", n_na);
+        col_indx_na = std::vector<int>(n_na,int(0));
+        vals_i__ = context__.vals_i("col_indx_na");
+        pos__ = 0;
+        size_t col_indx_na_limit_0__ = n_na;
+        for (size_t i_0__ = 0; i_0__ < col_indx_na_limit_0__; ++i_0__) {
+            col_indx_na[i_0__] = vals_i__[pos__++];
         }
         context__.validate_dims("data initialization", "nu_fixed", "double", context__.to_vec());
         nu_fixed = double(0);
@@ -634,6 +664,11 @@ public:
         vals_i__ = context__.vals_i("use_normal");
         pos__ = 0;
         use_normal = vals_i__[pos__++];
+        context__.validate_dims("data initialization", "est_cor", "int", context__.to_vec());
+        est_cor = int(0);
+        vals_i__ = context__.vals_i("est_cor");
+        pos__ = 0;
+        est_cor = vals_i__[pos__++];
 
         // validate, data variables
         check_greater_or_equal(function__,"N",N,0);
@@ -664,12 +699,32 @@ public:
         for (int k0__ = 0; k0__ < n_pos; ++k0__) {
             check_greater_or_equal(function__,"col_indx_pos[k0__]",col_indx_pos[k0__],0);
         }
+        check_greater_or_equal(function__,"n_na",n_na,0);
+        for (int k0__ = 0; k0__ < n_na; ++k0__) {
+            check_greater_or_equal(function__,"row_indx_na[k0__]",row_indx_na[k0__],0);
+        }
+        for (int k0__ = 0; k0__ < n_na; ++k0__) {
+            check_greater_or_equal(function__,"col_indx_na[k0__]",col_indx_na[k0__],0);
+        }
         check_greater_or_equal(function__,"nu_fixed",nu_fixed,1);
         check_greater_or_equal(function__,"num_covar",num_covar,0);
         check_greater_or_equal(function__,"num_unique_covar",num_unique_covar,0);
         // initialize data variables
+        n_pcor = int(0);
+        stan::math::fill(n_pcor, std::numeric_limits<int>::min());
 
         try {
+            if (as_bool(logical_eq(est_cor,0))) {
+
+                stan::math::assign(n_pcor, P);
+                if (as_bool(logical_lt(nVariances,2))) {
+
+                    stan::math::assign(n_pcor, 2);
+                }
+            } else {
+
+                stan::math::assign(n_pcor, P);
+            }
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
             // Next line prevents compiler griping about no return
@@ -692,6 +747,10 @@ public:
         num_params_r__ += nVariances;
         validate_non_negative_index("nu", "estimate_nu", estimate_nu);
         num_params_r__ += estimate_nu;
+        validate_non_negative_index("ymiss", "n_na", n_na);
+        num_params_r__ += n_na;
+        validate_non_negative_index("Lcorr", "n_pcor", n_pcor);
+        num_params_r__ += ((n_pcor * (n_pcor - 1)) / 2);
     }
 
     ~model_dfa() { }
@@ -791,6 +850,41 @@ public:
             throw std::runtime_error(std::string("Error transforming variable nu: ") + e.what());
         }
 
+        if (!(context__.contains_r("ymiss")))
+            throw std::runtime_error("variable ymiss missing");
+        vals_r__ = context__.vals_r("ymiss");
+        pos__ = 0U;
+        validate_non_negative_index("ymiss", "n_na", n_na);
+        context__.validate_dims("initialization", "ymiss", "double", context__.to_vec(n_na));
+        // generate_declaration ymiss
+        std::vector<double> ymiss(n_na,double(0));
+        for (int i0__ = 0U; i0__ < n_na; ++i0__)
+            ymiss[i0__] = vals_r__[pos__++];
+        for (int i0__ = 0U; i0__ < n_na; ++i0__)
+            try {
+            writer__.scalar_unconstrain(ymiss[i0__]);
+        } catch (const std::exception& e) { 
+            throw std::runtime_error(std::string("Error transforming variable ymiss: ") + e.what());
+        }
+
+        if (!(context__.contains_r("Lcorr")))
+            throw std::runtime_error("variable Lcorr missing");
+        vals_r__ = context__.vals_r("Lcorr");
+        pos__ = 0U;
+        validate_non_negative_index("Lcorr", "n_pcor", n_pcor);
+        validate_non_negative_index("Lcorr", "n_pcor", n_pcor);
+        context__.validate_dims("initialization", "Lcorr", "matrix_d", context__.to_vec(n_pcor,n_pcor));
+        // generate_declaration Lcorr
+        matrix_d Lcorr(static_cast<Eigen::VectorXd::Index>(n_pcor),static_cast<Eigen::VectorXd::Index>(n_pcor));
+        for (int j2__ = 0U; j2__ < n_pcor; ++j2__)
+            for (int j1__ = 0U; j1__ < n_pcor; ++j1__)
+                Lcorr(j1__,j2__) = vals_r__[pos__++];
+        try {
+            writer__.cholesky_corr_unconstrain(Lcorr);
+        } catch (const std::exception& e) { 
+            throw std::runtime_error(std::string("Error transforming variable Lcorr: ") + e.what());
+        }
+
         params_r__ = writer__.data_r();
         params_i__ = writer__.data_i();
     }
@@ -862,6 +956,23 @@ public:
                 nu.push_back(in__.scalar_lb_constrain(2));
         }
 
+        vector<T__> ymiss;
+        size_t dim_ymiss_0__ = n_na;
+        ymiss.reserve(dim_ymiss_0__);
+        for (size_t k_0__ = 0; k_0__ < dim_ymiss_0__; ++k_0__) {
+            if (jacobian__)
+                ymiss.push_back(in__.scalar_constrain(lp__));
+            else
+                ymiss.push_back(in__.scalar_constrain());
+        }
+
+        Eigen::Matrix<T__,Eigen::Dynamic,Eigen::Dynamic>  Lcorr;
+        (void) Lcorr;  // dummy to suppress unused var warning
+        if (jacobian__)
+            Lcorr = in__.cholesky_corr_constrain(n_pcor,lp__);
+        else
+            Lcorr = in__.cholesky_corr_constrain(n_pcor);
+
 
         // transformed parameters
         validate_non_negative_index("pred", "P", P);
@@ -878,9 +989,37 @@ public:
 
         stan::math::initialize(Z, DUMMY_VAR__);
         stan::math::fill(Z,DUMMY_VAR__);
+        validate_non_negative_index("yall", "P", P);
+        validate_non_negative_index("yall", "N", N);
+        Eigen::Matrix<T__,Eigen::Dynamic,Eigen::Dynamic>  yall(static_cast<Eigen::VectorXd::Index>(P),static_cast<Eigen::VectorXd::Index>(N));
+        (void) yall;  // dummy to suppress unused var warning
+
+        stan::math::initialize(yall, DUMMY_VAR__);
+        stan::math::fill(yall,DUMMY_VAR__);
+        validate_non_negative_index("sigma_vec", "P", P);
+        Eigen::Matrix<T__,Eigen::Dynamic,1>  sigma_vec(static_cast<Eigen::VectorXd::Index>(P));
+        (void) sigma_vec;  // dummy to suppress unused var warning
+
+        stan::math::initialize(sigma_vec, DUMMY_VAR__);
+        stan::math::fill(sigma_vec,DUMMY_VAR__);
 
 
         try {
+            for (int p = 1; p <= P; ++p) {
+
+                stan::math::assign(get_base1_lhs(sigma_vec,p,"sigma_vec",1), get_base1(sigma,get_base1(varIndx,p,"varIndx",1),"sigma",1));
+            }
+            for (int i = 1; i <= n_pos; ++i) {
+
+                stan::math::assign(get_base1_lhs(yall,get_base1(row_indx_pos,i,"row_indx_pos",1),get_base1(col_indx_pos,i,"col_indx_pos",1),"yall",1), get_base1(y,i,"y",1));
+            }
+            if (as_bool(logical_gt(n_na,0))) {
+
+                for (int i = 1; i <= n_na; ++i) {
+
+                    stan::math::assign(get_base1_lhs(yall,get_base1(row_indx_na,i,"row_indx_na",1),get_base1(col_indx_na,i,"col_indx_na",1),"yall",1), get_base1(ymiss,i,"ymiss",1));
+                }
+            }
             for (int i = 1; i <= nZ; ++i) {
 
                 stan::math::assign(get_base1_lhs(Z,get_base1(row_indx,i,"row_indx",1),get_base1(col_indx,i,"col_indx",1),"Z",1), get_base1(z,i,"z",1));
@@ -922,6 +1061,22 @@ public:
                 }
             }
         }
+        for (int i0__ = 0; i0__ < P; ++i0__) {
+            for (int i1__ = 0; i1__ < N; ++i1__) {
+                if (stan::math::is_uninitialized(yall(i0__,i1__))) {
+                    std::stringstream msg__;
+                    msg__ << "Undefined transformed parameter: yall" << '[' << i0__ << ']' << '[' << i1__ << ']';
+                    throw std::runtime_error(msg__.str());
+                }
+            }
+        }
+        for (int i0__ = 0; i0__ < P; ++i0__) {
+            if (stan::math::is_uninitialized(sigma_vec(i0__))) {
+                std::stringstream msg__;
+                msg__ << "Undefined transformed parameter: sigma_vec" << '[' << i0__ << ']';
+                throw std::runtime_error(msg__.str());
+            }
+        }
 
         const char* function__ = "validate transformed params";
         (void) function__;  // dummy to suppress unused var warning
@@ -959,9 +1114,22 @@ public:
             lp_accum__.add(normal_log<propto__>(z, 0, 1));
             lp_accum__.add(normal_log<propto__>(zpos, 0, 1));
             lp_accum__.add(student_t_log<propto__>(sigma, 3, 0, 2));
-            for (int i = 1; i <= n_pos; ++i) {
+            if (as_bool(logical_eq(est_cor,1))) {
 
-                lp_accum__.add(normal_log<propto__>(get_base1(y,i,"y",1), get_base1(pred,get_base1(row_indx_pos,i,"row_indx_pos",1),get_base1(col_indx_pos,i,"col_indx_pos",1),"pred",1), get_base1(sigma,get_base1(varIndx,get_base1(row_indx_pos,i,"row_indx_pos",1),"varIndx",1),"sigma",1)));
+                lp_accum__.add(lkj_corr_cholesky_log<propto__>(Lcorr, 1));
+            }
+            if (as_bool(logical_eq(est_cor,0))) {
+
+                for (int i = 1; i <= P; ++i) {
+
+                    lp_accum__.add(normal_log(get_base1(yall,i,"yall",1),get_base1(pred,i,"pred",1),get_base1(sigma_vec,i,"sigma_vec",1)));
+                }
+            } else {
+
+                for (int i = 1; i <= N; ++i) {
+
+                    lp_accum__.add(multi_normal_cholesky_log(col(yall,i),col(pred,i),diag_pre_multiply(sigma_vec,Lcorr)));
+                }
             }
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -993,9 +1161,15 @@ public:
         names__.push_back("zpos");
         names__.push_back("sigma");
         names__.push_back("nu");
+        names__.push_back("ymiss");
+        names__.push_back("Lcorr");
         names__.push_back("pred");
         names__.push_back("Z");
+        names__.push_back("yall");
+        names__.push_back("sigma_vec");
         names__.push_back("log_lik");
+        names__.push_back("Omega");
+        names__.push_back("Sigma");
     }
 
 
@@ -1019,6 +1193,13 @@ public:
         dims__.push_back(estimate_nu);
         dimss__.push_back(dims__);
         dims__.resize(0);
+        dims__.push_back(n_na);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(n_pcor);
+        dims__.push_back(n_pcor);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
         dims__.push_back(P);
         dims__.push_back(N);
         dimss__.push_back(dims__);
@@ -1027,7 +1208,22 @@ public:
         dims__.push_back(K);
         dimss__.push_back(dims__);
         dims__.resize(0);
+        dims__.push_back(P);
+        dims__.push_back(N);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(P);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
         dims__.push_back(n_pos);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(n_pcor);
+        dims__.push_back(n_pcor);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(n_pcor);
+        dims__.push_back(n_pcor);
         dimss__.push_back(dims__);
     }
 
@@ -1057,6 +1253,12 @@ public:
         for (size_t k_0__ = 0; k_0__ < dim_nu_0__; ++k_0__) {
             nu.push_back(in__.scalar_lb_constrain(2));
         }
+        vector<double> ymiss;
+        size_t dim_ymiss_0__ = n_na;
+        for (size_t k_0__ = 0; k_0__ < dim_ymiss_0__; ++k_0__) {
+            ymiss.push_back(in__.scalar_constrain());
+        }
+        matrix_d Lcorr = in__.cholesky_corr_constrain(n_pcor);
         for (int k_1__ = 0; k_1__ < N; ++k_1__) {
             for (int k_0__ = 0; k_0__ < K; ++k_0__) {
                 vars__.push_back(x(k_0__, k_1__));
@@ -1073,6 +1275,14 @@ public:
         }
         for (int k_0__ = 0; k_0__ < estimate_nu; ++k_0__) {
             vars__.push_back(nu[k_0__]);
+        }
+        for (int k_0__ = 0; k_0__ < n_na; ++k_0__) {
+            vars__.push_back(ymiss[k_0__]);
+        }
+        for (int k_1__ = 0; k_1__ < n_pcor; ++k_1__) {
+            for (int k_0__ = 0; k_0__ < n_pcor; ++k_0__) {
+                vars__.push_back(Lcorr(k_0__, k_1__));
+            }
         }
 
         if (!include_tparams__) return;
@@ -1098,9 +1308,37 @@ public:
 
         stan::math::initialize(Z, std::numeric_limits<double>::quiet_NaN());
         stan::math::fill(Z,DUMMY_VAR__);
+        validate_non_negative_index("yall", "P", P);
+        validate_non_negative_index("yall", "N", N);
+        matrix_d yall(static_cast<Eigen::VectorXd::Index>(P),static_cast<Eigen::VectorXd::Index>(N));
+        (void) yall;  // dummy to suppress unused var warning
+
+        stan::math::initialize(yall, std::numeric_limits<double>::quiet_NaN());
+        stan::math::fill(yall,DUMMY_VAR__);
+        validate_non_negative_index("sigma_vec", "P", P);
+        vector_d sigma_vec(static_cast<Eigen::VectorXd::Index>(P));
+        (void) sigma_vec;  // dummy to suppress unused var warning
+
+        stan::math::initialize(sigma_vec, std::numeric_limits<double>::quiet_NaN());
+        stan::math::fill(sigma_vec,DUMMY_VAR__);
 
 
         try {
+            for (int p = 1; p <= P; ++p) {
+
+                stan::math::assign(get_base1_lhs(sigma_vec,p,"sigma_vec",1), get_base1(sigma,get_base1(varIndx,p,"varIndx",1),"sigma",1));
+            }
+            for (int i = 1; i <= n_pos; ++i) {
+
+                stan::math::assign(get_base1_lhs(yall,get_base1(row_indx_pos,i,"row_indx_pos",1),get_base1(col_indx_pos,i,"col_indx_pos",1),"yall",1), get_base1(y,i,"y",1));
+            }
+            if (as_bool(logical_gt(n_na,0))) {
+
+                for (int i = 1; i <= n_na; ++i) {
+
+                    stan::math::assign(get_base1_lhs(yall,get_base1(row_indx_na,i,"row_indx_na",1),get_base1(col_indx_na,i,"col_indx_na",1),"yall",1), get_base1(ymiss,i,"ymiss",1));
+                }
+            }
             for (int i = 1; i <= nZ; ++i) {
 
                 stan::math::assign(get_base1_lhs(Z,get_base1(row_indx,i,"row_indx",1),get_base1(col_indx,i,"col_indx",1),"Z",1), get_base1(z,i,"z",1));
@@ -1136,6 +1374,14 @@ public:
                 vars__.push_back(Z(k_0__, k_1__));
             }
         }
+        for (int k_1__ = 0; k_1__ < N; ++k_1__) {
+            for (int k_0__ = 0; k_0__ < P; ++k_0__) {
+                vars__.push_back(yall(k_0__, k_1__));
+            }
+        }
+        for (int k_0__ = 0; k_0__ < P; ++k_0__) {
+            vars__.push_back(sigma_vec[k_0__]);
+        }
 
         if (!include_gqs__) return;
         // declare and define generated quantities
@@ -1145,12 +1391,36 @@ public:
 
         stan::math::initialize(log_lik, std::numeric_limits<double>::quiet_NaN());
         stan::math::fill(log_lik,DUMMY_VAR__);
+        validate_non_negative_index("Omega", "n_pcor", n_pcor);
+        validate_non_negative_index("Omega", "n_pcor", n_pcor);
+        matrix_d Omega(static_cast<Eigen::VectorXd::Index>(n_pcor),static_cast<Eigen::VectorXd::Index>(n_pcor));
+        (void) Omega;  // dummy to suppress unused var warning
+
+        stan::math::initialize(Omega, std::numeric_limits<double>::quiet_NaN());
+        stan::math::fill(Omega,DUMMY_VAR__);
+        validate_non_negative_index("Sigma", "n_pcor", n_pcor);
+        validate_non_negative_index("Sigma", "n_pcor", n_pcor);
+        matrix_d Sigma(static_cast<Eigen::VectorXd::Index>(n_pcor),static_cast<Eigen::VectorXd::Index>(n_pcor));
+        (void) Sigma;  // dummy to suppress unused var warning
+
+        stan::math::initialize(Sigma, std::numeric_limits<double>::quiet_NaN());
+        stan::math::fill(Sigma,DUMMY_VAR__);
 
 
         try {
-            for (int n = 1; n <= n_pos; ++n) {
+            if (as_bool(logical_eq(est_cor,1))) {
 
-                stan::math::assign(get_base1_lhs(log_lik,n,"log_lik",1), normal_log(get_base1(y,n,"y",1),get_base1(pred,get_base1(row_indx_pos,n,"row_indx_pos",1),get_base1(col_indx_pos,n,"col_indx_pos",1),"pred",1),get_base1(sigma,get_base1(varIndx,get_base1(row_indx_pos,n,"row_indx_pos",1),"varIndx",1),"sigma",1)));
+                stan::math::assign(Omega, multiply_lower_tri_self_transpose(Lcorr));
+                stan::math::assign(Sigma, quad_form_diag(Omega,sigma_vec));
+            }
+            if (as_bool(logical_eq(est_cor,0))) {
+
+                for (int n = 1; n <= n_pos; ++n) {
+
+                    stan::math::assign(get_base1_lhs(log_lik,n,"log_lik",1), normal_log(get_base1(y,n,"y",1),get_base1(pred,get_base1(row_indx_pos,n,"row_indx_pos",1),get_base1(col_indx_pos,n,"col_indx_pos",1),"pred",1),get_base1(sigma,get_base1(varIndx,get_base1(row_indx_pos,n,"row_indx_pos",1),"varIndx",1),"sigma",1)));
+                }
+            } else {
+
             }
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -1163,6 +1433,16 @@ public:
         // write generated quantities
         for (int k_0__ = 0; k_0__ < n_pos; ++k_0__) {
             vars__.push_back(log_lik[k_0__]);
+        }
+        for (int k_1__ = 0; k_1__ < n_pcor; ++k_1__) {
+            for (int k_0__ = 0; k_0__ < n_pcor; ++k_0__) {
+                vars__.push_back(Omega(k_0__, k_1__));
+            }
+        }
+        for (int k_1__ = 0; k_1__ < n_pcor; ++k_1__) {
+            for (int k_0__ = 0; k_0__ < n_pcor; ++k_0__) {
+                vars__.push_back(Sigma(k_0__, k_1__));
+            }
         }
 
     }
@@ -1221,6 +1501,18 @@ public:
             param_name_stream__ << "nu" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
         }
+        for (int k_0__ = 1; k_0__ <= n_na; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "ymiss" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_1__ = 1; k_1__ <= n_pcor; ++k_1__) {
+            for (int k_0__ = 1; k_0__ <= n_pcor; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "Lcorr" << '.' << k_0__ << '.' << k_1__;
+                param_names__.push_back(param_name_stream__.str());
+            }
+        }
 
         if (!include_gqs__ && !include_tparams__) return;
         for (int k_1__ = 1; k_1__ <= N; ++k_1__) {
@@ -1237,12 +1529,38 @@ public:
                 param_names__.push_back(param_name_stream__.str());
             }
         }
+        for (int k_1__ = 1; k_1__ <= N; ++k_1__) {
+            for (int k_0__ = 1; k_0__ <= P; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "yall" << '.' << k_0__ << '.' << k_1__;
+                param_names__.push_back(param_name_stream__.str());
+            }
+        }
+        for (int k_0__ = 1; k_0__ <= P; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "sigma_vec" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
 
         if (!include_gqs__) return;
         for (int k_0__ = 1; k_0__ <= n_pos; ++k_0__) {
             param_name_stream__.str(std::string());
             param_name_stream__ << "log_lik" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_1__ = 1; k_1__ <= n_pcor; ++k_1__) {
+            for (int k_0__ = 1; k_0__ <= n_pcor; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "Omega" << '.' << k_0__ << '.' << k_1__;
+                param_names__.push_back(param_name_stream__.str());
+            }
+        }
+        for (int k_1__ = 1; k_1__ <= n_pcor; ++k_1__) {
+            for (int k_0__ = 1; k_0__ <= n_pcor; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "Sigma" << '.' << k_0__ << '.' << k_1__;
+                param_names__.push_back(param_name_stream__.str());
+            }
         }
     }
 
@@ -1278,6 +1596,16 @@ public:
             param_name_stream__ << "nu" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
         }
+        for (int k_0__ = 1; k_0__ <= n_na; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "ymiss" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_0__ = 1; k_0__ <= ((n_pcor * (n_pcor - 1)) / 2); ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "Lcorr" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
 
         if (!include_gqs__ && !include_tparams__) return;
         for (int k_1__ = 1; k_1__ <= N; ++k_1__) {
@@ -1294,12 +1622,38 @@ public:
                 param_names__.push_back(param_name_stream__.str());
             }
         }
+        for (int k_1__ = 1; k_1__ <= N; ++k_1__) {
+            for (int k_0__ = 1; k_0__ <= P; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "yall" << '.' << k_0__ << '.' << k_1__;
+                param_names__.push_back(param_name_stream__.str());
+            }
+        }
+        for (int k_0__ = 1; k_0__ <= P; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "sigma_vec" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
 
         if (!include_gqs__) return;
         for (int k_0__ = 1; k_0__ <= n_pos; ++k_0__) {
             param_name_stream__.str(std::string());
             param_name_stream__ << "log_lik" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_1__ = 1; k_1__ <= n_pcor; ++k_1__) {
+            for (int k_0__ = 1; k_0__ <= n_pcor; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "Omega" << '.' << k_0__ << '.' << k_1__;
+                param_names__.push_back(param_name_stream__.str());
+            }
+        }
+        for (int k_1__ = 1; k_1__ <= n_pcor; ++k_1__) {
+            for (int k_0__ = 1; k_0__ <= n_pcor; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "Sigma" << '.' << k_0__ << '.' << k_1__;
+                param_names__.push_back(param_name_stream__.str());
+            }
         }
     }
 

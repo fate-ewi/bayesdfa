@@ -10,10 +10,13 @@ data {
   int<lower=0> nZero;
   int<lower=0> row_indx_z[nZero];
   int<lower=0> col_indx_z[nZero];
-  int<lower=0> n_pos;
+  int<lower=0> n_pos; // number of non-missing observations
+  int<lower=0> row_indx_pos[n_pos]; // row indices of non-missing obs
+  int<lower=0> col_indx_pos[n_pos]; // col indices of non-missing obs
   real y[n_pos]; // vectorized matrix of observations
-  int<lower=0> row_indx_pos[n_pos];
-  int<lower=0> col_indx_pos[n_pos];
+  int<lower=0> n_na; // number of missing observations
+  int<lower=0> row_indx_na[n_na]; // row indices of missing obs
+  int<lower=0> col_indx_na[n_na]; // col indices of missing obs
   real<lower=1> nu_fixed; // df on student-t
   int<lower=0> num_covar; // number of unique covariates
   int<lower=0> num_unique_covar; // number of covar parameters to estimate
@@ -21,20 +24,52 @@ data {
   int covar_indexing[P,num_covar]; // index of covariates to estimate
   int estimate_nu; // Estimate degrees of freedom?
   int use_normal; // flag, for large values of nu > 100, use normal instead
+  int est_cor; // whether to estimate correlation in obs error (=1) or not (=0)
+}
+transformed data {
+  int n_pcor; // dimension for cov matrix
+  if(est_cor == 0) {
+    n_pcor = P;
+    if(nVariances < 2) {
+      n_pcor = 2;
+    }
+  } else {
+    n_pcor = P;
+  }
 }
 parameters {
   matrix[K,N] x; //vector[N] x[P]; // random walk-trends
   vector[nZ] z; // estimated loadings in vec form
   vector<lower=0>[K] zpos; // constrained positive values
   real<lower=0> sigma[nVariances];
-  // real<lower=2> nu;
   real<lower=2> nu[estimate_nu]; // df on student-t
+  real ymiss[n_na];
+  cholesky_factor_corr[n_pcor] Lcorr;
 }
 transformed parameters {
   matrix[P,N] pred; //vector[P] pred[N];
   matrix[P,K] Z;
+  //vector[N] yall[P]; // combined vectors of missing and non-missing values
+  matrix[P,N] yall;
+  vector[P] sigma_vec;
+
+  for(p in 1:P) {
+    sigma_vec[p] = sigma[varIndx[p]]; // convert estimated sigmas to vec form
+  }
+
+  // Fill yall with non-missing values
+  for(i in 1:n_pos) {
+    yall[row_indx_pos[i], col_indx_pos[i]] = y[i];
+  }
+  // Include missing observations
+  if(n_na > 0) {
+    for(i in 1:n_na) {
+      yall[row_indx_na[i], col_indx_na[i]] = ymiss[i];
+    }
+  }
+
   for(i in 1:nZ) {
-    Z[row_indx[i],col_indx[i]] = z[i];
+    Z[row_indx[i],col_indx[i]] = z[i]; // convert z to from vec to matrix
   }
   // fill in zero elements
   if(nZero > 2) {
@@ -70,8 +105,7 @@ model {
 
   }
   if (estimate_nu == 1) {
-    nu[1] ~ gamma(2, 0.1);
-    // nu[1] ~ exponential(0.01);
+    nu[1] ~ gamma(2, 0.1); // df parameter for t-distribution
   }
 
   // prior on loadings
@@ -80,17 +114,39 @@ model {
 
   // observation variance
   sigma ~ student_t(3, 0, 2);
-
-  // likelihood
-  for(i in 1:n_pos) {
-    y[i] ~ normal(pred[row_indx_pos[i], col_indx_pos[i]], sigma[varIndx[row_indx_pos[i]]]);
+  if(est_cor == 1) {
+    Lcorr ~ lkj_corr_cholesky(1);
+  }
+  // likelihood for independent
+  if(est_cor == 0) {
+    for(i in 1:P){
+      target += normal_lpdf(yall[i] | pred[i], sigma_vec[i]);
+    }
+  } else {
+    // need to loop over time slices / columns - each ~ MVN
+    for(i in 1:N) {
+      target += multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));
+    }
   }
 
 }
 generated quantities {
   vector[n_pos] log_lik;
-   //regresssion example in loo() package
-  for (n in 1:n_pos) {
-    log_lik[n] = normal_lpdf(y[n] | pred[row_indx_pos[n], col_indx_pos[n]], sigma[varIndx[row_indx_pos[n]]]);
+  matrix[n_pcor, n_pcor] Omega;
+  matrix[n_pcor, n_pcor] Sigma;
+  if(est_cor == 1) {
+  Omega = multiply_lower_tri_self_transpose(Lcorr);
+  Sigma = quad_form_diag(Omega, sigma_vec);
+  }
+
+  //calculate looic based on regresssion example in loo() package
+  if(est_cor == 0) {
+    for (n in 1:n_pos) {
+      log_lik[n] = normal_lpdf(y[n] | pred[row_indx_pos[n], col_indx_pos[n]], sigma[varIndx[row_indx_pos[n]]]);
+    }
+  } else {
+    //for(i in 1:N) {
+    //  target += multi_normal_lpdf(col(yall,i) | col(pred,i), Sigma);
+    //}
   }
 }

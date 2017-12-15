@@ -7,7 +7,8 @@
 fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 2,
   varIndx = NULL, zscore = TRUE, iter = 2000, chains = 4,
   control = list(adapt_delta = 0.99, max_treedepth = 20), nu_fixed = 101,
-  tau = 0.1, timevarying = FALSE, estimate_nu = FALSE, sample = TRUE)
+  tau = 0.1, est_correlation = FALSE, timevarying = FALSE,
+  estimate_nu = FALSE, sample = TRUE)
 }
 \arguments{
 \item{y}{A matrix of data to fit. Columns represent time element.}
@@ -34,6 +35,8 @@ a normal random walk is used instead of a random walk with a t-distribution.}
 
 \item{tau}{A fixed parameter describing the standard deviation on the random
 walk for the factor loadings in the case of time varying DFA.}
+
+\item{est_correlation}{Boolean, whether to estimate correlation of observation error. Defaults to FALSE}
 
 \item{timevarying}{Logical. If \code{TRUE}, a time varying DFA. Note that the
 time varying DFA has not been extensively tested and may not return
