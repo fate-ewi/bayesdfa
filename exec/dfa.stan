@@ -28,6 +28,14 @@ data {
 }
 transformed data {
   int n_pcor; // dimension for cov matrix
+  int n_loglik; // dimension for loglik calculation
+
+  if(est_cor == 0) {
+    n_loglik = P;
+  } else {
+    n_loglik = N;
+  }
+
   if(est_cor == 0) {
     n_pcor = P;
     if(nVariances < 2) {
@@ -131,7 +139,7 @@ model {
 
 }
 generated quantities {
-  vector[n_pos] log_lik;
+  vector[n_loglik] log_lik;
   matrix[n_pcor, n_pcor] Omega;
   matrix[n_pcor, n_pcor] Sigma;
   if(est_cor == 1) {
@@ -141,12 +149,15 @@ generated quantities {
 
   //calculate looic based on regresssion example in loo() package
   if(est_cor == 0) {
-    for (n in 1:n_pos) {
-      log_lik[n] = normal_lpdf(y[n] | pred[row_indx_pos[n], col_indx_pos[n]], sigma[varIndx[row_indx_pos[n]]]);
+    //for (n in 1:n_pos) {
+    //  log_lik[n] = normal_lpdf(y[n] | pred[row_indx_pos[n], col_indx_pos[n]], sigma[varIndx[row_indx_pos[n]]]);
+    //}
+    for(i in 1:P) {
+      log_lik[i] = normal_lpdf(yall[i] | pred[i], sigma_vec[i]);
     }
   } else {
-    //for(i in 1:N) {
-    //  target += multi_normal_lpdf(col(yall,i) | col(pred,i), Sigma);
-    //}
+    for(i in 1:N) {
+      log_lik[i] = multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));
+    }
   }
 }

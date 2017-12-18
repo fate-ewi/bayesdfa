@@ -403,7 +403,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_dfa");
-    reader.add_event(152, 152, "end", "model_dfa");
+    reader.add_event(163, 163, "end", "model_dfa");
     return reader;
 }
 
@@ -436,6 +436,7 @@ private:
     int use_normal;
     int est_cor;
     int n_pcor;
+    int n_loglik;
 public:
     model_dfa(stan::io::var_context& context__,
         std::ostream* pstream__ = 0)
@@ -712,8 +713,17 @@ public:
         // initialize data variables
         n_pcor = int(0);
         stan::math::fill(n_pcor, std::numeric_limits<int>::min());
+        n_loglik = int(0);
+        stan::math::fill(n_loglik, std::numeric_limits<int>::min());
 
         try {
+            if (as_bool(logical_eq(est_cor,0))) {
+
+                stan::math::assign(n_loglik, P);
+            } else {
+
+                stan::math::assign(n_loglik, N);
+            }
             if (as_bool(logical_eq(est_cor,0))) {
 
                 stan::math::assign(n_pcor, P);
@@ -1215,7 +1225,7 @@ public:
         dims__.push_back(P);
         dimss__.push_back(dims__);
         dims__.resize(0);
-        dims__.push_back(n_pos);
+        dims__.push_back(n_loglik);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(n_pcor);
@@ -1385,8 +1395,8 @@ public:
 
         if (!include_gqs__) return;
         // declare and define generated quantities
-        validate_non_negative_index("log_lik", "n_pos", n_pos);
-        vector_d log_lik(static_cast<Eigen::VectorXd::Index>(n_pos));
+        validate_non_negative_index("log_lik", "n_loglik", n_loglik);
+        vector_d log_lik(static_cast<Eigen::VectorXd::Index>(n_loglik));
         (void) log_lik;  // dummy to suppress unused var warning
 
         stan::math::initialize(log_lik, std::numeric_limits<double>::quiet_NaN());
@@ -1415,12 +1425,16 @@ public:
             }
             if (as_bool(logical_eq(est_cor,0))) {
 
-                for (int n = 1; n <= n_pos; ++n) {
+                for (int i = 1; i <= P; ++i) {
 
-                    stan::math::assign(get_base1_lhs(log_lik,n,"log_lik",1), normal_log(get_base1(y,n,"y",1),get_base1(pred,get_base1(row_indx_pos,n,"row_indx_pos",1),get_base1(col_indx_pos,n,"col_indx_pos",1),"pred",1),get_base1(sigma,get_base1(varIndx,get_base1(row_indx_pos,n,"row_indx_pos",1),"varIndx",1),"sigma",1)));
+                    stan::math::assign(get_base1_lhs(log_lik,i,"log_lik",1), normal_log(get_base1(yall,i,"yall",1),get_base1(pred,i,"pred",1),get_base1(sigma_vec,i,"sigma_vec",1)));
                 }
             } else {
 
+                for (int i = 1; i <= N; ++i) {
+
+                    stan::math::assign(get_base1_lhs(log_lik,i,"log_lik",1), multi_normal_cholesky_log(col(yall,i),col(pred,i),diag_pre_multiply(sigma_vec,Lcorr)));
+                }
             }
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -1431,7 +1445,7 @@ public:
         // validate generated quantities
 
         // write generated quantities
-        for (int k_0__ = 0; k_0__ < n_pos; ++k_0__) {
+        for (int k_0__ = 0; k_0__ < n_loglik; ++k_0__) {
             vars__.push_back(log_lik[k_0__]);
         }
         for (int k_1__ = 0; k_1__ < n_pcor; ++k_1__) {
@@ -1543,7 +1557,7 @@ public:
         }
 
         if (!include_gqs__) return;
-        for (int k_0__ = 1; k_0__ <= n_pos; ++k_0__) {
+        for (int k_0__ = 1; k_0__ <= n_loglik; ++k_0__) {
             param_name_stream__.str(std::string());
             param_name_stream__ << "log_lik" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
@@ -1636,7 +1650,7 @@ public:
         }
 
         if (!include_gqs__) return;
-        for (int k_0__ = 1; k_0__ <= n_pos; ++k_0__) {
+        for (int k_0__ = 1; k_0__ <= n_loglik; ++k_0__) {
             param_name_stream__.str(std::string());
             param_name_stream__ << "log_lik" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
