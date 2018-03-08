@@ -6,7 +6,7 @@
 #' @param num_trends Number of trends to fit.
 #' @param varIndx Indices indicating which timeseries should have shared
 #' variances.
-#' @param zscore Logical. Should the data be standardized first?
+#' @param zscore Logical. Should the data be standardized first? If not it is just centered.
 #' @param iter Number of iterations in Stan sampling.
 #' @param chains Number of chains in Stan sampling.
 #' @param control A list of options to pass to Stan sampling.
@@ -60,9 +60,12 @@ fit_dfa = function(y = y,
   K = num_trends # number of dfa trends
   nZ = P * K - sum(1:K)  # number of non-zero parameters that are unconstrained
 
-  if (zscore) {
-    for (i in seq_len(P)) {
+
+  for (i in seq_len(P)) {
+    if (zscore) {
       y[i, ] <- scale(y[i, ], center = TRUE, scale = TRUE)
+    } else {
+      y[i, ] <- scale(y[i, ], center = TRUE, scale = FALSE)
     }
   }
   Y = y # attached to returned object below
