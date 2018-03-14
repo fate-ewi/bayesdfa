@@ -44,9 +44,9 @@ length}
 }
 \value{
 A list with the following elements: y_sim is the simulated data, pred
-  is the true underlying data without observation error added, x is the
-  underlying trends, Z is the manipulated loadings matrix that is fed to the
-  model.
+is the true underlying data without observation error added, x is the
+underlying trends, Z is the manipulated loadings matrix that is fed to the
+model.
 }
 \description{
 Simulate from a DFA

@@ -65,9 +65,9 @@ Fit a Bayesian DFA
 }
 \details{
 Note that there is nothing restricting the loadings and trends from
-  being inverted (multiplied by -1) for a given chain. Therefore, if you fit
-  multiple chains, the package will attempt to determine which chains need to
-  be inverted using the function \code{\link{find_inverted_chains}}.
+being inverted (multiplied by -1) for a given chain. Therefore, if you fit
+multiple chains, the package will attempt to determine which chains need to
+be inverted using the function \code{\link{find_inverted_chains}}.
 }
 \references{
 Del Negro, M., & Otrok, C. (2008). Dynamic factor models with time-varying
