@@ -28,12 +28,13 @@
 #'   sensible answers. Defaults to FALSE.
 #' @param estimate_nu Logical. Estimate the student t degrees of freedom
 #' parameter? Defaults to FALSE.
-#' @param estimate_phi Logical. AR(1) parameters on DFA trends? Defaults to FALSE,
+#' @param estimate_trend_ar Logical. Estimate AR(1) parameters on DFA trends? Defaults to FALSE,
 #' in which case AR(1) parameters are set to 1
+#' @param estimate_trend_ma Logical. Estimate MA(1) parameters on DFA trends? Defaults to FALSE,
+#' in which case MA(1) parameters are set to 0.
 #' @param sample Logical. Should the model be sampled from? If \code{FALSE},
 #'   then the data list object that would have been passed to Stan is returned
 #'   instead. This is useful for debugging and simulation. Defaults to TRUE.
-#'
 #' @details Note that there is nothing restricting the loadings and trends from
 #'   being inverted (multiplied by -1) for a given chain. Therefore, if you fit
 #'   multiple chains, the package will attempt to determine which chains need to
@@ -63,7 +64,8 @@ fit_dfa = function(y = y,
   est_correlation = FALSE,
   timevarying = FALSE,
   estimate_nu = FALSE,
-  estimate_phi = FALSE,
+  estimate_trend_ar = FALSE,
+  estimate_trend_ma = FALSE,
   sample = TRUE) {
   # parameters for DFA
   N = ncol(y) # number of time steps
@@ -167,14 +169,17 @@ fit_dfa = function(y = y,
     estimate_nu = as.integer(estimate_nu),
     use_normal = use_normal,
     est_cor = as.numeric(est_correlation),
-    est_phi = as.numeric(estimate_phi)
+    est_phi = as.numeric(estimate_trend_ar),
+    est_theta = as.numeric(estimate_trend_ma)
   )
+
   pars <- c("x", "Z", "pred", "sigma", "log_lik")
   if(est_correlation) pars = c(pars, "Omega") # add correlation matrix
 
   if (!is.null(covar)) pars <- c(pars, "D")
   if (estimate_nu) pars <- c(pars, "nu")
-  if (estimate_phi) pars <- c(pars, "phi")
+  if (estimate_trend_ar) pars <- c(pars, "phi")
+  if (estimate_trend_ma) pars <- c(pars, "theta")
 
   if (timevarying) {
     m <- stanmodels$tvdfa_fixed

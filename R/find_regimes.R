@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 # Some of the following code copied (and modified) from
 # https://github.com/luisdamiano/stancon18
 # under CC-BY 4.0
@@ -17,6 +19,7 @@ hmm_init <- function(K, x_t) {
   list(mu_k = init.mu[init.order], sigma_k = init.sigma[init.order])
 }
 
+>>>>>>> 543b18c3fd73102a84a339a67e344ccf93582330
 #' Fit multiple models with differing numbers of regimes to trend data
 #'
 #' @param y Data, time series or trend from fitted DFA model.
@@ -56,6 +59,8 @@ find_regimes <- function(y, sds = NULL, min_regimes = 1, max_regimes = 3,
   list(table = df, best_model = best_model)
 }
 
+<<<<<<< HEAD
+=======
 #' Fit models with differing numbers of regimes to trend data
 #'
 #' @param y Data, time series or trend from fitted DFA model.
@@ -227,3 +232,4 @@ plot_regime_model <- function(model, probs = c(0.05, 0.95),
     }
   }
 }
+>>>>>>> 543b18c3fd73102a84a339a67e344ccf93582330
