@@ -62,12 +62,12 @@ transformed parameters {
   //vector[N] yall[P]; // combined vectors of missing and non-missing values
   matrix[P,N] yall;
   vector[P] sigma_vec;
-  vector[P] phi_vec;
+  vector[K] phi_vec;
 
   if(est_phi == 1) {
-    for(p in 1:P) {phi_vec[p] = phi[p];}
+    for(k in 1:K) {phi_vec[k] = phi[k];}
   } else {
-    for(p in 1:P) {phi_vec[p] = 1;}
+    for(k in 1:K) {phi_vec[k] = 1;}
   }
 
   for(p in 1:P) {
@@ -126,9 +126,9 @@ model {
   }
 
   if(est_phi == 1) {
-    for(p in 1:P) {
+    for(k in 1:K) {
       // uniform prior on AR prior if included
-      phi[p] ~ uniform(-1,1);
+      phi[k] ~ uniform(-1,1);
     }
   }
   // prior on loadings
