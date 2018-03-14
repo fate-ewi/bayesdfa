@@ -9,6 +9,7 @@
 #' @param x_t A matrix of values. Called by [rstan::sampling()].
 #'
 #' @return list of initial values (mu, sigma)
+#' @importFrom stats kmeans
 hmm_init <- function(K, x_t) {
   clasif <- kmeans(x_t, K)
   init.mu <- by(x_t, clasif$cluster, mean)

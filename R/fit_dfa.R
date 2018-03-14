@@ -48,6 +48,7 @@
 #'
 #' @importFrom rstan sampling
 #' @import Rcpp
+#' @importFrom graphics lines par plot points polygon segments
 
 fit_dfa = function(y = y,
   covar=NULL,
