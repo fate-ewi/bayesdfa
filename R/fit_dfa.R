@@ -1,28 +1,36 @@
 #' Fit a Bayesian DFA
 #'
 #' @param y A matrix of data to fit. Columns represent time element.
-#' @param covar A matrix of covariates
-#' @param covar_index Indices assigning ??
-#' @param num_trends Number of trends to fit.
+#' @param covar A matrix of covariates, defaults to NULL (not included)
+#' @param covar_index A matrix, dimensioned as the number of time series x number
+#' of covariates that indexes which elements of the covariate matrix are shared across
+#' time series. Defaults to a matrix with unique coefficients estimated for each
+#' covariate-time series combination. Elements may be shared across time series or
+#' covariates.
+#' @param num_trends Number of trends to fit, defaults to 2.
 #' @param varIndx Indices indicating which timeseries should have shared
 #' variances.
-#' @param zscore Logical. Should the data be standardized first? If not it is just centered.
-#' @param iter Number of iterations in Stan sampling.
-#' @param chains Number of chains in Stan sampling.
-#' @param control A list of options to pass to Stan sampling.
+#' @param zscore Logical. Should the data be standardized first? If not it is
+#' just centered. Centering is necessary because no intercept is included.
+#' @param iter Number of iterations in Stan sampling, defaults to 2000.
+#' @param chains Number of chains in Stan sampling, defaults to 4.
+#' @param control A list of options to pass to Stan sampling. Defaults to
+#' \code{list(adapt_delta = 0.99, max_treedepth = 20)}
 #' @param nu_fixed Student t degrees of freedom parameter. If specified as greater than 100,
-#'   a normal random walk is used instead of a random walk with a t-distribution.
+#'   a normal random walk is used instead of a random walk with a t-distribution. Defaults
+#'   to 101
 #' @param tau A fixed parameter describing the standard deviation on the random
-#'   walk for the factor loadings in the case of time varying DFA.
-#' @param est_correlation Boolean, whether to estimate correlation of observation error. Defaults to FALSE
+#'   walk for the factor loadings in the case of time varying DFA. Defaults to 0.1
+#' @param est_correlation Boolean, whether to estimate correlation of observation
+#' error matrix \code{R}. Defaults to FALSE
 #' @param timevarying Logical. If \code{TRUE}, a time varying DFA. Note that the
 #'   time varying DFA has not been extensively tested and may not return
-#'   sensible answers.
+#'   sensible answers. Defaults to FALSE.
 #' @param estimate_nu Logical. Estimate the student t degrees of freedom
-#' parameter?
+#' parameter? Defaults to FALSE.
 #' @param sample Logical. Should the model be sampled from? If \code{FALSE},
 #'   then the data list object that would have been passed to Stan is returned
-#'   instead. This is useful for debugging and simulation.
+#'   instead. This is useful for debugging and simulation. Defaults to TRUE.
 #'
 #' @details Note that there is nothing restricting the loadings and trends from
 #'   being inverted (multiplied by -1) for a given chain. Therefore, if you fit

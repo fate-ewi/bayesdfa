@@ -1,8 +1,7 @@
-#' Find the best number of trends according to LOO
+#' Find the best number of trends according to LOOIC
 #'
 #' Fit a DFA with different number of trends and return the leave one out (LOO)
-#' value as calculated by the loo package. Note that the models will be fit once
-#' with shared variances and once with independent variances.
+#' value as calculated by the loo package.
 #'
 #' @param y A matrix of data to fit. Columns represent time element.
 #' @param kmin Minimum number of trends.
