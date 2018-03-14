@@ -1,6 +1,3 @@
-# Some of the following code copied (and modified) from https://github.com/luisdamiano/stancon18
-# under CC-BY 4.0
-
 #' Create initial values for the HMM model.
 #'
 #' @param K The number of regimes or clusters to fit. Called by \code{rstan::sampling}
