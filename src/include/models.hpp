@@ -390,7 +390,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_dfa");
-    reader.add_event(178, 178, "end", "model_dfa");
+    reader.add_event(224, 224, "end", "model_dfa");
     return reader;
 }
 
@@ -423,8 +423,10 @@ private:
     int use_normal;
     int est_cor;
     int est_phi;
+    int est_theta;
     int n_pcor;
     int n_loglik;
+    vector_d zeros;
 public:
     model_dfa(stan::io::var_context& context__,
         std::ostream* pstream__ = 0)
@@ -664,6 +666,11 @@ public:
             vals_i__ = context__.vals_i("est_phi");
             pos__ = 0;
             est_phi = vals_i__[pos__++];
+            context__.validate_dims("data initialization", "est_theta", "int", context__.to_vec());
+            est_theta = int(0);
+            vals_i__ = context__.vals_i("est_theta");
+            pos__ = 0;
+            est_theta = vals_i__[pos__++];
 
             // validate, data variables
             check_greater_or_equal(function__,"N",N,0);
@@ -709,7 +716,14 @@ public:
             stan::math::fill(n_pcor, std::numeric_limits<int>::min());
             n_loglik = int(0);
             stan::math::fill(n_loglik, std::numeric_limits<int>::min());
+            validate_non_negative_index("zeros", "K", K);
+            zeros = vector_d(static_cast<Eigen::VectorXd::Index>(K));
+            stan::math::fill(zeros,DUMMY_VAR__);
 
+            for (int k = 1; k <= K; ++k) {
+
+                stan::math::assign(get_base1_lhs(zeros,k,"zeros",1), 0);
+            }
             if (as_bool(logical_eq(est_cor,0))) {
 
                 stan::math::assign(n_loglik, P);
@@ -734,9 +748,11 @@ public:
             // validate, set parameter ranges
             num_params_r__ = 0U;
             param_ranges_i__.clear();
-        validate_non_negative_index("x", "K", K);
-            validate_non_negative_index("x", "N", N);
-            num_params_r__ += K * N;
+        validate_non_negative_index("devs", "K", K);
+            validate_non_negative_index("devs", "(N - 1)", (N - 1));
+            num_params_r__ += K * (N - 1);
+            validate_non_negative_index("x0", "K", K);
+            num_params_r__ += K;
             validate_non_negative_index("z", "nZ", nZ);
             num_params_r__ += nZ;
             validate_non_negative_index("zpos", "K", K);
@@ -749,6 +765,8 @@ public:
             num_params_r__ += n_na;
             validate_non_negative_index("phi", "(est_phi * K)", (est_phi * K));
             num_params_r__ += (est_phi * K);
+            validate_non_negative_index("theta", "(est_theta * K)", (est_theta * K));
+            num_params_r__ += (est_theta * K);
             validate_non_negative_index("Lcorr", "n_pcor", n_pcor);
             num_params_r__ += ((n_pcor * (n_pcor - 1)) / 2);
         } catch (const std::exception& e) {
@@ -771,21 +789,36 @@ public:
         std::vector<double> vals_r__;
         std::vector<int> vals_i__;
 
-        if (!(context__.contains_r("x")))
-            throw std::runtime_error("variable x missing");
-        vals_r__ = context__.vals_r("x");
+        if (!(context__.contains_r("devs")))
+            throw std::runtime_error("variable devs missing");
+        vals_r__ = context__.vals_r("devs");
         pos__ = 0U;
-        validate_non_negative_index("x", "K", K);
-        validate_non_negative_index("x", "N", N);
-        context__.validate_dims("initialization", "x", "matrix_d", context__.to_vec(K,N));
-        matrix_d x(static_cast<Eigen::VectorXd::Index>(K),static_cast<Eigen::VectorXd::Index>(N));
-        for (int j2__ = 0U; j2__ < N; ++j2__)
+        validate_non_negative_index("devs", "K", K);
+        validate_non_negative_index("devs", "(N - 1)", (N - 1));
+        context__.validate_dims("initialization", "devs", "matrix_d", context__.to_vec(K,(N - 1)));
+        matrix_d devs(static_cast<Eigen::VectorXd::Index>(K),static_cast<Eigen::VectorXd::Index>((N - 1)));
+        for (int j2__ = 0U; j2__ < (N - 1); ++j2__)
             for (int j1__ = 0U; j1__ < K; ++j1__)
-                x(j1__,j2__) = vals_r__[pos__++];
+                devs(j1__,j2__) = vals_r__[pos__++];
         try {
-            writer__.matrix_unconstrain(x);
+            writer__.matrix_unconstrain(devs);
         } catch (const std::exception& e) { 
-            throw std::runtime_error(std::string("Error transforming variable x: ") + e.what());
+            throw std::runtime_error(std::string("Error transforming variable devs: ") + e.what());
+        }
+
+        if (!(context__.contains_r("x0")))
+            throw std::runtime_error("variable x0 missing");
+        vals_r__ = context__.vals_r("x0");
+        pos__ = 0U;
+        validate_non_negative_index("x0", "K", K);
+        context__.validate_dims("initialization", "x0", "vector_d", context__.to_vec(K));
+        vector_d x0(static_cast<Eigen::VectorXd::Index>(K));
+        for (int j1__ = 0U; j1__ < K; ++j1__)
+            x0(j1__) = vals_r__[pos__++];
+        try {
+            writer__.vector_unconstrain(x0);
+        } catch (const std::exception& e) { 
+            throw std::runtime_error(std::string("Error transforming variable x0: ") + e.what());
         }
 
         if (!(context__.contains_r("z")))
@@ -877,9 +910,25 @@ public:
             phi[i0__] = vals_r__[pos__++];
         for (int i0__ = 0U; i0__ < (est_phi * K); ++i0__)
             try {
-            writer__.scalar_lub_unconstrain(-(1),1,phi[i0__]);
+            writer__.scalar_lub_unconstrain(0,1,phi[i0__]);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable phi: ") + e.what());
+        }
+
+        if (!(context__.contains_r("theta")))
+            throw std::runtime_error("variable theta missing");
+        vals_r__ = context__.vals_r("theta");
+        pos__ = 0U;
+        validate_non_negative_index("theta", "(est_theta * K)", (est_theta * K));
+        context__.validate_dims("initialization", "theta", "double", context__.to_vec((est_theta * K)));
+        std::vector<double> theta((est_theta * K),double(0));
+        for (int i0__ = 0U; i0__ < (est_theta * K); ++i0__)
+            theta[i0__] = vals_r__[pos__++];
+        for (int i0__ = 0U; i0__ < (est_theta * K); ++i0__)
+            try {
+            writer__.scalar_lub_unconstrain(0,1,theta[i0__]);
+        } catch (const std::exception& e) { 
+            throw std::runtime_error(std::string("Error transforming variable theta: ") + e.what());
         }
 
         if (!(context__.contains_r("Lcorr")))
@@ -930,12 +979,19 @@ public:
             // model parameters
             stan::io::reader<T__> in__(params_r__,params_i__);
 
-            Eigen::Matrix<T__,Eigen::Dynamic,Eigen::Dynamic>  x;
-            (void) x;  // dummy to suppress unused var warning
+            Eigen::Matrix<T__,Eigen::Dynamic,Eigen::Dynamic>  devs;
+            (void) devs;  // dummy to suppress unused var warning
             if (jacobian__)
-                x = in__.matrix_constrain(K,N,lp__);
+                devs = in__.matrix_constrain(K,(N - 1),lp__);
             else
-                x = in__.matrix_constrain(K,N);
+                devs = in__.matrix_constrain(K,(N - 1));
+
+            Eigen::Matrix<T__,Eigen::Dynamic,1>  x0;
+            (void) x0;  // dummy to suppress unused var warning
+            if (jacobian__)
+                x0 = in__.vector_constrain(K,lp__);
+            else
+                x0 = in__.vector_constrain(K);
 
             Eigen::Matrix<T__,Eigen::Dynamic,1>  z;
             (void) z;  // dummy to suppress unused var warning
@@ -986,9 +1042,19 @@ public:
             phi.reserve(dim_phi_0__);
             for (size_t k_0__ = 0; k_0__ < dim_phi_0__; ++k_0__) {
                 if (jacobian__)
-                    phi.push_back(in__.scalar_lub_constrain(-(1),1,lp__));
+                    phi.push_back(in__.scalar_lub_constrain(0,1,lp__));
                 else
-                    phi.push_back(in__.scalar_lub_constrain(-(1),1));
+                    phi.push_back(in__.scalar_lub_constrain(0,1));
+            }
+
+            vector<T__> theta;
+            size_t dim_theta_0__ = (est_theta * K);
+            theta.reserve(dim_theta_0__);
+            for (size_t k_0__ = 0; k_0__ < dim_theta_0__; ++k_0__) {
+                if (jacobian__)
+                    theta.push_back(in__.scalar_lub_constrain(0,1,lp__));
+                else
+                    theta.push_back(in__.scalar_lub_constrain(0,1));
             }
 
             Eigen::Matrix<T__,Eigen::Dynamic,Eigen::Dynamic>  Lcorr;
@@ -1033,6 +1099,19 @@ public:
 
             stan::math::initialize(phi_vec, DUMMY_VAR__);
             stan::math::fill(phi_vec,DUMMY_VAR__);
+            validate_non_negative_index("theta_vec", "K", K);
+            Eigen::Matrix<T__,Eigen::Dynamic,1>  theta_vec(static_cast<Eigen::VectorXd::Index>(K));
+            (void) theta_vec;  // dummy to suppress unused var warning
+
+            stan::math::initialize(theta_vec, DUMMY_VAR__);
+            stan::math::fill(theta_vec,DUMMY_VAR__);
+            validate_non_negative_index("x", "K", K);
+            validate_non_negative_index("x", "N", N);
+            Eigen::Matrix<T__,Eigen::Dynamic,Eigen::Dynamic>  x(static_cast<Eigen::VectorXd::Index>(K),static_cast<Eigen::VectorXd::Index>(N));
+            (void) x;  // dummy to suppress unused var warning
+
+            stan::math::initialize(x, DUMMY_VAR__);
+            stan::math::fill(x,DUMMY_VAR__);
 
 
             if (as_bool(logical_eq(est_phi,1))) {
@@ -1046,6 +1125,19 @@ public:
                 for (int k = 1; k <= K; ++k) {
 
                     stan::math::assign(get_base1_lhs(phi_vec,k,"phi_vec",1), 1);
+                }
+            }
+            if (as_bool(logical_eq(est_theta,1))) {
+
+                for (int k = 1; k <= K; ++k) {
+
+                    stan::math::assign(get_base1_lhs(theta_vec,k,"theta_vec",1), get_base1(theta,k,"theta",1));
+                }
+            } else {
+
+                for (int k = 1; k <= K; ++k) {
+
+                    stan::math::assign(get_base1_lhs(theta_vec,k,"theta_vec",1), 0);
                 }
             }
             for (int p = 1; p <= P; ++p) {
@@ -1077,6 +1169,14 @@ public:
             for (int k = 1; k <= K; ++k) {
 
                 stan::math::assign(get_base1_lhs(Z,k,k,"Z",1), get_base1(zpos,k,"zpos",1));
+            }
+            for (int k = 1; k <= K; ++k) {
+
+                stan::math::assign(get_base1_lhs(x,k,1,"x",1), get_base1(x0,k,"x0",1));
+                for (int t = 2; t <= N; ++t) {
+
+                    stan::math::assign(get_base1_lhs(x,k,t,"x",1), ((get_base1(phi_vec,k,"phi_vec",1) * get_base1(x,k,(t - 1),"x",1)) + get_base1(devs,k,(t - 1),"devs",1)));
+                }
             }
             stan::math::assign(pred, multiply(Z,x));
 
@@ -1122,6 +1222,22 @@ public:
                     throw std::runtime_error(msg__.str());
                 }
             }
+            for (int i0__ = 0; i0__ < K; ++i0__) {
+                if (stan::math::is_uninitialized(theta_vec(i0__))) {
+                    std::stringstream msg__;
+                    msg__ << "Undefined transformed parameter: theta_vec" << '[' << i0__ << ']';
+                    throw std::runtime_error(msg__.str());
+                }
+            }
+            for (int i0__ = 0; i0__ < K; ++i0__) {
+                for (int i1__ = 0; i1__ < N; ++i1__) {
+                    if (stan::math::is_uninitialized(x(i0__,i1__))) {
+                        std::stringstream msg__;
+                        msg__ << "Undefined transformed parameter: x" << '[' << i0__ << ']' << '[' << i1__ << ']';
+                        throw std::runtime_error(msg__.str());
+                    }
+                }
+            }
 
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
@@ -1130,24 +1246,35 @@ public:
 
             for (int k = 1; k <= K; ++k) {
 
-                lp_accum__.add(cauchy_log<propto__>(get_base1(x,k,1,"x",1), 0, 3));
+                lp_accum__.add(cauchy_log<propto__>(get_base1(x0,k,"x0",1), 0, 3));
                 if (as_bool(logical_eq(use_normal,0))) {
 
-                    for (int t = 2; t <= N; ++t) {
+                    for (int t = 1; t <= 1; ++t) {
 
                         if (as_bool(logical_eq(estimate_nu,1))) {
 
-                            lp_accum__.add(student_t_log<propto__>(get_base1(x,k,t,"x",1), get_base1(nu,1,"nu",1), (get_base1(phi_vec,k,"phi_vec",1) * get_base1(x,k,(t - 1),"x",1)), 1));
+                            lp_accum__.add(student_t_log<propto__>(get_base1(devs,k,t,"devs",1), get_base1(nu,1,"nu",1), 0, 1));
                         } else {
 
-                            lp_accum__.add(student_t_log<propto__>(get_base1(x,k,t,"x",1), nu_fixed, (get_base1(phi_vec,k,"phi_vec",1) * get_base1(x,k,(t - 1),"x",1)), 1));
+                            lp_accum__.add(student_t_log<propto__>(get_base1(devs,k,t,"devs",1), nu_fixed, 0, 1));
+                        }
+                    }
+                    for (int t = 2; t <= (N - 1); ++t) {
+
+                        if (as_bool(logical_eq(estimate_nu,1))) {
+
+                            lp_accum__.add(student_t_log<propto__>(get_base1(devs,k,t,"devs",1), get_base1(nu,1,"nu",1), (get_base1(theta_vec,k,"theta_vec",1) * get_base1(devs,k,(t - 1),"devs",1)), 1));
+                        } else {
+
+                            lp_accum__.add(student_t_log<propto__>(get_base1(devs,k,t,"devs",1), nu_fixed, (get_base1(theta_vec,k,"theta_vec",1) * get_base1(devs,k,(t - 1),"devs",1)), 1));
                         }
                     }
                 } else {
 
-                    for (int t = 2; t <= N; ++t) {
+                    lp_accum__.add(normal_log<propto__>(get_base1(devs,k,1,"devs",1), 0, 1));
+                    for (int t = 2; t <= (N - 1); ++t) {
 
-                        lp_accum__.add(normal_log<propto__>(get_base1(x,k,t,"x",1), (get_base1(phi_vec,k,"phi_vec",1) * get_base1(x,k,(t - 1),"x",1)), 1));
+                        lp_accum__.add(normal_log<propto__>(get_base1(devs,k,t,"devs",1), (get_base1(theta_vec,k,"theta_vec",1) * get_base1(devs,k,(t - 1),"devs",1)), 1));
                     }
                 }
             }
@@ -1159,7 +1286,14 @@ public:
 
                 for (int k = 1; k <= K; ++k) {
 
-                    lp_accum__.add(uniform_log<propto__>(get_base1(phi,k,"phi",1), -(1), 1));
+                    lp_accum__.add(uniform_log<propto__>(get_base1(phi,k,"phi",1), 0, 1));
+                }
+            }
+            if (as_bool(logical_eq(est_theta,1))) {
+
+                for (int k = 1; k <= K; ++k) {
+
+                    lp_accum__.add(uniform_log<propto__>(get_base1(theta,k,"theta",1), 0, 1));
                 }
             }
             lp_accum__.add(normal_log<propto__>(z, 0, 1));
@@ -1208,19 +1342,23 @@ public:
 
     void get_param_names(std::vector<std::string>& names__) const {
         names__.resize(0);
-        names__.push_back("x");
+        names__.push_back("devs");
+        names__.push_back("x0");
         names__.push_back("z");
         names__.push_back("zpos");
         names__.push_back("sigma");
         names__.push_back("nu");
         names__.push_back("ymiss");
         names__.push_back("phi");
+        names__.push_back("theta");
         names__.push_back("Lcorr");
         names__.push_back("pred");
         names__.push_back("Z");
         names__.push_back("yall");
         names__.push_back("sigma_vec");
         names__.push_back("phi_vec");
+        names__.push_back("theta_vec");
+        names__.push_back("x");
         names__.push_back("log_lik");
         names__.push_back("Omega");
         names__.push_back("Sigma");
@@ -1232,7 +1370,10 @@ public:
         std::vector<size_t> dims__;
         dims__.resize(0);
         dims__.push_back(K);
-        dims__.push_back(N);
+        dims__.push_back((N - 1));
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(K);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(nZ);
@@ -1253,6 +1394,9 @@ public:
         dims__.push_back((est_phi * K));
         dimss__.push_back(dims__);
         dims__.resize(0);
+        dims__.push_back((est_theta * K));
+        dimss__.push_back(dims__);
+        dims__.resize(0);
         dims__.push_back(n_pcor);
         dims__.push_back(n_pcor);
         dimss__.push_back(dims__);
@@ -1273,6 +1417,13 @@ public:
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(K);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(K);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(K);
+        dims__.push_back(N);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(n_loglik);
@@ -1300,7 +1451,8 @@ public:
         static const char* function__ = "model_dfa_namespace::write_array";
         (void) function__;  // dummy to suppress unused var warning
         // read-transform, write parameters
-        matrix_d x = in__.matrix_constrain(K,N);
+        matrix_d devs = in__.matrix_constrain(K,(N - 1));
+        vector_d x0 = in__.vector_constrain(K);
         vector_d z = in__.vector_constrain(nZ);
         vector_d zpos = in__.vector_lb_constrain(0,K);
         vector<double> sigma;
@@ -1321,13 +1473,21 @@ public:
         vector<double> phi;
         size_t dim_phi_0__ = (est_phi * K);
         for (size_t k_0__ = 0; k_0__ < dim_phi_0__; ++k_0__) {
-            phi.push_back(in__.scalar_lub_constrain(-(1),1));
+            phi.push_back(in__.scalar_lub_constrain(0,1));
+        }
+        vector<double> theta;
+        size_t dim_theta_0__ = (est_theta * K);
+        for (size_t k_0__ = 0; k_0__ < dim_theta_0__; ++k_0__) {
+            theta.push_back(in__.scalar_lub_constrain(0,1));
         }
         matrix_d Lcorr = in__.cholesky_corr_constrain(n_pcor);
-            for (int k_1__ = 0; k_1__ < N; ++k_1__) {
+            for (int k_1__ = 0; k_1__ < (N - 1); ++k_1__) {
                 for (int k_0__ = 0; k_0__ < K; ++k_0__) {
-                vars__.push_back(x(k_0__, k_1__));
+                vars__.push_back(devs(k_0__, k_1__));
                 }
+            }
+            for (int k_0__ = 0; k_0__ < K; ++k_0__) {
+            vars__.push_back(x0[k_0__]);
             }
             for (int k_0__ = 0; k_0__ < nZ; ++k_0__) {
             vars__.push_back(z[k_0__]);
@@ -1346,6 +1506,9 @@ public:
             }
             for (int k_0__ = 0; k_0__ < (est_phi * K); ++k_0__) {
             vars__.push_back(phi[k_0__]);
+            }
+            for (int k_0__ = 0; k_0__ < (est_theta * K); ++k_0__) {
+            vars__.push_back(theta[k_0__]);
             }
             for (int k_1__ = 0; k_1__ < n_pcor; ++k_1__) {
                 for (int k_0__ = 0; k_0__ < n_pcor; ++k_0__) {
@@ -1396,6 +1559,19 @@ public:
 
             stan::math::initialize(phi_vec, std::numeric_limits<double>::quiet_NaN());
             stan::math::fill(phi_vec,DUMMY_VAR__);
+            validate_non_negative_index("theta_vec", "K", K);
+            vector_d theta_vec(static_cast<Eigen::VectorXd::Index>(K));
+            (void) theta_vec;  // dummy to suppress unused var warning
+
+            stan::math::initialize(theta_vec, std::numeric_limits<double>::quiet_NaN());
+            stan::math::fill(theta_vec,DUMMY_VAR__);
+            validate_non_negative_index("x", "K", K);
+            validate_non_negative_index("x", "N", N);
+            matrix_d x(static_cast<Eigen::VectorXd::Index>(K),static_cast<Eigen::VectorXd::Index>(N));
+            (void) x;  // dummy to suppress unused var warning
+
+            stan::math::initialize(x, std::numeric_limits<double>::quiet_NaN());
+            stan::math::fill(x,DUMMY_VAR__);
 
 
             if (as_bool(logical_eq(est_phi,1))) {
@@ -1409,6 +1585,19 @@ public:
                 for (int k = 1; k <= K; ++k) {
 
                     stan::math::assign(get_base1_lhs(phi_vec,k,"phi_vec",1), 1);
+                }
+            }
+            if (as_bool(logical_eq(est_theta,1))) {
+
+                for (int k = 1; k <= K; ++k) {
+
+                    stan::math::assign(get_base1_lhs(theta_vec,k,"theta_vec",1), get_base1(theta,k,"theta",1));
+                }
+            } else {
+
+                for (int k = 1; k <= K; ++k) {
+
+                    stan::math::assign(get_base1_lhs(theta_vec,k,"theta_vec",1), 0);
                 }
             }
             for (int p = 1; p <= P; ++p) {
@@ -1441,6 +1630,14 @@ public:
 
                 stan::math::assign(get_base1_lhs(Z,k,k,"Z",1), get_base1(zpos,k,"zpos",1));
             }
+            for (int k = 1; k <= K; ++k) {
+
+                stan::math::assign(get_base1_lhs(x,k,1,"x",1), get_base1(x0,k,"x0",1));
+                for (int t = 2; t <= N; ++t) {
+
+                    stan::math::assign(get_base1_lhs(x,k,t,"x",1), ((get_base1(phi_vec,k,"phi_vec",1) * get_base1(x,k,(t - 1),"x",1)) + get_base1(devs,k,(t - 1),"devs",1)));
+                }
+            }
             stan::math::assign(pred, multiply(Z,x));
 
             // validate transformed parameters
@@ -1466,6 +1663,14 @@ public:
             }
             for (int k_0__ = 0; k_0__ < K; ++k_0__) {
             vars__.push_back(phi_vec[k_0__]);
+            }
+            for (int k_0__ = 0; k_0__ < K; ++k_0__) {
+            vars__.push_back(theta_vec[k_0__]);
+            }
+            for (int k_1__ = 0; k_1__ < N; ++k_1__) {
+                for (int k_0__ = 0; k_0__ < K; ++k_0__) {
+                vars__.push_back(x(k_0__, k_1__));
+                }
             }
 
             if (!include_gqs__) return;
@@ -1562,12 +1767,17 @@ public:
                                  bool include_tparams__ = true,
                                  bool include_gqs__ = true) const {
         std::stringstream param_name_stream__;
-        for (int k_1__ = 1; k_1__ <= N; ++k_1__) {
+        for (int k_1__ = 1; k_1__ <= (N - 1); ++k_1__) {
             for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
                 param_name_stream__.str(std::string());
-                param_name_stream__ << "x" << '.' << k_0__ << '.' << k_1__;
+                param_name_stream__ << "devs" << '.' << k_0__ << '.' << k_1__;
                 param_names__.push_back(param_name_stream__.str());
             }
+        }
+        for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "x0" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
         }
         for (int k_0__ = 1; k_0__ <= nZ; ++k_0__) {
             param_name_stream__.str(std::string());
@@ -1597,6 +1807,11 @@ public:
         for (int k_0__ = 1; k_0__ <= (est_phi * K); ++k_0__) {
             param_name_stream__.str(std::string());
             param_name_stream__ << "phi" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_0__ = 1; k_0__ <= (est_theta * K); ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "theta" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
         }
         for (int k_1__ = 1; k_1__ <= n_pcor; ++k_1__) {
@@ -1639,6 +1854,18 @@ public:
             param_name_stream__ << "phi_vec" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
         }
+        for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "theta_vec" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_1__ = 1; k_1__ <= N; ++k_1__) {
+            for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "x" << '.' << k_0__ << '.' << k_1__;
+                param_names__.push_back(param_name_stream__.str());
+            }
+        }
 
         if (!include_gqs__) return;
         for (int k_0__ = 1; k_0__ <= n_loglik; ++k_0__) {
@@ -1667,12 +1894,17 @@ public:
                                    bool include_tparams__ = true,
                                    bool include_gqs__ = true) const {
         std::stringstream param_name_stream__;
-        for (int k_1__ = 1; k_1__ <= N; ++k_1__) {
+        for (int k_1__ = 1; k_1__ <= (N - 1); ++k_1__) {
             for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
                 param_name_stream__.str(std::string());
-                param_name_stream__ << "x" << '.' << k_0__ << '.' << k_1__;
+                param_name_stream__ << "devs" << '.' << k_0__ << '.' << k_1__;
                 param_names__.push_back(param_name_stream__.str());
             }
+        }
+        for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "x0" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
         }
         for (int k_0__ = 1; k_0__ <= nZ; ++k_0__) {
             param_name_stream__.str(std::string());
@@ -1702,6 +1934,11 @@ public:
         for (int k_0__ = 1; k_0__ <= (est_phi * K); ++k_0__) {
             param_name_stream__.str(std::string());
             param_name_stream__ << "phi" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_0__ = 1; k_0__ <= (est_theta * K); ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "theta" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
         }
         for (int k_0__ = 1; k_0__ <= ((n_pcor * (n_pcor - 1)) / 2); ++k_0__) {
@@ -1741,6 +1978,18 @@ public:
             param_name_stream__.str(std::string());
             param_name_stream__ << "phi_vec" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "theta_vec" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_1__ = 1; k_1__ <= N; ++k_1__) {
+            for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
+                param_name_stream__.str(std::string());
+                param_name_stream__ << "x" << '.' << k_0__ << '.' << k_1__;
+                param_names__.push_back(param_name_stream__.str());
+            }
         }
 
         if (!include_gqs__) return;

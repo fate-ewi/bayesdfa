@@ -26,10 +26,16 @@ data {
   int use_normal; // flag, for large values of nu > 100, use normal instead
   int est_cor; // whether to estimate correlation in obs error (=1) or not (=0)
   int est_phi; // whether to estimate autocorrelation in trends (=1) or not (= 0)
+  int est_theta; // whether to estimate moving-average in trends (=1) or not (= 0
 }
 transformed data {
   int n_pcor; // dimension for cov matrix
   int n_loglik; // dimension for loglik calculation
+  vector[K] zeros;
+
+  for(k in 1:K) {
+    zeros[k] = 0; // used in MVT / MVN below
+  }
 
   if(est_cor == 0) {
     n_loglik = P;
@@ -47,13 +53,15 @@ transformed data {
   }
 }
 parameters {
-  matrix[K,N] x; //vector[N] x[P]; // random walk-trends
+  matrix[K,N-1] devs; // random deviations of trends
+  vector[K] x0; // initial state
   vector[nZ] z; // estimated loadings in vec form
   vector<lower=0>[K] zpos; // constrained positive values
   real<lower=0> sigma[nVariances];
   real<lower=2> nu[estimate_nu]; // df on student-t
   real ymiss[n_na];
-  real<lower=-1,upper=1> phi[est_phi*K];
+  real<lower=0,upper=1> phi[est_phi*K];
+  real<lower=0,upper=1> theta[est_theta*K];
   cholesky_factor_corr[n_pcor] Lcorr;
 }
 transformed parameters {
@@ -62,12 +70,22 @@ transformed parameters {
   //vector[N] yall[P]; // combined vectors of missing and non-missing values
   matrix[P,N] yall;
   vector[P] sigma_vec;
-  vector[K] phi_vec;
+  vector[K] phi_vec; // for AR(1) part
+  vector[K] theta_vec; // for MA(1) part
+  matrix[K,N] x; //vector[N] x[P]; // random walk-trends
 
+  // phi is the ar(1) parameter, fixed or estimated
   if(est_phi == 1) {
     for(k in 1:K) {phi_vec[k] = phi[k];}
   } else {
     for(k in 1:K) {phi_vec[k] = 1;}
+  }
+
+  // theta is the ma(1) parameter, fixed or estimated
+  if(est_theta == 1) {
+    for(k in 1:K) {theta_vec[k] = theta[k];}
+  } else {
+    for(k in 1:K) {theta_vec[k] = 0;}
   }
 
   for(p in 1:P) {
@@ -98,6 +116,17 @@ transformed parameters {
   for(k in 1:K) {
     Z[k,k] = zpos[k];// add constraint for Z diagonal
   }
+
+  // initial state for each trend
+  for(k in 1:K) {
+    x[k,1] = x0[k];
+    for(t in 2:N) {
+      // trend is modeled as random walk, with optional
+      // AR(1) component = phi, and optional MA(1) component
+      // theta. Theta is included in the model block below.
+      x[k,t] = phi_vec[k]*x[k,t-1] + devs[k,t-1];
+    }
+  }
   // N is sample size, P = time series, K = number trends
   // [PxN] = [PxK] * [KxN]
   pred = Z * x;
@@ -105,30 +134,46 @@ transformed parameters {
 model {
   // initial state for each trend
   for(k in 1:K) {
-    x[k,1] ~ cauchy(0,3);//normal(0, 1);
+    x0[k] ~ cauchy(0,3);//normal(0, 1);
     if(use_normal == 0) {
-      for(t in 2:N) {
+      for(t in 1:1) {
         if (estimate_nu == 1) {
-          x[k,t] ~ student_t(nu[1], phi_vec[k]*x[k,t-1], 1); // random walk
+          devs[k,t] ~ student_t(nu[1], 0, 1); // random walk
         } else {
-          x[k,t] ~ student_t(nu_fixed, phi_vec[k]*x[k,t-1], 1); // random walk
+          devs[k,t] ~ student_t(nu_fixed, 0, 1); // random walk
+        }
+      }
+      for(t in 2:(N-1)) {
+        if (estimate_nu == 1) {
+          devs[k,t] ~ student_t(nu[1], theta_vec[k]*devs[k,t-1], 1); // random walk
+        } else {
+          devs[k,t] ~ student_t(nu_fixed, theta_vec[k]*devs[k,t-1], 1); // random walk
         }
       }
     } else {
-      for(t in 2:N) {
-        x[k,t] ~ normal(phi_vec[k]*x[k,t-1], 1);
+      devs[k,1] ~ normal(0, 1);
+      for(t in 2:(N-1)) {
+        devs[k,t] ~ normal(theta_vec[k]*devs[k,t-1], 1);
       }
     }
 
   }
+
+  // prior for df parameter for t-distribution
   if (estimate_nu == 1) {
-    nu[1] ~ gamma(2, 0.1); // df parameter for t-distribution
+    nu[1] ~ gamma(2, 0.1);
   }
 
   if(est_phi == 1) {
     for(k in 1:K) {
-      // uniform prior on AR prior if included
-      phi[k] ~ uniform(-1,1);
+      // uniform prior on AR(1) component if included
+      phi[k] ~ uniform(0,1);
+    }
+  }
+  if(est_theta == 1) {
+    for(k in 1:K) {
+      // uniform prior on MA(1) component if included
+      theta[k] ~ uniform(0,1);
     }
   }
   // prior on loadings
@@ -140,6 +185,7 @@ model {
   if(est_cor == 1) {
     Lcorr ~ lkj_corr_cholesky(1);
   }
+
   // likelihood for independent
   if(est_cor == 0) {
     for(i in 1:P){
