@@ -10,9 +10,10 @@ plot_regime_model(model, probs = c(0.05, 0.95), type = c("probability",
 \arguments{
 \item{model}{A model returned by \code{\link{find_regimes}}.}
 
-\item{probs}{A numeric vector of quantiles to plot the credible intervals at.}
+\item{probs}{A numeric vector of quantiles to plot the credible intervals at. Defaults
+to (0.05, 0.95)}
 
-\item{regime_prob_threshold}{The probability density that must be above 0.5
+\item{regime_prob_threshold}{The probability density that must be above 0.5. Defaults to 0.9
 before we classify a regime (only affects \code{"means"} plot).}
 }
 \description{

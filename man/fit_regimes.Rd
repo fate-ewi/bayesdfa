@@ -9,10 +9,10 @@ fit_regimes(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, ...)
 \arguments{
 \item{y}{Data, time series or trend from fitted DFA model.}
 
-\item{sds}{Optional time series of standard deviations of estimates. 
-If passed in, residual variance not estimated}
+\item{sds}{Optional time series of standard deviations of estimates.
+If passed in, residual variance not estimated. Defaults to NULL}
 
-\item{n_regimes}{Number of regimes to evaluate}
+\item{n_regimes}{Number of regimes to evaluate, defaults 2}
 
 \item{iter}{MCMC iterations, defaults to 2000}
 

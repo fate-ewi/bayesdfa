@@ -11,7 +11,7 @@ find_regimes(y, sds = NULL, min_regimes = 1, max_regimes = 3,
 \item{y}{Data, time series or trend from fitted DFA model.}
 
 \item{sds}{Optional time series of standard deviations of estimates. If
-passed in, residual variance not estimated}
+passed in, residual variance not estimated. Defaults to NULL}
 
 \item{min_regimes}{Smallest of regimes to evaluate, defaults to 1}
 

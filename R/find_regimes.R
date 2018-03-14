@@ -1,6 +1,12 @@
 # Some of the following code copied (and modified) from https://github.com/luisdamiano/stancon18
 # under CC-BY 4.0
 
+#' Create initial values for the HMM model.
+#'
+#' @param K The number of regimes or clusters to fit. Called by \code{rstan::sampling}
+#' @param x_t A matrix of values. Called by \code{rstan::sampling}
+#'
+#' @return list of initial values (mu, sigma)
 hmm_init <- function(K, x_t) {
   clasif <- kmeans(x_t, K)
   init.mu <- by(x_t, clasif$cluster, mean)
@@ -13,7 +19,7 @@ hmm_init <- function(K, x_t) {
 #'
 #' @param y Data, time series or trend from fitted DFA model.
 #' @param sds Optional time series of standard deviations of estimates. If
-#'   passed in, residual variance not estimated
+#'   passed in, residual variance not estimated. Defaults to NULL
 #' @param min_regimes Smallest of regimes to evaluate, defaults to 1
 #' @param max_regimes Biggest of regimes to evaluate, defaults to 3
 #' @param ... Other parameters to pass to \code{\link[rstan]{sampling}}
@@ -28,14 +34,14 @@ hmm_init <- function(K, x_t) {
 #' data(Nile)
 #' find_regimes(log(Nile))
 #' }
-find_regimes <- function(y, sds = NULL, min_regimes = 1, max_regimes = 3, 
+find_regimes <- function(y, sds = NULL, min_regimes = 1, max_regimes = 3,
   iter = 2000, chains = 1, ...) {
 
   df <- data.frame(regimes = seq(min_regimes, max_regimes), looic = NA)
   best_loo <- 1.0e10
   best_model <- NA
   for(regime in seq(min_regimes, max_regimes)) {
-    fit <- fit_regimes(y = y, sds = sds, n_regimes = regime, iter = iter, 
+    fit <- fit_regimes(y = y, sds = sds, n_regimes = regime, iter = iter,
       chains = chains, ...)
     df$looic[which(df$regimes==regime)] <- fit$looic
     if(fit$looic < best_loo) {
@@ -50,9 +56,9 @@ find_regimes <- function(y, sds = NULL, min_regimes = 1, max_regimes = 3,
 #' Fit models with differing numbers of regimes to trend data
 #'
 #' @param y Data, time series or trend from fitted DFA model.
-#' @param sds Optional time series of standard deviations of estimates. 
-#'   If passed in, residual variance not estimated
-#' @param n_regimes Number of regimes to evaluate
+#' @param sds Optional time series of standard deviations of estimates.
+#'   If passed in, residual variance not estimated. Defaults to NULL
+#' @param n_regimes Number of regimes to evaluate, defaults 2
 #' @param ... Other parameters to pass to \code{\link[rstan]{sampling}}
 #' @param iter MCMC iterations, defaults to 2000
 #' @param chains MCMC chains, defaults to 1 (note that running multiple chains
@@ -120,8 +126,9 @@ fit_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, .
 #' Plot the state probabilities from \code{\link{find_regimes}}
 #'
 #' @param model A model returned by \code{\link{find_regimes}}.
-#' @param probs A numeric vector of quantiles to plot the credible intervals at.
-#' @param regime_prob_threshold The probability density that must be above 0.5
+#' @param probs A numeric vector of quantiles to plot the credible intervals at. Defaults
+#' to (0.05, 0.95)
+#' @param regime_prob_threshold The probability density that must be above 0.5. Defaults to 0.9
 #'   before we classify a regime (only affects \code{"means"} plot).
 #' @details
 #' Note that the original timeseries data (dots) are shown scaled between 0 and 1.
@@ -160,7 +167,7 @@ plot_regime_model <- function(model, probs = c(0.05, 0.95),
   mu_k_low <- apply(mu_k, 2, quantile, probs = probs[[1]])
   mu_k_high <- apply(mu_k, 2, quantile, probs = probs[[2]])
   mu_k <- apply(mu_k, 2, median)
-  confident_regimes <- apply(gamma_tk, 2:3, function(x) 
+  confident_regimes <- apply(gamma_tk, 2:3, function(x)
     mean(x > 0.5) > regime_prob_threshold)
   regime_indexes <- apply(confident_regimes, 1, function(x) {
     w <- which(x)
@@ -185,7 +192,7 @@ plot_regime_model <- function(model, probs = c(0.05, 0.95),
       xlab = "Time")
     if (!all(is.na(regime_indexes))) {
       for (i in seq_along(regime_indexes)) {
-        segments(x0 = i-0.5, x1 = i+0.5, y0 = mu_k[regime_indexes[i]], 
+        segments(x0 = i-0.5, x1 = i+0.5, y0 = mu_k[regime_indexes[i]],
           y1 = mu_k[regime_indexes[i]])
         polygon(c(i-0.5, i-0.5, i+0.5, i+0.5),
           c(mu_k_low[regime_indexes[i]], mu_k_high[regime_indexes[i]],
