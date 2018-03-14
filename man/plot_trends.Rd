@@ -12,12 +12,12 @@ plot_trends(rotated_modelfit, years = NULL, highlight_outliers = FALSE,
 
 \item{years}{Optional numeric vector of years for the plot}
 
-\item{highlight_outliers}{Logical. Should trend events 
+\item{highlight_outliers}{Logical. Should trend events
 that exceed the probability of occurring with a normal distribution as
-defined by \code{threshold} be highlighted?}
+defined by \code{threshold} be highlighted? Defaults to FALSE}
 
-\item{threshold}{A probability threshold below which to 
-flag trend events as extreme}
+\item{threshold}{A probability threshold below which to
+flag trend events as extreme. Defaults to 0.01}
 }
 \description{
 Plot the trends from a DFA

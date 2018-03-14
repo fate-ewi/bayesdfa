@@ -5,16 +5,16 @@
 #' @param rotated_modelfit Output from \code{\link{rotate_trends}}
 #' @param y A numeric vector to correlate with the DFA trend. Must be the same
 #'   length as the DFA trend.
-#' @param trend A number corresponding to which trend to use.
+#' @param trend A number corresponding to which trend to use, defaults to 1.
 #' @param time_window Indices indicating a time window slice to use in the
 #'   correlation. Defaults to using the entire time window. Can be used to walk
 #'   through the timeseries and test the cross correlations.
 #' @param trend_samples The number of samples from the trend posterior to use. A
 #'   model will be run for each trend sample so this value shouldn't be too
-#'   large.
+#'   large. Defaults to 100.
 #' @param stan_iter The number of samples from the posterior with each Stan
-#'   model run.
-#' @param stan_chains The number of chains for each Stan model run.
+#'   model run, defaults to 300.
+#' @param stan_chains The number of chains for each Stan model run, defaults to 1.
 #' @param ... Other arguments to pass to \code{\link[rstan]{sampling}}
 #'
 #' @return A numeric vector of samples from the correlation coefficient posterior.

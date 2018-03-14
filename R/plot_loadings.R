@@ -2,13 +2,13 @@
 #'
 #' @param rotated_modelfit Output from \code{\link{rotate_trends}}.
 #' @param names An optional vector of names for plotting the loadings.
-#' @param facet Logical. Should there be a separate facet for each trend?
+#' @param facet Logical. Should there be a separate facet for each trend? Defaults to TRUE.
 #' @param violin Logical. Should the full posterior densities be shown as a
-#'   violin plot?
-#' @param conf_level Confidence level for credible intervals.
+#'   violin plot? Defaults to TRUE.
+#' @param conf_level Confidence level for credible intervals. Defaults to 0.95.
 #' @param threshold Numeric (0-1). Optional for plots, if included, only plot loadings who
 #   have Pr(<0) or Pr(>0) > threshold. For example threshold=0.8 would only display estimates where 80% of
-#   posterior density was above/below zero.
+#   posterior density was above/below zero. Defaults to NULL (not used).
 #'
 #' @seealso plot_trends fit_dfa rotate_trends
 #'
@@ -62,7 +62,7 @@ plot_loadings = function(rotated_modelfit,
     df = df[df$prob_diff0 >= threshold,]
     v = v[v$prob_diff0 >= threshold,]
   }
-  
+
   if (!violin) {
     p1 <- ggplot(df, aes_string(x = "name", y = "median", col = "trend", alpha = "prob_diff0")) +
       geom_point(size = 3, position = position_dodge(0.3)) +

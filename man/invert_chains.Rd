@@ -7,11 +7,11 @@
 invert_chains(model, trends = 1, print = FALSE, ...)
 }
 \arguments{
-\item{model}{A Stan model.}
+\item{model}{A Stan model, rstanfit object}
 
-\item{trends}{The number of trends in the DFA.}
+\item{trends}{The number of trends in the DFA, defaults to 1}
 
-\item{print}{Logical indicating whether the summary should be printed.}
+\item{print}{Logical indicating whether the summary should be printed. Defaults to FALSE.}
 
 \item{...}{Other arguments to pass to \code{\link{find_inverted_chains}}.}
 }

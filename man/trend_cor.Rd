@@ -13,7 +13,7 @@ trend_cor(rotated_modelfit, y, trend = 1, time_window = seq_len(length(y)),
 \item{y}{A numeric vector to correlate with the DFA trend. Must be the same
 length as the DFA trend.}
 
-\item{trend}{A number corresponding to which trend to use.}
+\item{trend}{A number corresponding to which trend to use, defaults to 1.}
 
 \item{time_window}{Indices indicating a time window slice to use in the
 correlation. Defaults to using the entire time window. Can be used to walk
@@ -21,12 +21,12 @@ through the timeseries and test the cross correlations.}
 
 \item{trend_samples}{The number of samples from the trend posterior to use. A
 model will be run for each trend sample so this value shouldn't be too
-large.}
+large. Defaults to 100.}
 
 \item{stan_iter}{The number of samples from the posterior with each Stan
-model run.}
+model run, defaults to 300.}
 
-\item{stan_chains}{The number of chains for each Stan model run.}
+\item{stan_chains}{The number of chains for each Stan model run, defaults to 1.}
 
 \item{...}{Other arguments to pass to \code{\link[rstan]{sampling}}}
 }

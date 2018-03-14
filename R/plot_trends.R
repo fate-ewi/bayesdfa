@@ -2,11 +2,11 @@
 #'
 #' @param rotated_modelfit Output from \code{\link{rotate_trends}}
 #' @param years Optional numeric vector of years for the plot
-#' @param highlight_outliers Logical. Should trend events 
+#' @param highlight_outliers Logical. Should trend events
 #'   that exceed the probability of occurring with a normal distribution as
-#'   defined by \code{threshold} be highlighted? 
-#' @param threshold A probability threshold below which to 
-#'   flag trend events as extreme 
+#'   defined by \code{threshold} be highlighted? Defaults to FALSE
+#' @param threshold A probability threshold below which to
+#'   flag trend events as extreme. Defaults to 0.01
 #'
 #' @export
 #' @seealso plot_loadings fit_dfa rotate_trends
@@ -21,7 +21,7 @@
 #' p <- plot_trends(r, highlight_outliers = TRUE)
 #' print(p)
 
-plot_trends = function(rotated_modelfit, years = NULL, 
+plot_trends = function(rotated_modelfit, years = NULL,
   highlight_outliers = FALSE, threshold = 0.01) {
   # rotate the trends
   rotated <- rotated_modelfit

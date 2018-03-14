@@ -13,6 +13,6 @@ E.g. output from \code{\link{invert_chains}}.}
 \item{threshold}{Threshold for maximum Rhat, default = 1.05}
 }
 \description{
-Pass in rstanfit model object, and optional threshold value for
+Pass in rstanfit model object, and optional threshold Rhat value for
 convergence. Returns boolean.
 }

@@ -7,14 +7,14 @@
 find_inverted_chains(model, trend = 1, plot = FALSE)
 }
 \arguments{
-\item{model}{A Stan model}
+\item{model}{A Stan model, rstanfit object}
 
-\item{trend}{Which trend to check}
+\item{trend}{Which trend to check, defaults to 1}
 
-\item{plot}{Should a plot of the trend for each chain be made?}
+\item{plot}{Boolean, should a plot of the trend for each chain be made? Defaults to FALSE}
 }
 \description{
-Find which chains to invert by checking the sum of the squared 
+Find which chains to invert by checking the sum of the squared
 deviations between the first chain and each other chain.
 }
 \examples{

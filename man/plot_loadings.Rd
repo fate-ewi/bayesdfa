@@ -12,12 +12,12 @@ plot_loadings(rotated_modelfit, names = NULL, facet = TRUE, violin = TRUE,
 
 \item{names}{An optional vector of names for plotting the loadings.}
 
-\item{facet}{Logical. Should there be a separate facet for each trend?}
+\item{facet}{Logical. Should there be a separate facet for each trend? Defaults to TRUE.}
 
 \item{violin}{Logical. Should the full posterior densities be shown as a
-violin plot?}
+violin plot? Defaults to TRUE.}
 
-\item{conf_level}{Confidence level for credible intervals.}
+\item{conf_level}{Confidence level for credible intervals. Defaults to 0.95.}
 
 \item{threshold}{Numeric (0-1). Optional for plots, if included, only plot loadings who}
 }

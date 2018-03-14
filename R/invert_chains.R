@@ -1,11 +1,11 @@
 #' Find which chains to invert
 #'
-#' Find which chains to invert by checking the sum of the squared 
+#' Find which chains to invert by checking the sum of the squared
 #' deviations between the first chain and each other chain.
 #'
-#' @param model A Stan model
-#' @param trend Which trend to check
-#' @param plot Should a plot of the trend for each chain be made?
+#' @param model A Stan model, rstanfit object
+#' @param trend Which trend to check, defaults to 1
+#' @param plot Boolean, should a plot of the trend for each chain be made? Defaults to FALSE
 #'
 #' @importFrom ggplot2 geom_line
 #' @importFrom utils combn
@@ -30,10 +30,10 @@ find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
   zz <- v[grepl(paste0("Z\\["), v$parameters), ]
   zz <- zz[grepl(paste0(trend,"]"), zz$parameters), ]
   zz <- dplyr::group_by_(zz, "chains", "parameters")
-  zz <- dplyr::summarize_(zz, estimate = "stats::median(value)")  
+  zz <- dplyr::summarize_(zz, estimate = "stats::median(value)")
   ## vv is dimensioned nchains * nyears (x[1:nyears,trend=i])
   ## zz is dimensioned n_time series  (Z[1:time series,trend=i])
-  
+
   if (plot) {
     p <- ggplot(vv, aes_string("as.numeric(parameters)", "estimate",
       color = "chains")) +
@@ -41,12 +41,12 @@ find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
     print(p)
   }
 
-  # cast parameters to df 
+  # cast parameters to df
   vvv <- reshape2::dcast(vv, parameters ~ chains, value.var = "estimate")
   vvv$parameters <- NULL
   zzz <- reshape2::dcast(zz, parameters ~ chains, value.var = "estimate")
   zzz$parameters <- NULL
-  
+
   nchains <- ncol(vvv)
 
   # n_ts x n_years prediction matrix of product of trends and loadings
@@ -58,7 +58,7 @@ find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
       pred1_loadings = zzz[,i]
       pred1_trend = vvv[,i]
       # see if flipped trend + loadings are more similar to chain 1 than not flipped
-      if((sum((-1*pred1_loadings-pred0_loadings)^2) + sum((-1*pred1_trend-pred0_trend)^2)) < 
+      if((sum((-1*pred1_loadings-pred0_loadings)^2) + sum((-1*pred1_trend-pred0_trend)^2)) <
         (sum((pred1_loadings-pred0_loadings)^2) + sum((pred1_trend-pred0_trend)^2))) {
         # flip this chain
         flipped_chains = ifelse(flipped_chains == 0, i, c(flipped_chains, i))
@@ -70,9 +70,9 @@ find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
 
 #' Invert chains
 #'
-#' @param model A Stan model.
-#' @param trends The number of trends in the DFA.
-#' @param print Logical indicating whether the summary should be printed.
+#' @param model A Stan model, rstanfit object
+#' @param trends The number of trends in the DFA, defaults to 1
+#' @param print Logical indicating whether the summary should be printed. Defaults to FALSE.
 #' @param ... Other arguments to pass to \code{\link{find_inverted_chains}}.
 #'
 #' @export

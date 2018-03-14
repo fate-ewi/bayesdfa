@@ -13,41 +13,49 @@ fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 2,
 \arguments{
 \item{y}{A matrix of data to fit. Columns represent time element.}
 
-\item{covar}{A matrix of covariates}
+\item{covar}{A matrix of covariates, defaults to NULL (not included)}
 
-\item{covar_index}{Indices assigning ??}
+\item{covar_index}{A matrix, dimensioned as the number of time series x number
+of covariates that indexes which elements of the covariate matrix are shared across
+time series. Defaults to a matrix with unique coefficients estimated for each
+covariate-time series combination. Elements may be shared across time series or
+covariates.}
 
-\item{num_trends}{Number of trends to fit.}
+\item{num_trends}{Number of trends to fit, defaults to 2.}
 
 \item{varIndx}{Indices indicating which timeseries should have shared
 variances.}
 
-\item{zscore}{Logical. Should the data be standardized first?}
+\item{zscore}{Logical. Should the data be standardized first? If not it is
+just centered. Centering is necessary because no intercept is included.}
 
-\item{iter}{Number of iterations in Stan sampling.}
+\item{iter}{Number of iterations in Stan sampling, defaults to 2000.}
 
-\item{chains}{Number of chains in Stan sampling.}
+\item{chains}{Number of chains in Stan sampling, defaults to 4.}
 
-\item{control}{A list of options to pass to Stan sampling.}
+\item{control}{A list of options to pass to Stan sampling. Defaults to
+\code{list(adapt_delta = 0.99, max_treedepth = 20)}}
 
 \item{nu_fixed}{Student t degrees of freedom parameter. If specified as greater than 100,
-a normal random walk is used instead of a random walk with a t-distribution.}
+a normal random walk is used instead of a random walk with a t-distribution. Defaults
+to 101}
 
 \item{tau}{A fixed parameter describing the standard deviation on the random
-walk for the factor loadings in the case of time varying DFA.}
+walk for the factor loadings in the case of time varying DFA. Defaults to 0.1}
 
-\item{est_correlation}{Boolean, whether to estimate correlation of observation error. Defaults to FALSE}
+\item{est_correlation}{Boolean, whether to estimate correlation of observation
+error matrix \code{R}. Defaults to FALSE}
 
 \item{timevarying}{Logical. If \code{TRUE}, a time varying DFA. Note that the
 time varying DFA has not been extensively tested and may not return
-sensible answers.}
+sensible answers. Defaults to FALSE.}
 
 \item{estimate_nu}{Logical. Estimate the student t degrees of freedom
-parameter?}
+parameter? Defaults to FALSE.}
 
 \item{sample}{Logical. Should the model be sampled from? If \code{FALSE},
 then the data list object that would have been passed to Stan is returned
-instead. This is useful for debugging and simulation.}
+instead. This is useful for debugging and simulation. Defaults to TRUE.}
 }
 \description{
 Fit a Bayesian DFA

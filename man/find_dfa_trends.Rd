@@ -2,7 +2,7 @@
 % Please edit documentation in R/find_dfa_trends.R
 \name{find_dfa_trends}
 \alias{find_dfa_trends}
-\title{Find the best number of trends according to LOO}
+\title{Find the best number of trends according to LOOIC}
 \usage{
 find_dfa_trends(y = y, kmin = 1, kmax = 5, iter = 2000,
   compare_normal = FALSE, convergence_threshold = 1.05,
@@ -30,8 +30,7 @@ of models. Can be either or both of ("equal","unequal")}
 }
 \description{
 Fit a DFA with different number of trends and return the leave one out (LOO)
-value as calculated by the loo package. Note that the models will be fit once
-with shared variances and once with independent variances.
+value as calculated by the loo package.
 }
 \examples{
 \dontrun{
