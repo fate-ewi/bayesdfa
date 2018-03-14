@@ -25,6 +25,7 @@ data {
   int estimate_nu; // Estimate degrees of freedom?
   int use_normal; // flag, for large values of nu > 100, use normal instead
   int est_cor; // whether to estimate correlation in obs error (=1) or not (=0)
+  int est_phi; // whether to estimate autocorrelation in trends (=1) or not (= 0)
 }
 transformed data {
   int n_pcor; // dimension for cov matrix
@@ -52,6 +53,7 @@ parameters {
   real<lower=0> sigma[nVariances];
   real<lower=2> nu[estimate_nu]; // df on student-t
   real ymiss[n_na];
+  real<lower=-1,upper=1> phi[est_phi*K];
   cholesky_factor_corr[n_pcor] Lcorr;
 }
 transformed parameters {
@@ -60,6 +62,13 @@ transformed parameters {
   //vector[N] yall[P]; // combined vectors of missing and non-missing values
   matrix[P,N] yall;
   vector[P] sigma_vec;
+  vector[P] phi_vec;
+
+  if(est_phi == 1) {
+    for(p in 1:P) {phi_vec[p] = phi[p];}
+  } else {
+    for(p in 1:P) {phi_vec[p] = 1;}
+  }
 
   for(p in 1:P) {
     sigma_vec[p] = sigma[varIndx[p]]; // convert estimated sigmas to vec form
@@ -100,14 +109,14 @@ model {
     if(use_normal == 0) {
       for(t in 2:N) {
         if (estimate_nu == 1) {
-          x[k,t] ~ student_t(nu[1], x[k,t-1], 1); // random walk
+          x[k,t] ~ student_t(nu[1], phi_vec[k]*x[k,t-1], 1); // random walk
         } else {
-          x[k,t] ~ student_t(nu_fixed, x[k,t-1], 1); // random walk
+          x[k,t] ~ student_t(nu_fixed, phi_vec[k]*x[k,t-1], 1); // random walk
         }
       }
     } else {
       for(t in 2:N) {
-        x[k,t] ~ normal(x[k,t-1], 1);
+        x[k,t] ~ normal(phi_vec[k]*x[k,t-1], 1);
       }
     }
 
@@ -116,6 +125,12 @@ model {
     nu[1] ~ gamma(2, 0.1); // df parameter for t-distribution
   }
 
+  if(est_phi == 1) {
+    for(p in 1:P) {
+      // uniform prior on AR prior if included
+      phi[p] ~ uniform(-1,1);
+    }
+  }
   // prior on loadings
   z ~ normal(0, 1);
   zpos ~ normal(0, 1);

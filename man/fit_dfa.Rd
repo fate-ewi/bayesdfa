@@ -8,7 +8,7 @@ fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 2,
   varIndx = NULL, zscore = TRUE, iter = 2000, chains = 4,
   control = list(adapt_delta = 0.99, max_treedepth = 20), nu_fixed = 101,
   tau = 0.1, est_correlation = FALSE, timevarying = FALSE,
-  estimate_nu = FALSE, sample = TRUE)
+  estimate_nu = FALSE, estimate_phi = FALSE, sample = TRUE)
 }
 \arguments{
 \item{y}{A matrix of data to fit. Columns represent time element.}
@@ -52,6 +52,9 @@ sensible answers. Defaults to FALSE.}
 
 \item{estimate_nu}{Logical. Estimate the student t degrees of freedom
 parameter? Defaults to FALSE.}
+
+\item{estimate_phi}{Logical. AR(1) parameters on DFA trends? Defaults to FALSE,
+in which case AR(1) parameters are set to 1}
 
 \item{sample}{Logical. Should the model be sampled from? If \code{FALSE},
 then the data list object that would have been passed to Stan is returned

@@ -28,6 +28,8 @@
 #'   sensible answers. Defaults to FALSE.
 #' @param estimate_nu Logical. Estimate the student t degrees of freedom
 #' parameter? Defaults to FALSE.
+#' @param estimate_phi Logical. AR(1) parameters on DFA trends? Defaults to FALSE,
+#' in which case AR(1) parameters are set to 1
 #' @param sample Logical. Should the model be sampled from? If \code{FALSE},
 #'   then the data list object that would have been passed to Stan is returned
 #'   instead. This is useful for debugging and simulation. Defaults to TRUE.
@@ -61,13 +63,13 @@ fit_dfa = function(y = y,
   est_correlation = FALSE,
   timevarying = FALSE,
   estimate_nu = FALSE,
+  estimate_phi = FALSE,
   sample = TRUE) {
   # parameters for DFA
   N = ncol(y) # number of time steps
   P = nrow(y) # number of time series
   K = num_trends # number of dfa trends
   nZ = P * K - sum(1:K)  # number of non-zero parameters that are unconstrained
-
 
   for (i in seq_len(P)) {
     if (zscore) {
@@ -164,13 +166,15 @@ fit_dfa = function(y = y,
     num_unique_covar = num_unique_covar,
     estimate_nu = as.integer(estimate_nu),
     use_normal = use_normal,
-    est_cor = as.numeric(est_correlation)
+    est_cor = as.numeric(est_correlation),
+    est_phi = as.numeric(estimate_phi)
   )
   pars <- c("x", "Z", "pred", "sigma", "log_lik")
   if(est_correlation) pars = c(pars, "Omega") # add correlation matrix
 
   if (!is.null(covar)) pars <- c(pars, "D")
   if (estimate_nu) pars <- c(pars, "nu")
+  if (estimate_phi) pars <- c(pars, "phi")
 
   if (timevarying) {
     m <- stanmodels$tvdfa_fixed
