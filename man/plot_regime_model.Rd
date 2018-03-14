@@ -2,25 +2,28 @@
 % Please edit documentation in R/find_regimes.R
 \name{plot_regime_model}
 \alias{plot_regime_model}
-\title{Plot the state probabilities from \code{\link{find_regimes}}}
+\title{Plot the state probabilities from \code{\link[=find_regimes]{find_regimes()}}}
 \usage{
 plot_regime_model(model, probs = c(0.05, 0.95), type = c("probability",
   "means"), regime_prob_threshold = 0.9)
 }
 \arguments{
-\item{model}{A model returned by \code{\link{find_regimes}}.}
+\item{model}{A model returned by \code{\link[=find_regimes]{find_regimes()}}.}
 
-\item{probs}{A numeric vector of quantiles to plot the credible intervals at. Defaults
-to (0.05, 0.95)}
+\item{probs}{A numeric vector of quantiles to plot the credible intervals at.
+Defaults to \code{(0.05, 0.95)}.}
 
-\item{regime_prob_threshold}{The probability density that must be above 0.5. Defaults to 0.9
-before we classify a regime (only affects \code{"means"} plot).}
+\item{type}{Make a plot of the probabilities or means.}
+
+\item{regime_prob_threshold}{The probability density that must be above 0.5.
+Defaults to 0.9 before we classify a regime (only affects \code{means"} plot).}
 }
 \description{
-Plot the state probabilities from \code{\link{find_regimes}}
+Plot the state probabilities from \code{\link[=find_regimes]{find_regimes()}}
 }
 \details{
-Note that the original timeseries data (dots) are shown scaled between 0 and 1.
+Note that the original timeseries data (dots) are shown scaled
+between 0 and 1.
 }
 \examples{
 \dontrun{

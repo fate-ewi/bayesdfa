@@ -2,18 +2,19 @@
 % Please edit documentation in R/find_regimes.R
 \name{hmm_init}
 \alias{hmm_init}
-\title{Create initial values for the HMM model.}
+\title{Create initial values for the HMM model}
 \usage{
 hmm_init(K, x_t)
 }
 \arguments{
-\item{K}{The number of regimes or clusters to fit. Called by \code{rstan::sampling}}
+\item{K}{The number of regimes or clusters to fit. Called by
+\code{\link[rstan:sampling]{rstan::sampling()}}.}
 
-\item{x_t}{A matrix of values. Called by \code{rstan::sampling}}
+\item{x_t}{A matrix of values. Called by \code{\link[rstan:sampling]{rstan::sampling()}}.}
 }
 \value{
 list of initial values (mu, sigma)
 }
 \description{
-Create initial values for the HMM model.
+Create initial values for the HMM model
 }

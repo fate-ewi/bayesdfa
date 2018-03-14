@@ -1,10 +1,12 @@
-# Some of the following code copied (and modified) from https://github.com/luisdamiano/stancon18
+# Some of the following code copied (and modified) from
+# https://github.com/luisdamiano/stancon18
 # under CC-BY 4.0
 
-#' Create initial values for the HMM model.
+#' Create initial values for the HMM model
 #'
-#' @param K The number of regimes or clusters to fit. Called by \code{rstan::sampling}
-#' @param x_t A matrix of values. Called by \code{rstan::sampling}
+#' @param K The number of regimes or clusters to fit. Called by
+#'   [rstan::sampling()].
+#' @param x_t A matrix of values. Called by [rstan::sampling()].
 #'
 #' @return list of initial values (mu, sigma)
 hmm_init <- function(K, x_t) {
@@ -19,13 +21,13 @@ hmm_init <- function(K, x_t) {
 #'
 #' @param y Data, time series or trend from fitted DFA model.
 #' @param sds Optional time series of standard deviations of estimates. If
-#'   passed in, residual variance not estimated. Defaults to NULL
-#' @param min_regimes Smallest of regimes to evaluate, defaults to 1
-#' @param max_regimes Biggest of regimes to evaluate, defaults to 3
-#' @param ... Other parameters to pass to \code{\link[rstan]{sampling}}
-#' @param iter MCMC iterations, defaults to 2000
-#' @param chains MCMC chains, defaults to 1 (note that running multiple chains
-#'   may result in a label switching problem where the regimes are identified
+#'   passed in, residual variance not estimated.
+#' @param min_regimes Smallest of regimes to evaluate.
+#' @param max_regimes Biggest of regimes to evaluate.
+#' @param ... Other parameters to pass to [rstan::sampling()].
+#' @param iter MCMC iterations.
+#' @param chains MCMC chains; defaults to 1 (note that running multiple chains
+#'   may result in a "label switching" problem where the regimes are identified
 #'   with different IDs across chains).
 #' @export
 #'
@@ -36,15 +38,16 @@ hmm_init <- function(K, x_t) {
 #' }
 find_regimes <- function(y, sds = NULL, min_regimes = 1, max_regimes = 3,
   iter = 2000, chains = 1, ...) {
-
   df <- data.frame(regimes = seq(min_regimes, max_regimes), looic = NA)
   best_loo <- 1.0e10
   best_model <- NA
-  for(regime in seq(min_regimes, max_regimes)) {
-    fit <- fit_regimes(y = y, sds = sds, n_regimes = regime, iter = iter,
-      chains = chains, ...)
-    df$looic[which(df$regimes==regime)] <- fit$looic
-    if(fit$looic < best_loo) {
+  for (regime in seq(min_regimes, max_regimes)) {
+    fit <- fit_regimes(
+      y = y, sds = sds, n_regimes = regime, iter = iter,
+      chains = chains, ...
+    )
+    df$looic[which(df$regimes == regime)] <- fit$looic
+    if (fit$looic < best_loo) {
       best_loo <- fit$looic
       best_model <- fit
     }
@@ -57,10 +60,10 @@ find_regimes <- function(y, sds = NULL, min_regimes = 1, max_regimes = 3,
 #'
 #' @param y Data, time series or trend from fitted DFA model.
 #' @param sds Optional time series of standard deviations of estimates.
-#'   If passed in, residual variance not estimated. Defaults to NULL
+#'   If passed in, residual variance not estimated.
 #' @param n_regimes Number of regimes to evaluate, defaults 2
-#' @param ... Other parameters to pass to \code{\link[rstan]{sampling}}
-#' @param iter MCMC iterations, defaults to 2000
+#' @param ... Other parameters to pass to [rstan::sampling()].
+#' @param iter MCMC iterations.
 #' @param chains MCMC chains, defaults to 1 (note that running multiple chains
 #'   may result in a label switching problem where the regimes are identified
 #'   with different IDs across chains).
@@ -76,62 +79,75 @@ find_regimes <- function(y, sds = NULL, min_regimes = 1, max_regimes = 3,
 #' find_regimes(log(Nile))
 #' }
 
-fit_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, ...) {
+fit_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000,
+  chains = 1, ...) {
 
   est_sigma <- 0
-  if(is.null(sds)) {
+  if (is.null(sds)) {
     # estimate sigma, instead of using fixed values
     sds <- rep(0, length(y))
     est_sigma <- 1
   }
 
-  if(n_regimes == 1) {
+  if (n_regimes == 1) {
     stan_data <- list(
       T = length(y),
       K = 1,
       x_t = y,
       sigma_t = sds,
       est_sigma = est_sigma,
-      pars = c("mu_k", "sigma_k", "log_lik"))
+      pars = c("mu_k", "sigma_k", "log_lik")
+    )
 
     m <- rstan::sampling(stanmodels$regime_1,
       data = stan_data,
       iter = iter,
       chains = chains,
-      init = function() {hmm_init(n_regimes, y)},
-      ...)
+      init = function() {
+        hmm_init(n_regimes, y)
+      },
+      ...
+    )
   }
 
-  if(n_regimes > 1) {
+  if (n_regimes > 1) {
     stan_data <- list(
       T = length(y),
       K = n_regimes,
       x_t = y,
       sigma_t = sds,
       est_sigma = est_sigma,
-      pars = c("p_1k", "A_ij", "mu_k", "sigma_k", "log_lik", "unalpha_tk", "gamma_tk",
-        "unbeta_tk","ungamma_tk","alpha_tk", "beta_tk", "zstar_t", "logp_zstar_t"))
+      pars = c(
+        "p_1k", "A_ij", "mu_k", "sigma_k", "log_lik", "unalpha_tk", "gamma_tk",
+        "unbeta_tk", "ungamma_tk", "alpha_tk", "beta_tk", "zstar_t",
+        "logp_zstar_t"
+      )
+    )
 
     m <- rstan::sampling(stanmodels$hmm_gaussian,
       data = stan_data,
       iter = iter,
       chains = chains,
-      init = function() {hmm_init(n_regimes, y)},
-      ...)
+      init = function() {
+        hmm_init(n_regimes, y)
+      },
+      ...
+    )
   }
   looic <- loo::loo(loo::extract_log_lik(m))$looic
   list(model = m, y = y, looic = looic)
 }
 
-#' Plot the state probabilities from \code{\link{find_regimes}}
+#' Plot the state probabilities from [find_regimes()]
 #'
-#' @param model A model returned by \code{\link{find_regimes}}.
-#' @param probs A numeric vector of quantiles to plot the credible intervals at. Defaults
-#' to (0.05, 0.95)
-#' @param regime_prob_threshold The probability density that must be above 0.5. Defaults to 0.9
-#'   before we classify a regime (only affects \code{"means"} plot).
-#' @details
-#' Note that the original timeseries data (dots) are shown scaled between 0 and 1.
+#' @param model A model returned by [find_regimes()].
+#' @param probs A numeric vector of quantiles to plot the credible intervals at.
+#'   Defaults to `(0.05, 0.95)`.
+#' @param type Make a plot of the probabilities or means.
+#' @param regime_prob_threshold The probability density that must be above 0.5.
+#'   Defaults to 0.9 before we classify a regime (only affects `means"` plot).
+#' @details Note that the original timeseries data (dots) are shown scaled
+#' between 0 and 1.
 #'
 #' @export
 #' @examples
@@ -155,15 +171,14 @@ fit_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, .
 #' }
 
 plot_regime_model <- function(model, probs = c(0.05, 0.95),
-  type = c("probability", "means"),
-  regime_prob_threshold = 0.9) {
+  type = c("probability", "means"), regime_prob_threshold = 0.9) {
 
-  gamma_tk <- rstan::extract(model$model, pars = 'gamma_tk')[[1]]
-  mu_k <- rstan::extract(model$model, pars = 'mu_k')[[1]]
+  gamma_tk <- rstan::extract(model$model, pars = "gamma_tk")[[1]]
+  mu_k <- rstan::extract(model$model, pars = "mu_k")[[1]]
   l <- apply(gamma_tk, 2:3, quantile, probs = probs[[1]])
   u <- apply(gamma_tk, 2:3, quantile, probs = probs[[2]])
   med <- apply(gamma_tk, 2:3, quantile, probs = 0.5)
-  range01 <- function(x) (x-min(x))/(max(x)-min(x))
+  range01 <- function(x) (x - min(x)) / (max(x) - min(x))
   mu_k_low <- apply(mu_k, 2, quantile, probs = probs[[1]])
   mu_k_high <- apply(mu_k, 2, quantile, probs = probs[[2]])
   mu_k <- apply(mu_k, 2, median)
@@ -178,26 +193,36 @@ plot_regime_model <- function(model, probs = c(0.05, 0.95),
     oldpar <- par("mfrow")
     par(mfrow = c(1, ncol(med)))
     for (i in seq_len(ncol(med))) {
-      plot(l[,i], ylim = c(0, 1), col = "grey40", lty = 2, type = "n",
-        main = paste("State", LETTERS[i]), ylab = "Probability of being in given state",
-        xlab = "Time")
-      polygon(c(1:nrow(u), nrow(u):1), c(l[,i], rev(u[,i])), col = "grey70", border = "grey70")
-      lines(1:nrow(u), med[,i], col = "black", lwd = 2)
+      plot(l[, i],
+        ylim = c(0, 1), col = "grey40", lty = 2, type = "n",
+        main = paste("State", LETTERS[i]),
+        ylab = "Probability of being in given state",
+        xlab = "Time"
+      )
+      polygon(c(1:nrow(u), nrow(u):1), c(l[, i], rev(u[, i])),
+        col = "grey70", border = "grey70")
+      lines(1:nrow(u), med[, i], col = "black", lwd = 2)
       points(1:nrow(u), range01(model$y), col = "#FF000070", pch = 3)
-
     }
     par(mfrow = oldpar)
   } else {
-    plot(as.numeric(model$y), col = "#FF000070", pch = 3, ylab = "Time series value",
-      xlab = "Time")
+    plot(as.numeric(model$y),
+      col = "#FF000070", pch = 3, ylab = "Time series value",
+      xlab = "Time"
+    )
     if (!all(is.na(regime_indexes))) {
       for (i in seq_along(regime_indexes)) {
-        segments(x0 = i-0.5, x1 = i+0.5, y0 = mu_k[regime_indexes[i]],
-          y1 = mu_k[regime_indexes[i]])
-        polygon(c(i-0.5, i-0.5, i+0.5, i+0.5),
-          c(mu_k_low[regime_indexes[i]], mu_k_high[regime_indexes[i]],
-            mu_k_high[regime_indexes[i]], mu_k_low[regime_indexes[i]]),
-          border = NA, col = "#00000050")
+        segments(
+          x0 = i - 0.5, x1 = i + 0.5, y0 = mu_k[regime_indexes[i]],
+          y1 = mu_k[regime_indexes[i]]
+        )
+        polygon(c(i - 0.5, i - 0.5, i + 0.5, i + 0.5),
+          c(
+            mu_k_low[regime_indexes[i]], mu_k_high[regime_indexes[i]],
+            mu_k_high[regime_indexes[i]], mu_k_low[regime_indexes[i]]
+          ),
+          border = NA, col = "#00000050"
+        )
       }
     }
   }
