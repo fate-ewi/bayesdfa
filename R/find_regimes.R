@@ -145,7 +145,7 @@ fit_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000,
 #'   Defaults to `(0.05, 0.95)`.
 #' @param type Make a plot of the probabilities or means.
 #' @param regime_prob_threshold The probability density that must be above 0.5.
-#'   Defaults to 0.9 before we classify a regime (only affects `means"` plot).
+#'   Defaults to 0.9 before we classify a regime (only affects `"means"` plot).
 #' @details Note that the original timeseries data (dots) are shown scaled
 #' between 0 and 1.
 #'

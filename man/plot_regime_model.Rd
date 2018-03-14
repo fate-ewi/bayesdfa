@@ -16,7 +16,7 @@ Defaults to \code{(0.05, 0.95)}.}
 \item{type}{Make a plot of the probabilities or means.}
 
 \item{regime_prob_threshold}{The probability density that must be above 0.5.
-Defaults to 0.9 before we classify a regime (only affects \code{means"} plot).}
+Defaults to 0.9 before we classify a regime (only affects \code{"means"} plot).}
 }
 \description{
 Plot the state probabilities from \code{\link[=find_regimes]{find_regimes()}}
