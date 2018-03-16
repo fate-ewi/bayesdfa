@@ -7,11 +7,12 @@
 find_inverted_chains(model, trend = 1, plot = FALSE)
 }
 \arguments{
-\item{model}{A Stan model, rstanfit object}
+\item{model}{A Stan model, \code{rstanfit} object}
 
-\item{trend}{Which trend to check, defaults to 1}
+\item{trend}{Which trend to check}
 
-\item{plot}{Boolean, should a plot of the trend for each chain be made? Defaults to FALSE}
+\item{plot}{Boolean, should a plot of the trend for each chain be made?
+Defaults to \code{FALSE}}
 }
 \description{
 Find which chains to invert by checking the sum of the squared

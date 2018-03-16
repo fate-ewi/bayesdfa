@@ -17,7 +17,7 @@ find_dfa_trends(y = y, kmin = 1, kmax = 5, iter = 2000,
 
 \item{iter}{Iterations when sampling from each Stan model.}
 
-\item{compare_normal}{If TRUE, does model selection comparison of Normal vs
+\item{compare_normal}{If \code{TRUE}, does model selection comparison of Normal vs.
 Student-t errors}
 
 \item{convergence_threshold}{The maximum allowed value of Rhat to determine
@@ -26,11 +26,11 @@ convergence of parameters}
 \item{variance}{Vector of variance arguments for searching over large groups
 of models. Can be either or both of ("equal","unequal")}
 
-\item{...}{Other arguments to pass to \code{\link{fit_dfa}}}
+\item{...}{Other arguments to pass to \code{fit_dfa()}}
 }
 \description{
 Fit a DFA with different number of trends and return the leave one out (LOO)
-value as calculated by the loo package.
+value as calculated by the \link[loo:loo-package]{loo} package.
 }
 \examples{
 \dontrun{

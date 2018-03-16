@@ -7,10 +7,17 @@
 rotate_trends(fitted_model, conf_level = 0.95)
 }
 \arguments{
-\item{fitted_model}{Output from \code{\link{fit_dfa}}.}
+\item{fitted_model}{Output from \code{\link[=fit_dfa]{fit_dfa()}}.}
 
 \item{conf_level}{Probability level for CI.}
 }
 \description{
 Rotate the trends from a DFA
+}
+\examples{
+\dontrun{
+y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
+m <- fit_dfa(y = y, num_trends = 1, iter = 600, chains = 1)
+r <- rotate_trends(m)
+}
 }
