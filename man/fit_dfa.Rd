@@ -4,7 +4,7 @@
 \alias{fit_dfa}
 \title{Fit a Bayesian DFA}
 \usage{
-fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 2,
+fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 1,
   varIndx = NULL, zscore = TRUE, iter = 2000, chains = 4,
   control = list(adapt_delta = 0.99, max_treedepth = 20), nu_fixed = 101,
   tau = 0.1, est_correlation = FALSE, timevarying = FALSE,
@@ -22,7 +22,7 @@ time series. Defaults to a matrix with unique coefficients estimated for each
 covariate-time series combination. Elements may be shared across time series or
 covariates.}
 
-\item{num_trends}{Number of trends to fit, defaults to 2.}
+\item{num_trends}{Number of trends to fit.}
 
 \item{varIndx}{Indices indicating which timeseries should have shared
 variances.}
