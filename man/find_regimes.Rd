@@ -29,8 +29,6 @@ with different IDs across chains).}
 Fit multiple models with differing numbers of regimes to trend data
 }
 \examples{
-\dontrun{
 data(Nile)
-find_regimes(log(Nile))
-}
+find_regimes(log(Nile), iter = 500, chains = 1, max_regimes = 2)
 }

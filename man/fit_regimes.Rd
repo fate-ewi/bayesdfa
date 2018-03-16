@@ -10,24 +10,22 @@ fit_regimes(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, ...)
 \item{y}{Data, time series or trend from fitted DFA model.}
 
 \item{sds}{Optional time series of standard deviations of estimates.
-If passed in, residual variance not estimated. Defaults to NULL}
+If passed in, residual variance not estimated. Defaults to \code{NULL}.}
 
 \item{n_regimes}{Number of regimes to evaluate, defaults 2}
 
-\item{iter}{MCMC iterations, defaults to 2000}
+\item{iter}{MCMC iterations, defaults to 2000.}
 
 \item{chains}{MCMC chains, defaults to 1 (note that running multiple chains
 may result in a label switching problem where the regimes are identified
 with different IDs across chains).}
 
-\item{...}{Other parameters to pass to \code{\link[rstan]{sampling}}}
+\item{...}{Other parameters to pass to \code{\link[rstan:sampling]{rstan::sampling()}}.}
 }
 \description{
 Fit models with differing numbers of regimes to trend data
 }
 \examples{
-\dontrun{
 data(Nile)
-find_regimes(log(Nile))
-}
+fit_regimes(log(Nile), iter = 1000, n_regimes = 1)
 }
