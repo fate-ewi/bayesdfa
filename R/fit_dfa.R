@@ -51,36 +51,38 @@
 #' @import Rcpp
 #' @importFrom graphics lines par plot points polygon segments
 
-fit_dfa = function(y = y,
-  covar=NULL,
-  covar_index=NULL,
-  num_trends = 1,
-  varIndx = NULL,
-  zscore = TRUE,
-  iter = 2000,
-  chains = 4,
-  control = list(adapt_delta = 0.99, max_treedepth = 20),
-  nu_fixed = 101,
-  tau = 0.1,
-  est_correlation = FALSE,
-  timevarying = FALSE,
-  estimate_nu = FALSE,
-  estimate_trend_ar = FALSE,
-  estimate_trend_ma = FALSE,
-  sample = TRUE) {
+fit_dfa <- function(y = y,
+                    covar=NULL,
+                    covar_index=NULL,
+                    num_trends = 1,
+                    varIndx = NULL,
+                    zscore = TRUE,
+                    iter = 2000,
+                    chains = 4,
+                    control = list(adapt_delta = 0.99, max_treedepth = 20),
+                    nu_fixed = 101,
+                    tau = 0.1,
+                    est_correlation = FALSE,
+                    timevarying = FALSE,
+                    estimate_nu = FALSE,
+                    estimate_trend_ar = FALSE,
+                    estimate_trend_ma = FALSE,
+                    sample = TRUE) {
 
   # parameters for DFA
   N <- ncol(y) # number of time steps
   P <- nrow(y) # number of time series
   K <- num_trends # number of dfa trends
-  nZ <- P * K - sum(seq_len(K))  # number of non-zero parameters that are unconstrained
+  nZ <- P * K - sum(seq_len(K)) # number of non-zero parameters that are unconstrained
 
   for (i in seq_len(P)) {
     if (zscore) {
-      if (length(unique(na.omit(c(y[i, ])))) == 1L)
+      if (length(unique(na.omit(c(y[i, ])))) == 1L) {
         stop("Can't scale one or more of the time series because all values ",
           "are the same. Remove this/these time series or set `zscore = FALSE`.",
-          call. = FALSE)
+          call. = FALSE
+        )
+      }
       y[i, ] <- scale(y[i, ], center = TRUE, scale = TRUE)
     } else {
       y[i, ] <- scale(y[i, ], center = TRUE, scale = FALSE)
@@ -107,9 +109,9 @@ fit_dfa = function(y = y,
   # mat_indx now references the unconstrained values of the Z matrix.
   mat_indx <- matrix(0, P, K)
   start <- 1
-  for(k in 1:K) {
-    for(p in (k+1):P) {
-      mat_indx[p,k] <- start
+  for (k in 1:K) {
+    for (p in (k + 1):P) {
+      mat_indx[p, k] <- start
       start <- start + 1
     }
   }
@@ -120,13 +122,14 @@ fit_dfa = function(y = y,
   diag(mat_indx) <- 1
   row_indx_z <- matrix((rep(seq_len(P), K)), P, K)[which(mat_indx == 0)]
   col_indx_z <- matrix(sort(rep(seq_len(K), P)), P, K)[which(mat_indx == 0)]
-  row_indx_z <- c(row_indx_z, 0, 0)# +2 zeros for making stan ok with data types
-  col_indx_z <- c(col_indx_z, 0, 0)# +2 zeros for making stan ok with data types
+  row_indx_z <- c(row_indx_z, 0, 0) # +2 zeros for making stan ok with data types
+  col_indx_z <- c(col_indx_z, 0, 0) # +2 zeros for making stan ok with data types
   nZero <- length(row_indx_z)
 
   # set the model up to have shared variances
-  if (is.null(varIndx))
+  if (is.null(varIndx)) {
     varIndx <- rep(1, P)
+  }
   nVariances <- length(unique(varIndx))
 
   # indices of positive values - stan can't handle NAs
@@ -142,7 +145,7 @@ fit_dfa = function(y = y,
 
   # flag for whether to use a normal dist
   use_normal <- ifelse(nu_fixed > 100, 1, 0)
-  if(estimate_nu == TRUE) use_normal <- 0 # competing flags
+  if (estimate_nu == TRUE) use_normal <- 0 # competing flags
 
   data_list <- list(
     N = N,
@@ -180,7 +183,7 @@ fit_dfa = function(y = y,
   )
 
   pars <- c("x", "Z", "pred", "sigma", "log_lik")
-  if(est_correlation) pars <- c(pars, "Omega") # add correlation matrix
+  if (est_correlation) pars <- c(pars, "Omega") # add correlation matrix
 
   if (!is.null(covar)) pars <- c(pars, "D")
   if (estimate_nu) pars <- c(pars, "nu")
@@ -199,7 +202,8 @@ fit_dfa = function(y = y,
     pars = pars,
     control = control,
     chains = chains,
-    iter = iter)
+    iter = iter
+  )
 
   if (sample) {
     mod <- do.call(sampling, sampling_args)
@@ -209,8 +213,10 @@ fit_dfa = function(y = y,
     } else {
       e <- rstan::extract(mod, permuted = FALSE)
       ep <- rstan::extract(mod, permuted = TRUE)
-      out <- list(model = mod, samples_permuted = ep, samples = e,
-        monitor = rstan::monitor(e))
+      out <- list(
+        model = mod, samples_permuted = ep, samples = e,
+        monitor = rstan::monitor(e)
+      )
     }
 
     out[["data"]] <- Y # keep data attached
