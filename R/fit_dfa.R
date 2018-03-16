@@ -7,7 +7,7 @@
 #' time series. Defaults to a matrix with unique coefficients estimated for each
 #' covariate-time series combination. Elements may be shared across time series or
 #' covariates.
-#' @param num_trends Number of trends to fit, defaults to 2.
+#' @param num_trends Number of trends to fit.
 #' @param varIndx Indices indicating which timeseries should have shared
 #' variances.
 #' @param zscore Logical. Should the data be standardized first? If not it is
@@ -54,7 +54,7 @@
 fit_dfa = function(y = y,
   covar=NULL,
   covar_index=NULL,
-  num_trends = 2,
+  num_trends = 1,
   varIndx = NULL,
   zscore = TRUE,
   iter = 2000,
@@ -68,78 +68,83 @@ fit_dfa = function(y = y,
   estimate_trend_ar = FALSE,
   estimate_trend_ma = FALSE,
   sample = TRUE) {
+
   # parameters for DFA
-  N = ncol(y) # number of time steps
-  P = nrow(y) # number of time series
-  K = num_trends # number of dfa trends
-  nZ = P * K - sum(1:K)  # number of non-zero parameters that are unconstrained
+  N <- ncol(y) # number of time steps
+  P <- nrow(y) # number of time series
+  K <- num_trends # number of dfa trends
+  nZ <- P * K - sum(seq_len(K))  # number of non-zero parameters that are unconstrained
 
   for (i in seq_len(P)) {
     if (zscore) {
+      if (length(unique(na.omit(c(y[i, ])))) == 1L)
+        stop("Can't scale one or more of the time series because all values ",
+          "are the same. Remove this/these time series or set `zscore = FALSE`.",
+          call. = FALSE)
       y[i, ] <- scale(y[i, ], center = TRUE, scale = TRUE)
     } else {
       y[i, ] <- scale(y[i, ], center = TRUE, scale = FALSE)
     }
   }
-  Y = y # attached to returned object below
+  Y <- y # attached to returned object below
   # Deal with covariates
-  d_covar = covar
+  d_covar <- covar
 
-  num_covar = nrow(d_covar)
-  covar_indexing = covar_index
+  num_covar <- nrow(d_covar)
+  covar_indexing <- covar_index
   if (!is.null(d_covar) & is.null(covar_indexing)) {
     # covariates included but index matrix not, assume independent for all elements
-    covar_indexing = matrix(seq(1, num_covar * P), P, num_covar)
-    num_unique_covar = max(covar_indexing)
+    covar_indexing <- matrix(seq(1, num_covar * P), P, num_covar)
+    num_unique_covar <- max(covar_indexing)
   }
   if (is.null(d_covar)) {
-    covar_indexing = matrix(0, P, 0)
-    d_covar = matrix(0, 0, N)
-    num_covar = 0
-    num_unique_covar = 0
+    covar_indexing <- matrix(0, P, 0)
+    d_covar <- matrix(0, 0, N)
+    num_covar <- 0
+    num_unique_covar <- 0
   }
 
   # mat_indx now references the unconstrained values of the Z matrix.
-  mat_indx = matrix(0, P, K)
-  start = 1
+  mat_indx <- matrix(0, P, K)
+  start <- 1
   for(k in 1:K) {
     for(p in (k+1):P) {
-      mat_indx[p,k] = start
-      start = start + 1
+      mat_indx[p,k] <- start
+      start <- start + 1
     }
   }
   # row_indx and col_indx now references the unconstrained values of the Z matrix.
-  row_indx = matrix((rep(seq_len(P), K)), P, K)[which(mat_indx > 0)]
-  col_indx = matrix(sort(rep(seq_len(K), P)), P, K)[which(mat_indx > 0)]
+  row_indx <- matrix((rep(seq_len(P), K)), P, K)[which(mat_indx > 0)]
+  col_indx <- matrix(sort(rep(seq_len(K), P)), P, K)[which(mat_indx > 0)]
 
-  diag(mat_indx) = 1
-  row_indx_z = matrix((rep(seq_len(P), K)), P, K)[which(mat_indx == 0)]
-  col_indx_z = matrix(sort(rep(seq_len(K), P)), P, K)[which(mat_indx == 0)]
-  row_indx_z = c(row_indx_z, 0, 0)# +2 zeros for making stan ok with data types
-  col_indx_z = c(col_indx_z, 0, 0)# +2 zeros for making stan ok with data types
-  nZero = length(row_indx_z)
+  diag(mat_indx) <- 1
+  row_indx_z <- matrix((rep(seq_len(P), K)), P, K)[which(mat_indx == 0)]
+  col_indx_z <- matrix(sort(rep(seq_len(K), P)), P, K)[which(mat_indx == 0)]
+  row_indx_z <- c(row_indx_z, 0, 0)# +2 zeros for making stan ok with data types
+  col_indx_z <- c(col_indx_z, 0, 0)# +2 zeros for making stan ok with data types
+  nZero <- length(row_indx_z)
 
   # set the model up to have shared variances
   if (is.null(varIndx))
-    varIndx = rep(1, P)
-  nVariances = length(unique(varIndx))
+    varIndx <- rep(1, P)
+  nVariances <- length(unique(varIndx))
 
   # indices of positive values - stan can't handle NAs
-  row_indx_pos = matrix((rep(seq_len(P), N)), P, N)[which(!is.na(y))]
-  col_indx_pos = matrix(sort(rep(seq_len(N), P)), P, N)[which(!is.na(y))]
-  n_pos = length(row_indx_pos)
+  row_indx_pos <- matrix((rep(seq_len(P), N)), P, N)[which(!is.na(y))]
+  col_indx_pos <- matrix(sort(rep(seq_len(N), P)), P, N)[which(!is.na(y))]
+  n_pos <- length(row_indx_pos)
 
-  row_indx_na = matrix((rep(seq_len(P), N)), P, N)[which(is.na(y))]
-  col_indx_na = matrix(sort(rep(seq_len(N), P)), P, N)[which(is.na(y))]
-  n_na = length(row_indx_na)
+  row_indx_na <- matrix((rep(seq_len(P), N)), P, N)[which(is.na(y))]
+  col_indx_na <- matrix(sort(rep(seq_len(N), P)), P, N)[which(is.na(y))]
+  n_na <- length(row_indx_na)
 
-  y = y[which(!is.na(y))] # don't vectorize y anymore
+  y <- y[which(!is.na(y))] # don't vectorize y anymore
 
   # flag for whether to use a normal dist
-  use_normal = ifelse(nu_fixed > 100, 1, 0)
-  if(estimate_nu == TRUE) use_normal = 0 # competing flags
+  use_normal <- ifelse(nu_fixed > 100, 1, 0)
+  if(estimate_nu == TRUE) use_normal <- 0 # competing flags
 
-  data_list = list(
+  data_list <- list(
     N = N,
     P = P,
     K = K,
@@ -175,7 +180,7 @@ fit_dfa = function(y = y,
   )
 
   pars <- c("x", "Z", "pred", "sigma", "log_lik")
-  if(est_correlation) pars = c(pars, "Omega") # add correlation matrix
+  if(est_correlation) pars <- c(pars, "Omega") # add correlation matrix
 
   if (!is.null(covar)) pars <- c(pars, "D")
   if (estimate_nu) pars <- c(pars, "nu")
@@ -208,7 +213,7 @@ fit_dfa = function(y = y,
         monitor = rstan::monitor(e))
     }
 
-    out[["data"]]=Y # keep data attached
+    out[["data"]] <- Y # keep data attached
     out <- structure(out, class = "bayesdfa")
   } else {
     out <- data_list
