@@ -5,7 +5,7 @@
 #'
 #' @param model A Stan model, `rstanfit` object
 #' @param trend Which trend to check
-#' @param plot Boolean, should a plot of the trend for each chain be made?
+#' @param plot Logical: should a plot of the trend for each chain be made?
 #'   Defaults to `FALSE`
 #'
 #' @importFrom ggplot2 geom_line
@@ -61,9 +61,9 @@ find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
       pred1_trend <- vvv[, i]
       # see if flipped trend + loadings are more similar to chain 1 than not flipped
       if ((sum((-1 * pred1_loadings - pred0_loadings)^2) +
-          sum((-1 * pred1_trend - pred0_trend)^2)) <
+        sum((-1 * pred1_trend - pred0_trend)^2)) <
         (sum((pred1_loadings - pred0_loadings)^2) +
-            sum((pred1_trend - pred0_trend)^2))) {
+          sum((pred1_trend - pred0_trend)^2))) {
         # flip this chain
         flipped_chains <- ifelse(flipped_chains == 0, i, c(flipped_chains, i))
       }
@@ -76,8 +76,9 @@ find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
 #'
 #' @param model A Stan model, rstanfit object
 #' @param trends The number of trends in the DFA, defaults to 1
-#' @param print Logical indicating whether the summary should be printed. Defaults to FALSE.
-#' @param ... Other arguments to pass to \code{\link{find_inverted_chains}}.
+#' @param print Logical indicating whether the summary should be printed.
+#'   Defaults to `FALSE`.
+#' @param ... Other arguments to pass to [find_inverted_chains()].
 #'
 #' @export
 #' @seealso find_inverted_chains

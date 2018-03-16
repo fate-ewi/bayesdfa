@@ -21,8 +21,8 @@
 #' p <- plot_trends(r, highlight_outliers = TRUE)
 #' print(p)
 
-plot_trends = function(rotated_modelfit, years = NULL,
-  highlight_outliers = FALSE, threshold = 0.01) {
+plot_trends <- function(rotated_modelfit, years = NULL,
+                        highlight_outliers = FALSE, threshold = 0.01) {
   # rotate the trends
   rotated <- rotated_modelfit
 
@@ -30,7 +30,7 @@ plot_trends = function(rotated_modelfit, years = NULL,
   n_trends <- dim(rotated$Z_rot)[3]
 
   n_years <- dim(rotated$trends_mean)[2]
-  if(is.null(years)) years <- seq_len(n_years)
+  if (is.null(years)) years <- seq_len(n_years)
 
   # convert to df for ggplot
   df <- data.frame(
@@ -38,10 +38,11 @@ plot_trends = function(rotated_modelfit, years = NULL,
     lo = c(t(rotated$trends_lower)),
     hi = c(t(rotated$trends_upper)),
     trend = paste0("Trend ", sort(rep(seq_len(n_trends), n_years))),
-    time = rep(years, n_trends))
+    time = rep(years, n_trends)
+  )
 
   # make faceted ribbon plot of trends
-  p1 = ggplot(df, aes_string(x = "time", y = "x")) +
+  p1 <- ggplot(df, aes_string(x = "time", y = "x")) +
     geom_ribbon(aes_string(ymin = "lo", ymax = "hi"), alpha = 0.4) +
     geom_line() + facet_wrap("trend") +
     xlab("Time") + ylab("")

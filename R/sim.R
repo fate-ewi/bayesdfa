@@ -59,7 +59,6 @@ sim_dfa <- function(num_trends = 1,
                     extreme_value = NULL,
                     extreme_loc = NULL,
                     nu_fixed = 100) {
-
   y_ignore <- matrix(rnorm(num_ts * num_years), nrow = num_ts, ncol = num_years)
 
   d <- fit_dfa(y_ignore,

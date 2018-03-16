@@ -59,15 +59,18 @@ fit_dfa <- function(y = y,
                     estimate_trend_ma = FALSE,
                     sample = TRUE,
                     data_shape = c("wide", "long")) {
-
   data_shape <- match.arg(data_shape)
   if (ncol(y) > nrow(y) && data_shape == "long") {
-    warning("ncol(y) > nrow(y) and data_shape == 'long'; are you sure your",
-      "input data is in long format?")
+    warning(
+      "ncol(y) > nrow(y) and data_shape == 'long'; are you sure your",
+      "input data is in long format?"
+    )
   }
   if (ncol(y) < nrow(y) && data_shape == "wide") {
-    warning("ncol(y) < nrow(y) and data_shape == 'wide'; are you sure your",
-      "input data is in wide format?")
+    warning(
+      "ncol(y) < nrow(y) and data_shape == 'wide'; are you sure your",
+      "input data is in wide format?"
+    )
   }
   if (data_shape == "long") {
     y <- t(y)

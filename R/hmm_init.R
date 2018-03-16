@@ -1,7 +1,7 @@
 #' Create initial values for the HMM model.
 #'
-#' @param K The number of regimes or clusters to fit. Called by \code{rstan::sampling}
-#' @param x_t A matrix of values. Called by \code{rstan::sampling}
+#' @param K The number of regimes or clusters to fit. Called by [rstan::sampling()].
+#' @param x_t A matrix of values. Called by [rstan::sampling()].
 #' @importFrom stats kmeans
 #'
 #' @return list of initial values (mu, sigma)

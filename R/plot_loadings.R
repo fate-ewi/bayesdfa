@@ -2,7 +2,7 @@
 #'
 #' @param rotated_modelfit Output from [rotate_trends()].
 #' @param names An optional vector of names for plotting the loadings.
-#' @param facet Logical. Should there be a separate facet for each trend? 
+#' @param facet Logical. Should there be a separate facet for each trend?
 #'   Defaults to `TRUE`.
 #' @param violin Logical. Should the full posterior densities be shown as a
 #'   violin plot? Defaults to `TRUE`.
@@ -37,9 +37,9 @@ plot_loadings <- function(rotated_modelfit,
                           violin = TRUE,
                           conf_level = 0.95,
                           threshold=NULL) {
-
   v <- reshape2::melt(rotated_modelfit$Z_rot,
-    varnames = c("iter", "name", "trend"))
+    varnames = c("iter", "name", "trend")
+  )
   v$trend <- paste0("Trend ", v$trend)
   v$trend <- as.factor(v$trend)
   if (!is.null(names)) v$name <- names[v$name]
@@ -71,8 +71,10 @@ plot_loadings <- function(rotated_modelfit,
   }
 
   if (!violin) {
-    p1 <- ggplot(df, aes_string(x = "name", y = "median", col = "trend",
-      alpha = "prob_diff0")) +
+    p1 <- ggplot(df, aes_string(
+      x = "name", y = "median", col = "trend",
+      alpha = "prob_diff0"
+    )) +
       geom_point(size = 3, position = position_dodge(0.3)) +
       geom_errorbar(aes_string(ymin = "lower", ymax = "upper"),
         position = position_dodge(0.3), width = 0
@@ -82,8 +84,10 @@ plot_loadings <- function(rotated_modelfit,
   }
 
   if (violin) {
-    p1 <- ggplot(v, aes_string(x = "name", y = "value", fill = "trend",
-      alpha = "prob_diff0")) +
+    p1 <- ggplot(v, aes_string(
+      x = "name", y = "value", fill = "trend",
+      alpha = "prob_diff0"
+    )) +
       geom_violin(color = NA) +
       geom_hline(yintercept = 0, lty = 2) +
       coord_flip() + xlab("Time Series") + ylab("Loading")
