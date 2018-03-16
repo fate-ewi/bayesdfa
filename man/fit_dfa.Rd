@@ -12,7 +12,8 @@ fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 1,
   "long"))
 }
 \arguments{
-\item{y}{A matrix of data to fit. Columns represent time element.}
+\item{y}{A matrix of data to fit. See \code{data_shape} option to specify whether
+this is long or wide format data.}
 
 \item{covar}{A matrix of covariates, defaults to NULL (not included)}
 
@@ -56,6 +57,12 @@ Defaults to `FALSE``, in which case MA(1) parameters are set to 0.}
 \item{sample}{Logical. Should the model be sampled from? If \code{FALSE}, then the
 data list object that would have been passed to Stan is returned instead.
 This is useful for debugging and simulation. Defaults to \code{TRUE}.}
+
+\item{data_shape}{If \code{wide} (the current default) then the input data should
+have rows representing the various timeseries and columns representing the
+values through time. This matches the MARSS input data format. If \code{long}
+then the input data should have columns representing the various timeseries
+and rows representing the values through time.}
 }
 \description{
 Fit a Bayesian DFA

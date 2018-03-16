@@ -1,6 +1,7 @@
 #' Fit a Bayesian DFA
 #'
-#' @param y A matrix of data to fit. Columns represent time element.
+#' @param y A matrix of data to fit. See `data_shape` option to specify whether
+#'   this is long or wide format data.
 #' @param covar A matrix of covariates, defaults to NULL (not included)
 #' @param covar_index A matrix, dimensioned as the number of time series x
 #'   number of covariates that indexes which elements of the covariate matrix
@@ -30,6 +31,11 @@
 #' @param sample Logical. Should the model be sampled from? If `FALSE`, then the
 #'   data list object that would have been passed to Stan is returned instead.
 #'   This is useful for debugging and simulation. Defaults to `TRUE`.
+#' @param data_shape If `wide` (the current default) then the input data should
+#'   have rows representing the various timeseries and columns representing the
+#'   values through time. This matches the MARSS input data format. If `long`
+#'   then the input data should have columns representing the various timeseries
+#'   and rows representing the values through time.
 #' @details Note that there is nothing restricting the loadings and trends from
 #'   being inverted (i.e. multiplied by `-1`) for a given chain. Therefore, if
 #'   you fit multiple chains, the package will attempt to determine which chains
