@@ -1,12 +1,18 @@
 #' Rotate the trends from a DFA
 #'
-#' @param fitted_model Output from \code{\link{fit_dfa}}.
+#' @param fitted_model Output from [fit_dfa()].
 #' @param conf_level Probability level for CI.
 #' @importFrom stats median quantile sd
 #'
 #' @export
 #'
 #' @importFrom rstan extract
+#' @examples
+#' \dontrun{
+#' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
+#' m <- fit_dfa(y = y, num_trends = 1, iter = 600, chains = 1)
+#' r <- rotate_trends(m)
+#' }
 
 rotate_trends = function(fitted_model, conf_level = 0.95) {
 
@@ -48,8 +54,10 @@ rotate_trends = function(fitted_model, conf_level = 0.95) {
       Z_rot_median = apply(mcmc_Z_rot, c(2, 3), median),
       trends_mean = apply(mcmc_trends_rot, c(2, 3), mean),
       trends_median = apply(mcmc_trends_rot, c(2, 3), median),
-      trends_lower = apply(mcmc_trends_rot, c(2, 3), quantile, (1 - conf_level) / 2),
-      trends_upper = apply(mcmc_trends_rot, c(2, 3), quantile, 1 - (1 - conf_level) / 2)
+      trends_lower = apply(mcmc_trends_rot, c(2, 3),
+        quantile, (1 - conf_level) / 2),
+      trends_upper = apply(mcmc_trends_rot, c(2, 3),
+        quantile, 1 - (1 - conf_level) / 2)
     )
 
 }
@@ -57,11 +65,11 @@ rotate_trends = function(fitted_model, conf_level = 0.95) {
 # Reshape samples:
 reshape_samples <- function(samp) {
   s <- reshape2::melt(samp)
-  z <- dplyr::filter_(s, ~grepl("Z\\[", parameters))
+  z <- dplyr::filter(s, grepl("Z\\[", .data$parameters))
   z$trend <- as.numeric(gsub("Z\\[[0-9]+,([0-9]+)\\]", "\\1", z$parameters))
   z$ts <- as.numeric(gsub("Z\\[([0-9]+),([0-9]+)\\]", "\\1", z$parameters))
   Z <- reshape2::acast(z, iterations + chains ~ ts ~ trend, value.var = "value")
-  x <- dplyr::filter_(s, ~grepl("x\\[", parameters))
+  x <- dplyr::filter(s, grepl("x\\[", .data$parameters))
   x$trend <- as.numeric(gsub("x\\[([0-9]+),([0-9]+)\\]", "\\1", x$parameters))
   x$time <- as.numeric(gsub("x\\[([0-9]+),([0-9]+)\\]", "\\2", x$parameters))
   x <- reshape2::acast(x, iterations + chains ~ trend ~ time, value.var = "value")
