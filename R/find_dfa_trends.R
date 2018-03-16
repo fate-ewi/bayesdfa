@@ -16,12 +16,16 @@
 #' @param ... Other arguments to pass to `fit_dfa()`
 #' @export
 #' @examples
-#' \dontrun{
-#' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays")])
-#' set.seed(1)
-#' m <- find_dfa_trends(y = y, kmin = 1, kmax = 2,
-#'   iter = 1000, chains = 1)
-#' }
+#' set.seed(42)
+#' s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
+#' # only 1 chain and 1000 iterations used so example runs quickly:
+#' m <- find_dfa_trends(
+#'   y = s$y_sim, iter = 1000,
+#'   kmin = 1, kmax = 2, chains = 1, compare_normal = FALSE,
+#'   variance = "equal", convergence_threshold = 1.1,
+#'   control = list(adapt_delta = 0.95, max_treedepth = 20))
+#' m$summary
+#' m$best_model
 #' @importFrom loo loo extract_log_lik
 #' @importFrom stats quantile time varimax
 #' @importFrom rlang .data

@@ -2,45 +2,32 @@
 % Please edit documentation in R/plot_regime_model.R
 \name{plot_regime_model}
 \alias{plot_regime_model}
-\title{Plot the state probabilities from \code{\link{find_regimes}}}
+\title{Plot the state probabilities from \code{\link[=find_regimes]{find_regimes()}}}
 \usage{
 plot_regime_model(model, probs = c(0.05, 0.95), type = c("probability",
   "means"), regime_prob_threshold = 0.9)
 }
 \arguments{
-\item{model}{A model returned by \code{\link{find_regimes}}.}
+\item{model}{A model returned by \code{\link[=find_regimes]{find_regimes()}}.}
 
-\item{probs}{A numeric vector of quantiles to plot the credible intervals at. Defaults
-to (0.05, 0.95)}
+\item{probs}{A numeric vector of quantiles to plot the credible intervals at.
+Defaults to \code{c(0.05, 0.95)}.}
 
 \item{type}{Whether to plot the probabilities (default) or means.}
 
-\item{regime_prob_threshold}{The probability density that must be above 0.5. Defaults to 0.9
-before we classify a regime (only affects \code{"means"} plot).}
+\item{regime_prob_threshold}{The probability density that must be above 0.5.
+Defaults to 0.9 before we classify a regime (only affects \code{"means"} plot).}
 }
 \description{
-Plot the state probabilities from \code{\link{find_regimes}}
+Plot the state probabilities from \code{\link[=find_regimes]{find_regimes()}}
 }
 \details{
-Note that the original timeseries data (dots) are shown scaled between 0 and 1.
+Note that the original timeseries data (dots) are shown scaled
+between 0 and 1.
 }
 \examples{
-\dontrun{
 data(Nile)
-m <- find_regimes(log(Nile))
+m <- fit_regimes(log(Nile), n_regimes = 2, chains = 1, iter = 800)
 plot_regime_model(m)
 plot_regime_model(m, type = "means")
-
-set.seed(1)
-y <- c(rnorm(20, 0, 0.2), rnorm(20, 0.5, 0.2), rnorm(20, 1, 0.2))
-m <- find_regimes(y, n_regimes = 2)
-plot_regime_model(m)
-plot_regime_model(m, type = "means", regime_prob_threshold = 0.95)
-
-set.seed(1)
-y <- c(rnorm(20, 0, 0.1), rnorm(20, 0.5, 0.1), rnorm(20, 1, 0.1))
-m <- find_regimes(y, n_regimes = 3)
-plot_regime_model(m)
-plot_regime_model(m, type = "means", regime_prob_threshold = 0.95)
-}
 }

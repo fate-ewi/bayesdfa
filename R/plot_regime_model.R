@@ -1,33 +1,20 @@
-#' Plot the state probabilities from \code{\link{find_regimes}}
+#' Plot the state probabilities from [find_regimes()]
 #'
-#' @param model A model returned by \code{\link{find_regimes}}.
-#' @param probs A numeric vector of quantiles to plot the credible intervals at. Defaults
-#' to (0.05, 0.95)
+#' @param model A model returned by [find_regimes()].
+#' @param probs A numeric vector of quantiles to plot the credible intervals at.
+#'   Defaults to `c(0.05, 0.95)`.
 #' @param type Whether to plot the probabilities (default) or means.
-#' @param regime_prob_threshold The probability density that must be above 0.5. Defaults to 0.9
-#'   before we classify a regime (only affects \code{"means"} plot).
-#' @details
-#' Note that the original timeseries data (dots) are shown scaled between 0 and 1.
+#' @param regime_prob_threshold The probability density that must be above 0.5.
+#'   Defaults to 0.9 before we classify a regime (only affects `"means"` plot).
+#' @details Note that the original timeseries data (dots) are shown scaled
+#'   between 0 and 1.
 #' @export
 #' @examples
-#' \dontrun{
 #' data(Nile)
-#' m <- find_regimes(log(Nile))
+#' m <- fit_regimes(log(Nile), n_regimes = 2, chains = 1, iter = 800)
 #' plot_regime_model(m)
 #' plot_regime_model(m, type = "means")
-#'
-#' set.seed(1)
-#' y <- c(rnorm(20, 0, 0.2), rnorm(20, 0.5, 0.2), rnorm(20, 1, 0.2))
-#' m <- find_regimes(y, n_regimes = 2)
-#' plot_regime_model(m)
-#' plot_regime_model(m, type = "means", regime_prob_threshold = 0.95)
-#'
-#' set.seed(1)
-#' y <- c(rnorm(20, 0, 0.1), rnorm(20, 0.5, 0.1), rnorm(20, 1, 0.1))
-#' m <- find_regimes(y, n_regimes = 3)
-#' plot_regime_model(m)
-#' plot_regime_model(m, type = "means", regime_prob_threshold = 0.95)
-#' }
+
 plot_regime_model <- function(model, probs = c(0.05, 0.95),
                               type = c("probability", "means"),
                               regime_prob_threshold = 0.9) {

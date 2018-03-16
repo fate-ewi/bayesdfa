@@ -66,6 +66,12 @@ being inverted (i.e. multiplied by \code{-1}) for a given chain. Therefore, if
 you fit multiple chains, the package will attempt to determine which chains
 need to be inverted using the function \code{\link[=find_inverted_chains]{find_inverted_chains()}}.
 }
+\examples{
+set.seed(42)
+s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
+# only 1 chain and 1000 iterations used so example runs quickly:
+m <- fit_dfa(y = s$y_sim, iter = 1000, chains = 1)
+}
 \seealso{
 plot_loadings plot_trends rotate_trends find_swans
 }
