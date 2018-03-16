@@ -50,6 +50,7 @@
 #' @importFrom rstan sampling
 #' @import Rcpp
 #' @importFrom graphics lines par plot points polygon segments
+#' @importFrom stats na.omit
 
 fit_dfa <- function(y = y,
                     covar=NULL,

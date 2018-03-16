@@ -37,10 +37,11 @@ test_that("find_dfa_trends works", {
   skip_on_cran()
 
   set.seed(42)
-  s <- sim_dfa(num_trends = 2, num_years = 10, num_ts = 3)
-  x <- find_dfa_trends(y = s$y_sim, iter = 2000,
+  s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
+  x <- find_dfa_trends(y = s$y_sim, iter = 1000,
     kmin = 1, kmax = 2, chains = 1, compare_normal = FALSE,
-    variance = "equal")
+    variance = "equal", convergence_threshold = 1.1,
+    control = list(adapt_delta = 0.95, max_treedepth = 20))
 
   expect_equal(x$summary$model, c(2L, 1L))
   expect_lt(x$summary$looic[[1]], x$summary$looic[[2]])
