@@ -11,7 +11,7 @@ find_inverted_chains(model, trend = 1, plot = FALSE)
 
 \item{trend}{Which trend to check}
 
-\item{plot}{Boolean, should a plot of the trend for each chain be made?
+\item{plot}{Logical: should a plot of the trend for each chain be made?
 Defaults to \code{FALSE}}
 }
 \description{

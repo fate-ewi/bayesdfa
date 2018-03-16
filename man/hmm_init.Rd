@@ -7,9 +7,9 @@
 hmm_init(K, x_t)
 }
 \arguments{
-\item{K}{The number of regimes or clusters to fit. Called by \code{rstan::sampling}}
+\item{K}{The number of regimes or clusters to fit. Called by \code{\link[rstan:sampling]{rstan::sampling()}}.}
 
-\item{x_t}{A matrix of values. Called by \code{rstan::sampling}}
+\item{x_t}{A matrix of values. Called by \code{\link[rstan:sampling]{rstan::sampling()}}.}
 }
 \value{
 list of initial values (mu, sigma)
