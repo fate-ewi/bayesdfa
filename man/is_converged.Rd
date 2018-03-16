@@ -7,12 +7,12 @@
 is_converged(fitted_model, threshold = 1.05)
 }
 \arguments{
-\item{fitted_model}{Samples extracted (with permuted = FALSE) from a Stan model.
-E.g. output from \code{\link{invert_chains}}.}
+\item{fitted_model}{Samples extracted (with \code{permuted = FALSE}) from a Stan
+model. E.g. output from \code{\link[=invert_chains]{invert_chains()}}.}
 
-\item{threshold}{Threshold for maximum Rhat, default = 1.05}
+\item{threshold}{Threshold for maximum Rhat.}
 }
 \description{
-Pass in rstanfit model object, and optional threshold Rhat value for
+Pass in \code{rstanfit} model object, and a threshold Rhat value for
 convergence. Returns boolean.
 }
