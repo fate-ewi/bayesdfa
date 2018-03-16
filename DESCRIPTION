@@ -19,6 +19,7 @@ Imports:
     loo,
     dplyr (>= 0.7.0),
     methods,
+    rlang,
     reshape2
 LinkingTo: StanHeaders (>= 2.14.0), rstan (>= 2.9.0), BH (>= 1.60.0), Rcpp (>=
     0.12.0), RcppEigen
