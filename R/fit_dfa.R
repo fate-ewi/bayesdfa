@@ -2,48 +2,39 @@
 #'
 #' @param y A matrix of data to fit. Columns represent time element.
 #' @param covar A matrix of covariates, defaults to NULL (not included)
-#' @param covar_index A matrix, dimensioned as the number of time series x number
-#' of covariates that indexes which elements of the covariate matrix are shared across
-#' time series. Defaults to a matrix with unique coefficients estimated for each
-#' covariate-time series combination. Elements may be shared across time series or
-#' covariates.
+#' @param covar_index A matrix, dimensioned as the number of time series x
+#'   number of covariates that indexes which elements of the covariate matrix
+#'   are shared across time series. Defaults to a matrix with unique
+#'   coefficients estimated for each covariate-time series combination. Elements
+#'   may be shared across time series or covariates.
 #' @param num_trends Number of trends to fit.
 #' @param varIndx Indices indicating which timeseries should have shared
-#' variances.
+#'   variances.
 #' @param zscore Logical. Should the data be standardized first? If not it is
-#' just centered. Centering is necessary because no intercept is included.
+#'   just centered. Centering is necessary because no intercept is included.
 #' @param iter Number of iterations in Stan sampling, defaults to 2000.
 #' @param chains Number of chains in Stan sampling, defaults to 4.
 #' @param control A list of options to pass to Stan sampling. Defaults to
-#' \code{list(adapt_delta = 0.99, max_treedepth = 20)}
-#' @param nu_fixed Student t degrees of freedom parameter. If specified as greater than 100,
-#'   a normal random walk is used instead of a random walk with a t-distribution. Defaults
-#'   to 101
-#' @param tau A fixed parameter describing the standard deviation on the random
-#'   walk for the factor loadings in the case of time varying DFA. Defaults to 0.1
-#' @param est_correlation Boolean, whether to estimate correlation of observation
-#' error matrix \code{R}. Defaults to FALSE
-#' @param timevarying Logical. If \code{TRUE}, a time varying DFA. Note that the
-#'   time varying DFA has not been extensively tested and may not return
-#'   sensible answers. Defaults to FALSE.
+#'   `list(adapt_delta = 0.99, max_treedepth = 20)`.
+#' @param nu_fixed Student t degrees of freedom parameter. If specified as
+#'   greater than 100, a normal random walk is used instead of a random walk
+#'   with a t-distribution. Defaults to `101`.
+#' @param est_correlation Boolean, whether to estimate correlation of
+#'   observation error matrix `R`. Defaults to `FALSE`.
 #' @param estimate_nu Logical. Estimate the student t degrees of freedom
-#' parameter? Defaults to FALSE.
-#' @param estimate_trend_ar Logical. Estimate AR(1) parameters on DFA trends? Defaults to FALSE,
-#' in which case AR(1) parameters are set to 1
-#' @param estimate_trend_ma Logical. Estimate MA(1) parameters on DFA trends? Defaults to FALSE,
-#' in which case MA(1) parameters are set to 0.
-#' @param sample Logical. Should the model be sampled from? If \code{FALSE},
-#'   then the data list object that would have been passed to Stan is returned
-#'   instead. This is useful for debugging and simulation. Defaults to TRUE.
+#'   parameter? Defaults to `FALSE`,
+#' @param estimate_trend_ar Logical. Estimate AR(1) parameters on DFA trends?
+#'   Defaults to `FALSE``, in which case AR(1) parameters are set to 1
+#' @param estimate_trend_ma Logical. Estimate MA(1) parameters on DFA trends?
+#'   Defaults to `FALSE``, in which case MA(1) parameters are set to 0.
+#' @param sample Logical. Should the model be sampled from? If `FALSE`, then the
+#'   data list object that would have been passed to Stan is returned instead.
+#'   This is useful for debugging and simulation. Defaults to `TRUE`.
 #' @details Note that there is nothing restricting the loadings and trends from
-#'   being inverted (multiplied by -1) for a given chain. Therefore, if you fit
-#'   multiple chains, the package will attempt to determine which chains need to
-#'   be inverted using the function \code{\link{find_inverted_chains}}.
-#' @seealso plot_loadings plot_trends rotate_trends
-#'
-#' @references
-#' Del Negro, M., & Otrok, C. (2008). Dynamic factor models with time-varying
-#' parameters: measuring changes in international business cycles.
+#'   being inverted (i.e. multiplied by `-1`) for a given chain. Therefore, if
+#'   you fit multiple chains, the package will attempt to determine which chains
+#'   need to be inverted using the function [find_inverted_chains()].
+#' @seealso plot_loadings plot_trends rotate_trends find_swans
 #'
 #' @export
 #'
@@ -53,8 +44,8 @@
 #' @importFrom stats na.omit
 
 fit_dfa <- function(y = y,
-                    covar=NULL,
-                    covar_index=NULL,
+                    covar = NULL,
+                    covar_index = NULL,
                     num_trends = 1,
                     varIndx = NULL,
                     zscore = TRUE,
@@ -62,13 +53,25 @@ fit_dfa <- function(y = y,
                     chains = 4,
                     control = list(adapt_delta = 0.99, max_treedepth = 20),
                     nu_fixed = 101,
-                    tau = 0.1,
                     est_correlation = FALSE,
-                    timevarying = FALSE,
                     estimate_nu = FALSE,
                     estimate_trend_ar = FALSE,
                     estimate_trend_ma = FALSE,
-                    sample = TRUE) {
+                    sample = TRUE,
+                    data_shape = c("long", "wide")) {
+
+  data_shape <- match.arg(data_shape)
+  if (ncol(y) > nrow(y) && data_shape == "long") {
+    warning("ncol(y) > nrow(y) and data_shape == 'long'; are you sure your",
+      "input data is in long format?")
+  }
+  if (ncol(y) < nrow(y) && data_shape == "wide") {
+    warning("ncol(y) < nrow(y) and data_shape == 'wide'; are you sure your",
+      "input data is in wide format?")
+  }
+  if (data_shape == "long") {
+    y <- t(y)
+  }
 
   # parameters for DFA
   N <- ncol(y) # number of time steps
@@ -89,7 +92,7 @@ fit_dfa <- function(y = y,
       y[i, ] <- scale(y[i, ], center = TRUE, scale = FALSE)
     }
   }
-  Y <- y # attached to returned object below
+  Y <- y # included in returned object at end
   # Deal with covariates
   d_covar <- covar
 
@@ -133,7 +136,7 @@ fit_dfa <- function(y = y,
   }
   nVariances <- length(unique(varIndx))
 
-  # indices of positive values - stan can't handle NAs
+  # indices of positive values - Stan can't handle NAs
   row_indx_pos <- matrix((rep(seq_len(P), N)), P, N)[which(!is.na(y))]
   col_indx_pos <- matrix(sort(rep(seq_len(N), P)), P, N)[which(!is.na(y))]
   n_pos <- length(row_indx_pos)
@@ -142,7 +145,7 @@ fit_dfa <- function(y = y,
   col_indx_na <- matrix(sort(rep(seq_len(N), P)), P, N)[which(is.na(y))]
   n_na <- length(row_indx_na)
 
-  y <- y[which(!is.na(y))] # don't vectorize y anymore
+  y <- y[which(!is.na(y))]
 
   # flag for whether to use a normal dist
   use_normal <- ifelse(nu_fixed > 100, 1, 0)
@@ -171,7 +174,6 @@ fit_dfa <- function(y = y,
     col_indx_na = col_indx_na,
     n_na = n_na,
     nu_fixed = nu_fixed,
-    tau = tau,
     d_covar = d_covar,
     num_covar = num_covar,
     covar_indexing = covar_indexing,
@@ -191,14 +193,8 @@ fit_dfa <- function(y = y,
   if (estimate_trend_ar) pars <- c(pars, "phi")
   if (estimate_trend_ma) pars <- c(pars, "theta")
 
-  if (timevarying) {
-    m <- stanmodels$tvdfa_fixed
-  } else {
-    m <- stanmodels$dfa
-  }
-
   sampling_args <- list(
-    object = m,
+    object = stanmodels$dfa,
     data = data_list,
     pars = pars,
     control = control,
@@ -220,7 +216,7 @@ fit_dfa <- function(y = y,
       )
     }
 
-    out[["data"]] <- Y # keep data attached
+    out[["data"]] <- Y # keep data included
     out <- structure(out, class = "bayesdfa")
   } else {
     out <- data_list

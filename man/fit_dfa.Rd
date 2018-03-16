@@ -7,20 +7,20 @@
 fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 1,
   varIndx = NULL, zscore = TRUE, iter = 2000, chains = 4,
   control = list(adapt_delta = 0.99, max_treedepth = 20), nu_fixed = 101,
-  tau = 0.1, est_correlation = FALSE, timevarying = FALSE,
-  estimate_nu = FALSE, estimate_trend_ar = FALSE,
-  estimate_trend_ma = FALSE, sample = TRUE)
+  est_correlation = FALSE, estimate_nu = FALSE, estimate_trend_ar = FALSE,
+  estimate_trend_ma = FALSE, sample = TRUE, data_shape = c("long",
+  "wide"))
 }
 \arguments{
 \item{y}{A matrix of data to fit. Columns represent time element.}
 
 \item{covar}{A matrix of covariates, defaults to NULL (not included)}
 
-\item{covar_index}{A matrix, dimensioned as the number of time series x number
-of covariates that indexes which elements of the covariate matrix are shared across
-time series. Defaults to a matrix with unique coefficients estimated for each
-covariate-time series combination. Elements may be shared across time series or
-covariates.}
+\item{covar_index}{A matrix, dimensioned as the number of time series x
+number of covariates that indexes which elements of the covariate matrix
+are shared across time series. Defaults to a matrix with unique
+coefficients estimated for each covariate-time series combination. Elements
+may be shared across time series or covariates.}
 
 \item{num_trends}{Number of trends to fit.}
 
@@ -35,48 +35,37 @@ just centered. Centering is necessary because no intercept is included.}
 \item{chains}{Number of chains in Stan sampling, defaults to 4.}
 
 \item{control}{A list of options to pass to Stan sampling. Defaults to
-\code{list(adapt_delta = 0.99, max_treedepth = 20)}}
+\code{list(adapt_delta = 0.99, max_treedepth = 20)}.}
 
-\item{nu_fixed}{Student t degrees of freedom parameter. If specified as greater than 100,
-a normal random walk is used instead of a random walk with a t-distribution. Defaults
-to 101}
+\item{nu_fixed}{Student t degrees of freedom parameter. If specified as
+greater than 100, a normal random walk is used instead of a random walk
+with a t-distribution. Defaults to \code{101}.}
 
-\item{tau}{A fixed parameter describing the standard deviation on the random
-walk for the factor loadings in the case of time varying DFA. Defaults to 0.1}
-
-\item{est_correlation}{Boolean, whether to estimate correlation of observation
-error matrix \code{R}. Defaults to FALSE}
-
-\item{timevarying}{Logical. If \code{TRUE}, a time varying DFA. Note that the
-time varying DFA has not been extensively tested and may not return
-sensible answers. Defaults to FALSE.}
+\item{est_correlation}{Boolean, whether to estimate correlation of
+observation error matrix \code{R}. Defaults to \code{FALSE}.}
 
 \item{estimate_nu}{Logical. Estimate the student t degrees of freedom
-parameter? Defaults to FALSE.}
+parameter? Defaults to \code{FALSE},}
 
-\item{estimate_trend_ar}{Logical. Estimate AR(1) parameters on DFA trends? Defaults to FALSE,
-in which case AR(1) parameters are set to 1}
+\item{estimate_trend_ar}{Logical. Estimate AR(1) parameters on DFA trends?
+Defaults to `FALSE``, in which case AR(1) parameters are set to 1}
 
-\item{estimate_trend_ma}{Logical. Estimate MA(1) parameters on DFA trends? Defaults to FALSE,
-in which case MA(1) parameters are set to 0.}
+\item{estimate_trend_ma}{Logical. Estimate MA(1) parameters on DFA trends?
+Defaults to `FALSE``, in which case MA(1) parameters are set to 0.}
 
-\item{sample}{Logical. Should the model be sampled from? If \code{FALSE},
-then the data list object that would have been passed to Stan is returned
-instead. This is useful for debugging and simulation. Defaults to TRUE.}
+\item{sample}{Logical. Should the model be sampled from? If \code{FALSE}, then the
+data list object that would have been passed to Stan is returned instead.
+This is useful for debugging and simulation. Defaults to \code{TRUE}.}
 }
 \description{
 Fit a Bayesian DFA
 }
 \details{
 Note that there is nothing restricting the loadings and trends from
-being inverted (multiplied by -1) for a given chain. Therefore, if you fit
-multiple chains, the package will attempt to determine which chains need to
-be inverted using the function \code{\link{find_inverted_chains}}.
-}
-\references{
-Del Negro, M., & Otrok, C. (2008). Dynamic factor models with time-varying
-parameters: measuring changes in international business cycles.
+being inverted (i.e. multiplied by \code{-1}) for a given chain. Therefore, if
+you fit multiple chains, the package will attempt to determine which chains
+need to be inverted using the function \code{\link[=find_inverted_chains]{find_inverted_chains()}}.
 }
 \seealso{
-plot_loadings plot_trends rotate_trends
+plot_loadings plot_trends rotate_trends find_swans
 }
