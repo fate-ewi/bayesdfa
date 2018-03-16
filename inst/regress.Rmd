@@ -39,7 +39,7 @@ cli_dat <- filter(cli_dat, Year %in% years) %>%
 sd(cli_dat$PDO)
 ```
 
-The following function fits Bayesian linear regressions predicting a DFA trend based on a climate protector. It cycles through 50 (or some other number) of samples from the DFA posterior.
+The following function fits Bayesian linear regressions predicting a DFA trend based on a climate predictor It cycles through 50 (or some other number) of samples from the DFA posterior.
 
 ```{r, message=FALSE, results='hide'}
 trend_lm <- function(rotated_modelfit,
