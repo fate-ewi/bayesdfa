@@ -6,6 +6,7 @@
 #' @param type Whether to plot the probabilities (default) or means.
 #' @param regime_prob_threshold The probability density that must be above 0.5.
 #'   Defaults to 0.9 before we classify a regime (only affects `"means"` plot).
+#' @param plot_prob_indices Optional indices of probability plots to plot. Defaults to showing all
 #' @details Note that the original timeseries data (dots) are shown scaled
 #'   between 0 and 1.
 #' @export
@@ -13,11 +14,13 @@
 #' data(Nile)
 #' m <- fit_regimes(log(Nile), n_regimes = 2, chains = 1, iter = 800)
 #' plot_regime_model(m)
+#' plot_regime_model(m, plot_prob_indices=c(2))
 #' plot_regime_model(m, type = "means")
 
 plot_regime_model <- function(model, probs = c(0.05, 0.95),
                               type = c("probability", "means"),
-                              regime_prob_threshold = 0.9) {
+                              regime_prob_threshold = 0.9,
+  plot_prob_indices = NULL) {
   gamma_tk <- rstan::extract(model$model, pars = "gamma_tk")[[1]]
   mu_k <- rstan::extract(model$model, pars = "mu_k")[[1]]
   l <- apply(gamma_tk, 2:3, quantile, probs = probs[[1]])
@@ -34,10 +37,16 @@ plot_regime_model <- function(model, probs = c(0.05, 0.95),
     ifelse(length(w) == 0, NA, w)
   })
 
+  if(is.null(plot_prob_indices)) {
+    # then plot all panels
+    plot_prob_indices = seq_len(ncol(med))
+  }
+  n_prob_plots = length(plot_prob_indices)
+
   if (type[[1]] == "probability") {
     oldpar <- par("mfrow")
-    par(mfrow = c(1, ncol(med)))
-    for (i in seq_len(ncol(med))) {
+    par(mfrow = c(1, n_prob_plots))
+    for (i in plot_prob_indices) {
       plot(l[, i],
         ylim = c(0, 1), col = "grey40", lty = 2, type = "n",
         main = paste("State", LETTERS[i]), ylab = "Probability of being in given state",

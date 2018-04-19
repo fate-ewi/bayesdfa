@@ -19,8 +19,6 @@
 #'
 #' @keywords datasets
 #'
-#' @references
-#' (\href{https://www.pfeg.noaa.gov/products/PFEL/modeled/indices/transports/transports.html})
 #'
 #' @source \href{http://qtlarchive.org/db/q?pg=projdetails&proj=moore_2013b}{QTL Archive}
 #'

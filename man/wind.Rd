@@ -29,7 +29,4 @@ Laboratory, pfeg.noaa.gov, collected from 15 stations on the west coast of North
 \examples{
 data(wind)
 }
-\references{
-(\href{https://www.pfeg.noaa.gov/products/PFEL/modeled/indices/transports/transports.html})
-}
 \keyword{datasets}
