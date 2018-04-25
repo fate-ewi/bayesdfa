@@ -76,6 +76,13 @@ fit_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, .
       ...
     )
   }
-  looic <- loo::loo(loo::extract_log_lik(m))$looic
+
+  log_lik = loo::extract_log_lik(m)
+  n_chains = dim(rstan::extract(m, "log_lik", permuted=FALSE))[2]
+  rel_eff = loo::relative_eff(exp(log_lik),
+    chain_id=sort(rep(1:n_chains, nrow(log_lik))))
+  # calculate looic
+  looic <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
+
   list(model = m, y = y, looic = looic)
 }

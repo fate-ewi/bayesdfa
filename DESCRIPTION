@@ -16,7 +16,7 @@ Depends:
     rstan (>= 2.14.0)
 Imports:
     ggplot2 (>= 2.2.0),
-    loo,
+    loo (>= 2.0.0),
     dplyr (>= 0.7.0),
     methods,
     rlang,

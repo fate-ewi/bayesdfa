@@ -59,7 +59,14 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
 
       df$converge[indx] <- is_converged(model, convergence_threshold)
       df$num_trends[indx] <- i
-      df$looic[indx] <- loo::loo(loo::extract_log_lik(model$model))$looic
+
+      # relative effective sample size
+      log_lik = loo::extract_log_lik(model$model)
+      n_chains = dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
+      rel_eff = loo::relative_eff(exp(log_lik),
+        chain_id=sort(rep(1:n_chains, nrow(log_lik))))
+      # calculate looic
+      df$looic[indx] <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
 
       # if model is best, keep it
       if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
@@ -80,7 +87,13 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
       )
       df$num_trends[indx] <- i
 
-      df$looic[indx] <- loo::loo(loo::extract_log_lik(model$model))$looic
+      log_lik = loo::extract_log_lik(model$model)
+      n_chains = dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
+      rel_eff = loo::relative_eff(exp(log_lik),
+        chain_id=sort(rep(1:n_chains, nrow(log_lik))))
+      # calculate looic
+      df$looic[indx] <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
+
       df$converge[indx] <- is_converged(model, convergence_threshold)
       # if model is best, keep it
       if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
@@ -102,7 +115,13 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
           estimate_nu = FALSE, ...
         )
         df$num_trends[indx] <- i
-        df$looic[indx] <- loo::loo(loo::extract_log_lik(model$model))$looic
+
+        log_lik = loo::extract_log_lik(model$model)
+        n_chains = dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
+        rel_eff = loo::relative_eff(exp(log_lik),
+          chain_id=sort(rep(1:n_chains, nrow(log_lik))))
+        # calculate looic
+        df$looic[indx] <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
 
         df$converge[indx] <- is_converged(model, convergence_threshold)
         # if model is best, keep it
@@ -125,7 +144,13 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
           nu_fixed = 100, estimate_nu = FALSE, ...
         )
         df$num_trends[indx] <- i
-        df$looic[indx] <- loo::loo(loo::extract_log_lik(model$model))$looic
+
+        log_lik = loo::extract_log_lik(model$model)
+        n_chains = dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
+        rel_eff = loo::relative_eff(exp(log_lik),
+          chain_id=sort(rep(1:n_chains, nrow(log_lik))))
+        # calculate looic
+        df$looic[indx] <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
 
         df$converge[indx] <- is_converged(model, convergence_threshold)
         # if model is best, keep it
