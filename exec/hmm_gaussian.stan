@@ -68,7 +68,6 @@ model {
 generated quantities {
   vector[K] unbeta_tk[T];
   vector[K] ungamma_tk[T];
-
   vector[K] alpha_tk[T];
   vector[K] beta_tk[T];
   vector[K] gamma_tk[T];
@@ -123,13 +122,14 @@ generated quantities {
       // log_lik accumulator. need to sum to integrate over states,
       // p(x_t) = p(x_t | z_t = 1) * p(z_t = 1)...
       // gamma_tk is p(x_t | z_t = k), alpha_tk is p(z_t = k | x[1:T])
-      if(est_sigma == 1) {
-        for (j in 1:K)
-          log_lik[t] = log_lik[t] + gamma_tk[t,j]*alpha_tk[t,j];
-      } else {
-        for (j in 1:K)
+      //if(est_sigma == 1) {
+      for (j in 1:K) {
           log_lik[t] = log_lik[t] + gamma_tk[t,j]*alpha_tk[t,j];
       }
+      //} else {
+      //  for (j in 1:K)
+      //    log_lik[t] = log_lik[t] + gamma_tk[t,j]*alpha_tk[t,j];
+      //}
       log_lik[t] = log(log_lik[t]);
     }
 
