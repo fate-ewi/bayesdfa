@@ -4,18 +4,20 @@
 \alias{find_dfa_trends}
 \title{Find the best number of trends according to LOOIC}
 \usage{
-find_dfa_trends(y = y, kmin = 1, kmax = 5, iter = 2000,
+find_dfa_trends(y = y, kmin = 1, kmax = 5, iter = 2000, thin = 1,
   compare_normal = FALSE, convergence_threshold = 1.05,
   variance = c("equal", "unequal"), ...)
 }
 \arguments{
 \item{y}{A matrix of data to fit. Columns represent time element.}
 
-\item{kmin}{Minimum number of trends.}
+\item{kmin}{Minimum number of trends, defaults to 1.}
 
-\item{kmax}{Maximum number of trans.}
+\item{kmax}{Maximum number of trends, defaults to 5.}
 
-\item{iter}{Iterations when sampling from each Stan model.}
+\item{iter}{Iterations when sampling from each Stan model, defaults to 2000.}
+
+\item{thin}{Thinning rate when sampling from each Stan model, defaults to 1.}
 
 \item{compare_normal}{If \code{TRUE}, does model selection comparison of Normal vs.
 Student-t errors}

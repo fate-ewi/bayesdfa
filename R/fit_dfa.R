@@ -14,6 +14,7 @@
 #' @param zscore Logical. Should the data be standardized first? If not it is
 #'   just centered. Centering is necessary because no intercept is included.
 #' @param iter Number of iterations in Stan sampling, defaults to 2000.
+#' @param thin Thinning rate in Stan sampling, defaults to 1.
 #' @param chains Number of chains in Stan sampling, defaults to 4.
 #' @param control A list of options to pass to Stan sampling. Defaults to
 #'   `list(adapt_delta = 0.99, max_treedepth = 20)`.
@@ -63,6 +64,7 @@ fit_dfa <- function(y = y,
                     zscore = TRUE,
                     iter = 2000,
                     chains = 4,
+                    thin = 1,
                     control = list(adapt_delta = 0.99, max_treedepth = 20),
                     nu_fixed = 101,
                     est_correlation = FALSE,
@@ -214,7 +216,8 @@ fit_dfa <- function(y = y,
     pars = pars,
     control = control,
     chains = chains,
-    iter = iter
+    iter = iter,
+    thin = thin
   )
 
   if (sample) {

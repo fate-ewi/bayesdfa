@@ -10,6 +10,7 @@
 #' @param n_regimes Number of regimes to evaluate, defaults 2
 #' @param ... Other parameters to pass to [rstan::sampling()].
 #' @param iter MCMC iterations, defaults to 2000.
+#' @param thin MCMC thinning rate, defaults to 1.
 #' @param chains MCMC chains, defaults to 1 (note that running multiple chains
 #'   may result in a label switching problem where the regimes are identified
 #'   with different IDs across chains).
@@ -23,7 +24,7 @@
 #' data(Nile)
 #' fit_regimes(log(Nile), iter = 1000, n_regimes = 1)
 
-fit_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, ...) {
+fit_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, thin = 1, chains = 1, ...) {
   est_sigma <- 0
   if (is.null(sds)) {
     # estimate sigma, instead of using fixed values
@@ -69,6 +70,7 @@ fit_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, .
     m <- rstan::sampling(stanmodels$hmm_gaussian,
       data = stan_data,
       iter = iter,
+      thin = thin,
       chains = chains,
       init = function() {
         hmm_init(n_regimes, y)

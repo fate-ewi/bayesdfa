@@ -4,9 +4,10 @@
 #' value as calculated by the [loo][loo::loo-package()] package.
 #'
 #' @param y A matrix of data to fit. Columns represent time element.
-#' @param kmin Minimum number of trends.
-#' @param kmax Maximum number of trans.
-#' @param iter Iterations when sampling from each Stan model.
+#' @param kmin Minimum number of trends, defaults to 1.
+#' @param kmax Maximum number of trends, defaults to 5.
+#' @param iter Iterations when sampling from each Stan model, defaults to 2000.
+#' @param thin Thinning rate when sampling from each Stan model, defaults to 1.
 #' @param compare_normal If `TRUE`, does model selection comparison of Normal vs.
 #'   Student-t errors
 #' @param convergence_threshold The maximum allowed value of Rhat to determine
@@ -30,7 +31,7 @@
 #' @importFrom stats quantile time varimax
 #' @importFrom rlang .data
 
-find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
+find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000, thin = 1,
                             compare_normal = FALSE, convergence_threshold = 1.05,
                             variance = c("equal", "unequal"), ...) {
   df <- data.frame(
@@ -53,7 +54,7 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
   if (length(which(variance %in% "equal")) > 0) {
     for (i in seq(kmin, kmax)) {
       model <- fit_dfa(
-        y = y, num_trends = i, iter = iter,
+        y = y, num_trends = i, iter = iter, thin = thin,
         estimate_nu = TRUE, ...
       )
 
@@ -82,7 +83,7 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
   if (length(which(variance %in% "unequal")) > 0) {
     for (i in seq(kmin, kmax)) {
       model <- fit_dfa(
-        y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)),
+        y = y, num_trends = i, iter = iter, thin = thin, varIndx = seq(1, nrow(y)),
         estimate_nu = TRUE, ...
       )
       df$num_trends[indx] <- i
@@ -111,7 +112,7 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
     if (length(which(variance %in% "equal")) > 0) {
       for (i in seq(kmin, kmax)) {
         model <- fit_dfa(
-          y = y, num_trends = i, iter = iter, nu_fixed = 100,
+          y = y, num_trends = i, iter = iter, thin = thin, nu_fixed = 100,
           estimate_nu = FALSE, ...
         )
         df$num_trends[indx] <- i
@@ -140,7 +141,7 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
     if (length(which(variance %in% "unequal")) > 0) {
       for (i in seq(kmin, kmax)) {
         model <- fit_dfa(
-          y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)),
+          y = y, num_trends = i, iter = iter, thin = thin, varIndx = seq(1, nrow(y)),
           nu_fixed = 100, estimate_nu = FALSE, ...
         )
         df$num_trends[indx] <- i

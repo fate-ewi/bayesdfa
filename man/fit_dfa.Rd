@@ -5,7 +5,7 @@
 \title{Fit a Bayesian DFA}
 \usage{
 fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 1,
-  varIndx = NULL, zscore = TRUE, iter = 2000, chains = 4,
+  varIndx = NULL, zscore = TRUE, iter = 2000, chains = 4, thin = 1,
   control = list(adapt_delta = 0.99, max_treedepth = 20), nu_fixed = 101,
   est_correlation = FALSE, estimate_nu = FALSE, estimate_trend_ar = FALSE,
   estimate_trend_ma = FALSE, sample = TRUE, data_shape = c("wide",
@@ -34,6 +34,8 @@ just centered. Centering is necessary because no intercept is included.}
 \item{iter}{Number of iterations in Stan sampling, defaults to 2000.}
 
 \item{chains}{Number of chains in Stan sampling, defaults to 4.}
+
+\item{thin}{Thinning rate in Stan sampling, defaults to 1.}
 
 \item{control}{A list of options to pass to Stan sampling. Defaults to
 \code{list(adapt_delta = 0.99, max_treedepth = 20)}.}

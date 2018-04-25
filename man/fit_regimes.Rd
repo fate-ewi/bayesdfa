@@ -4,7 +4,8 @@
 \alias{fit_regimes}
 \title{Fit models with differing numbers of regimes to trend data}
 \usage{
-fit_regimes(y, sds = NULL, n_regimes = 2, iter = 2000, chains = 1, ...)
+fit_regimes(y, sds = NULL, n_regimes = 2, iter = 2000, thin = 1,
+  chains = 1, ...)
 }
 \arguments{
 \item{y}{Data, time series or trend from fitted DFA model.}
@@ -15,6 +16,8 @@ If passed in, residual variance not estimated. Defaults to \code{NULL}.}
 \item{n_regimes}{Number of regimes to evaluate, defaults 2}
 
 \item{iter}{MCMC iterations, defaults to 2000.}
+
+\item{thin}{MCMC thinning rate, defaults to 1.}
 
 \item{chains}{MCMC chains, defaults to 1 (note that running multiple chains
 may result in a label switching problem where the regimes are identified
