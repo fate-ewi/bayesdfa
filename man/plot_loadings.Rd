@@ -8,25 +8,31 @@ plot_loadings(rotated_modelfit, names = NULL, facet = TRUE, violin = TRUE,
   conf_level = 0.95, threshold = NULL)
 }
 \arguments{
-\item{rotated_modelfit}{Output from \code{\link{rotate_trends}}.}
+\item{rotated_modelfit}{Output from \code{\link[=rotate_trends]{rotate_trends()}}.}
 
 \item{names}{An optional vector of names for plotting the loadings.}
 
-\item{facet}{Logical. Should there be a separate facet for each trend?}
+\item{facet}{Logical. Should there be a separate facet for each trend?
+Defaults to \code{TRUE}.}
 
 \item{violin}{Logical. Should the full posterior densities be shown as a
-violin plot?}
+violin plot? Defaults to \code{TRUE}.}
 
-\item{conf_level}{Confidence level for credible intervals.}
+\item{conf_level}{Confidence level for credible intervals. Defaults to 0.95.}
 
-\item{threshold}{Numeric (0-1). Optional for plots, if included, only plot loadings who}
+\item{threshold}{Numeric (0-1). Optional for plots, if included, only plot
+loadings who have Pr(<0) or Pr(>0) > threshold. For example \code{threshold = 0.8}
+would only display estimates where 80% of posterior density was above/below
+zero. Defaults to \code{NULL} (not used).}
 }
 \description{
 Plot the loadings from a DFA
 }
 \examples{
-y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
-m <- fit_dfa(y = y, num_trends = 2, iter = 800)
+set.seed(42)
+s <- sim_dfa(num_trends = 2, num_ts = 4, num_years = 10)
+# only 1 chain and 500 iterations used so example runs quickly:
+m <- fit_dfa(y = s$y_sim, num_trends = 2, iter = 500, chains = 1)
 r <- rotate_trends(m)
 plot_loadings(r, violin = FALSE, facet = TRUE)
 plot_loadings(r, violin = FALSE, facet = FALSE)

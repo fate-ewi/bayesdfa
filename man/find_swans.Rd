@@ -7,25 +7,38 @@
 find_swans(rotated_modelfit, threshold = 0.01, plot = FALSE)
 }
 \arguments{
-\item{rotated_modelfit}{Output from \code{\link{rotate_trends}}}
+\item{rotated_modelfit}{Output from \code{\link[=rotate_trends]{rotate_trends()}}.}
 
-\item{threshold}{A probability threshold below which to
-flag trend events as extreme}
+\item{threshold}{A probability threshold below which to flag trend events as
+extreme}
 
 \item{plot}{Logical: should a plot be made?}
+}
+\value{
+Prints a ggplot2 plot if \code{plot = TRUE}; returns a data frame indicating the
+probability that any given point in time represents a "black swan" event
+invisibly.
 }
 \description{
 Find outlying "black swan" jumps in trends
 }
 \examples{
-\dontrun{
-y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays")])
-y[,10] <- y[,10] + 2
 set.seed(1)
-m <- fit_dfa(y = y, num_trends = 2, iter = 1000, chains = 1, nu_fixed = 2)
+s <- sim_dfa(num_trends = 1, num_ts = 3, num_years = 30)
+s$y_sim[1, 15] <- s$y_sim[1, 15] - 6
+plot(s$y_sim[1,], type = "o")
+abline(v = 15, col = "red")
+# only 1 chain and 500 iterations used so example runs quickly:
+m <- fit_dfa(y = s$y_sim, num_trends = 1, iter = 500, chains = 1, nu_fixed = 2)
 r <- rotate_trends(m)
-p <- plot_trends(r)
+p <- plot_trends(r) + geom_vline(xintercept = 15, colour = "red")
 print(p)
-find_swans(r, plot = TRUE)
+# a 1 in 1000 probability if was from a normal distribution:
+find_swans(r, plot = TRUE, threshold = 0.001)
+
 }
+\references{
+Anderson, S.C., Branch, T.A., Cooper, A.B., and Dulvy, N.K. 2017.
+Black-swan events in animal populations. Proceedings of the National Academy
+of Sciences 114(12): 3252–3257. https://doi.org/10.1073/pnas.1611525114
 }

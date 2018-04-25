@@ -4,64 +4,81 @@
 \alias{fit_dfa}
 \title{Fit a Bayesian DFA}
 \usage{
-fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 2,
+fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 1,
   varIndx = NULL, zscore = TRUE, iter = 2000, chains = 4,
   control = list(adapt_delta = 0.99, max_treedepth = 20), nu_fixed = 101,
-  tau = 0.1, est_correlation = FALSE, timevarying = FALSE,
-  estimate_nu = FALSE, sample = TRUE)
+  est_correlation = FALSE, estimate_nu = FALSE, estimate_trend_ar = FALSE,
+  estimate_trend_ma = FALSE, sample = TRUE, data_shape = c("wide",
+  "long"))
 }
 \arguments{
-\item{y}{A matrix of data to fit. Columns represent time element.}
+\item{y}{A matrix of data to fit. See \code{data_shape} option to specify whether
+this is long or wide format data.}
 
-\item{covar}{A matrix of covariates}
+\item{covar}{A matrix of covariates, defaults to NULL (not included)}
 
-\item{covar_index}{Indices assigning ??}
+\item{covar_index}{A matrix, dimensioned as the number of time series x
+number of covariates that indexes which elements of the covariate matrix
+are shared across time series. Defaults to a matrix with unique
+coefficients estimated for each covariate-time series combination. Elements
+may be shared across time series or covariates.}
 
 \item{num_trends}{Number of trends to fit.}
 
 \item{varIndx}{Indices indicating which timeseries should have shared
 variances.}
 
-\item{zscore}{Logical. Should the data be standardized first?}
+\item{zscore}{Logical. Should the data be standardized first? If not it is
+just centered. Centering is necessary because no intercept is included.}
 
-\item{iter}{Number of iterations in Stan sampling.}
+\item{iter}{Number of iterations in Stan sampling, defaults to 2000.}
 
-\item{chains}{Number of chains in Stan sampling.}
+\item{chains}{Number of chains in Stan sampling, defaults to 4.}
 
-\item{control}{A list of options to pass to Stan sampling.}
+\item{control}{A list of options to pass to Stan sampling. Defaults to
+\code{list(adapt_delta = 0.99, max_treedepth = 20)}.}
 
-\item{nu_fixed}{Student t degrees of freedom parameter. If specified as greater than 100,
-a normal random walk is used instead of a random walk with a t-distribution.}
+\item{nu_fixed}{Student t degrees of freedom parameter. If specified as
+greater than 100, a normal random walk is used instead of a random walk
+with a t-distribution. Defaults to \code{101}.}
 
-\item{tau}{A fixed parameter describing the standard deviation on the random
-walk for the factor loadings in the case of time varying DFA.}
-
-\item{est_correlation}{Boolean, whether to estimate correlation of observation error. Defaults to FALSE}
-
-\item{timevarying}{Logical. If \code{TRUE}, a time varying DFA. Note that the
-time varying DFA has not been extensively tested and may not return
-sensible answers.}
+\item{est_correlation}{Boolean, whether to estimate correlation of
+observation error matrix \code{R}. Defaults to \code{FALSE}.}
 
 \item{estimate_nu}{Logical. Estimate the student t degrees of freedom
-parameter?}
+parameter? Defaults to \code{FALSE},}
 
-\item{sample}{Logical. Should the model be sampled from? If \code{FALSE},
-then the data list object that would have been passed to Stan is returned
-instead. This is useful for debugging and simulation.}
+\item{estimate_trend_ar}{Logical. Estimate AR(1) parameters on DFA trends?
+Defaults to `FALSE``, in which case AR(1) parameters are set to 1}
+
+\item{estimate_trend_ma}{Logical. Estimate MA(1) parameters on DFA trends?
+Defaults to `FALSE``, in which case MA(1) parameters are set to 0.}
+
+\item{sample}{Logical. Should the model be sampled from? If \code{FALSE}, then the
+data list object that would have been passed to Stan is returned instead.
+This is useful for debugging and simulation. Defaults to \code{TRUE}.}
+
+\item{data_shape}{If \code{wide} (the current default) then the input data should
+have rows representing the various timeseries and columns representing the
+values through time. This matches the MARSS input data format. If \code{long}
+then the input data should have columns representing the various timeseries
+and rows representing the values through time.}
 }
 \description{
 Fit a Bayesian DFA
 }
 \details{
 Note that there is nothing restricting the loadings and trends from
-  being inverted (multiplied by -1) for a given chain. Therefore, if you fit
-  multiple chains, the package will attempt to determine which chains need to
-  be inverted using the function \code{\link{find_inverted_chains}}.
+being inverted (i.e. multiplied by \code{-1}) for a given chain. Therefore, if
+you fit multiple chains, the package will attempt to determine which chains
+need to be inverted using the function \code{\link[=find_inverted_chains]{find_inverted_chains()}}.
 }
-\references{
-Del Negro, M., & Otrok, C. (2008). Dynamic factor models with time-varying
-parameters: measuring changes in international business cycles.
+\examples{
+set.seed(42)
+s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
+# only 1 chain and 1000 iterations used so example runs quickly:
+m <- fit_dfa(y = s$y_sim, iter = 1000, chains = 1)
 }
 \seealso{
-plot_loadings plot_trends rotate_trends
+plot_loadings plot_trends rotate_trends find_swans
 }

@@ -12,22 +12,22 @@ plot_trends(rotated_modelfit, years = NULL, highlight_outliers = FALSE,
 
 \item{years}{Optional numeric vector of years for the plot}
 
-\item{highlight_outliers}{Logical. Should trend events 
+\item{highlight_outliers}{Logical. Should trend events
 that exceed the probability of occurring with a normal distribution as
-defined by \code{threshold} be highlighted?}
+defined by \code{threshold} be highlighted? Defaults to FALSE}
 
-\item{threshold}{A probability threshold below which to 
-flag trend events as extreme}
+\item{threshold}{A probability threshold below which to
+flag trend events as extreme. Defaults to 0.01}
 }
 \description{
 Plot the trends from a DFA
 }
 \examples{
-y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
-y[,10] <- y[,10] + 2
-m <- fit_dfa(y = y, num_trends = 2, iter = 600, nu_fixed = 5)
+set.seed(1)
+s <- sim_dfa(num_trends = 1)
+m <- fit_dfa(y = s$y_sim, num_trends = 1, iter = 500, chains = 1)
 r <- rotate_trends(m)
-p <- plot_trends(r, highlight_outliers = TRUE)
+p <- plot_trends(r)
 print(p)
 }
 \seealso{

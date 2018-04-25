@@ -7,24 +7,24 @@
 find_inverted_chains(model, trend = 1, plot = FALSE)
 }
 \arguments{
-\item{model}{A Stan model}
+\item{model}{A Stan model, \code{rstanfit} object}
 
 \item{trend}{Which trend to check}
 
-\item{plot}{Should a plot of the trend for each chain be made?}
+\item{plot}{Logical: should a plot of the trend for each chain be made?
+Defaults to \code{FALSE}}
 }
 \description{
-Find which chains to invert by checking the sum of the squared 
+Find which chains to invert by checking the sum of the squared
 deviations between the first chain and each other chain.
 }
 \examples{
-\dontrun{
-y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
+set.seed(2)
+s <- sim_dfa(num_trends = 2)
 set.seed(1)
-m <- fit_dfa(y = y, num_trends = 2, iter = 2000, chains = 4)
+m <- fit_dfa(y = s$y_sim, num_trends = 1, iter = 500, chains = 2)
 # chains were already inverted, but we can redo that, as an example, with:
-find_inverted_chains(m$model, trend = 1, plot = TRUE)
-}
+find_inverted_chains(m$model, plot = TRUE)
 }
 \seealso{
 invert_chains

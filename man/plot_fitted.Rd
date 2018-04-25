@@ -7,7 +7,7 @@
 plot_fitted(modelfit, names = NULL)
 }
 \arguments{
-\item{modelfit}{Output from \code{\link{fit_dfa}}}
+\item{modelfit}{Output from \code{\link{fit_dfa}}, a rstanfit object}
 
 \item{names}{Optional vector of names for plotting labels}
 }

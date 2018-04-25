@@ -11,26 +11,24 @@ find_regimes(y, sds = NULL, min_regimes = 1, max_regimes = 3,
 \item{y}{Data, time series or trend from fitted DFA model.}
 
 \item{sds}{Optional time series of standard deviations of estimates. If
-passed in, residual variance not estimated}
+passed in, residual variance not estimated.}
 
-\item{min_regimes}{Smallest of regimes to evaluate, defaults to 1}
+\item{min_regimes}{Smallest of regimes to evaluate.}
 
-\item{max_regimes}{Biggest of regimes to evaluate, defaults to 3}
+\item{max_regimes}{Biggest of regimes to evaluate.}
 
-\item{iter}{MCMC iterations, defaults to 2000}
+\item{iter}{MCMC iterations.}
 
-\item{chains}{MCMC chains, defaults to 1 (note that running multiple chains
-may result in a label switching problem where the regimes are identified
+\item{chains}{MCMC chains; defaults to 1 (note that running multiple chains
+may result in a "label switching" problem where the regimes are identified
 with different IDs across chains).}
 
-\item{...}{Other parameters to pass to \code{\link[rstan]{sampling}}}
+\item{...}{Other parameters to pass to \code{\link[rstan:sampling]{rstan::sampling()}}.}
 }
 \description{
 Fit multiple models with differing numbers of regimes to trend data
 }
 \examples{
-\dontrun{
 data(Nile)
-find_regimes(log(Nile))
-}
+find_regimes(log(Nile), iter = 500, chains = 1, max_regimes = 2)
 }

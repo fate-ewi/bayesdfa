@@ -8,12 +8,12 @@ trend_cor(rotated_modelfit, y, trend = 1, time_window = seq_len(length(y)),
   trend_samples = 100, stan_iter = 300, stan_chains = 1, ...)
 }
 \arguments{
-\item{rotated_modelfit}{Output from \code{\link{rotate_trends}}}
+\item{rotated_modelfit}{Output from \code{\link[=rotate_trends]{rotate_trends()}}.}
 
 \item{y}{A numeric vector to correlate with the DFA trend. Must be the same
 length as the DFA trend.}
 
-\item{trend}{A number corresponding to which trend to use.}
+\item{trend}{A number corresponding to which trend to use, defaults to 1.}
 
 \item{time_window}{Indices indicating a time window slice to use in the
 correlation. Defaults to using the entire time window. Can be used to walk
@@ -21,30 +21,43 @@ through the timeseries and test the cross correlations.}
 
 \item{trend_samples}{The number of samples from the trend posterior to use. A
 model will be run for each trend sample so this value shouldn't be too
-large.}
+large. Defaults to 100.}
 
 \item{stan_iter}{The number of samples from the posterior with each Stan
-model run.}
+model run, defaults to 300.}
 
-\item{stan_chains}{The number of chains for each Stan model run.}
+\item{stan_chains}{The number of chains for each Stan model run, defaults to
+1.}
 
 \item{...}{Other arguments to pass to \code{\link[rstan]{sampling}}}
 }
 \value{
-A numeric vector of samples from the correlation coefficient posterior.
+A numeric vector of samples from the correlation coefficient
+posterior.
 }
 \description{
 Fully incorporates the uncertainty from the posterior of the DFA trend
 }
-\examples{
-\dontrun{
-y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
-m <- fit_dfa(y = y, num_trends = 1, iter = 600, nu_fixed = 100)
-r <- rotate_trends(m)
-correlation <- trend_cor(r, y = rnorm(ncol(r$trends[,1,]), 0, 1))
-hist(correlation)
-correlation <- trend_cor(r, y = rnorm(ncol(r$trends[,1,]), 0, 1),
-  time_window = 5:15)
-hist(correlation)
+\details{
+Uses a \code{sigma ~ half_t(3, 0, 2)} prior on the residual standard
+deviation and a \code{uniform(-1, 1)} prior on the correlation coefficient.
+Fitted as a linear regression of \code{y ~ x}, where y represents the \code{y}
+argument to \code{\link[=trend_cor]{trend_cor()}} and \code{x} represents the DFA trend, and both \code{y}
+and \code{x} have been scaled by subtracting their means and dividing by their
+standard deviations. Samples are drawn from the posterior of the trend and
+repeatedly fed through the Stan regression to come up with a combined
+posterior of the correlation.
 }
+\examples{
+set.seed(1)
+s <- sim_dfa(num_trends = 1, num_years = 15)
+m <- fit_dfa(y = s$y_sim, num_trends = 1, iter = 500, chains = 1)
+r <- rotate_trends(m)
+n_years <- ncol(r$trends[,1,])
+fake_dat <- rnorm(n_years, 0, 1)
+correlation <- trend_cor(r, fake_dat, trend_samples = 25)
+hist(correlation)
+correlation <- trend_cor(r, y = fake_dat, time_window = 5:15,
+  trend_samples = 25)
+hist(correlation)
 }

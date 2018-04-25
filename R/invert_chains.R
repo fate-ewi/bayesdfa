@@ -1,11 +1,12 @@
 #' Find which chains to invert
 #'
-#' Find which chains to invert by checking the sum of the squared 
+#' Find which chains to invert by checking the sum of the squared
 #' deviations between the first chain and each other chain.
 #'
-#' @param model A Stan model
+#' @param model A Stan model, `rstanfit` object
 #' @param trend Which trend to check
-#' @param plot Should a plot of the trend for each chain be made?
+#' @param plot Logical: should a plot of the trend for each chain be made?
+#'   Defaults to `FALSE`
 #'
 #' @importFrom ggplot2 geom_line
 #' @importFrom utils combn
@@ -13,13 +14,12 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
+#' set.seed(2)
+#' s <- sim_dfa(num_trends = 2)
 #' set.seed(1)
-#' m <- fit_dfa(y = y, num_trends = 2, iter = 2000, chains = 4)
+#' m <- fit_dfa(y = s$y_sim, num_trends = 1, iter = 500, chains = 2)
 #' # chains were already inverted, but we can redo that, as an example, with:
-#' find_inverted_chains(m$model, trend = 1, plot = TRUE)
-#' }
+#' find_inverted_chains(m$model, plot = TRUE)
 
 find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
   e <- rstan::extract(model, permuted = FALSE)
@@ -28,40 +28,43 @@ find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
   vv <- dplyr::group_by_(vv, "chains", "parameters")
   vv <- dplyr::summarize_(vv, estimate = "stats::median(value)")
   zz <- v[grepl(paste0("Z\\["), v$parameters), ]
-  zz <- zz[grepl(paste0(trend,"]"), zz$parameters), ]
+  zz <- zz[grepl(paste0(trend, "]"), zz$parameters), ]
   zz <- dplyr::group_by_(zz, "chains", "parameters")
-  zz <- dplyr::summarize_(zz, estimate = "stats::median(value)")  
+  zz <- dplyr::summarize_(zz, estimate = "stats::median(value)")
   ## vv is dimensioned nchains * nyears (x[1:nyears,trend=i])
   ## zz is dimensioned n_time series  (Z[1:time series,trend=i])
-  
+
   if (plot) {
     p <- ggplot(vv, aes_string("as.numeric(parameters)", "estimate",
-      color = "chains")) +
+      color = "chains"
+    )) +
       geom_line()
     print(p)
   }
 
-  # cast parameters to df 
+  # cast parameters to df
   vvv <- reshape2::dcast(vv, parameters ~ chains, value.var = "estimate")
   vvv$parameters <- NULL
   zzz <- reshape2::dcast(zz, parameters ~ chains, value.var = "estimate")
   zzz$parameters <- NULL
-  
+
   nchains <- ncol(vvv)
 
   # n_ts x n_years prediction matrix of product of trends and loadings
-  flipped_chains = 0
-  pred0_loadings = zzz[,1]
-  pred0_trend = vvv[,1]
-  if(nchains > 1) {
-    for(i in seq(2, nchains)) {
-      pred1_loadings = zzz[,i]
-      pred1_trend = vvv[,i]
+  flipped_chains <- 0
+  pred0_loadings <- zzz[, 1]
+  pred0_trend <- vvv[, 1]
+  if (nchains > 1) {
+    for (i in seq(2, nchains)) {
+      pred1_loadings <- zzz[, i]
+      pred1_trend <- vvv[, i]
       # see if flipped trend + loadings are more similar to chain 1 than not flipped
-      if((sum((-1*pred1_loadings-pred0_loadings)^2) + sum((-1*pred1_trend-pred0_trend)^2)) < 
-        (sum((pred1_loadings-pred0_loadings)^2) + sum((pred1_trend-pred0_trend)^2))) {
+      if ((sum((-1 * pred1_loadings - pred0_loadings)^2) +
+        sum((-1 * pred1_trend - pred0_trend)^2)) <
+        (sum((pred1_loadings - pred0_loadings)^2) +
+          sum((pred1_trend - pred0_trend)^2))) {
         # flip this chain
-        flipped_chains = ifelse(flipped_chains == 0, i, c(flipped_chains, i))
+        flipped_chains <- ifelse(flipped_chains == 0, i, c(flipped_chains, i))
       }
     }
   }
@@ -70,21 +73,20 @@ find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
 
 #' Invert chains
 #'
-#' @param model A Stan model.
-#' @param trends The number of trends in the DFA.
+#' @param model A Stan model, rstanfit object
+#' @param trends The number of trends in the DFA, defaults to 1
 #' @param print Logical indicating whether the summary should be printed.
-#' @param ... Other arguments to pass to \code{\link{find_inverted_chains}}.
+#'   Defaults to `FALSE`.
+#' @param ... Other arguments to pass to [find_inverted_chains()].
 #'
 #' @export
 #' @seealso find_inverted_chains
 invert_chains <- function(model, trends = 1, print = FALSE, ...) {
-
   e <- rstan::extract(model, permuted = FALSE)
   ep <- rstan::extract(model, permuted = TRUE)
-  pars <- colnames(e[1,,])
+  pars <- colnames(e[1, , ])
   n_mcmc <- dim(ep$Z)[1]
   n_chains <- dim(e)[2]
-  ii <- c(seq(1, n_mcmc, n_mcmc/n_chains), n_mcmc + 1)
 
   for (k in seq_len(trends)) {
     f <- find_inverted_chains(model, trend = k)
@@ -92,10 +94,10 @@ invert_chains <- function(model, trends = 1, print = FALSE, ...) {
 
     for (f_ in f) {
       for (i in grep(paste0("x\\[", k), pars)) {
-        e[,f_,i] <- e[,f_,i] * -1
+        e[, f_, i] <- e[, f_, i] * -1
       }
       for (i in grep(paste0("Z\\[[0-9]+,", k, "\\]"), pars)) {
-        e[,f_,i] <- e[,f_,i] * -1
+        e[, f_, i] <- e[, f_, i] * -1
       }
     }
   }

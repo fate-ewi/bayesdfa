@@ -4,48 +4,54 @@
 \alias{sim_dfa}
 \title{Simulate from a DFA}
 \usage{
-sim_dfa(num_trends = 2, num_years = 20, num_ts = 4,
+sim_dfa(num_trends = 1, num_years = 20, num_ts = 4,
   loadings_matrix = matrix(nrow = num_ts, ncol = num_trends, rnorm(num_ts *
   num_trends, 0, 1)), sigma = rlnorm(1, meanlog = log(0.2), 0.1),
   varIndx = rep(1, num_ts), extreme_value = NULL, extreme_loc = NULL,
   nu_fixed = 100)
 }
 \arguments{
-\item{num_trends}{The number of trends}
+\item{num_trends}{The number of trends.}
 
-\item{num_years}{The number of years}
+\item{num_years}{The number of years.}
 
-\item{num_ts}{The number of timeseries}
+\item{num_ts}{The number of timeseries.}
 
 \item{loadings_matrix}{A loadings matrix. The number of rows should match the
 number of timeseries and the number of columns should match the number of
 trends. Note that this loadings matrix will be internally manipulated by
 setting some elements to 0 and constraining some elements to 1 so that the
-model can be fitted. See \code{\link{fit_dfa}}. See the outfit element
-\code{Z} in the returned list is to see the manipulated loadings matrix.}
+model can be fitted. See \code{\link[=fit_dfa]{fit_dfa()}}. See the outfit element \code{Z} in
+the returned list is to see the manipulated loadings matrix. If not
+specified, a random matrix \code{~ N(0, 1)} is used.}
 
 \item{sigma}{A vector of standard deviations on the observation error. Should
-be of the same length as the number of trends.}
+be of the same length as the number of trends. If not specified, random
+numbers are used \code{rlnorm(1, meanlog = log(0.2), 0.1)}.}
 
-\item{varIndx}{Indices of unique observation variances.}
+\item{varIndx}{Indices of unique observation variances. Defaults to \code{c(1, 1, 1, 1)}. Unique observation error variances would be specified as \code{c(1, 2, 3, 4)} in the case of 4 time series.}
 
-\item{extreme_value}{Value added to the random walk in the extreme time step}
+\item{extreme_value}{Value added to the random walk in the extreme time step.
+Defaults to not included.}
 
-\item{extreme_loc}{Location of single extreme event in the process. The same for all processes, and defaults to round(n_t/2) where n_t is the time series length}
+\item{extreme_loc}{Location of single extreme event in the process. The same
+for all processes, and defaults to \code{round(n_t/2)} where \code{n_t} is the time
+series length}
 
-\item{nu_fixed}{Nu is the df parameter for the t-distribution, defaults to 7}
+\item{nu_fixed}{Nu is the degrees of freedom parameter for the
+t-distribution, defaults to 100, which is effectively normal.}
 }
 \value{
-A list with the following elements: y_sim is the simulated data, pred
-  is the true underlying data without observation error added, x is the
-  underlying trends, Z is the manipulated loadings matrix that is fed to the
-  model.
+A list with the following elements: \code{y_sim} is the simulated data,
+pred is the true underlying data without observation error added, \code{x} is
+the underlying trends, \code{Z} is the manipulated loadings matrix that is fed
+to the model.
 }
 \description{
 Simulate from a DFA
 }
 \examples{
-x <- sim_dfa()
+x <- sim_dfa(num_trends = 2)
 names(x)
 matplot(t(x$y_sim), type = "l")
 matplot(t(x$x), type = "l")

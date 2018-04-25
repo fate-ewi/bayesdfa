@@ -2,21 +2,24 @@ Package: bayesdfa
 Type: Package
 Title: Baysian DFA with Stan
 Version: 0.01.9001
-Date: 2017-02-27
+Date: 2018-03-14
 Authors@R: c(
-    person(c("Eric", "J."), "Ward", role = c("aut", "cre"), email = "a@a.com"),
+    person(c("Eric", "J."), "Ward", role = c("aut", "cre"), email = "TODO@TODO.com"),
     person(c("Sean", "C."), "Anderson", role = "aut"))
-Description: Implements Baysian DFA with Stan.
+Description: Implements Baysian Dynamic Factor Analysis (DFA) with Stan.
 License: GPL (>=3)
+Encoding: UTF-8
+LazyData: true
 Depends:
-    R (>= 3.3.1),
+    R (>= 3.2.0),
     Rcpp (>= 0.11.0),
     rstan (>= 2.14.0)
 Imports:
     ggplot2 (>= 2.2.0),
     loo,
-    dplyr,
+    dplyr (>= 0.7.0),
     methods,
+    rlang,
     reshape2
 LinkingTo: StanHeaders (>= 2.14.0), rstan (>= 2.9.0), BH (>= 1.60.0), Rcpp (>=
     0.12.0), RcppEigen
@@ -30,3 +33,4 @@ URL: https://github.com/fate-ewi/bayesdfa
 BugReports: https://github.com/fate-ewi/bayesdfa/issues
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)
