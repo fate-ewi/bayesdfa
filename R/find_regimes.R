@@ -29,10 +29,9 @@ find_regimes <- function(y, sds = NULL, min_regimes = 1, max_regimes = 3,
     )
 
     # relative effective sample size
-    log_lik = loo::extract_log_lik(fit$model)
-    n_chains = dim(rstan::extract(fit$model, "log_lik", permuted=FALSE))[2]
-    rel_eff = loo::relative_eff(exp(log_lik),
-      chain_id=sort(rep(1:chains, nrow(log_lik))))
+    log_lik = loo::extract_log_lik(fit$model, merge_chains = FALSE)
+    #n_chains = dim(rstan::extract(fit$model, "log_lik", permuted=FALSE))[2]
+    rel_eff = loo::relative_eff(exp(log_lik))
     # calculate looic
     df$looic[which(df$regimes == regime)] = loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
 
