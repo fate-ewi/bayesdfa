@@ -55,8 +55,8 @@ transformed data {
 parameters {
   matrix[K,N-1] devs; // random deviations of trends
   vector[K] x0; // initial state
-  vector[nZ] z; // estimated loadings in vec form
-  vector<lower=0>[K] zpos; // constrained positive values
+  vector<lower=-1,upper=1>[nZ] z; // estimated loadings in vec form
+  vector<lower=0,upper=1>[K] zpos; // constrained positive values
   real<lower=0> sigma[nVariances];
   real<lower=2> nu[estimate_nu]; // df on student-t
   real ymiss[n_na];
