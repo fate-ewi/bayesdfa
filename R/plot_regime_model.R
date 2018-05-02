@@ -25,9 +25,6 @@ plot_regime_model <- function(model, probs = c(0.05, 0.95),
   flip_regimes=FALSE) {
   gamma_tk <- rstan::extract(model$model, pars = "gamma_tk")[[1]]
   mu_k <- rstan::extract(model$model, pars = "mu_k")[[1]]
-  if(flip_regimes==TRUE) {
-    mu_k = 1 - mu_k
-  }
   l <- apply(gamma_tk, 2:3, quantile, probs = probs[[1]])
   u <- apply(gamma_tk, 2:3, quantile, probs = probs[[2]])
   med <- apply(gamma_tk, 2:3, quantile, probs = 0.5)
@@ -41,6 +38,13 @@ plot_regime_model <- function(model, probs = c(0.05, 0.95),
     w <- which(x)
     ifelse(length(w) == 0, NA, w)
   })
+
+  if(flip_regimes==TRUE) {
+    mu_k = 1 - mu_k
+    u = 1-u
+    l = 1-l
+    med = 1 - med
+  }
 
   if(is.null(plot_prob_indices)) {
     # then plot all panels
