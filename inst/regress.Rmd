@@ -47,7 +47,8 @@ trend_lm <- function(rotated_modelfit,
   climate_dat = cli_dat,
   predictor = "PDO",
   trend_number = 1, samples = 50, 
-  ITER = 1000, CHAINS = 1, n_eff = 50, rhat = 1.1, show_plot = TRUE) {
+  ITER = 1000, CHAINS = 1, n_eff = 50, 
+  rhat = 1.1, show_plot = TRUE) {
   
   total_mcmc <- dim(rotated_modelfit$trends)[1]
   draws <- sample(seq_len(total_mcmc), samples)
@@ -208,3 +209,89 @@ ggplot(p_plot, aes(time, mean_dfa)) +
   geom_line(aes(y = est, colour = forecast)) + 
   ylab("DFA trend value")
 ```
+
+Here's an example of writing a function to include several covariates, for example if we wanted to test whether an coefficient changed slope over time.
+
+```{r trendlm2}
+
+trend_lm <- function(rotated_modelfit,
+  all_years, selected_years,
+  climate_dat = NULL,
+  x_name = NULL,
+  trend_number = 1, samples = 50,
+  ITER = 1000, CHAINS = 1, n_eff = 50, rhat = 1.1, show_plot = TRUE) {
+
+  total_mcmc <- dim(rotated_modelfit$trends)[1]
+  draws <- sample(seq_len(total_mcmc), samples)
+
+  yrs_i <- which(all_years %in% selected_years)
+  climate_dat <- dplyr::filter(climate_dat, x_name %in% selected_years)
+
+  predictor_name = names(climate_dat)[which(names(climate_dat) != "Year")]
+  formula_str = paste("dfa_trend_draw ~", predictor_name[1])
+  if(length(predictor_name) > 1) {
+    for(i in 2:length(predictor_name)) {formula_str = paste(formula_str, predictor_name[i], sep=" + ")}
+  }
+  formula <- as.formula(formula_str)
+
+  post <- list()
+  for (i in seq_along(draws)) {
+    dd <- data.frame(climate_dat,
+      dfa_trend_draw = rotated_modelfit$trends[draws[i], trend_number, yrs_i])
+    m_temp <- stan_glm(formula, data = dd,
+      iter = ITER, chains = CHAINS,
+      prior = normal(0, 2, autoscale = FALSE),
+      prior_intercept = normal(0, 10, autoscale = FALSE),
+      prior_aux = student_t(df = 3, 0, 5, autoscale = FALSE))
+    assert_that(all(m_temp$stan_summary[,"Rhat"] < rhat))
+    assert_that(all(m_temp$stan_summary[,"n_eff"] > n_eff))
+    post[[i]] <- as.data.frame(as.matrix(m_temp))
+  }
+  post_all <- dplyr::bind_rows(post)
+
+  if (show_plot) {
+    #par(mfrow = c(1, 2))
+    #plot(post_all[,predictor], type = "l", col = "#00000080", lwd = 0.5)
+    #abline(v = seq(0, ITER * length(draws), ITER), col = "#FF000050")
+    #plot(density(post_all[,predictor]))
+    #abline(v = 0, col = "#00000050")
+  }
+  invisible(post_all)
+}
+
+```
+
+For this example, we'll use the simple example in `rotate_trends`, 
+  
+```{r}
+set.seed(42)
+s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+# only 1 chain and 800 iterations used so example runs quickly:
+m <- fit_dfa(y = s$y_sim, iter = 800, chains = 1)
+r <- rotate_trends(m)
+
+```
+
+Using this simple example, we can fit a model with a single covariate,
+
+```{r}
+cli_dat = data.frame("Year" = 1981:2000, "PDO" = rnorm(20))
+
+mod1 = trend_lm(rotated_modelfit = r, all_years = 1981:2000,
+  selected_years = 1981:2000, climate_dat=cli_dat, x_name="Year")
+summary(mod1)
+```
+
+Now we can expand and fit the model with three, including the interaction
+
+```{r}
+cli_dat = data.frame("Year" = 1981:2000, "PDO" = rnorm(20))
+cli_dat$era = ifelse(cli_dat$Year < 1991,0,1)
+cli_dat$interact = cli_dat$era*cli_dat$PDO
+
+mod2 = trend_lm(rotated_modelfit = r, all_years = 1981:2000,
+  selected_years = 1981:2000, climate_dat=cli_dat, x_name="Year")
+summary(mod2)
+```
+
+
