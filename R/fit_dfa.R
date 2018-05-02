@@ -37,6 +37,7 @@
 #'   values through time. This matches the MARSS input data format. If `long`
 #'   then the input data should have columns representing the various timeseries
 #'   and rows representing the values through time.
+#' @param ... Any other arguments to pass to [rstan::sampling()].
 #' @details Note that there is nothing restricting the loadings and trends from
 #'   being inverted (i.e. multiplied by `-1`) for a given chain. Therefore, if
 #'   you fit multiple chains, the package will attempt to determine which chains
@@ -72,7 +73,7 @@ fit_dfa <- function(y = y,
                     estimate_trend_ar = FALSE,
                     estimate_trend_ma = FALSE,
                     sample = TRUE,
-                    data_shape = c("wide", "long")) {
+                    data_shape = c("wide", "long"), ...) {
   data_shape <- match.arg(data_shape)
   if (ncol(y) > nrow(y) && data_shape == "long") {
     warning(
@@ -217,7 +218,8 @@ fit_dfa <- function(y = y,
     control = control,
     chains = chains,
     iter = iter,
-    thin = thin
+    thin = thin,
+    ...
   )
 
   if (sample) {

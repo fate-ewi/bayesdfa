@@ -9,7 +9,7 @@ fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 1,
   control = list(adapt_delta = 0.99, max_treedepth = 20), nu_fixed = 101,
   est_correlation = FALSE, estimate_nu = FALSE, estimate_trend_ar = FALSE,
   estimate_trend_ma = FALSE, sample = TRUE, data_shape = c("wide",
-  "long"))
+  "long"), ...)
 }
 \arguments{
 \item{y}{A matrix of data to fit. See \code{data_shape} option to specify whether
@@ -65,6 +65,8 @@ have rows representing the various timeseries and columns representing the
 values through time. This matches the MARSS input data format. If \code{long}
 then the input data should have columns representing the various timeseries
 and rows representing the values through time.}
+
+\item{...}{Any other arguments to pass to \code{\link[rstan:sampling]{rstan::sampling()}}.}
 }
 \description{
 Fit a Bayesian DFA
