@@ -131,8 +131,8 @@ fit_dfa <- function(y = y,
   # mat_indx now references the unconstrained values of the Z matrix.
   mat_indx <- matrix(0, P, K)
   start <- 1
-  for (k in 1:K) {
-    for (p in (k + 1):P) {
+  for (k in seq_len(K)) {
+    for (p in seq(k + 1, P)) {
       mat_indx[p, k] <- start
       start <- start + 1
     }
@@ -205,7 +205,6 @@ fit_dfa <- function(y = y,
 
   pars <- c("x", "Z", "pred", "sigma", "log_lik")
   if (est_correlation) pars <- c(pars, "Omega") # add correlation matrix
-
   if (!is.null(covar)) pars <- c(pars, "D")
   if (estimate_nu) pars <- c(pars, "nu")
   if (estimate_trend_ar) pars <- c(pars, "phi")
@@ -224,7 +223,6 @@ fit_dfa <- function(y = y,
 
   if (sample) {
     mod <- do.call(sampling, sampling_args)
-
     if (chains > 1) {
       out <- invert_chains(mod, trends = num_trends, print = FALSE)
     } else {
