@@ -831,7 +831,7 @@ public:
         for (int j1__ = 0U; j1__ < nZ; ++j1__)
             z(j1__) = vals_r__[pos__++];
         try {
-            writer__.vector_unconstrain(z);
+            writer__.vector_lub_unconstrain(-(1),1,z);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable z: ") + e.what());
         }
@@ -846,7 +846,7 @@ public:
         for (int j1__ = 0U; j1__ < K; ++j1__)
             zpos(j1__) = vals_r__[pos__++];
         try {
-            writer__.vector_lb_unconstrain(0,zpos);
+            writer__.vector_lub_unconstrain(0,1,zpos);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable zpos: ") + e.what());
         }
@@ -996,16 +996,16 @@ public:
             Eigen::Matrix<T__,Eigen::Dynamic,1>  z;
             (void) z;  // dummy to suppress unused var warning
             if (jacobian__)
-                z = in__.vector_constrain(nZ,lp__);
+                z = in__.vector_lub_constrain(-(1),1,nZ,lp__);
             else
-                z = in__.vector_constrain(nZ);
+                z = in__.vector_lub_constrain(-(1),1,nZ);
 
             Eigen::Matrix<T__,Eigen::Dynamic,1>  zpos;
             (void) zpos;  // dummy to suppress unused var warning
             if (jacobian__)
-                zpos = in__.vector_lb_constrain(0,K,lp__);
+                zpos = in__.vector_lub_constrain(0,1,K,lp__);
             else
-                zpos = in__.vector_lb_constrain(0,K);
+                zpos = in__.vector_lub_constrain(0,1,K);
 
             vector<T__> sigma;
             size_t dim_sigma_0__ = nVariances;
@@ -1453,8 +1453,8 @@ public:
         // read-transform, write parameters
         matrix_d devs = in__.matrix_constrain(K,(N - 1));
         vector_d x0 = in__.vector_constrain(K);
-        vector_d z = in__.vector_constrain(nZ);
-        vector_d zpos = in__.vector_lb_constrain(0,K);
+        vector_d z = in__.vector_lub_constrain(-(1),1,nZ);
+        vector_d zpos = in__.vector_lub_constrain(0,1,K);
         vector<double> sigma;
         size_t dim_sigma_0__ = nVariances;
         for (size_t k_0__ = 0; k_0__ < dim_sigma_0__; ++k_0__) {
@@ -2673,16 +2673,9 @@ public:
             for (int t = 1; t <= T; ++t) {
 
                 stan::math::assign(get_base1_lhs(log_lik,t,"log_lik",1), 0);
-                if (as_bool(logical_eq(est_sigma,1))) {
+                for (int j = 1; j <= K; ++j) {
 
-                    for (int j = 1; j <= K; ++j) {
-                        stan::math::assign(get_base1_lhs(log_lik,t,"log_lik",1), (get_base1(log_lik,t,"log_lik",1) + (get_base1(get_base1(gamma_tk,t,"gamma_tk",1),j,"gamma_tk",2) * get_base1(get_base1(alpha_tk,t,"alpha_tk",1),j,"alpha_tk",2))));
-                    }
-                } else {
-
-                    for (int j = 1; j <= K; ++j) {
-                        stan::math::assign(get_base1_lhs(log_lik,t,"log_lik",1), (get_base1(log_lik,t,"log_lik",1) + (get_base1(get_base1(gamma_tk,t,"gamma_tk",1),j,"gamma_tk",2) * get_base1(get_base1(alpha_tk,t,"alpha_tk",1),j,"alpha_tk",2))));
-                    }
+                    stan::math::assign(get_base1_lhs(log_lik,t,"log_lik",1), (get_base1(log_lik,t,"log_lik",1) + (get_base1(get_base1(gamma_tk,t,"gamma_tk",1),j,"gamma_tk",2) * get_base1(get_base1(alpha_tk,t,"alpha_tk",1),j,"alpha_tk",2))));
                 }
                 stan::math::assign(get_base1_lhs(log_lik,t,"log_lik",1), log(get_base1(log_lik,t,"log_lik",1)));
             }
