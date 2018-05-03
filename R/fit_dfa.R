@@ -91,6 +91,11 @@ fit_dfa <- function(y = y,
     y <- t(y)
   }
 
+  if (nrow(y) < 3) {
+    stop("fit_dfa() only works with 3 or more time series. We detected ",
+      nrow(y), " time series.")
+  }
+
   # parameters for DFA
   N <- ncol(y) # number of time steps
   P <- nrow(y) # number of time series
