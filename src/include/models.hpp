@@ -816,7 +816,7 @@ public:
         for (int j1__ = 0U; j1__ < K; ++j1__)
             x0(j1__) = vals_r__[pos__++];
         try {
-            writer__.vector_unconstrain(x0);
+            writer__.vector_lb_unconstrain(0,x0);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable x0: ") + e.what());
         }
@@ -846,7 +846,7 @@ public:
         for (int j1__ = 0U; j1__ < K; ++j1__)
             zpos(j1__) = vals_r__[pos__++];
         try {
-            writer__.vector_lub_unconstrain(0,1,zpos);
+            writer__.vector_lb_unconstrain(0,zpos);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable zpos: ") + e.what());
         }
@@ -989,9 +989,9 @@ public:
             Eigen::Matrix<T__,Eigen::Dynamic,1>  x0;
             (void) x0;  // dummy to suppress unused var warning
             if (jacobian__)
-                x0 = in__.vector_constrain(K,lp__);
+                x0 = in__.vector_lb_constrain(0,K,lp__);
             else
-                x0 = in__.vector_constrain(K);
+                x0 = in__.vector_lb_constrain(0,K);
 
             Eigen::Matrix<T__,Eigen::Dynamic,1>  z;
             (void) z;  // dummy to suppress unused var warning
@@ -1003,9 +1003,9 @@ public:
             Eigen::Matrix<T__,Eigen::Dynamic,1>  zpos;
             (void) zpos;  // dummy to suppress unused var warning
             if (jacobian__)
-                zpos = in__.vector_lub_constrain(0,1,K,lp__);
+                zpos = in__.vector_lb_constrain(0,K,lp__);
             else
-                zpos = in__.vector_lub_constrain(0,1,K);
+                zpos = in__.vector_lb_constrain(0,K);
 
             vector<T__> sigma;
             size_t dim_sigma_0__ = nVariances;
@@ -1452,9 +1452,9 @@ public:
         (void) function__;  // dummy to suppress unused var warning
         // read-transform, write parameters
         matrix_d devs = in__.matrix_constrain(K,(N - 1));
-        vector_d x0 = in__.vector_constrain(K);
+        vector_d x0 = in__.vector_lb_constrain(0,K);
         vector_d z = in__.vector_lub_constrain(-(1),1,nZ);
-        vector_d zpos = in__.vector_lub_constrain(0,1,K);
+        vector_d zpos = in__.vector_lb_constrain(0,K);
         vector<double> sigma;
         size_t dim_sigma_0__ = nVariances;
         for (size_t k_0__ = 0; k_0__ < dim_sigma_0__; ++k_0__) {
