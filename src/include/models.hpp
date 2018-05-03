@@ -1296,8 +1296,8 @@ public:
                     lp_accum__.add(uniform_log<propto__>(get_base1(theta,k,"theta",1), 0, 1));
                 }
             }
-            lp_accum__.add(normal_log<propto__>(z, 0, 1));
-            lp_accum__.add(normal_log<propto__>(zpos, 0, 1));
+            lp_accum__.add(student_t_log<propto__>(z, 3, 0, 10));
+            lp_accum__.add(student_t_log<propto__>(zpos, 3, 0, 2));
             lp_accum__.add(student_t_log<propto__>(sigma, 3, 0, 2));
             if (as_bool(logical_eq(est_cor,1))) {
 
