@@ -116,7 +116,7 @@ fit_dfa <- function(y = y,
 
   num_covar <- nrow(d_covar)
   covar_indexing <- covar_index
-  if (!is.null(d_covar) & is.null(covar_indexing)) {
+  if (!is.null(d_covar) && is.null(covar_indexing)) {
     # covariates included but index matrix not, assume independent for all elements
     covar_indexing <- matrix(seq(1, num_covar * P), P, num_covar)
     num_unique_covar <- max(covar_indexing)
@@ -138,12 +138,12 @@ fit_dfa <- function(y = y,
     }
   }
   # row_indx and col_indx now references the unconstrained values of the Z matrix.
-  row_indx <- matrix((rep(seq_len(P), K)), P, K)[which(mat_indx > 0)]
-  col_indx <- matrix(sort(rep(seq_len(K), P)), P, K)[which(mat_indx > 0)]
+  row_indx <- matrix((rep(seq_len(P), K)), P, K)[mat_indx > 0]
+  col_indx <- matrix(sort(rep(seq_len(K), P)), P, K)[mat_indx > 0]
 
   diag(mat_indx) <- 1
-  row_indx_z <- matrix((rep(seq_len(P), K)), P, K)[which(mat_indx == 0)]
-  col_indx_z <- matrix(sort(rep(seq_len(K), P)), P, K)[which(mat_indx == 0)]
+  row_indx_z <- matrix((rep(seq_len(P), K)), P, K)[mat_indx == 0]
+  col_indx_z <- matrix(sort(rep(seq_len(K), P)), P, K)[mat_indx == 0]
   row_indx_z <- c(row_indx_z, 0, 0) # +2 zeros for making stan ok with data types
   col_indx_z <- c(col_indx_z, 0, 0) # +2 zeros for making stan ok with data types
   nZero <- length(row_indx_z)
@@ -155,19 +155,19 @@ fit_dfa <- function(y = y,
   nVariances <- length(unique(varIndx))
 
   # indices of positive values - Stan can't handle NAs
-  row_indx_pos <- matrix((rep(seq_len(P), N)), P, N)[which(!is.na(y))]
-  col_indx_pos <- matrix(sort(rep(seq_len(N), P)), P, N)[which(!is.na(y))]
+  row_indx_pos <- matrix(rep(seq_len(P), N), P, N)[!is.na(y)]
+  col_indx_pos <- matrix(sort(rep(seq_len(N), P)), P, N)[!is.na(y)]
   n_pos <- length(row_indx_pos)
 
-  row_indx_na <- matrix((rep(seq_len(P), N)), P, N)[which(is.na(y))]
-  col_indx_na <- matrix(sort(rep(seq_len(N), P)), P, N)[which(is.na(y))]
+  row_indx_na <- matrix(rep(seq_len(P), N), P, N)[is.na(y)]
+  col_indx_na <- matrix(sort(rep(seq_len(N), P)), P, N)[is.na(y)]
   n_na <- length(row_indx_na)
 
-  y <- y[which(!is.na(y))]
+  y <- y[!is.na(y)]
 
   # flag for whether to use a normal dist
-  use_normal <- ifelse(nu_fixed > 100, 1, 0)
-  if (estimate_nu == TRUE) use_normal <- 0 # competing flags
+  use_normal <- if (nu_fixed > 100) 1 else 0
+  if (estimate_nu) use_normal <- 0 # competing flags
 
   data_list <- list(
     N = N,
