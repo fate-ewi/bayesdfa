@@ -134,7 +134,7 @@ transformed parameters {
 model {
   // initial state for each trend
   for(k in 1:K) {
-    x0[k] ~ cauchy(0, 3);
+    x0[k] ~ normal(0,1);
     if(use_normal == 0) {
       for(t in 1:1) {
         if (estimate_nu == 1) {
@@ -177,8 +177,8 @@ model {
     }
   }
   // prior on loadings
-  z ~ normal(0, 1);
-  zpos ~ normal(0, 1); // diagonal, constrained (0,1)
+  z ~ student_t(3, 0, 2);
+  zpos ~ student_t(3, 0, 2); // diagonal, constrained (0,1)
 
   // observation variance
   sigma ~ student_t(3, 0, 2);
