@@ -177,8 +177,8 @@ model {
     }
   }
   // prior on loadings
-  z ~ student_t(3, 0, 10);
-  zpos ~ student_t(3, 0, 2); // diagonal, constrained (0,1)
+  z ~ student_t(5, 0, 3);
+  zpos ~ student_t(5, 0, 3); // diagonal, constrained (0,1)
 
   // observation variance
   sigma ~ student_t(3, 0, 2);
