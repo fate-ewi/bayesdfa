@@ -390,7 +390,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_dfa");
-    reader.add_event(224, 224, "end", "model_dfa");
+    reader.add_event(228, 228, "end", "model_dfa");
     return reader;
 }
 
@@ -726,7 +726,7 @@ public:
             }
             if (as_bool(logical_eq(est_cor,0))) {
 
-                stan::math::assign(n_loglik, P);
+                stan::math::assign(n_loglik, (P * N));
             } else {
 
                 stan::math::assign(n_loglik, N);
@@ -1362,6 +1362,7 @@ public:
         names__.push_back("log_lik");
         names__.push_back("Omega");
         names__.push_back("Sigma");
+        names__.push_back("j");
     }
 
 
@@ -1435,6 +1436,8 @@ public:
         dims__.resize(0);
         dims__.push_back(n_pcor);
         dims__.push_back(n_pcor);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
         dimss__.push_back(dims__);
     }
 
@@ -1695,6 +1698,10 @@ public:
 
             stan::math::initialize(Sigma, std::numeric_limits<double>::quiet_NaN());
             stan::math::fill(Sigma,DUMMY_VAR__);
+            int j(0);
+            (void) j;  // dummy to suppress unused var warning
+
+            stan::math::fill(j, std::numeric_limits<int>::min());
 
 
             if (as_bool(logical_eq(est_cor,1))) {
@@ -1704,9 +1711,14 @@ public:
             }
             if (as_bool(logical_eq(est_cor,0))) {
 
-                for (int i = 1; i <= P; ++i) {
+                stan::math::assign(j, 0);
+                for (int n = 1; n <= N; ++n) {
 
-                    stan::math::assign(get_base1_lhs(log_lik,i,"log_lik",1), normal_log(get_base1(yall,i,"yall",1),get_base1(pred,i,"pred",1),get_base1(sigma_vec,i,"sigma_vec",1)));
+                    for (int p = 1; p <= P; ++p) {
+
+                        stan::math::assign(j, (j + 1));
+                        stan::math::assign(get_base1_lhs(log_lik,j,"log_lik",1), normal_log(get_base1(yall,p,n,"yall",1),get_base1(pred,p,n,"pred",1),get_base1(sigma_vec,p,"sigma_vec",1)));
+                    }
                 }
             } else {
 
@@ -1717,6 +1729,7 @@ public:
             }
 
             // validate generated quantities
+            check_greater_or_equal(function__,"j",j,0);
 
             // write generated quantities
             for (int k_0__ = 0; k_0__ < n_loglik; ++k_0__) {
@@ -1732,6 +1745,7 @@ public:
                 vars__.push_back(Sigma(k_0__, k_1__));
                 }
             }
+        vars__.push_back(j);
 
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(e, current_statement_begin__, prog_reader__());
@@ -1887,6 +1901,9 @@ public:
                 param_names__.push_back(param_name_stream__.str());
             }
         }
+        param_name_stream__.str(std::string());
+        param_name_stream__ << "j";
+        param_names__.push_back(param_name_stream__.str());
     }
 
 
@@ -2012,6 +2029,9 @@ public:
                 param_names__.push_back(param_name_stream__.str());
             }
         }
+        param_name_stream__.str(std::string());
+        param_name_stream__ << "j";
+        param_names__.push_back(param_name_stream__.str());
     }
 
 }; // model
