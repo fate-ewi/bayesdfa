@@ -38,9 +38,9 @@ transformed data {
   }
 
   if(est_cor == 0) {
-    n_loglik = P;
+     n_loglik = P * N;
   } else {
-    n_loglik = N;
+    n_loglik = N; // TODO: likely needs to be fixed
   }
 
   if(est_cor == 0) {
@@ -203,20 +203,24 @@ generated quantities {
   vector[n_loglik] log_lik;
   matrix[n_pcor, n_pcor] Omega;
   matrix[n_pcor, n_pcor] Sigma;
+  int<lower=0> j;
+
   if(est_cor == 1) {
   Omega = multiply_lower_tri_self_transpose(Lcorr);
   Sigma = quad_form_diag(Omega, sigma_vec);
   }
 
-  //calculate looic based on regresssion example in loo() package
+  // calculate pointwise log_lik for loo package:
   if(est_cor == 0) {
-    //for (n in 1:n_pos) {
-    //  log_lik[n] = normal_lpdf(y[n] | pred[row_indx_pos[n], col_indx_pos[n]], sigma[varIndx[row_indx_pos[n]]]);
-    //}
-    for(i in 1:P) {
-      log_lik[i] = normal_lpdf(yall[i] | pred[i], sigma_vec[i]);
+    j = 0;
+    for(n in 1:N) {
+      for(p in 1:P) {
+        j = j + 1;
+        log_lik[j] = normal_lpdf(yall[p,n] | pred[p,n], sigma_vec[p]);
+      }
     }
   } else {
+    // TODO: this needs to be fixed:
     for(i in 1:N) {
       log_lik[i] = multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));
     }
