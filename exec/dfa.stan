@@ -54,9 +54,9 @@ transformed data {
 }
 parameters {
   matrix[K,N-1] devs; // random deviations of trends
-  vector<lower=0>[K] x0; // initial state
+  vector[K] x0; // initial state
   vector<lower=-1,upper=1>[nZ] z; // estimated loadings in vec form
-  vector<lower=0>[K] zpos; // constrained positive values
+  vector[K] zpos; // constrained positive values
   real<lower=0> sigma[nVariances];
   real<lower=2> nu[estimate_nu]; // df on student-t
   real ymiss[n_na];
@@ -134,7 +134,7 @@ transformed parameters {
 model {
   // initial state for each trend
   for(k in 1:K) {
-    x0[k] ~ cauchy(0, 3);//normal(0,1);
+    x0[k] ~ normal(0,5);
     if(use_normal == 0) {
       for(t in 1:1) {
         if (estimate_nu == 1) {
@@ -177,8 +177,8 @@ model {
     }
   }
   // prior on loadings
-  z ~ student_t(5, 0, 3);
-  zpos ~ student_t(5, 0, 3); // diagonal, constrained (0,1)
+  z ~ normal(0, 1); //student_t(5, 0, 3);
+  zpos ~ normal(0, 1);// diagonal
 
   // observation variance
   sigma ~ student_t(3, 0, 2);
