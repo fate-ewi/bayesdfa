@@ -63,8 +63,13 @@ find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
         sum((-1 * pred1_trend - pred0_trend)^2)) <
         (sum((pred1_loadings - pred0_loadings)^2) +
           sum((pred1_trend - pred0_trend)^2))) {
-        # flip this chain
-        flipped_chains <- ifelse(flipped_chains == 0, i, c(flipped_chains, i))
+        # flip this chain -- seems to be something not right with commented out line
+        #flipped_chains <- ifelse(flipped_chains == 0, i, c(flipped_chains, i))
+        if(flipped_chains==0) {
+          flipped_chains = i
+        } else {
+          flipped_chains = c(flipped_chains, i)
+        }
       }
     }
   }
