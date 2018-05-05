@@ -2,6 +2,7 @@
 #'
 #' @param fitted_model Output from [fit_dfa()].
 #' @param conf_level Probability level for CI.
+#' @param invert Whether to invert the trends and loadings for plotting purposes
 #' @importFrom stats median quantile sd
 #'
 #' @export
@@ -15,10 +16,12 @@
 #' r <- rotate_trends(m)
 #' plot_trends(r)
 
-rotate_trends <- function(fitted_model, conf_level = 0.95) {
+rotate_trends <- function(fitted_model, conf_level = 0.95, invert = FALSE) {
 
   # get the inverse of the rotation matrix
   n_mcmc <- dim(fitted_model$samples)[2] * dim(fitted_model$samples)[1]
+
+  flip = ifelse(invert==FALSE, 1, -1)
 
   temp <- reshape_samples(fitted_model$samples)
   Z <- temp$Z
@@ -49,18 +52,18 @@ rotate_trends <- function(fitted_model, conf_level = 0.95) {
   }
 
   list(
-    Z_rot = mcmc_Z_rot,
-    trends = mcmc_trends_rot,
-    Z_rot_mean = apply(mcmc_Z_rot, c(2, 3), mean),
-    Z_rot_median = apply(mcmc_Z_rot, c(2, 3), median),
-    trends_mean = apply(mcmc_trends_rot, c(2, 3), mean),
-    trends_median = apply(mcmc_trends_rot, c(2, 3), median),
+    Z_rot = flip * mcmc_Z_rot,
+    trends = flip * mcmc_trends_rot,
+    Z_rot_mean = apply(flip * mcmc_Z_rot, c(2, 3), mean),
+    Z_rot_median = apply(flip * mcmc_Z_rot, c(2, 3), median),
+    trends_mean = apply(flip * mcmc_trends_rot, c(2, 3), mean),
+    trends_median = apply(flip * mcmc_trends_rot, c(2, 3), median),
     trends_lower = apply(
-      mcmc_trends_rot, c(2, 3),
+      flip * mcmc_trends_rot, c(2, 3),
       quantile, (1 - conf_level) / 2
     ),
     trends_upper = apply(
-      mcmc_trends_rot, c(2, 3),
+      flip * mcmc_trends_rot, c(2, 3),
       quantile, 1 - (1 - conf_level) / 2
     )
   )
