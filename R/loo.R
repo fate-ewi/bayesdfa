@@ -23,3 +23,9 @@ loo.bayesdfa <- function(fitted_model, cores = getOption("mc.cores", 1)) {
     cores = cores,
     save_psis = FALSE)
 }
+
+#' @name loo
+#' @rdname loo.bayesdfa
+#' @export
+#' @importFrom loo loo
+NULL

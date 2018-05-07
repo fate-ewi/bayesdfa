@@ -2,6 +2,7 @@
 % Please edit documentation in R/loo.R
 \name{loo.bayesdfa}
 \alias{loo.bayesdfa}
+\alias{loo}
 \title{Return LOO information criteria}
 \usage{
 \method{loo}{bayesdfa}(fitted_model, cores = getOption("mc.cores", 1))
