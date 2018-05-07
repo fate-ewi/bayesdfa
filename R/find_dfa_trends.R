@@ -129,8 +129,8 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000, thin = 1,
         }
         df$error[indx] <- "normal"
         df$cor[indx] <- "equal"
-        df$max_rhat[indx] <- max(summary(model$model)$summary[, "Rhat"])
-        df$min_neff[indx] <- min(summary(model$model)$summary[, "n_eff"])
+        #df$max_rhat[indx] <- max(as.data.frame(summary(model$model)$summary)[,"Rhat"])
+        #df$min_neff[indx] <- min(as.data.frame(summary(model$model)$summary)[,"n_eff"])
         indx <- indx + 1
       }
     }
@@ -157,8 +157,8 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000, thin = 1,
         }
         df$error[indx] <- "normal"
         df$cor[indx] <- "independent"
-        df$max_rhat[indx] <- max(summary(model$model)$summary[, "Rhat"])
-        df$min_neff[indx] <- min(summary(model$model)$summary[, "n_eff"])
+        #df$max_rhat[indx] <- max(as.data.frame(summary(model$model)$summary)[,"Rhat"])
+        #df$min_neff[indx] <- min(as.data.frame(summary(model$model)$summary)[,"n_eff"])
         indx <- indx + 1
       }
     }
