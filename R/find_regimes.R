@@ -27,19 +27,19 @@ find_regimes <- function(y, sds = NULL, min_regimes = 1, max_regimes = 3,
       y = y, sds = sds, n_regimes = regime, iter = iter, thin = thin,
       chains = chains, ...
     )
-
-    # relative effective sample size
-    log_lik = loo::extract_log_lik(fit$model, merge_chains = FALSE)
-    #n_chains = dim(rstan::extract(fit$model, "log_lik", permuted=FALSE))[2]
-    rel_eff = loo::relative_eff(exp(log_lik))
-    # calculate looic
-    df$looic[which(df$regimes == regime)] = loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
+    looic <- loo(fit)
+    loo_bad <- loo::pareto_k_table(looic)["(0.7, 1]","Count"]
+    loo_very_bad <- loo::pareto_k_table(looic)["(1, Inf)","Count"]
+    df$looic[which(df$regimes == regime)] = looic$estimates["looic", "Estimate"]
 
     if (fit$looic < best_loo) {
       best_loo <- fit$looic
       best_model <- fit
+      n_loo_bad <- loo_bad
+      n_loo_very_bad <- loo_very_bad
     }
   }
 
-  list(table = df, best_model = best_model)
+  list(table = df, best_model = best_model, n_loo_bad = n_loo_bad,
+    n_loo_very_bad = n_loo_very_bad)
 }
