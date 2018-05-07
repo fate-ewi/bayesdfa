@@ -27,6 +27,7 @@ data {
   int est_cor; // whether to estimate correlation in obs error (=1) or not (=0)
   int est_phi; // whether to estimate autocorrelation in trends (=1) or not (= 0)
   int est_theta; // whether to estimate moving-average in trends (=1) or not (= 0
+  real zlow; // optional, constraint on diagonal to keep it positive or not
 }
 transformed data {
   int n_pcor; // dimension for cov matrix
@@ -56,7 +57,7 @@ parameters {
   matrix[K,N-1] devs; // random deviations of trends
   vector[K] x0; // initial state
   vector<lower=-1,upper=1>[nZ] z; // estimated loadings in vec form
-  vector[K] zpos; // constrained positive values
+  vector<lower=zlow>[K] zpos; // constrained positive values
   real<lower=0> sigma[nVariances];
   real<lower=2> nu[estimate_nu]; // df on student-t
   real ymiss[n_na];

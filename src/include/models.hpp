@@ -390,7 +390,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_dfa");
-    reader.add_event(228, 228, "end", "model_dfa");
+    reader.add_event(229, 229, "end", "model_dfa");
     return reader;
 }
 
@@ -424,6 +424,7 @@ private:
     int est_cor;
     int est_phi;
     int est_theta;
+    double zlow;
     int n_pcor;
     int n_loglik;
     vector_d zeros;
@@ -671,6 +672,11 @@ public:
             vals_i__ = context__.vals_i("est_theta");
             pos__ = 0;
             est_theta = vals_i__[pos__++];
+            context__.validate_dims("data initialization", "zlow", "double", context__.to_vec());
+            zlow = double(0);
+            vals_r__ = context__.vals_r("zlow");
+            pos__ = 0;
+            zlow = vals_r__[pos__++];
 
             // validate, data variables
             check_greater_or_equal(function__,"N",N,0);
@@ -846,7 +852,7 @@ public:
         for (int j1__ = 0U; j1__ < K; ++j1__)
             zpos(j1__) = vals_r__[pos__++];
         try {
-            writer__.vector_unconstrain(zpos);
+            writer__.vector_lb_unconstrain(zlow,zpos);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable zpos: ") + e.what());
         }
@@ -1003,9 +1009,9 @@ public:
             Eigen::Matrix<T__,Eigen::Dynamic,1>  zpos;
             (void) zpos;  // dummy to suppress unused var warning
             if (jacobian__)
-                zpos = in__.vector_constrain(K,lp__);
+                zpos = in__.vector_lb_constrain(zlow,K,lp__);
             else
-                zpos = in__.vector_constrain(K);
+                zpos = in__.vector_lb_constrain(zlow,K);
 
             vector<T__> sigma;
             size_t dim_sigma_0__ = nVariances;
@@ -1457,7 +1463,7 @@ public:
         matrix_d devs = in__.matrix_constrain(K,(N - 1));
         vector_d x0 = in__.vector_constrain(K);
         vector_d z = in__.vector_lub_constrain(-(1),1,nZ);
-        vector_d zpos = in__.vector_constrain(K);
+        vector_d zpos = in__.vector_lb_constrain(zlow,K);
         vector<double> sigma;
         size_t dim_sigma_0__ = nVariances;
         for (size_t k_0__ = 0; k_0__ < dim_sigma_0__; ++k_0__) {
