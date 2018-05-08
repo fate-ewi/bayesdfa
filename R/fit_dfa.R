@@ -73,7 +73,8 @@ fit_dfa <- function(y = y,
                     estimate_trend_ar = FALSE,
                     estimate_trend_ma = FALSE,
                     sample = TRUE,
-                    data_shape = c("wide", "long"), ...) {
+                    data_shape = c("wide", "long"),
+                    seed = sample.int(.Machine$integer.max, 1),...) {
   data_shape <- match.arg(data_shape)
   if (ncol(y) > nrow(y) && data_shape == "long") {
     warning(
@@ -228,6 +229,7 @@ fit_dfa <- function(y = y,
     chains = chains,
     iter = iter,
     thin = thin,
+    seed = seed,
     ...
   )
 

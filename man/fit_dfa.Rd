@@ -9,7 +9,7 @@ fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 1,
   control = list(adapt_delta = 0.99, max_treedepth = 20), nu_fixed = 101,
   est_correlation = FALSE, estimate_nu = FALSE, estimate_trend_ar = FALSE,
   estimate_trend_ma = FALSE, sample = TRUE, data_shape = c("wide",
-  "long"), ...)
+  "long"), seed = sample.int(.Machine$integer.max, 1), ...)
 }
 \arguments{
 \item{y}{A matrix of data to fit. See \code{data_shape} option to specify whether
