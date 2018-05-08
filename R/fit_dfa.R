@@ -75,7 +75,6 @@ fit_dfa <- function(y = y,
                     sample = TRUE,
                     data_shape = c("wide", "long"),
                     ...) {
-  #seed = sample.int(.Machine$integer.max, 1),
   data_shape <- match.arg(data_shape)
   if (ncol(y) > nrow(y) && data_shape == "long") {
     warning(
