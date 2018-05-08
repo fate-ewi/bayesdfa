@@ -304,5 +304,7 @@ cli_dat = cli_dat[,-which(names(cli_dat)=="(Intercept)")]
 mod2 = trend_lm(rotated_modelfit = r, all_years = 1981:2000,
   selected_years = 1981:2000, climate_dat=cli_dat)
 summary(mod2)
+
+boxplot(c(mod2[,c("PDOregime30","PDOregime31","PDOregime32")]) , sort(rep(1:3,nrow(mod2))), outline=FALSE)
 ```
 
