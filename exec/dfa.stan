@@ -178,8 +178,8 @@ model {
     }
   }
   // prior on loadings
-  z ~ normal(0, 1); //student_t(5, 0, 3);
-  zpos ~ normal(0, 1);// diagonal
+  z ~ student_t(3, 0, 2);//normal(0, 1); //student_t(5, 0, 3);
+  zpos ~ student_t(3, 0, 2);//normal(0, 1);// diagonal
 
   // observation variance
   sigma ~ student_t(3, 0, 2);
