@@ -23,7 +23,7 @@ df = data.frame(seeds = sample.int(.Machine$integer.max, iter),
   )
 
 # Run models on simulated data
-for(ii in 7:iter) {
+for(ii in 1:iter) {
 
 set.seed(df$seeds[ii])
 # Simulate DFA data, varying trends, and obs error
