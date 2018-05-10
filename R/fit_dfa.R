@@ -175,10 +175,6 @@ fit_dfa <- function(y = y,
   use_normal <- if (nu_fixed > 100) 1 else 0
   if (estimate_nu) use_normal <- 0 # competing flags
 
-  # flag for whether to use constraint on Z or not
-  # default: only for trends > 1
-  zlow = ifelse(num_trends == 1, -100, 0)
-
   data_list <- list(
     N = N,
     P = P,
@@ -210,8 +206,7 @@ fit_dfa <- function(y = y,
     use_normal = use_normal,
     est_cor = as.numeric(est_correlation),
     est_phi = as.numeric(estimate_trend_ar),
-    est_theta = as.numeric(estimate_trend_ma),
-    zlow = zlow
+    est_theta = as.numeric(estimate_trend_ma)
   )
 
   pars <- c("x", "Z", "pred", "sigma", "log_lik")

@@ -27,7 +27,6 @@ data {
   int est_cor; // whether to estimate correlation in obs error (=1) or not (=0)
   int est_phi; // whether to estimate autocorrelation in trends (=1) or not (= 0)
   int est_theta; // whether to estimate moving-average in trends (=1) or not (= 0
-  real zlow; // optional, constraint on diagonal to keep it positive or not
 }
 transformed data {
   int n_pcor; // dimension for cov matrix

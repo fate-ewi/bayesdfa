@@ -390,7 +390,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_dfa");
-    reader.add_event(253, 253, "end", "model_dfa");
+    reader.add_event(252, 252, "end", "model_dfa");
     return reader;
 }
 
@@ -424,7 +424,6 @@ private:
     int est_cor;
     int est_phi;
     int est_theta;
-    double zlow;
     int n_pcor;
     int n_loglik;
     vector_d zeros;
@@ -672,11 +671,6 @@ public:
             vals_i__ = context__.vals_i("est_theta");
             pos__ = 0;
             est_theta = vals_i__[pos__++];
-            context__.validate_dims("data initialization", "zlow", "double", context__.to_vec());
-            zlow = double(0);
-            vals_r__ = context__.vals_r("zlow");
-            pos__ = 0;
-            zlow = vals_r__[pos__++];
 
             // validate, data variables
             check_greater_or_equal(function__,"N",N,0);
