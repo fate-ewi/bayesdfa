@@ -1218,7 +1218,7 @@ public:
                 stan::math::assign(get_base1_lhs(psi_root,k,"psi_root",1), sqrt(get_base1(psi,k,"psi",1)));
                 for (int p = 1; p <= P; ++p) {
 
-                    stan::math::assign(get_base1_lhs(Z,p,k,"Z",1), ((get_base1(Z,p,k,"Z",1) * get_base1(indicator,k,"indicator",1)) * get_base1(psi_root,k,"psi_root",1)));
+                    stan::math::assign(get_base1_lhs(Z,p,k,"Z",1), ((get_base1(Z,p,k,"Z",1) * get_base1(indicator,k,"indicator",1)) * (1 / get_base1(psi_root,k,"psi_root",1))));
                 }
             }
             for (int k = 1; k <= K; ++k) {
@@ -1233,7 +1233,7 @@ public:
 
                 for (int t = 1; t <= N; ++t) {
 
-                    stan::math::assign(get_base1_lhs(x,k,t,"x",1), ((get_base1(x,k,t,"x",1) * get_base1(indicator,k,"indicator",1)) * (1 / get_base1(psi_root,k,"psi_root",1))));
+                    stan::math::assign(get_base1_lhs(x,k,t,"x",1), ((get_base1(x,k,t,"x",1) * get_base1(indicator,k,"indicator",1)) * get_base1(psi_root,k,"psi_root",1)));
                 }
             }
             stan::math::assign(pred, multiply(Z,x));
@@ -1746,7 +1746,7 @@ public:
                 stan::math::assign(get_base1_lhs(psi_root,k,"psi_root",1), sqrt(get_base1(psi,k,"psi",1)));
                 for (int p = 1; p <= P; ++p) {
 
-                    stan::math::assign(get_base1_lhs(Z,p,k,"Z",1), ((get_base1(Z,p,k,"Z",1) * get_base1(indicator,k,"indicator",1)) * get_base1(psi_root,k,"psi_root",1)));
+                    stan::math::assign(get_base1_lhs(Z,p,k,"Z",1), ((get_base1(Z,p,k,"Z",1) * get_base1(indicator,k,"indicator",1)) * (1 / get_base1(psi_root,k,"psi_root",1))));
                 }
             }
             for (int k = 1; k <= K; ++k) {
@@ -1761,7 +1761,7 @@ public:
 
                 for (int t = 1; t <= N; ++t) {
 
-                    stan::math::assign(get_base1_lhs(x,k,t,"x",1), ((get_base1(x,k,t,"x",1) * get_base1(indicator,k,"indicator",1)) * (1 / get_base1(psi_root,k,"psi_root",1))));
+                    stan::math::assign(get_base1_lhs(x,k,t,"x",1), ((get_base1(x,k,t,"x",1) * get_base1(indicator,k,"indicator",1)) * get_base1(psi_root,k,"psi_root",1)));
                 }
             }
             stan::math::assign(pred, multiply(Z,x));

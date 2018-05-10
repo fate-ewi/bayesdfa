@@ -129,7 +129,7 @@ transformed parameters {
     }
     psi_root[k] = sqrt(psi[k]);
     for(p in 1:P) {
-      Z[p,k] = Z[p,k] * indicator[k] * psi_root[k];
+      Z[p,k] = Z[p,k] * indicator[k] * (1/psi_root[k]);
     }
   }
 
@@ -146,7 +146,7 @@ transformed parameters {
   // this block also for the expansion prior, used to convert trends
   for(k in 1:K) {
     for(t in 1:N) {
-      x[k,t] = x[k,t] * indicator[k] * (1/psi_root[k]);
+      x[k,t] = x[k,t] * indicator[k] * psi_root[k];
     }
   }
 
