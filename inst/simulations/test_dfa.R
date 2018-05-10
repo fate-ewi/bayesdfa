@@ -22,22 +22,22 @@ df = data.frame(seeds = sample.int(.Machine$integer.max, iter),
   max_rhat = NA
   )
 
-# Run models on simulated data 
-for(ii in 1:iter) {
+# Run models on simulated data
+for(ii in 7:iter) {
 
 set.seed(df$seeds[ii])
 # Simulate DFA data, varying trends, and obs error
-y = bayesdfa::sim_dfa(num_trends = df$trnd_sim[ii], 
+y = bayesdfa::sim_dfa(num_trends = df$trnd_sim[ii],
   num_years = sim_years, num_ts=sim_ts, sigma=df$sigma[ii])$y_sim
 
 # Fit a different model to the data. Data generating
 # models almost always work, but we're more interested
 # in cases of poor convergence
-fit_t = fit_dfa(y = y, 
-  num_trends = df$num_trends[ii], 
+fit_t = fit_dfa(y = y,
+  num_trends = df$num_trends[ii],
   seed = df$seeds[ii],
-  iter=mcmc_iter, 
-  warmup = mcmc_warm, 
+  iter=mcmc_iter,
+  warmup = mcmc_warm,
   chains=mcmc_chains,
   varIndx = rep(1, nrow(y)))
 # Invert the chains

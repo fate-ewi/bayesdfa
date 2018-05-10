@@ -56,8 +56,9 @@ transformed data {
 parameters {
   matrix[K,N-1] devs; // random deviations of trends
   vector[K] x0; // initial state
-  vector<lower=-1,upper=1>[nZ] z; // estimated loadings in vec form
-  vector<lower=zlow>[K] zpos; // constrained positive values
+  vector<lower=0>[K] psi; // expansion parameters
+  vector[nZ] z; // estimated loadings in vec form
+  vector[K] zpos; // constrained positive values
   real<lower=0> sigma[nVariances];
   real<lower=2> nu[estimate_nu]; // df on student-t
   real ymiss[n_na];
@@ -74,6 +75,8 @@ transformed parameters {
   vector[K] phi_vec; // for AR(1) part
   vector[K] theta_vec; // for MA(1) part
   matrix[K,N] x; //vector[N] x[P]; // random walk-trends
+  vector[K] indicator; // indicates whether diagonal is neg or pos
+  vector[K] psi_root; // derived sqrt(expansion parameter psi)
 
   // phi is the ar(1) parameter, fixed or estimated
   if(est_phi == 1) {
@@ -118,6 +121,19 @@ transformed parameters {
     Z[k,k] = zpos[k];// add constraint for Z diagonal
   }
 
+  // this block is for the expansion prior
+  for(k in 1:K) {
+    if(zpos[k] < 0) {
+      indicator[k] = -1;
+    } else {
+      indicator[k] = 1;
+    }
+    psi_root[k] = sqrt(psi[k]);
+    for(p in 1:P) {
+      Z[p,k] = Z[p,k] * indicator[k] * psi_root[k];
+    }
+  }
+
   // initial state for each trend
   for(k in 1:K) {
     x[k,1] = x0[k];
@@ -128,6 +144,13 @@ transformed parameters {
       x[k,t] = phi_vec[k]*x[k,t-1] + devs[k,t-1];
     }
   }
+  // this block also for the expansion prior, used to convert trends
+  for(k in 1:K) {
+    for(t in 1:N) {
+      x[k,t] = x[k,t] * indicator[k] * (1/psi_root[k]);
+    }
+  }
+
   // N is sample size, P = time series, K = number trends
   // [PxN] = [PxK] * [KxN]
   pred = Z * x;
@@ -136,6 +159,7 @@ model {
   // initial state for each trend
   for(k in 1:K) {
     x0[k] ~ normal(0,5);
+    psi[k] ~ gamma(0.1, 1);
     if(use_normal == 0) {
       for(t in 1:1) {
         if (estimate_nu == 1) {
@@ -178,8 +202,8 @@ model {
     }
   }
   // prior on loadings
-  z ~ student_t(3, 0, 2);//normal(0, 1); //student_t(5, 0, 3);
-  zpos ~ student_t(3, 0, 2);//normal(0, 1);// diagonal
+  z ~ normal(0, 1);
+  zpos ~ normal(0, 1);// diagonal
 
   // observation variance
   sigma ~ student_t(3, 0, 2);

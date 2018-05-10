@@ -390,7 +390,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_dfa");
-    reader.add_event(229, 229, "end", "model_dfa");
+    reader.add_event(253, 253, "end", "model_dfa");
     return reader;
 }
 
@@ -759,6 +759,8 @@ public:
             num_params_r__ += K * (N - 1);
             validate_non_negative_index("x0", "K", K);
             num_params_r__ += K;
+            validate_non_negative_index("psi", "K", K);
+            num_params_r__ += K;
             validate_non_negative_index("z", "nZ", nZ);
             num_params_r__ += nZ;
             validate_non_negative_index("zpos", "K", K);
@@ -827,6 +829,21 @@ public:
             throw std::runtime_error(std::string("Error transforming variable x0: ") + e.what());
         }
 
+        if (!(context__.contains_r("psi")))
+            throw std::runtime_error("variable psi missing");
+        vals_r__ = context__.vals_r("psi");
+        pos__ = 0U;
+        validate_non_negative_index("psi", "K", K);
+        context__.validate_dims("initialization", "psi", "vector_d", context__.to_vec(K));
+        vector_d psi(static_cast<Eigen::VectorXd::Index>(K));
+        for (int j1__ = 0U; j1__ < K; ++j1__)
+            psi(j1__) = vals_r__[pos__++];
+        try {
+            writer__.vector_lb_unconstrain(0,psi);
+        } catch (const std::exception& e) { 
+            throw std::runtime_error(std::string("Error transforming variable psi: ") + e.what());
+        }
+
         if (!(context__.contains_r("z")))
             throw std::runtime_error("variable z missing");
         vals_r__ = context__.vals_r("z");
@@ -837,7 +854,7 @@ public:
         for (int j1__ = 0U; j1__ < nZ; ++j1__)
             z(j1__) = vals_r__[pos__++];
         try {
-            writer__.vector_lub_unconstrain(-(1),1,z);
+            writer__.vector_unconstrain(z);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable z: ") + e.what());
         }
@@ -852,7 +869,7 @@ public:
         for (int j1__ = 0U; j1__ < K; ++j1__)
             zpos(j1__) = vals_r__[pos__++];
         try {
-            writer__.vector_lb_unconstrain(zlow,zpos);
+            writer__.vector_unconstrain(zpos);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable zpos: ") + e.what());
         }
@@ -999,19 +1016,26 @@ public:
             else
                 x0 = in__.vector_constrain(K);
 
+            Eigen::Matrix<T__,Eigen::Dynamic,1>  psi;
+            (void) psi;  // dummy to suppress unused var warning
+            if (jacobian__)
+                psi = in__.vector_lb_constrain(0,K,lp__);
+            else
+                psi = in__.vector_lb_constrain(0,K);
+
             Eigen::Matrix<T__,Eigen::Dynamic,1>  z;
             (void) z;  // dummy to suppress unused var warning
             if (jacobian__)
-                z = in__.vector_lub_constrain(-(1),1,nZ,lp__);
+                z = in__.vector_constrain(nZ,lp__);
             else
-                z = in__.vector_lub_constrain(-(1),1,nZ);
+                z = in__.vector_constrain(nZ);
 
             Eigen::Matrix<T__,Eigen::Dynamic,1>  zpos;
             (void) zpos;  // dummy to suppress unused var warning
             if (jacobian__)
-                zpos = in__.vector_lb_constrain(zlow,K,lp__);
+                zpos = in__.vector_constrain(K,lp__);
             else
-                zpos = in__.vector_lb_constrain(zlow,K);
+                zpos = in__.vector_constrain(K);
 
             vector<T__> sigma;
             size_t dim_sigma_0__ = nVariances;
@@ -1118,6 +1142,18 @@ public:
 
             stan::math::initialize(x, DUMMY_VAR__);
             stan::math::fill(x,DUMMY_VAR__);
+            validate_non_negative_index("indicator", "K", K);
+            Eigen::Matrix<T__,Eigen::Dynamic,1>  indicator(static_cast<Eigen::VectorXd::Index>(K));
+            (void) indicator;  // dummy to suppress unused var warning
+
+            stan::math::initialize(indicator, DUMMY_VAR__);
+            stan::math::fill(indicator,DUMMY_VAR__);
+            validate_non_negative_index("psi_root", "K", K);
+            Eigen::Matrix<T__,Eigen::Dynamic,1>  psi_root(static_cast<Eigen::VectorXd::Index>(K));
+            (void) psi_root;  // dummy to suppress unused var warning
+
+            stan::math::initialize(psi_root, DUMMY_VAR__);
+            stan::math::fill(psi_root,DUMMY_VAR__);
 
 
             if (as_bool(logical_eq(est_phi,1))) {
@@ -1178,10 +1214,32 @@ public:
             }
             for (int k = 1; k <= K; ++k) {
 
+                if (as_bool(logical_lt(get_base1(zpos,k,"zpos",1),0))) {
+
+                    stan::math::assign(get_base1_lhs(indicator,k,"indicator",1), -(1));
+                } else {
+
+                    stan::math::assign(get_base1_lhs(indicator,k,"indicator",1), 1);
+                }
+                stan::math::assign(get_base1_lhs(psi_root,k,"psi_root",1), sqrt(get_base1(psi,k,"psi",1)));
+                for (int p = 1; p <= P; ++p) {
+
+                    stan::math::assign(get_base1_lhs(Z,p,k,"Z",1), ((get_base1(Z,p,k,"Z",1) * get_base1(indicator,k,"indicator",1)) * get_base1(psi_root,k,"psi_root",1)));
+                }
+            }
+            for (int k = 1; k <= K; ++k) {
+
                 stan::math::assign(get_base1_lhs(x,k,1,"x",1), get_base1(x0,k,"x0",1));
                 for (int t = 2; t <= N; ++t) {
 
                     stan::math::assign(get_base1_lhs(x,k,t,"x",1), ((get_base1(phi_vec,k,"phi_vec",1) * get_base1(x,k,(t - 1),"x",1)) + get_base1(devs,k,(t - 1),"devs",1)));
+                }
+            }
+            for (int k = 1; k <= K; ++k) {
+
+                for (int t = 1; t <= N; ++t) {
+
+                    stan::math::assign(get_base1_lhs(x,k,t,"x",1), ((get_base1(x,k,t,"x",1) * get_base1(indicator,k,"indicator",1)) * (1 / get_base1(psi_root,k,"psi_root",1))));
                 }
             }
             stan::math::assign(pred, multiply(Z,x));
@@ -1244,6 +1302,20 @@ public:
                     }
                 }
             }
+            for (int i0__ = 0; i0__ < K; ++i0__) {
+                if (stan::math::is_uninitialized(indicator(i0__))) {
+                    std::stringstream msg__;
+                    msg__ << "Undefined transformed parameter: indicator" << '[' << i0__ << ']';
+                    throw std::runtime_error(msg__.str());
+                }
+            }
+            for (int i0__ = 0; i0__ < K; ++i0__) {
+                if (stan::math::is_uninitialized(psi_root(i0__))) {
+                    std::stringstream msg__;
+                    msg__ << "Undefined transformed parameter: psi_root" << '[' << i0__ << ']';
+                    throw std::runtime_error(msg__.str());
+                }
+            }
 
             const char* function__ = "validate transformed params";
             (void) function__;  // dummy to suppress unused var warning
@@ -1253,6 +1325,7 @@ public:
             for (int k = 1; k <= K; ++k) {
 
                 lp_accum__.add(normal_log<propto__>(get_base1(x0,k,"x0",1), 0, 5));
+                lp_accum__.add(gamma_log<propto__>(get_base1(psi,k,"psi",1), 0.10000000000000001, 1));
                 if (as_bool(logical_eq(use_normal,0))) {
 
                     for (int t = 1; t <= 1; ++t) {
@@ -1302,8 +1375,8 @@ public:
                     lp_accum__.add(uniform_log<propto__>(get_base1(theta,k,"theta",1), 0, 1));
                 }
             }
-            lp_accum__.add(student_t_log<propto__>(z, 3, 0, 2));
-            lp_accum__.add(student_t_log<propto__>(zpos, 3, 0, 2));
+            lp_accum__.add(normal_log<propto__>(z, 0, 1));
+            lp_accum__.add(normal_log<propto__>(zpos, 0, 1));
             lp_accum__.add(student_t_log<propto__>(sigma, 3, 0, 2));
             if (as_bool(logical_eq(est_cor,1))) {
 
@@ -1350,6 +1423,7 @@ public:
         names__.resize(0);
         names__.push_back("devs");
         names__.push_back("x0");
+        names__.push_back("psi");
         names__.push_back("z");
         names__.push_back("zpos");
         names__.push_back("sigma");
@@ -1365,6 +1439,8 @@ public:
         names__.push_back("phi_vec");
         names__.push_back("theta_vec");
         names__.push_back("x");
+        names__.push_back("indicator");
+        names__.push_back("psi_root");
         names__.push_back("log_lik");
         names__.push_back("Omega");
         names__.push_back("Sigma");
@@ -1378,6 +1454,9 @@ public:
         dims__.resize(0);
         dims__.push_back(K);
         dims__.push_back((N - 1));
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(K);
         dimss__.push_back(dims__);
         dims__.resize(0);
         dims__.push_back(K);
@@ -1433,6 +1512,12 @@ public:
         dims__.push_back(N);
         dimss__.push_back(dims__);
         dims__.resize(0);
+        dims__.push_back(K);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
+        dims__.push_back(K);
+        dimss__.push_back(dims__);
+        dims__.resize(0);
         dims__.push_back(n_loglik);
         dimss__.push_back(dims__);
         dims__.resize(0);
@@ -1462,8 +1547,9 @@ public:
         // read-transform, write parameters
         matrix_d devs = in__.matrix_constrain(K,(N - 1));
         vector_d x0 = in__.vector_constrain(K);
-        vector_d z = in__.vector_lub_constrain(-(1),1,nZ);
-        vector_d zpos = in__.vector_lb_constrain(zlow,K);
+        vector_d psi = in__.vector_lb_constrain(0,K);
+        vector_d z = in__.vector_constrain(nZ);
+        vector_d zpos = in__.vector_constrain(K);
         vector<double> sigma;
         size_t dim_sigma_0__ = nVariances;
         for (size_t k_0__ = 0; k_0__ < dim_sigma_0__; ++k_0__) {
@@ -1497,6 +1583,9 @@ public:
             }
             for (int k_0__ = 0; k_0__ < K; ++k_0__) {
             vars__.push_back(x0[k_0__]);
+            }
+            for (int k_0__ = 0; k_0__ < K; ++k_0__) {
+            vars__.push_back(psi[k_0__]);
             }
             for (int k_0__ = 0; k_0__ < nZ; ++k_0__) {
             vars__.push_back(z[k_0__]);
@@ -1581,6 +1670,18 @@ public:
 
             stan::math::initialize(x, std::numeric_limits<double>::quiet_NaN());
             stan::math::fill(x,DUMMY_VAR__);
+            validate_non_negative_index("indicator", "K", K);
+            vector_d indicator(static_cast<Eigen::VectorXd::Index>(K));
+            (void) indicator;  // dummy to suppress unused var warning
+
+            stan::math::initialize(indicator, std::numeric_limits<double>::quiet_NaN());
+            stan::math::fill(indicator,DUMMY_VAR__);
+            validate_non_negative_index("psi_root", "K", K);
+            vector_d psi_root(static_cast<Eigen::VectorXd::Index>(K));
+            (void) psi_root;  // dummy to suppress unused var warning
+
+            stan::math::initialize(psi_root, std::numeric_limits<double>::quiet_NaN());
+            stan::math::fill(psi_root,DUMMY_VAR__);
 
 
             if (as_bool(logical_eq(est_phi,1))) {
@@ -1641,10 +1742,32 @@ public:
             }
             for (int k = 1; k <= K; ++k) {
 
+                if (as_bool(logical_lt(get_base1(zpos,k,"zpos",1),0))) {
+
+                    stan::math::assign(get_base1_lhs(indicator,k,"indicator",1), -(1));
+                } else {
+
+                    stan::math::assign(get_base1_lhs(indicator,k,"indicator",1), 1);
+                }
+                stan::math::assign(get_base1_lhs(psi_root,k,"psi_root",1), sqrt(get_base1(psi,k,"psi",1)));
+                for (int p = 1; p <= P; ++p) {
+
+                    stan::math::assign(get_base1_lhs(Z,p,k,"Z",1), ((get_base1(Z,p,k,"Z",1) * get_base1(indicator,k,"indicator",1)) * get_base1(psi_root,k,"psi_root",1)));
+                }
+            }
+            for (int k = 1; k <= K; ++k) {
+
                 stan::math::assign(get_base1_lhs(x,k,1,"x",1), get_base1(x0,k,"x0",1));
                 for (int t = 2; t <= N; ++t) {
 
                     stan::math::assign(get_base1_lhs(x,k,t,"x",1), ((get_base1(phi_vec,k,"phi_vec",1) * get_base1(x,k,(t - 1),"x",1)) + get_base1(devs,k,(t - 1),"devs",1)));
+                }
+            }
+            for (int k = 1; k <= K; ++k) {
+
+                for (int t = 1; t <= N; ++t) {
+
+                    stan::math::assign(get_base1_lhs(x,k,t,"x",1), ((get_base1(x,k,t,"x",1) * get_base1(indicator,k,"indicator",1)) * (1 / get_base1(psi_root,k,"psi_root",1))));
                 }
             }
             stan::math::assign(pred, multiply(Z,x));
@@ -1680,6 +1803,12 @@ public:
                 for (int k_0__ = 0; k_0__ < K; ++k_0__) {
                 vars__.push_back(x(k_0__, k_1__));
                 }
+            }
+            for (int k_0__ = 0; k_0__ < K; ++k_0__) {
+            vars__.push_back(indicator[k_0__]);
+            }
+            for (int k_0__ = 0; k_0__ < K; ++k_0__) {
+            vars__.push_back(psi_root[k_0__]);
             }
 
             if (!include_gqs__) return;
@@ -1799,6 +1928,11 @@ public:
             param_name_stream__ << "x0" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
         }
+        for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "psi" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
         for (int k_0__ = 1; k_0__ <= nZ; ++k_0__) {
             param_name_stream__.str(std::string());
             param_name_stream__ << "z" << '.' << k_0__;
@@ -1886,6 +2020,16 @@ public:
                 param_names__.push_back(param_name_stream__.str());
             }
         }
+        for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "indicator" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "psi_root" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
 
         if (!include_gqs__) return;
         for (int k_0__ = 1; k_0__ <= n_loglik; ++k_0__) {
@@ -1927,6 +2071,11 @@ public:
         for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
             param_name_stream__.str(std::string());
             param_name_stream__ << "x0" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "psi" << '.' << k_0__;
             param_names__.push_back(param_name_stream__.str());
         }
         for (int k_0__ = 1; k_0__ <= nZ; ++k_0__) {
@@ -2013,6 +2162,16 @@ public:
                 param_name_stream__ << "x" << '.' << k_0__ << '.' << k_1__;
                 param_names__.push_back(param_name_stream__.str());
             }
+        }
+        for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "indicator" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
+        }
+        for (int k_0__ = 1; k_0__ <= K; ++k_0__) {
+            param_name_stream__.str(std::string());
+            param_name_stream__ << "psi_root" << '.' << k_0__;
+            param_names__.push_back(param_name_stream__.str());
         }
 
         if (!include_gqs__) return;
