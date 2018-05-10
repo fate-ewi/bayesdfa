@@ -156,9 +156,9 @@ transformed parameters {
 }
 model {
   // initial state for each trend
+  x0 ~ normal(0, 1);
+  psi ~ gamma(2, 1);
   for(k in 1:K) {
-    x0[k] ~ normal(0,5);
-    psi[k] ~ gamma(0.1, 1);
     if(use_normal == 0) {
       for(t in 1:1) {
         if (estimate_nu == 1) {

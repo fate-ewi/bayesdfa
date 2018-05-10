@@ -36,8 +36,8 @@ y = bayesdfa::sim_dfa(num_trends = df$trnd_sim[ii],
 fit_t = fit_dfa(y = y,
   num_trends = df$num_trends[ii],
   seed = df$seeds[ii],
-  iter=mcmc_iter,
-  warmup = mcmc_warm,
+  iter=1000,
+  warmup = 500,
   chains=mcmc_chains,
   varIndx = rep(1, nrow(y)))
 # Invert the chains

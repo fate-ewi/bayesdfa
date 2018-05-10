@@ -209,7 +209,7 @@ fit_dfa <- function(y = y,
     est_theta = as.numeric(estimate_trend_ma)
   )
 
-  pars <- c("x", "Z", "pred", "sigma", "log_lik")
+  pars <- c("x", "Z", "pred", "sigma", "log_lik", "psi")
   if (est_correlation) pars <- c(pars, "Omega") # add correlation matrix
   if (!is.null(covar)) pars <- c(pars, "D")
   if (estimate_nu) pars <- c(pars, "nu")
