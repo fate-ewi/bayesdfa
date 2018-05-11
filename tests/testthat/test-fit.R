@@ -19,7 +19,7 @@ test_that("print method works", {
 })
 
 test_that("NA indexing works", {
-  yy <- matrix(nrow = 2, ncol = 3, data = 1)
+  yy <- matrix(nrow = 3, ncol = 3, data = 1)
   yy[1, 1] <- NA
   yy[2, 3] <- NA
   m <- fit_dfa(yy, num_trends = 1, sample = FALSE, zscore = FALSE)
@@ -29,7 +29,7 @@ test_that("NA indexing works", {
 })
 
 test_that("if time series all same value then zscore stops with error", {
-  yy <- matrix(nrow = 2, ncol = 3, data = 1)
+  yy <- matrix(nrow = 3, ncol = 3, data = 1)
   expect_error(fit_dfa(y = yy, num_trends = 1, sample = FALSE, zscore = TRUE))
 })
 
@@ -54,11 +54,11 @@ test_that("find_dfa_trends works", {
 #   skip_on_travis()
 #   skip_on_appveyor()
 #
-#   set.seed(1)
-#   # m <- fit_dfa(y = y, num_trends = 3, iter = 1000, chains = 4)
-#   # expect_equal(find_inverted_chains(m, trend = 1, plot = TRUE), 4)
-#   #
-#   # # a single chain:
-#   # m <- fit_dfa(y = y, num_trends = 3, iter = 1000, chains = 1)
-#   # expect_equal(find_inverted_chains(m, trend = 1, plot = TRUE), 1)
+# set.seed(1)
+# m <- fit_dfa(y = y, num_trends = 3, iter = 1000, chains = 4)
+# expect_equal(find_inverted_chains(m, trend = 1, plot = TRUE), 4)
+#
+# # a single chain:
+# m <- fit_dfa(y = y, num_trends = 3, iter = 1000, chains = 1)
+# expect_equal(find_inverted_chains(m, trend = 1, plot = TRUE), 1)
 # })
