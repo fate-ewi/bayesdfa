@@ -3,12 +3,12 @@
 \name{loo.bayesdfa}
 \alias{loo.bayesdfa}
 \alias{loo}
-\title{Return LOO information criteria}
+\title{LOO information criteria}
 \usage{
-\method{loo}{bayesdfa}(fitted_model, cores = getOption("mc.cores", 1))
+\method{loo}{bayesdfa}(x, cores = getOption("mc.cores", 1))
 }
 \arguments{
-\item{fitted_model}{Output from \code{\link[=fit_dfa]{fit_dfa()}}.}
+\item{x}{Output from \code{\link[=fit_dfa]{fit_dfa()}}.}
 
 \item{cores}{Number of cores to use for parallelization.}
 }
@@ -21,7 +21,7 @@ these different versions are not directly comparable to evaluate data support
 for including correlation or not in a DFA. If time series are not correlated,
 the point-wise log-likelihood for each observation is calculated and used
 in the loo calculations. However if time series are correlated, then each
-row of the dataframe (time slice) is assumed to be a joint observation of
+time slice is assumed to be a joint observation of
 all variables, and the point-wise log-likelihood is calculated as the
 joint likelihood of all variables under the multivariate normal distribution.
 }
