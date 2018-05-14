@@ -4,13 +4,16 @@
 \alias{is_converged}
 \title{Summarize Rhat convergence statistics across parameters}
 \usage{
-is_converged(fitted_model, threshold = 1.05)
+is_converged(fitted_model, threshold = 1.05, parameters = c("sigma", "x",
+  "Z"))
 }
 \arguments{
 \item{fitted_model}{Samples extracted (with \code{permuted = FALSE}) from a Stan
 model. E.g. output from \code{\link[=invert_chains]{invert_chains()}}.}
 
 \item{threshold}{Threshold for maximum Rhat.}
+
+\item{parameters}{Vector of parameters to be included in convergence determination. Defaults = c("sigma","x","Z"). Other elements can be added including "pred", "log_lik", or "lp__"}
 }
 \description{
 Pass in \code{rstanfit} model object, and a threshold Rhat value for
