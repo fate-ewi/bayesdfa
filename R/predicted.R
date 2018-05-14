@@ -1,11 +1,17 @@
 #' Calculate predicted value from DFA object
 #'
-#' Pass in `rstanfit` model object, and a threshold Rhat value for
-#' convergence. Returns boolean.
+#' Pass in `rstanfit` model object. Returns array of predictions, dimensioned
+#' number of MCMC draws x number of MCMC chains x time series length x number of time series
 #'
 #' @param fitted_model Samples extracted (with `permuted = FALSE`) from a Stan
 #'   model. E.g. output from [invert_chains()].
 #' @export
+#' @examples
+#' set.seed(42)
+#' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+#' # only 1 chain and 1000 iterations used so example runs quickly:
+#' m <- fit_dfa(y = s$y_sim, iter = 1000, chains = 1)
+#' pred <- predicted(m)
 #'
 predicted <- function(fitted_model) {
   Z = rstan::extract(fitted_model$model, "Z", permuted=FALSE)

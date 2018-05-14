@@ -11,6 +11,14 @@ predicted(fitted_model)
 model. E.g. output from \code{\link[=invert_chains]{invert_chains()}}.}
 }
 \description{
-Pass in \code{rstanfit} model object, and a threshold Rhat value for
-convergence. Returns boolean.
+Pass in \code{rstanfit} model object. Returns array of predictions, dimensioned
+number of MCMC draws x number of MCMC chains x time series length x number of time series
+}
+\examples{
+set.seed(42)
+s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+# only 1 chain and 1000 iterations used so example runs quickly:
+m <- fit_dfa(y = s$y_sim, iter = 1000, chains = 1)
+pred <- predicted(m)
+
 }
