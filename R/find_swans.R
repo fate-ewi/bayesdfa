@@ -50,7 +50,7 @@ find_swans <- function(rotated_modelfit, threshold = 0.01, plot = FALSE) {
   names(trends) <- c("time", "trend_number", "trend_value")
   names(prob) <- c("time", "trend_number", "probability")
 
-  trends$trend_number <- as.character(trends$trend_number)
+  trends$trend_number <- as.character(sub("V", "", trends$trend_number))
   prob$trend_number <- as.character(sub("V", "", prob$trend_number))
   trends <- dplyr::inner_join(trends, prob, c("time", "trend_number"))
   trends$below_threshold <- trends$probability < threshold
