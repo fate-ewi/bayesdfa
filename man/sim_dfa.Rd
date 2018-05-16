@@ -8,7 +8,7 @@ sim_dfa(num_trends = 1, num_years = 20, num_ts = 4,
   loadings_matrix = matrix(nrow = num_ts, ncol = num_trends, rnorm(num_ts *
   num_trends, 0, 1)), sigma = rlnorm(1, meanlog = log(0.2), 0.1),
   varIndx = rep(1, num_ts), extreme_value = NULL, extreme_loc = NULL,
-  nu_fixed = 100)
+  nu_fixed = 100, user_supplied_deviations = NULL)
 }
 \arguments{
 \item{num_trends}{The number of trends.}
@@ -40,6 +40,9 @@ series length}
 
 \item{nu_fixed}{Nu is the degrees of freedom parameter for the
 t-distribution, defaults to 100, which is effectively normal.}
+
+\item{user_supplied_deviations}{An optional matrix of deviations for the trend
+random walks. Columns are for trends and rows are for each time step.}
 }
 \value{
 A list with the following elements: \code{y_sim} is the simulated data,

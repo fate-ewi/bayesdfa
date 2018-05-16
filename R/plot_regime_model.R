@@ -7,6 +7,7 @@
 #' @param regime_prob_threshold The probability density that must be above 0.5.
 #'   Defaults to 0.9 before we classify a regime (only affects `"means"` plot).
 #' @param plot_prob_indices Optional indices of probability plots to plot. Defaults to showing all
+#' @param flip_regimes Optional whether to flip regimes in plots, defaults to FALSE
 #' @details Note that the original timeseries data (dots) are shown scaled
 #'   between 0 and 1.
 #' @export
@@ -20,7 +21,8 @@
 plot_regime_model <- function(model, probs = c(0.05, 0.95),
                               type = c("probability", "means"),
                               regime_prob_threshold = 0.9,
-  plot_prob_indices = NULL) {
+  plot_prob_indices = NULL,
+  flip_regimes=FALSE) {
   gamma_tk <- rstan::extract(model$model, pars = "gamma_tk")[[1]]
   mu_k <- rstan::extract(model$model, pars = "mu_k")[[1]]
   l <- apply(gamma_tk, 2:3, quantile, probs = probs[[1]])
@@ -36,6 +38,13 @@ plot_regime_model <- function(model, probs = c(0.05, 0.95),
     w <- which(x)
     ifelse(length(w) == 0, NA, w)
   })
+
+  if(flip_regimes==TRUE) {
+    mu_k = 1 - mu_k
+    u = 1-u
+    l = 1-l
+    med = 1 - med
+  }
 
   if(is.null(plot_prob_indices)) {
     # then plot all panels

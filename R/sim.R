@@ -23,6 +23,8 @@
 #'   series length
 #' @param nu_fixed Nu is the degrees of freedom parameter for the
 #'   t-distribution, defaults to 100, which is effectively normal.
+#' @param user_supplied_deviations An optional matrix of deviations for the trend
+#'   random walks. Columns are for trends and rows are for each time step.
 #' @export
 #' @return A list with the following elements: `y_sim` is the simulated data,
 #'   pred is the true underlying data without observation error added, `x` is
@@ -58,7 +60,8 @@ sim_dfa <- function(num_trends = 1,
                     varIndx = rep(1, num_ts),
                     extreme_value = NULL,
                     extreme_loc = NULL,
-                    nu_fixed = 100) {
+                    nu_fixed = 100,
+                    user_supplied_deviations = NULL) {
   y_ignore <- matrix(rnorm(num_ts * num_years), nrow = num_ts, ncol = num_years)
 
   d <- fit_dfa(y_ignore,
@@ -81,26 +84,34 @@ sim_dfa <- function(num_trends = 1,
 
   x <- matrix(nrow = d$K, ncol = d$N) # random walk-trends
 
+
   # initial state for each trend
   for (k in seq_len(d$K)) {
+
+    if (!is.null(user_supplied_deviations)) {
+      devs <- user_supplied_deviations[,k]
+    } else {
+      devs <- rt(d$N, df = d$nu_fixed)
+    }
+
     x[k, 1] <- rnorm(1, 0, 1)
     if (is.null(extreme_value)) {
-      for (t in 2:d$N) {
-        x[k, t] <- x[k, t - 1] + rt(1, df = d$nu_fixed) # random walk
+      for (t in seq(2, d$N)) {
+        x[k, t] <- x[k, t - 1] + devs[t] # random walk
       }
     } else {
       if (is.null(extreme_loc)) extreme_loc <- round(num_years / 2)
       for (t in 2:(extreme_loc - 1)) {
-        x[k, t] <- x[k, t - 1] + rt(1, df = d$nu_fixed) # random walk
+        x[k, t] <- x[k, t - 1] + devs[t] # random walk
       }
       # only include extreme in first trend
       if (k == 1) {
         x[1, extreme_loc] <- x[1, extreme_loc - 1] + extreme_value
       } else {
-        x[k, extreme_loc] <- x[k, extreme_loc - 1] + rt(1, df = d$nu_fixed)
+        x[k, extreme_loc] <- x[k, extreme_loc - 1] + devs[t]
       }
-      for (t in (extreme_loc + 1):d$N) {
-        x[k, t] <- x[k, t - 1] + rt(1, df = d$nu_fixed) # random walk
+      for (t in seq(extreme_loc + 1, d$N)) {
+        x[k, t] <- x[k, t - 1] + devs[t] # random walk
       }
     }
   }

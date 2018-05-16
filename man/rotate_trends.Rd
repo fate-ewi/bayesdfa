@@ -4,12 +4,14 @@
 \alias{rotate_trends}
 \title{Rotate the trends from a DFA}
 \usage{
-rotate_trends(fitted_model, conf_level = 0.95)
+rotate_trends(fitted_model, conf_level = 0.95, invert = FALSE)
 }
 \arguments{
 \item{fitted_model}{Output from \code{\link[=fit_dfa]{fit_dfa()}}.}
 
 \item{conf_level}{Probability level for CI.}
+
+\item{invert}{Whether to invert the trends and loadings for plotting purposes}
 }
 \description{
 Rotate the trends from a DFA

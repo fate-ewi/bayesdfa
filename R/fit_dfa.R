@@ -14,6 +14,7 @@
 #' @param zscore Logical. Should the data be standardized first? If not it is
 #'   just centered. Centering is necessary because no intercept is included.
 #' @param iter Number of iterations in Stan sampling, defaults to 2000.
+#' @param thin Thinning rate in Stan sampling, defaults to 1.
 #' @param chains Number of chains in Stan sampling, defaults to 4.
 #' @param control A list of options to pass to Stan sampling. Defaults to
 #'   `list(adapt_delta = 0.99, max_treedepth = 20)`.
@@ -36,6 +37,7 @@
 #'   values through time. This matches the MARSS input data format. If `long`
 #'   then the input data should have columns representing the various timeseries
 #'   and rows representing the values through time.
+#' @param ... Any other arguments to pass to [rstan::sampling()].
 #' @details Note that there is nothing restricting the loadings and trends from
 #'   being inverted (i.e. multiplied by `-1`) for a given chain. Therefore, if
 #'   you fit multiple chains, the package will attempt to determine which chains
@@ -51,7 +53,7 @@
 #'
 #' @examples
 #' set.seed(42)
-#' s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
+#' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 #' # only 1 chain and 1000 iterations used so example runs quickly:
 #' m <- fit_dfa(y = s$y_sim, iter = 1000, chains = 1)
 
@@ -63,6 +65,7 @@ fit_dfa <- function(y = y,
                     zscore = TRUE,
                     iter = 2000,
                     chains = 4,
+                    thin = 1,
                     control = list(adapt_delta = 0.99, max_treedepth = 20),
                     nu_fixed = 101,
                     est_correlation = FALSE,
@@ -70,7 +73,8 @@ fit_dfa <- function(y = y,
                     estimate_trend_ar = FALSE,
                     estimate_trend_ma = FALSE,
                     sample = TRUE,
-                    data_shape = c("wide", "long")) {
+                    data_shape = c("wide", "long"),
+                    ...) {
   data_shape <- match.arg(data_shape)
   if (ncol(y) > nrow(y) && data_shape == "long") {
     warning(
@@ -86,6 +90,11 @@ fit_dfa <- function(y = y,
   }
   if (data_shape == "long") {
     y <- t(y)
+  }
+
+  if (nrow(y) < 3) {
+    stop("fit_dfa() only works with 3 or more time series. We detected ",
+      nrow(y), " time series.")
   }
 
   # parameters for DFA
@@ -113,7 +122,7 @@ fit_dfa <- function(y = y,
 
   num_covar <- nrow(d_covar)
   covar_indexing <- covar_index
-  if (!is.null(d_covar) & is.null(covar_indexing)) {
+  if (!is.null(d_covar) && is.null(covar_indexing)) {
     # covariates included but index matrix not, assume independent for all elements
     covar_indexing <- matrix(seq(1, num_covar * P), P, num_covar)
     num_unique_covar <- max(covar_indexing)
@@ -128,19 +137,19 @@ fit_dfa <- function(y = y,
   # mat_indx now references the unconstrained values of the Z matrix.
   mat_indx <- matrix(0, P, K)
   start <- 1
-  for (k in 1:K) {
-    for (p in (k + 1):P) {
+  for (k in seq_len(K)) {
+    for (p in seq(k + 1, P)) {
       mat_indx[p, k] <- start
       start <- start + 1
     }
   }
   # row_indx and col_indx now references the unconstrained values of the Z matrix.
-  row_indx <- matrix((rep(seq_len(P), K)), P, K)[which(mat_indx > 0)]
-  col_indx <- matrix(sort(rep(seq_len(K), P)), P, K)[which(mat_indx > 0)]
+  row_indx <- matrix((rep(seq_len(P), K)), P, K)[mat_indx > 0]
+  col_indx <- matrix(sort(rep(seq_len(K), P)), P, K)[mat_indx > 0]
 
   diag(mat_indx) <- 1
-  row_indx_z <- matrix((rep(seq_len(P), K)), P, K)[which(mat_indx == 0)]
-  col_indx_z <- matrix(sort(rep(seq_len(K), P)), P, K)[which(mat_indx == 0)]
+  row_indx_z <- matrix((rep(seq_len(P), K)), P, K)[mat_indx == 0]
+  col_indx_z <- matrix(sort(rep(seq_len(K), P)), P, K)[mat_indx == 0]
   row_indx_z <- c(row_indx_z, 0, 0) # +2 zeros for making stan ok with data types
   col_indx_z <- c(col_indx_z, 0, 0) # +2 zeros for making stan ok with data types
   nZero <- length(row_indx_z)
@@ -152,19 +161,19 @@ fit_dfa <- function(y = y,
   nVariances <- length(unique(varIndx))
 
   # indices of positive values - Stan can't handle NAs
-  row_indx_pos <- matrix((rep(seq_len(P), N)), P, N)[which(!is.na(y))]
-  col_indx_pos <- matrix(sort(rep(seq_len(N), P)), P, N)[which(!is.na(y))]
+  row_indx_pos <- matrix(rep(seq_len(P), N), P, N)[!is.na(y)]
+  col_indx_pos <- matrix(sort(rep(seq_len(N), P)), P, N)[!is.na(y)]
   n_pos <- length(row_indx_pos)
 
-  row_indx_na <- matrix((rep(seq_len(P), N)), P, N)[which(is.na(y))]
-  col_indx_na <- matrix(sort(rep(seq_len(N), P)), P, N)[which(is.na(y))]
+  row_indx_na <- matrix(rep(seq_len(P), N), P, N)[is.na(y)]
+  col_indx_na <- matrix(sort(rep(seq_len(N), P)), P, N)[is.na(y)]
   n_na <- length(row_indx_na)
 
-  y <- y[which(!is.na(y))]
+  y <- y[!is.na(y)]
 
   # flag for whether to use a normal dist
-  use_normal <- ifelse(nu_fixed > 100, 1, 0)
-  if (estimate_nu == TRUE) use_normal <- 0 # competing flags
+  use_normal <- if (nu_fixed > 100) 1 else 0
+  if (estimate_nu) use_normal <- 0 # competing flags
 
   data_list <- list(
     N = N,
@@ -200,9 +209,8 @@ fit_dfa <- function(y = y,
     est_theta = as.numeric(estimate_trend_ma)
   )
 
-  pars <- c("x", "Z", "pred", "sigma", "log_lik")
+  pars <- c("x", "Z", "sigma", "log_lik", "psi") # removed pred
   if (est_correlation) pars <- c(pars, "Omega") # add correlation matrix
-
   if (!is.null(covar)) pars <- c(pars, "D")
   if (estimate_nu) pars <- c(pars, "nu")
   if (estimate_trend_ar) pars <- c(pars, "phi")
@@ -214,12 +222,13 @@ fit_dfa <- function(y = y,
     pars = pars,
     control = control,
     chains = chains,
-    iter = iter
+    iter = iter,
+    thin = thin,
+    ...
   )
 
   if (sample) {
     mod <- do.call(sampling, sampling_args)
-
     if (chains > 1) {
       out <- invert_chains(mod, trends = num_trends, print = FALSE)
     } else {

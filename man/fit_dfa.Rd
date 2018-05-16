@@ -5,11 +5,11 @@
 \title{Fit a Bayesian DFA}
 \usage{
 fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 1,
-  varIndx = NULL, zscore = TRUE, iter = 2000, chains = 4,
+  varIndx = NULL, zscore = TRUE, iter = 2000, chains = 4, thin = 1,
   control = list(adapt_delta = 0.99, max_treedepth = 20), nu_fixed = 101,
   est_correlation = FALSE, estimate_nu = FALSE, estimate_trend_ar = FALSE,
   estimate_trend_ma = FALSE, sample = TRUE, data_shape = c("wide",
-  "long"))
+  "long"), ...)
 }
 \arguments{
 \item{y}{A matrix of data to fit. See \code{data_shape} option to specify whether
@@ -34,6 +34,8 @@ just centered. Centering is necessary because no intercept is included.}
 \item{iter}{Number of iterations in Stan sampling, defaults to 2000.}
 
 \item{chains}{Number of chains in Stan sampling, defaults to 4.}
+
+\item{thin}{Thinning rate in Stan sampling, defaults to 1.}
 
 \item{control}{A list of options to pass to Stan sampling. Defaults to
 \code{list(adapt_delta = 0.99, max_treedepth = 20)}.}
@@ -63,6 +65,8 @@ have rows representing the various timeseries and columns representing the
 values through time. This matches the MARSS input data format. If \code{long}
 then the input data should have columns representing the various timeseries
 and rows representing the values through time.}
+
+\item{...}{Any other arguments to pass to \code{\link[rstan:sampling]{rstan::sampling()}}.}
 }
 \description{
 Fit a Bayesian DFA
@@ -75,7 +79,7 @@ need to be inverted using the function \code{\link[=find_inverted_chains]{find_i
 }
 \examples{
 set.seed(42)
-s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
+s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 # only 1 chain and 1000 iterations used so example runs quickly:
 m <- fit_dfa(y = s$y_sim, iter = 1000, chains = 1)
 }

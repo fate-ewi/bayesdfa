@@ -52,8 +52,8 @@ find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
 
   # n_ts x n_years prediction matrix of product of trends and loadings
   flipped_chains <- 0
-  pred0_loadings <- zzz[, 1]
-  pred0_trend <- vvv[, 1]
+  pred0_loadings <- zzz[, 1] # loadings on first trend
+  pred0_trend <- vvv[, 1] # loadings on second trend
   if (nchains > 1) {
     for (i in seq(2, nchains)) {
       pred1_loadings <- zzz[, i]
@@ -63,8 +63,13 @@ find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
         sum((-1 * pred1_trend - pred0_trend)^2)) <
         (sum((pred1_loadings - pred0_loadings)^2) +
           sum((pred1_trend - pred0_trend)^2))) {
-        # flip this chain
-        flipped_chains <- ifelse(flipped_chains == 0, i, c(flipped_chains, i))
+        # flip this chain -- seems to be something not right with commented out line
+        #flipped_chains <- ifelse(flipped_chains == 0, i, c(flipped_chains, i))
+        if(flipped_chains==0) {
+          flipped_chains = i
+        } else {
+          flipped_chains = c(flipped_chains, i)
+        }
       }
     }
   }
@@ -94,10 +99,10 @@ invert_chains <- function(model, trends = 1, print = FALSE, ...) {
 
     for (f_ in f) {
       for (i in grep(paste0("x\\[", k), pars)) {
-        e[, f_, i] <- e[, f_, i] * -1
+        e[, f_, i] <- -1*e[, f_, i]
       }
       for (i in grep(paste0("Z\\[[0-9]+,", k, "\\]"), pars)) {
-        e[, f_, i] <- e[, f_, i] * -1
+        e[, f_, i] <- -1*e[, f_, i]
       }
     }
   }

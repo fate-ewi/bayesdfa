@@ -1,12 +1,13 @@
 Package: bayesdfa
 Type: Package
-Title: Baysian DFA with Stan
+Title: Baysian DFA with 'Stan'
 Version: 0.01.9001
-Date: 2018-03-14
 Authors@R: c(
-    person(c("Eric", "J."), "Ward", role = c("aut", "cre"), email = "TODO@TODO.com"),
-    person(c("Sean", "C."), "Anderson", role = "aut"))
-Description: Implements Baysian Dynamic Factor Analysis (DFA) with Stan.
+    person(c("Eric", "J."), "Ward", role = c("aut", "cre"), email = "eric.ward@noaa.gov"),
+    person(c("Sean", "C."), "Anderson", role = "aut"),
+    person("Luis", "Damiano", role = "aut"),
+    person("Trustees of", "Columbia University", role = "cph"))
+Description: Implements Baysian Dynamic Factor Analysis (DFA) with 'Stan'.
 License: GPL (>=3)
 Encoding: UTF-8
 LazyData: true
@@ -16,7 +17,7 @@ Depends:
     rstan (>= 2.14.0)
 Imports:
     ggplot2 (>= 2.2.0),
-    loo,
+    loo (>= 2.0.0),
     dplyr (>= 0.7.0),
     methods,
     rlang,

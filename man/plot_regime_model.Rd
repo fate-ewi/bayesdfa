@@ -5,7 +5,8 @@
 \title{Plot the state probabilities from \code{\link[=find_regimes]{find_regimes()}}}
 \usage{
 plot_regime_model(model, probs = c(0.05, 0.95), type = c("probability",
-  "means"), regime_prob_threshold = 0.9, plot_prob_indices = NULL)
+  "means"), regime_prob_threshold = 0.9, plot_prob_indices = NULL,
+  flip_regimes = FALSE)
 }
 \arguments{
 \item{model}{A model returned by \code{\link[=find_regimes]{find_regimes()}}.}
@@ -19,6 +20,8 @@ Defaults to \code{c(0.05, 0.95)}.}
 Defaults to 0.9 before we classify a regime (only affects \code{"means"} plot).}
 
 \item{plot_prob_indices}{Optional indices of probability plots to plot. Defaults to showing all}
+
+\item{flip_regimes}{Optional whether to flip regimes in plots, defaults to FALSE}
 }
 \description{
 Plot the state probabilities from \code{\link[=find_regimes]{find_regimes()}}

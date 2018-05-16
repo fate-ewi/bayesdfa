@@ -4,9 +4,10 @@
 #' value as calculated by the [loo][loo::loo-package()] package.
 #'
 #' @param y A matrix of data to fit. Columns represent time element.
-#' @param kmin Minimum number of trends.
-#' @param kmax Maximum number of trans.
-#' @param iter Iterations when sampling from each Stan model.
+#' @param kmin Minimum number of trends, defaults to 1.
+#' @param kmax Maximum number of trends, defaults to 5.
+#' @param iter Iterations when sampling from each Stan model, defaults to 2000.
+#' @param thin Thinning rate when sampling from each Stan model, defaults to 1.
 #' @param compare_normal If `TRUE`, does model selection comparison of Normal vs.
 #'   Student-t errors
 #' @param convergence_threshold The maximum allowed value of Rhat to determine
@@ -30,7 +31,7 @@
 #' @importFrom stats quantile time varimax
 #' @importFrom rlang .data
 
-find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
+find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000, thin = 1,
                             compare_normal = FALSE, convergence_threshold = 1.05,
                             variance = c("equal", "unequal"), ...) {
   df <- data.frame(
@@ -53,13 +54,19 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
   if (length(which(variance %in% "equal")) > 0) {
     for (i in seq(kmin, kmax)) {
       model <- fit_dfa(
-        y = y, num_trends = i, iter = iter,
+        y = y, num_trends = i, iter = iter, thin = thin,
         estimate_nu = TRUE, ...
       )
 
       df$converge[indx] <- is_converged(model, convergence_threshold)
       df$num_trends[indx] <- i
-      df$looic[indx] <- loo::loo(loo::extract_log_lik(model$model))$looic
+
+      # relative effective sample size
+      log_lik = loo::extract_log_lik(model$model, merge_chains = FALSE)
+      n_chains = dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
+      rel_eff = loo::relative_eff(exp(log_lik))
+      # calculate looic
+      df$looic[indx] <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
 
       # if model is best, keep it
       if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
@@ -75,12 +82,17 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
   if (length(which(variance %in% "unequal")) > 0) {
     for (i in seq(kmin, kmax)) {
       model <- fit_dfa(
-        y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)),
+        y = y, num_trends = i, iter = iter, thin = thin, varIndx = seq(1, nrow(y)),
         estimate_nu = TRUE, ...
       )
       df$num_trends[indx] <- i
 
-      df$looic[indx] <- loo::loo(loo::extract_log_lik(model$model))$looic
+      log_lik = loo::extract_log_lik(model$model, merge_chains = FALSE)
+      n_chains = dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
+      rel_eff = loo::relative_eff(exp(log_lik))
+      # calculate looic
+      df$looic[indx] <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
+
       df$converge[indx] <- is_converged(model, convergence_threshold)
       # if model is best, keep it
       if (df$looic[indx] < best_loo & df$converge[indx] == TRUE) {
@@ -98,11 +110,16 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
     if (length(which(variance %in% "equal")) > 0) {
       for (i in seq(kmin, kmax)) {
         model <- fit_dfa(
-          y = y, num_trends = i, iter = iter, nu_fixed = 100,
+          y = y, num_trends = i, iter = iter, thin = thin, nu_fixed = 100,
           estimate_nu = FALSE, ...
         )
         df$num_trends[indx] <- i
-        df$looic[indx] <- loo::loo(loo::extract_log_lik(model$model))$looic
+
+        log_lik = loo::extract_log_lik(model$model, merge_chains = FALSE)
+        n_chains = dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
+        rel_eff = loo::relative_eff(exp(log_lik))
+        # calculate looic
+        df$looic[indx] <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
 
         df$converge[indx] <- is_converged(model, convergence_threshold)
         # if model is best, keep it
@@ -112,8 +129,8 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
         }
         df$error[indx] <- "normal"
         df$cor[indx] <- "equal"
-        df$max_rhat[indx] <- max(summary(model$model)$summary[, "Rhat"])
-        df$min_neff[indx] <- min(summary(model$model)$summary[, "n_eff"])
+        #df$max_rhat[indx] <- max(as.data.frame(summary(model$model)$summary)[,"Rhat"])
+        #df$min_neff[indx] <- min(as.data.frame(summary(model$model)$summary)[,"n_eff"])
         indx <- indx + 1
       }
     }
@@ -121,11 +138,16 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
     if (length(which(variance %in% "unequal")) > 0) {
       for (i in seq(kmin, kmax)) {
         model <- fit_dfa(
-          y = y, num_trends = i, iter = iter, varIndx = seq(1, nrow(y)),
+          y = y, num_trends = i, iter = iter, thin = thin, varIndx = seq(1, nrow(y)),
           nu_fixed = 100, estimate_nu = FALSE, ...
         )
         df$num_trends[indx] <- i
-        df$looic[indx] <- loo::loo(loo::extract_log_lik(model$model))$looic
+
+        log_lik = loo::extract_log_lik(model$model, merge_chains = FALSE)
+        n_chains = dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
+        rel_eff = loo::relative_eff(exp(log_lik))
+        # calculate looic
+        df$looic[indx] <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
 
         df$converge[indx] <- is_converged(model, convergence_threshold)
         # if model is best, keep it
@@ -135,8 +157,8 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000,
         }
         df$error[indx] <- "normal"
         df$cor[indx] <- "independent"
-        df$max_rhat[indx] <- max(summary(model$model)$summary[, "Rhat"])
-        df$min_neff[indx] <- min(summary(model$model)$summary[, "n_eff"])
+        #df$max_rhat[indx] <- max(as.data.frame(summary(model$model)$summary)[,"Rhat"])
+        #df$min_neff[indx] <- min(as.data.frame(summary(model$model)$summary)[,"n_eff"])
         indx <- indx + 1
       }
     }

@@ -38,9 +38,9 @@ transformed data {
   }
 
   if(est_cor == 0) {
-    n_loglik = P;
+     n_loglik = P * N;
   } else {
-    n_loglik = N;
+    n_loglik = N; // TODO: likely needs to be fixed
   }
 
   if(est_cor == 0) {
@@ -55,8 +55,9 @@ transformed data {
 parameters {
   matrix[K,N-1] devs; // random deviations of trends
   vector[K] x0; // initial state
+  vector<lower=0>[K] psi; // expansion parameters
   vector[nZ] z; // estimated loadings in vec form
-  vector<lower=0>[K] zpos; // constrained positive values
+  vector[K] zpos; // constrained positive values
   real<lower=0> sigma[nVariances];
   real<lower=2> nu[estimate_nu]; // df on student-t
   real ymiss[n_na];
@@ -73,6 +74,8 @@ transformed parameters {
   vector[K] phi_vec; // for AR(1) part
   vector[K] theta_vec; // for MA(1) part
   matrix[K,N] x; //vector[N] x[P]; // random walk-trends
+  vector[K] indicator; // indicates whether diagonal is neg or pos
+  vector[K] psi_root; // derived sqrt(expansion parameter psi)
 
   // phi is the ar(1) parameter, fixed or estimated
   if(est_phi == 1) {
@@ -106,7 +109,7 @@ transformed parameters {
   for(i in 1:nZ) {
     Z[row_indx[i],col_indx[i]] = z[i]; // convert z to from vec to matrix
   }
-  // fill in zero elements
+  // fill in zero elements in upper diagonal
   if(nZero > 2) {
     for(i in 1:(nZero-2)) {
       Z[row_indx_z[i],col_indx_z[i]] = 0;
@@ -117,24 +120,46 @@ transformed parameters {
     Z[k,k] = zpos[k];// add constraint for Z diagonal
   }
 
+  // this block is for the expansion prior
+  for(k in 1:K) {
+    if(zpos[k] < 0) {
+      indicator[k] = -1;
+    } else {
+      indicator[k] = 1;
+    }
+    psi_root[k] = sqrt(psi[k]);
+    for(p in 1:P) {
+      Z[p,k] = Z[p,k] * indicator[k] * (1/psi_root[k]);
+    }
+  }
+
   // initial state for each trend
   for(k in 1:K) {
     x[k,1] = x0[k];
+    // trend is modeled as random walk, with optional
+    // AR(1) component = phi, and optional MA(1) component
+    // theta. Theta is included in the model block below.
     for(t in 2:N) {
-      // trend is modeled as random walk, with optional
-      // AR(1) component = phi, and optional MA(1) component
-      // theta. Theta is included in the model block below.
       x[k,t] = phi_vec[k]*x[k,t-1] + devs[k,t-1];
     }
   }
+  // this block also for the expansion prior, used to convert trends
+  for(k in 1:K) {
+    x[k,1:N] = x[k,1:N] * indicator[k] * psi_root[k];
+  }
+
   // N is sample size, P = time series, K = number trends
   // [PxN] = [PxK] * [KxN]
   pred = Z * x;
 }
 model {
   // initial state for each trend
+  x0 ~ normal(0, 1); // initial state estimate at t=1
+  psi ~ gamma(2, 1); // expansion parameter for par-expanded priors
+
+  // This is deviations - either normal or Student t, and
+  // if Student-t, df parameter nu can be estimated or fixed
   for(k in 1:K) {
-    x0[k] ~ cauchy(0,3);//normal(0, 1);
     if(use_normal == 0) {
       for(t in 1:1) {
         if (estimate_nu == 1) {
@@ -144,6 +169,7 @@ model {
         }
       }
       for(t in 2:(N-1)) {
+        // if MA is not included, theta_vec = 0
         if (estimate_nu == 1) {
           devs[k,t] ~ student_t(nu[1], theta_vec[k]*devs[k,t-1], 1); // random walk
         } else {
@@ -153,6 +179,7 @@ model {
     } else {
       devs[k,1] ~ normal(0, 1);
       for(t in 2:(N-1)) {
+        // if MA is not included, theta_vec = 0
         devs[k,t] ~ normal(theta_vec[k]*devs[k,t-1], 1);
       }
     }
@@ -163,22 +190,18 @@ model {
   if (estimate_nu == 1) {
     nu[1] ~ gamma(2, 0.1);
   }
-
+  // prior on AR(1) component if included
   if(est_phi == 1) {
-    for(k in 1:K) {
-      // uniform prior on AR(1) component if included
-      phi[k] ~ uniform(0,1);
-    }
+    phi ~ uniform(0,1); // K elements
   }
+  // prior on MA(1) component if included
   if(est_theta == 1) {
-    for(k in 1:K) {
-      // uniform prior on MA(1) component if included
-      theta[k] ~ uniform(0,1);
-    }
+    theta ~ uniform(0,1); // K elements
   }
+
   // prior on loadings
   z ~ normal(0, 1);
-  zpos ~ normal(0, 1);
+  zpos ~ normal(0, 1);// diagonal
 
   // observation variance
   sigma ~ student_t(3, 0, 2);
@@ -197,26 +220,29 @@ model {
       target += multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));
     }
   }
-
 }
 generated quantities {
   vector[n_loglik] log_lik;
   matrix[n_pcor, n_pcor] Omega;
   matrix[n_pcor, n_pcor] Sigma;
+  int<lower=0> j;
+
   if(est_cor == 1) {
   Omega = multiply_lower_tri_self_transpose(Lcorr);
   Sigma = quad_form_diag(Omega, sigma_vec);
   }
 
-  //calculate looic based on regresssion example in loo() package
+  // calculate pointwise log_lik for loo package:
   if(est_cor == 0) {
-    //for (n in 1:n_pos) {
-    //  log_lik[n] = normal_lpdf(y[n] | pred[row_indx_pos[n], col_indx_pos[n]], sigma[varIndx[row_indx_pos[n]]]);
-    //}
-    for(i in 1:P) {
-      log_lik[i] = normal_lpdf(yall[i] | pred[i], sigma_vec[i]);
+    j = 0;
+    for(n in 1:N) {
+      for(p in 1:P) {
+        j = j + 1;
+        log_lik[j] = normal_lpdf(yall[p,n] | pred[p,n], sigma_vec[p]);
+      }
     }
   } else {
+    // TODO: this needs to be fixed:
     for(i in 1:N) {
       log_lik[i] = multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));
     }
