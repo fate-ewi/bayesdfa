@@ -66,9 +66,9 @@ find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
         # flip this chain -- seems to be something not right with commented out line
         #flipped_chains <- ifelse(flipped_chains == 0, i, c(flipped_chains, i))
         if(flipped_chains==0) {
-          flipped_chains = i
+          flipped_chains <- i
         } else {
-          flipped_chains = c(flipped_chains, i)
+          flipped_chains <- c(flipped_chains, i)
         }
       }
     }

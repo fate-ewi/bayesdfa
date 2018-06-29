@@ -35,7 +35,7 @@
 find_swans <- function(rotated_modelfit, threshold = 0.01, plot = FALSE) {
   x <- rotated_modelfit$trends_mean
   d <- apply(x, 1, function(xx) c(NA, diff(xx)))
-  sds <- apply(d, 2, sd, na.rm = TRUE) # sds != 1
+  sds <- apply(d, 2, sd, na.rm = TRUE)
 
   prob <- matrix(NA, nrow(d), ncol(d))
   for (i in seq_len(ncol(d))) {
