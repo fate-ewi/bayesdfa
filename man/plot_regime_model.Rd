@@ -17,7 +17,7 @@ Defaults to \code{c(0.05, 0.95)}.}
 \item{type}{Whether to plot the probabilities (default) or means.}
 
 \item{regime_prob_threshold}{The probability density that must be above 0.5.
-Defaults to 0.9 before we classify a regime (only affects \code{"means"} plot).}
+Defaults to 0.9 before we classify a regime (only affects \code{'means'} plot).}
 
 \item{plot_prob_indices}{Optional indices of probability plots to plot. Defaults to showing all}
 
@@ -35,5 +35,5 @@ data(Nile)
 m <- fit_regimes(log(Nile), n_regimes = 2, chains = 1, iter = 800)
 plot_regime_model(m)
 plot_regime_model(m, plot_prob_indices=c(2))
-plot_regime_model(m, type = "means")
+plot_regime_model(m, type = 'means')
 }

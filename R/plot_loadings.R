@@ -31,71 +31,47 @@
 #' plot_loadings(r, violin = TRUE, facet = FALSE)
 #' plot_loadings(r, violin = TRUE, facet = TRUE)
 
-plot_loadings <- function(rotated_modelfit,
-                          names = NULL,
-                          facet = TRUE,
-                          violin = TRUE,
-                          conf_level = 0.95,
-                          threshold=NULL) {
-  v <- reshape2::melt(rotated_modelfit$Z_rot,
-    varnames = c("iter", "name", "trend")
-  )
-  v$trend <- paste0("Trend ", v$trend)
-  v$trend <- as.factor(v$trend)
-  if (!is.null(names)) v$name <- names[v$name]
-  v$name <- as.factor(v$name)
-
-  v <- dplyr::group_by(v, .data$name, .data$trend)
-  v <- dplyr::mutate(v,
-    q_lower = sum(.data$value < 0) / length(.data$value),
-    q_upper = 1 - .data$q_lower,
-    prob_diff0 = max(.data$q_lower, .data$q_upper)
-  )
-  v <- dplyr::ungroup(v)
-
-  vsum <- dplyr::group_by(v, .data$name, .data$trend)
-  vsum <- dplyr::summarize(vsum,
-    lower = quantile(.data$value, probs = (1 - conf_level) / 2),
-    upper = quantile(.data$value, probs = 1 - (1 - conf_level) / 2),
-    median = median(.data$value),
-    q_lower = sum(.data$value < 0) / length(.data$value),
-    q_upper = 1 - .data$q_lower,
-    prob_diff0 = max(.data$q_lower, .data$q_upper)
-  )
-  df <- dplyr::ungroup(vsum)
-
-  # filter values below threshold
-  if (!is.null(threshold)) {
-    df <- df[df$prob_diff0 >= threshold, ]
-    v <- v[v$prob_diff0 >= threshold, ]
-  }
-
-  if (!violin) {
-    p1 <- ggplot(df, aes_string(
-      x = "name", y = "median", col = "trend",
-      alpha = "prob_diff0"
-    )) +
-      geom_point(size = 3, position = position_dodge(0.3)) +
-      geom_errorbar(aes_string(ymin = "lower", ymax = "upper"),
-        position = position_dodge(0.3), width = 0
-      ) +
-      geom_hline(yintercept = 0, lty = 2) +
-      coord_flip() + xlab("Time Series") + ylab("Loading")
-  }
-
-  if (violin) {
-    p1 <- ggplot(v, aes_string(
-      x = "name", y = "value", fill = "trend",
-      alpha = "prob_diff0"
-    )) +
-      geom_violin(color = NA) +
-      geom_hline(yintercept = 0, lty = 2) +
-      coord_flip() + xlab("Time Series") + ylab("Loading")
-  }
-
-  if (facet) {
-    p1 <- p1 + facet_wrap(~ trend, scales = "free_x")
-  }
-
-  p1
+plot_loadings <- function(rotated_modelfit, names = NULL, facet = TRUE, violin = TRUE, conf_level = 0.95, 
+    threshold = NULL) {
+    v <- reshape2::melt(rotated_modelfit$Z_rot, varnames = c("iter", "name", "trend"))
+    v$trend <- paste0("Trend ", v$trend)
+    v$trend <- as.factor(v$trend)
+    if (!is.null(names)) 
+        v$name <- names[v$name]
+    v$name <- as.factor(v$name)
+    
+    v <- dplyr::group_by(v, .data$name, .data$trend)
+    v <- dplyr::mutate(v, q_lower = sum(.data$value < 0)/length(.data$value), q_upper = 1 - .data$q_lower, 
+        prob_diff0 = max(.data$q_lower, .data$q_upper))
+    v <- dplyr::ungroup(v)
+    
+    vsum <- dplyr::group_by(v, .data$name, .data$trend)
+    vsum <- dplyr::summarize(vsum, lower = quantile(.data$value, probs = (1 - conf_level)/2), upper = quantile(.data$value, 
+        probs = 1 - (1 - conf_level)/2), median = median(.data$value), q_lower = sum(.data$value < 0)/length(.data$value), 
+        q_upper = 1 - .data$q_lower, prob_diff0 = max(.data$q_lower, .data$q_upper))
+    df <- dplyr::ungroup(vsum)
+    
+    # filter values below threshold
+    if (!is.null(threshold)) {
+        df <- df[df$prob_diff0 >= threshold, ]
+        v <- v[v$prob_diff0 >= threshold, ]
+    }
+    
+    if (!violin) {
+        p1 <- ggplot(df, aes_string(x = "name", y = "median", col = "trend", alpha = "prob_diff0")) + geom_point(size = 3, 
+            position = position_dodge(0.3)) + geom_errorbar(aes_string(ymin = "lower", ymax = "upper"), 
+            position = position_dodge(0.3), width = 0) + geom_hline(yintercept = 0, lty = 2) + coord_flip() + 
+            xlab("Time Series") + ylab("Loading")
+    }
+    
+    if (violin) {
+        p1 <- ggplot(v, aes_string(x = "name", y = "value", fill = "trend", alpha = "prob_diff0")) + geom_violin(color = NA) + 
+            geom_hline(yintercept = 0, lty = 2) + coord_flip() + xlab("Time Series") + ylab("Loading")
+    }
+    
+    if (facet) {
+        p1 <- p1 + facet_wrap(~trend, scales = "free_x")
+    }
+    
+    p1
 }

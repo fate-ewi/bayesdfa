@@ -1,6 +1,5 @@
-# Some of the following code copied (and modified) from
-# https://github.com/luisdamiano/stancon18
-# under CC-BY 4.0
+# Some of the following code copied (and modified) from https://github.com/luisdamiano/stancon18 under
+# CC-BY 4.0
 
 #' Fit models with differing numbers of regimes to trend data
 #'
@@ -24,67 +23,39 @@
 #' data(Nile)
 #' fit_regimes(log(Nile), iter = 1000, n_regimes = 1)
 
-fit_regimes <- function(y, sds = NULL, n_regimes = 2,
-  iter = 2000, thin = 1, chains = 1, ...) {
-  est_sigma <- 0
-  if (is.null(sds)) {
-    # estimate sigma, instead of using fixed values
-    sds <- rep(0, length(y))
-    est_sigma <- 1
-  }
-
-  if (n_regimes == 1) {
-    stan_data <- list(
-      T = length(y),
-      K = 1,
-      x_t = y,
-      sigma_t = sds,
-      est_sigma = est_sigma,
-      pars = c("mu_k", "sigma_k", "log_lik")
-    )
-
-    m <- rstan::sampling(stanmodels$regime_1,
-      data = stan_data,
-      iter = iter,
-      chains = chains,
-      init = function() {
-        hmm_init(n_regimes, y)
-      },
-      ...
-    )
-  }
-
-  if (n_regimes > 1) {
-    stan_data <- list(
-      T = length(y),
-      K = n_regimes,
-      x_t = y,
-      sigma_t = sds,
-      est_sigma = est_sigma,
-      pars = c(
-        "p_1k", "A_ij", "mu_k", "sigma_k", "log_lik", "unalpha_tk", "gamma_tk",
-        "unbeta_tk", "ungamma_tk", "alpha_tk", "beta_tk", "zstar_t",
-        "logp_zstar_t"
-      )
-    )
-
-    m <- rstan::sampling(stanmodels$hmm_gaussian,
-      data = stan_data,
-      iter = iter,
-      thin = thin,
-      chains = chains,
-      init = function() {
-        hmm_init(n_regimes, y)
-      },
-      ...
-    )
-  }
-
-  log_lik <- loo::extract_log_lik(m, merge_chains = FALSE)
-  #n_chains <- dim(rstan::extract(m, "log_lik", permuted=FALSE))[2]
-  rel_eff <- loo::relative_eff(exp(log_lik))
-  # calculate looic
-  looic <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic", 1]
-
-  list(model = m, y = y, looic = looic)
+fit_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, thin = 1, chains = 1, ...) {
+    est_sigma <- 0
+    if (is.null(sds)) {
+        # estimate sigma, instead of using fixed values
+        sds <- rep(0, length(y))
+        est_sigma <- 1
+    }
+    
+    if (n_regimes == 1) {
+        stan_data <- list(T = length(y), K = 1, x_t = y, sigma_t = sds, est_sigma = est_sigma, pars = c("mu_k", 
+            "sigma_k", "log_lik"))
+        
+        m <- rstan::sampling(stanmodels$regime_1, data = stan_data, iter = iter, chains = chains, init = function() {
+            hmm_init(n_regimes, y)
+        }, ...)
+    }
+    
+    if (n_regimes > 1) {
+        stan_data <- list(T = length(y), K = n_regimes, x_t = y, sigma_t = sds, est_sigma = est_sigma, 
+            pars = c("p_1k", "A_ij", "mu_k", "sigma_k", "log_lik", "unalpha_tk", "gamma_tk", "unbeta_tk", 
+                "ungamma_tk", "alpha_tk", "beta_tk", "zstar_t", "logp_zstar_t"))
+        
+        m <- rstan::sampling(stanmodels$hmm_gaussian, data = stan_data, iter = iter, thin = thin, chains = chains, 
+            init = function() {
+                hmm_init(n_regimes, y)
+            }, ...)
+    }
+    
+    log_lik <- loo::extract_log_lik(m, merge_chains = FALSE)
+    # n_chains <- dim(rstan::extract(m, 'log_lik', permuted=FALSE))[2]
+    rel_eff <- loo::relative_eff(exp(log_lik))
+    # calculate looic
+    looic <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic", 1]
+    
+    list(model = m, y = y, looic = looic)
 }
