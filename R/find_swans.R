@@ -19,7 +19,7 @@
 #' # only 1 chain and 250 iterations used so example runs quickly:
 #' m <- fit_dfa(y = s$y_sim, num_trends = 1, iter = 250, chains = 1, nu_fixed = 2)
 #' r <- rotate_trends(m)
-#' p <- plot_trends(r) + geom_vline(xintercept = 15, colour = "red")
+#' p <- plot_trends(r) #+ geom_vline(xintercept = 15, colour = "red")
 #' print(p)
 #' # a 1 in 1000 probability if was from a normal distribution:
 #' find_swans(r, plot = TRUE, threshold = 0.001)
