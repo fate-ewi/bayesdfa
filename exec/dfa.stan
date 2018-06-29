@@ -145,7 +145,10 @@ transformed parameters {
   }
   // this block also for the expansion prior, used to convert trends
   for(k in 1:K) {
-    x[k,1:N] = x[k,1:N] * indicator[k] * psi_root[k];
+    //  x[k,1:N] = x[k,1:N] * indicator[k] * psi_root[k];
+    for(t in 1:N) {
+      x[k,t] = x[k,t] * indicator[k] * psi_root[k];
+    }
   }
 
   // N is sample size, P = time series, K = number trends
