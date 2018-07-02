@@ -17,8 +17,15 @@
 #' data(Nile)
 #' find_regimes(log(Nile), iter = 500, chains = 1, max_regimes = 2)
 
-find_regimes <- function(y, sds = NULL, min_regimes = 1, max_regimes = 3,
-                         iter = 2000, thin = 1, chains = 1, ...) {
+find_regimes <- function(y,
+  sds = NULL,
+  min_regimes = 1,
+  max_regimes = 3,
+  iter = 2000,
+  thin = 1,
+  chains = 1,
+  ...) {
+
   df <- data.frame(regimes = seq(min_regimes, max_regimes), looic = NA)
   best_loo <- 1.0e10
   best_model <- NA

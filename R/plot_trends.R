@@ -21,8 +21,11 @@
 #' p <- plot_trends(r)
 #' print(p)
 
-plot_trends <- function(rotated_modelfit, years = NULL,
-                        highlight_outliers = FALSE, threshold = 0.01) {
+plot_trends <- function(rotated_modelfit,
+  years = NULL,
+  highlight_outliers = FALSE,
+  threshold = 0.01) {
+
   # rotate the trends
   rotated <- rotated_modelfit
 

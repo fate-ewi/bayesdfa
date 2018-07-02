@@ -32,7 +32,10 @@
 #' @export
 #' @importFrom stats pnorm
 
-find_swans <- function(rotated_modelfit, threshold = 0.01, plot = FALSE) {
+find_swans <- function(rotated_modelfit,
+  threshold = 0.01,
+  plot = FALSE) {
+
   x <- rotated_modelfit$trends_mean
   d <- apply(x, 1, function(xx) c(NA, diff(xx)))
   sds <- apply(d, 2, sd, na.rm = TRUE) # sds != 1
