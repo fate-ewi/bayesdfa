@@ -21,30 +21,37 @@
 #' p <- plot_trends(r)
 #' print(p)
 
-plot_trends <- function(rotated_modelfit, years = NULL, highlight_outliers = FALSE, threshold = 0.01) {
-    # rotate the trends
-    rotated <- rotated_modelfit
-    
-    n_ts <- dim(rotated$Z_rot)[2]
-    n_trends <- dim(rotated$Z_rot)[3]
-    
-    n_years <- dim(rotated$trends_mean)[2]
-    if (is.null(years)) 
-        years <- seq_len(n_years)
-    
-    # convert to df for ggplot
-    df <- data.frame(x = c(t(rotated$trends_mean)), lo = c(t(rotated$trends_lower)), hi = c(t(rotated$trends_upper)), 
-        trend = paste0("Trend ", sort(rep(seq_len(n_trends), n_years))), time = rep(years, n_trends))
-    
-    # make faceted ribbon plot of trends
-    p1 <- ggplot(df, aes_string(x = "time", y = "x")) + geom_ribbon(aes_string(ymin = "lo", ymax = "hi"), 
-        alpha = 0.4) + geom_line() + facet_wrap("trend") + xlab("Time") + ylab("")
-    
-    if (highlight_outliers) {
-        swans <- find_swans(rotated, threshold = threshold)
-        df$outliers <- swans$below_threshold
-        p1 <- p1 + geom_point(data = df[which(df$outliers), ], color = "red")
-    }
-    
-    p1
+plot_trends <- function(rotated_modelfit, years = NULL,
+                        highlight_outliers = FALSE, threshold = 0.01) {
+  # rotate the trends
+  rotated <- rotated_modelfit
+
+  n_ts <- dim(rotated$Z_rot)[2]
+  n_trends <- dim(rotated$Z_rot)[3]
+
+  n_years <- dim(rotated$trends_mean)[2]
+  if (is.null(years)) years <- seq_len(n_years)
+
+  # convert to df for ggplot
+  df <- data.frame(
+    x = c(t(rotated$trends_mean)),
+    lo = c(t(rotated$trends_lower)),
+    hi = c(t(rotated$trends_upper)),
+    trend = paste0("Trend ", sort(rep(seq_len(n_trends), n_years))),
+    time = rep(years, n_trends)
+  )
+
+  # make faceted ribbon plot of trends
+  p1 <- ggplot(df, aes_string(x = "time", y = "x")) +
+    geom_ribbon(aes_string(ymin = "lo", ymax = "hi"), alpha = 0.4) +
+    geom_line() + facet_wrap("trend") +
+    xlab("Time") + ylab("")
+
+  if (highlight_outliers) {
+    swans <- find_swans(rotated, threshold = threshold)
+    df$outliers <- swans$below_threshold
+    p1 <- p1 + geom_point(data = df[which(df$outliers), ], color = "red")
+  }
+
+  p1
 }

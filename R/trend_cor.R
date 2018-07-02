@@ -44,27 +44,27 @@
 #' hist(correlation)
 #' @export
 
-trend_cor <- function(rotated_modelfit, y, trend = 1, time_window = seq_len(length(y)), trend_samples = 100, 
-    stan_iter = 300, stan_chains = 1, ...) {
-    
-    # must be even to cleanly divide by 2 later:
-    if (!stan_iter%%2 == 0) 
-        stan_iter <- stan_iter + 1
-    if (max(time_window) > length(y)) 
-        stop("Maximum time window value is too large")
-    
-    y <- as.numeric(scale(y[time_window]))
-    x <- rotated_modelfit$trends[, trend, time_window]  # samples x trend x time
-    
-    if (!identical(ncol(x), length(y))) 
-        stop("DFA trend and y must be same length")
-    
-    samples <- sample(seq_len(nrow(x)), size = trend_samples)
-    out <- vapply(seq_len(length(samples)), FUN = function(i) {
-        xi <- as.numeric(scale(as.numeric(x[samples[i], ])))
-        m <- rstan::sampling(stanmodels$corr, data = list(x = xi, y = y, N = length(y)), iter = stan_iter, 
-            chains = stan_chains, warmup = stan_iter/2, ...)
-        rstan::extract(m, pars = "beta")[["beta"]]
-    }, FUN.VALUE = numeric(length = stan_iter/2))
-    as.numeric(out)
+trend_cor <- function(rotated_modelfit, y, trend = 1,
+                      time_window = seq_len(length(y)), trend_samples = 100,
+                      stan_iter = 300, stan_chains = 1, ...) {
+
+  # must be even to cleanly divide by 2 later:
+  if (!stan_iter %% 2 == 0) stan_iter <- stan_iter + 1
+  if (max(time_window) > length(y)) stop("Maximum time window value is too large")
+
+  y <- as.numeric(scale(y[time_window]))
+  x <- rotated_modelfit$trends[, trend, time_window] # samples x trend x time
+
+  if (!identical(ncol(x), length(y))) stop("DFA trend and y must be same length")
+
+  samples <- sample(seq_len(nrow(x)), size = trend_samples)
+  out <- vapply(seq_len(length(samples)), FUN = function(i) {
+    xi <- as.numeric(scale(as.numeric(x[samples[i], ])))
+    m <- rstan::sampling(stanmodels$corr,
+      data = list(x = xi, y = y, N = length(y)),
+      iter = stan_iter, chains = stan_chains, warmup = stan_iter / 2, ...
+    )
+    rstan::extract(m, pars = "beta")[["beta"]]
+  }, FUN.VALUE = numeric(length = stan_iter / 2))
+  as.numeric(out)
 }

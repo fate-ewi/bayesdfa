@@ -22,7 +22,7 @@ passed in, residual variance not estimated.}
 \item{thin}{MCMC thinning rate, defaults to 1.}
 
 \item{chains}{MCMC chains; defaults to 1 (note that running multiple chains
-may result in a 'label switching' problem where the regimes are identified
+may result in a "label switching" problem where the regimes are identified
 with different IDs across chains).}
 
 \item{...}{Other parameters to pass to \code{\link[rstan:sampling]{rstan::sampling()}}.}

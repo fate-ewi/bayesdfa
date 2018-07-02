@@ -13,7 +13,7 @@ model. E.g. output from \code{\link[=invert_chains]{invert_chains()}}.}
 
 \item{threshold}{Threshold for maximum Rhat.}
 
-\item{parameters}{Vector of parameters to be included in convergence determination. Defaults = c('sigma','x','Z'). Other elements can be added including 'pred', 'log_lik', or 'lp__'}
+\item{parameters}{Vector of parameters to be included in convergence determination. Defaults = c("sigma","x","Z"). Other elements can be added including "pred", "log_lik", or "lp__"}
 }
 \description{
 Pass in \code{rstanfit} model object, and a threshold Rhat value for

@@ -26,7 +26,7 @@ Student-t errors}
 convergence of parameters}
 
 \item{variance}{Vector of variance arguments for searching over large groups
-of models. Can be either or both of ('equal','unequal')}
+of models. Can be either or both of ("equal","unequal")}
 
 \item{...}{Other arguments to pass to \code{fit_dfa()}}
 }
@@ -41,7 +41,7 @@ s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
 m <- find_dfa_trends(
   y = s$y_sim, iter = 250,
   kmin = 1, kmax = 2, chains = 1, compare_normal = FALSE,
-  variance = 'equal', convergence_threshold = 1.1,
+  variance = "equal", convergence_threshold = 1.1,
   control = list(adapt_delta = 0.95, max_treedepth = 20))
 m$summary
 m$best_model
