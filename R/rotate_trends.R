@@ -21,7 +21,7 @@ rotate_trends <- function(fitted_model, conf_level = 0.95, invert = FALSE) {
   # get the inverse of the rotation matrix
   n_mcmc <- dim(fitted_model$samples)[2] * dim(fitted_model$samples)[1]
 
-  flip <- ifelse(invert == FALSE, 1, -1)
+  flip = ifelse(invert==FALSE, 1, -1)
 
   temp <- reshape_samples(fitted_model$samples)
   Z <- temp$Z
@@ -35,15 +35,15 @@ rotate_trends <- function(fitted_model, conf_level = 0.95, invert = FALSE) {
   mcmc_Z_rot <- array(0, dim = c(n_mcmc, n_ts, n_trends))
   if (n_trends > 1) {
     for (i in seq_len(n_mcmc)) {
-      Zest <- Z[i,,]
+      Zest <- Z[i, , ]
       H.inv <- varimax(Zest)$rotmat
       # rotate factor loadings
       Z.rot <- Zest %*% H.inv
-      mcmc_Z_rot[i,,] <- Z.rot
+      mcmc_Z_rot[i, , ] <- Z.rot
       # rotate trends
-      states <- x[i,,]
+      states <- x[i, , ]
       trends.rot <- solve(H.inv) %*% states
-      mcmc_trends_rot[i,,] <- trends.rot
+      mcmc_trends_rot[i, , ] <- trends.rot
     }
   }
   if (n_trends == 1) {
@@ -79,7 +79,6 @@ reshape_samples <- function(samp) {
   x <- dplyr::filter(s, grepl("x\\[", .data$parameters))
   x$trend <- as.numeric(gsub("x\\[([0-9]+),([0-9]+)\\]", "\\1", x$parameters))
   x$time <- as.numeric(gsub("x\\[([0-9]+),([0-9]+)\\]", "\\2", x$parameters))
-  x <- reshape2::acast(x,
-    iterations + chains ~ trend ~ time, value.var = "value")
+  x <- reshape2::acast(x, iterations + chains ~ trend ~ time, value.var = "value")
   list(Z = Z, x = x)
 }

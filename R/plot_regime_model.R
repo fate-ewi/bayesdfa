@@ -40,17 +40,17 @@ plot_regime_model <- function(model, probs = c(0.05, 0.95),
   })
 
   if(flip_regimes==TRUE) {
-    mu_k <- 1 - mu_k
-    u <- 1-u
-    l <- 1-l
-    med <- 1 - med
+    mu_k = 1 - mu_k
+    u = 1-u
+    l = 1-l
+    med = 1 - med
   }
 
   if(is.null(plot_prob_indices)) {
     # then plot all panels
-    plot_prob_indices <- seq_len(ncol(med))
+    plot_prob_indices = seq_len(ncol(med))
   }
-  n_prob_plots <- length(plot_prob_indices)
+  n_prob_plots = length(plot_prob_indices)
 
   if (type[[1]] == "probability") {
     oldpar <- par("mfrow")

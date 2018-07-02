@@ -89,7 +89,7 @@ sim_dfa <- function(num_trends = 1,
   for (k in seq_len(d$K)) {
 
     if (!is.null(user_supplied_deviations)) {
-      devs <- user_supplied_deviations[, k]
+      devs <- user_supplied_deviations[,k]
     } else {
       devs <- rt(d$N, df = d$nu_fixed)
     }
