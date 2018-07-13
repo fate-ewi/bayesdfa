@@ -61,8 +61,8 @@ parameters {
   real<lower=0> sigma[nVariances];
   real<lower=2> nu[estimate_nu]; // df on student-t
   real ymiss[n_na];
-  real<lower=0,upper=1> phi[est_phi*K];
-  real<lower=0,upper=1> theta[est_theta*K];
+  real<lower=-1,upper=1> phi[est_phi*K];
+  real<lower=-1,upper=1> theta[est_theta*K];
   cholesky_factor_corr[n_pcor] Lcorr;
 }
 transformed parameters {
