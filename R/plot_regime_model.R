@@ -56,10 +56,10 @@ plot_regime_model <- function(model, probs = c(0.05, 0.95),
     oldpar <- par("mfrow")
     par(mfrow = c(1, n_prob_plots))
     for (i in plot_prob_indices) {
-      # main = paste("State", LETTERS[i])
+      #main = paste("State", LETTERS[i])
       plot(l[, i],
         ylim = c(0, 1), col = "grey40", lty = 2, type = "n",
-        main = paste("State", i), ylab = "Probability of being in given state",
+        main = paste(""), ylab = "Probability",
         xlab = "Time"
       )
       polygon(c(1:nrow(u), nrow(u):1), c(l[, i], rev(u[, i])), col = "grey70", border = "grey70")
