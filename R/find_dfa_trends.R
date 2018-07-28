@@ -20,9 +20,9 @@
 #' \donttest{
 #' set.seed(42)
 #' s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
-#' # only 1 chain and 1000 iterations used so example runs quickly:
+#' # only 1 chain and 250 iterations used so example runs quickly:
 #' m <- find_dfa_trends(
-#'   y = s$y_sim, iter = 1000,
+#'   y = s$y_sim, iter = 250,
 #'   kmin = 1, kmax = 2, chains = 1, compare_normal = FALSE,
 #'   variance = "equal", convergence_threshold = 1.1,
 #'   control = list(adapt_delta = 0.95, max_treedepth = 20))
@@ -33,9 +33,16 @@
 #' @importFrom stats quantile time varimax
 #' @importFrom rlang .data
 
-find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000, thin = 1,
-                            compare_normal = FALSE, convergence_threshold = 1.05,
-                            variance = c("equal", "unequal"), ...) {
+find_dfa_trends <- function(y = y,
+  kmin = 1,
+  kmax = 5,
+  iter = 2000,
+  thin = 1,
+  compare_normal = FALSE,
+  convergence_threshold = 1.05,
+  variance = c("equal", "unequal"),
+  ...) {
+
   df <- data.frame(
     model = seq(1, ifelse(compare_normal == FALSE,
       length(variance) * length(seq(kmin, kmax)),
@@ -64,9 +71,9 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000, thin = 1,
       df$num_trends[indx] <- i
 
       # relative effective sample size
-      log_lik = loo::extract_log_lik(model$model, merge_chains = FALSE)
-      n_chains = dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
-      rel_eff = loo::relative_eff(exp(log_lik))
+      log_lik <- loo::extract_log_lik(model$model, merge_chains = FALSE)
+      n_chains <- dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
+      rel_eff <- loo::relative_eff(exp(log_lik))
       # calculate looic
       df$looic[indx] <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
 
@@ -89,9 +96,9 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000, thin = 1,
       )
       df$num_trends[indx] <- i
 
-      log_lik = loo::extract_log_lik(model$model, merge_chains = FALSE)
-      n_chains = dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
-      rel_eff = loo::relative_eff(exp(log_lik))
+      log_lik <- loo::extract_log_lik(model$model, merge_chains = FALSE)
+      n_chains <- dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
+      rel_eff <- loo::relative_eff(exp(log_lik))
       # calculate looic
       df$looic[indx] <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
 
@@ -117,9 +124,9 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000, thin = 1,
         )
         df$num_trends[indx] <- i
 
-        log_lik = loo::extract_log_lik(model$model, merge_chains = FALSE)
-        n_chains = dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
-        rel_eff = loo::relative_eff(exp(log_lik))
+        log_lik <- loo::extract_log_lik(model$model, merge_chains = FALSE)
+        n_chains <- dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
+        rel_eff <- loo::relative_eff(exp(log_lik))
         # calculate looic
         df$looic[indx] <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
 
@@ -145,9 +152,9 @@ find_dfa_trends <- function(y = y, kmin = 1, kmax = 5, iter = 2000, thin = 1,
         )
         df$num_trends[indx] <- i
 
-        log_lik = loo::extract_log_lik(model$model, merge_chains = FALSE)
-        n_chains = dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
-        rel_eff = loo::relative_eff(exp(log_lik))
+        log_lik <- loo::extract_log_lik(model$model, merge_chains = FALSE)
+        n_chains <- dim(rstan::extract(model$model, "log_lik", permuted=FALSE))[2]
+        rel_eff <- loo::relative_eff(exp(log_lik))
         # calculate looic
         df$looic[indx] <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
 

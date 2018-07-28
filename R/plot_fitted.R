@@ -11,7 +11,7 @@
 #' @examples
 #' \donttest{
 #' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
-#' m <- fit_dfa(y = y, num_trends = 2, iter = 600)
+#' m <- fit_dfa(y = y, num_trends = 2, iter = 250, chains = 1)
 #' p <- plot_fitted(m)
 #' print(p)
 #' }
@@ -21,14 +21,14 @@ plot_fitted <- function(modelfit, names = NULL) {
   n_years <- dim(modelfit$data)[2]
 
   # pred and Y have same dimensions
-  pred <- extract(modelfit$model, "pred")$pred
+  pred <- predicted(modelfit)
 
   df <- data.frame(
     "ID" = rep(seq_len(n_ts), n_years),
     "Time" = sort(rep(seq_len(n_years), n_ts)),
-    "mean" = c(apply(pred, c(2, 3), mean)),
-    "lo" = c(apply(pred, c(2, 3), quantile, 0.025)),
-    "hi" = c(apply(pred, c(2, 3), quantile, 0.975)),
+    "mean" = c(t(apply(pred, c(3, 4), mean))),
+    "lo" = c(t(apply(pred, c(3, 4), quantile, 0.025))),
+    "hi" = c(t(apply(pred, c(3, 4), quantile, 0.975))),
     "y" = c(modelfit$data)
   )
 

@@ -16,10 +16,10 @@
 #' s$y_sim[1, 15] <- s$y_sim[1, 15] - 6
 #' plot(s$y_sim[1,], type = "o")
 #' abline(v = 15, col = "red")
-#' # only 1 chain and 500 iterations used so example runs quickly:
-#' m <- fit_dfa(y = s$y_sim, num_trends = 1, iter = 500, chains = 1, nu_fixed = 2)
+#' # only 1 chain and 250 iterations used so example runs quickly:
+#' m <- fit_dfa(y = s$y_sim, num_trends = 1, iter = 250, chains = 1, nu_fixed = 2)
 #' r <- rotate_trends(m)
-#' p <- plot_trends(r) + geom_vline(xintercept = 15, colour = "red")
+#' p <- plot_trends(r) #+ geom_vline(xintercept = 15, colour = "red")
 #' print(p)
 #' # a 1 in 1000 probability if was from a normal distribution:
 #' find_swans(r, plot = TRUE, threshold = 0.001)
@@ -32,7 +32,10 @@
 #' @export
 #' @importFrom stats pnorm
 
-find_swans <- function(rotated_modelfit, threshold = 0.01, plot = FALSE) {
+find_swans <- function(rotated_modelfit,
+  threshold = 0.01,
+  plot = FALSE) {
+
   x <- rotated_modelfit$trends_mean
   d <- apply(x, 1, function(xx) c(NA, diff(xx)))
   sds <- apply(d, 2, sd, na.rm = TRUE) # sds != 1
@@ -50,7 +53,7 @@ find_swans <- function(rotated_modelfit, threshold = 0.01, plot = FALSE) {
   names(trends) <- c("time", "trend_number", "trend_value")
   names(prob) <- c("time", "trend_number", "probability")
 
-  trends$trend_number <- as.character(trends$trend_number)
+  trends$trend_number <- as.character(sub("V", "", trends$trend_number))
   prob$trend_number <- as.character(sub("V", "", prob$trend_number))
   trends <- dplyr::inner_join(trends, prob, c("time", "trend_number"))
   trends$below_threshold <- trends$probability < threshold

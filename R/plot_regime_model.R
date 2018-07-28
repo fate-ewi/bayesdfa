@@ -6,7 +6,8 @@
 #' @param type Whether to plot the probabilities (default) or means.
 #' @param regime_prob_threshold The probability density that must be above 0.5.
 #'   Defaults to 0.9 before we classify a regime (only affects `"means"` plot).
-#' @param plot_prob_indices Optional indices of probability plots to plot. Defaults to showing all
+#' @param plot_prob_indices Optional indices of probability plots to plot.
+#'   Defaults to showing all.
 #' @param flip_regimes Optional whether to flip regimes in plots, defaults to FALSE
 #' @details Note that the original timeseries data (dots) are shown scaled
 #'   between 0 and 1.

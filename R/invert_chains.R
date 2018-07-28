@@ -22,6 +22,7 @@
 #' find_inverted_chains(m$model, plot = TRUE)
 
 find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
+
   e <- rstan::extract(model, permuted = FALSE)
   v <- reshape2::melt(e)
   vv <- v[grepl(paste0("x\\[", trend), v$parameters), ]

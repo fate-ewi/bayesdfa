@@ -21,7 +21,7 @@ rotate_trends <- function(fitted_model, conf_level = 0.95, invert = FALSE) {
   # get the inverse of the rotation matrix
   n_mcmc <- dim(fitted_model$samples)[2] * dim(fitted_model$samples)[1]
 
-  flip = ifelse(invert==FALSE, 1, -1)
+  flip <- ifelse(invert==FALSE, 1, -1)
 
   temp <- reshape_samples(fitted_model$samples)
   Z <- temp$Z

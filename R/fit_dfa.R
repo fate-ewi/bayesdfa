@@ -54,8 +54,8 @@
 #' @examples
 #' set.seed(42)
 #' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-#' # only 1 chain and 1000 iterations used so example runs quickly:
-#' m <- fit_dfa(y = s$y_sim, iter = 1000, chains = 1)
+#' # only 1 chain and 250 iterations used so example runs quickly:
+#' m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1)
 
 fit_dfa <- function(y = y,
                     covar = NULL,
@@ -209,7 +209,7 @@ fit_dfa <- function(y = y,
     est_theta = as.numeric(estimate_trend_ma)
   )
 
-  pars <- c("x", "Z", "pred", "sigma", "log_lik", "psi")
+  pars <- c("x", "Z", "sigma", "log_lik", "psi") # removed pred
   if (est_correlation) pars <- c(pars, "Omega") # add correlation matrix
   if (!is.null(covar)) pars <- c(pars, "D")
   if (estimate_nu) pars <- c(pars, "nu")

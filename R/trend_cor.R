@@ -44,9 +44,15 @@
 #' hist(correlation)
 #' @export
 
-trend_cor <- function(rotated_modelfit, y, trend = 1,
-                      time_window = seq_len(length(y)), trend_samples = 100,
-                      stan_iter = 300, stan_chains = 1, ...) {
+trend_cor <- function(rotated_modelfit,
+  y,
+  trend = 1,
+  time_window = seq_len(length(y)),
+  trend_samples = 100,
+  stan_iter = 300,
+  stan_chains = 1,
+  ...) {
+
 
   # must be even to cleanly divide by 2 later:
   if (!stan_iter %% 2 == 0) stan_iter <- stan_iter + 1

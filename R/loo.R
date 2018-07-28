@@ -23,17 +23,18 @@
 #' m <- fit_dfa(y = s$y_sim, iter = 300, chains = 1, num_trends = 1)
 #' loo(m)
 #' }
-
+#' @rdname loo
 loo.bayesdfa <- function(x, ...) {
   log_lik <- loo::extract_log_lik(x$model, merge_chains = FALSE)
   rel_eff <- loo::relative_eff(exp(log_lik), ...)
   loo::loo.array(log_lik,
     r_eff = rel_eff,
-    save_psis = FALSE, ...)
+    save_psis = FALSE,
+    ...)
 }
 
 #' @name loo
-#' @rdname loo.bayesdfa
+#' @rdname loo
 #' @export
 #' @importFrom loo loo
 NULL

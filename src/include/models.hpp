@@ -390,7 +390,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_dfa");
-    reader.add_event(252, 252, "end", "model_dfa");
+    reader.add_event(253, 253, "end", "model_dfa");
     return reader;
 }
 
@@ -927,7 +927,7 @@ public:
             phi[i0__] = vals_r__[pos__++];
         for (int i0__ = 0U; i0__ < (est_phi * K); ++i0__)
             try {
-            writer__.scalar_lub_unconstrain(0,1,phi[i0__]);
+            writer__.scalar_lub_unconstrain(-(1),1,phi[i0__]);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable phi: ") + e.what());
         }
@@ -943,7 +943,7 @@ public:
             theta[i0__] = vals_r__[pos__++];
         for (int i0__ = 0U; i0__ < (est_theta * K); ++i0__)
             try {
-            writer__.scalar_lub_unconstrain(0,1,theta[i0__]);
+            writer__.scalar_lub_unconstrain(-(1),1,theta[i0__]);
         } catch (const std::exception& e) { 
             throw std::runtime_error(std::string("Error transforming variable theta: ") + e.what());
         }
@@ -1066,9 +1066,9 @@ public:
             phi.reserve(dim_phi_0__);
             for (size_t k_0__ = 0; k_0__ < dim_phi_0__; ++k_0__) {
                 if (jacobian__)
-                    phi.push_back(in__.scalar_lub_constrain(0,1,lp__));
+                    phi.push_back(in__.scalar_lub_constrain(-(1),1,lp__));
                 else
-                    phi.push_back(in__.scalar_lub_constrain(0,1));
+                    phi.push_back(in__.scalar_lub_constrain(-(1),1));
             }
 
             vector<T__> theta;
@@ -1076,9 +1076,9 @@ public:
             theta.reserve(dim_theta_0__);
             for (size_t k_0__ = 0; k_0__ < dim_theta_0__; ++k_0__) {
                 if (jacobian__)
-                    theta.push_back(in__.scalar_lub_constrain(0,1,lp__));
+                    theta.push_back(in__.scalar_lub_constrain(-(1),1,lp__));
                 else
-                    theta.push_back(in__.scalar_lub_constrain(0,1));
+                    theta.push_back(in__.scalar_lub_constrain(-(1),1));
             }
 
             Eigen::Matrix<T__,Eigen::Dynamic,Eigen::Dynamic>  Lcorr;
@@ -1357,17 +1357,11 @@ public:
             }
             if (as_bool(logical_eq(est_phi,1))) {
 
-                for (int k = 1; k <= K; ++k) {
-
-                    lp_accum__.add(uniform_log<propto__>(get_base1(phi,k,"phi",1), 0, 1));
-                }
+                lp_accum__.add(uniform_log<propto__>(phi, 0, 1));
             }
             if (as_bool(logical_eq(est_theta,1))) {
 
-                for (int k = 1; k <= K; ++k) {
-
-                    lp_accum__.add(uniform_log<propto__>(get_base1(theta,k,"theta",1), 0, 1));
-                }
+                lp_accum__.add(uniform_log<propto__>(theta, 0, 1));
             }
             lp_accum__.add(normal_log<propto__>(z, 0, 1));
             lp_accum__.add(normal_log<propto__>(zpos, 0, 1));
@@ -1562,12 +1556,12 @@ public:
         vector<double> phi;
         size_t dim_phi_0__ = (est_phi * K);
         for (size_t k_0__ = 0; k_0__ < dim_phi_0__; ++k_0__) {
-            phi.push_back(in__.scalar_lub_constrain(0,1));
+            phi.push_back(in__.scalar_lub_constrain(-(1),1));
         }
         vector<double> theta;
         size_t dim_theta_0__ = (est_theta * K);
         for (size_t k_0__ = 0; k_0__ < dim_theta_0__; ++k_0__) {
-            theta.push_back(in__.scalar_lub_constrain(0,1));
+            theta.push_back(in__.scalar_lub_constrain(-(1),1));
         }
         matrix_d Lcorr = in__.cholesky_corr_constrain(n_pcor);
             for (int k_1__ = 0; k_1__ < (N - 1); ++k_1__) {

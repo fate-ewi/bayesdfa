@@ -61,8 +61,8 @@ parameters {
   real<lower=0> sigma[nVariances];
   real<lower=2> nu[estimate_nu]; // df on student-t
   real ymiss[n_na];
-  real<lower=0,upper=1> phi[est_phi*K];
-  real<lower=0,upper=1> theta[est_theta*K];
+  real<lower=-1,upper=1> phi[est_phi*K];
+  real<lower=-1,upper=1> theta[est_theta*K];
   cholesky_factor_corr[n_pcor] Lcorr;
 }
 transformed parameters {
@@ -109,7 +109,7 @@ transformed parameters {
   for(i in 1:nZ) {
     Z[row_indx[i],col_indx[i]] = z[i]; // convert z to from vec to matrix
   }
-  // fill in zero elements
+  // fill in zero elements in upper diagonal
   if(nZero > 2) {
     for(i in 1:(nZero-2)) {
       Z[row_indx_z[i],col_indx_z[i]] = 0;
@@ -136,15 +136,16 @@ transformed parameters {
   // initial state for each trend
   for(k in 1:K) {
     x[k,1] = x0[k];
+    // trend is modeled as random walk, with optional
+    // AR(1) component = phi, and optional MA(1) component
+    // theta. Theta is included in the model block below.
     for(t in 2:N) {
-      // trend is modeled as random walk, with optional
-      // AR(1) component = phi, and optional MA(1) component
-      // theta. Theta is included in the model block below.
       x[k,t] = phi_vec[k]*x[k,t-1] + devs[k,t-1];
     }
   }
   // this block also for the expansion prior, used to convert trends
   for(k in 1:K) {
+    //  x[k,1:N] = x[k,1:N] * indicator[k] * psi_root[k];
     for(t in 1:N) {
       x[k,t] = x[k,t] * indicator[k] * psi_root[k];
     }
@@ -156,8 +157,11 @@ transformed parameters {
 }
 model {
   // initial state for each trend
-  x0 ~ normal(0, 1);
-  psi ~ gamma(2, 1);
+  x0 ~ normal(0, 1); // initial state estimate at t=1
+  psi ~ gamma(2, 1); // expansion parameter for par-expanded priors
+
+  // This is deviations - either normal or Student t, and
+  // if Student-t, df parameter nu can be estimated or fixed
   for(k in 1:K) {
     if(use_normal == 0) {
       for(t in 1:1) {
@@ -168,6 +172,7 @@ model {
         }
       }
       for(t in 2:(N-1)) {
+        // if MA is not included, theta_vec = 0
         if (estimate_nu == 1) {
           devs[k,t] ~ student_t(nu[1], theta_vec[k]*devs[k,t-1], 1); // random walk
         } else {
@@ -177,6 +182,7 @@ model {
     } else {
       devs[k,1] ~ normal(0, 1);
       for(t in 2:(N-1)) {
+        // if MA is not included, theta_vec = 0
         devs[k,t] ~ normal(theta_vec[k]*devs[k,t-1], 1);
       }
     }
@@ -187,19 +193,15 @@ model {
   if (estimate_nu == 1) {
     nu[1] ~ gamma(2, 0.1);
   }
-
+  // prior on AR(1) component if included
   if(est_phi == 1) {
-    for(k in 1:K) {
-      // uniform prior on AR(1) component if included
-      phi[k] ~ uniform(0,1);
-    }
+    phi ~ uniform(0,1); // K elements
   }
+  // prior on MA(1) component if included
   if(est_theta == 1) {
-    for(k in 1:K) {
-      // uniform prior on MA(1) component if included
-      theta[k] ~ uniform(0,1);
-    }
+    theta ~ uniform(0,1); // K elements
   }
+
   // prior on loadings
   z ~ normal(0, 1);
   zpos ~ normal(0, 1);// diagonal
@@ -221,7 +223,6 @@ model {
       target += multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));
     }
   }
-
 }
 generated quantities {
   vector[n_loglik] log_lik;

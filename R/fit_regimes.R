@@ -24,7 +24,14 @@
 #' data(Nile)
 #' fit_regimes(log(Nile), iter = 1000, n_regimes = 1)
 
-fit_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, thin = 1, chains = 1, ...) {
+fit_regimes <- function(y,
+  sds = NULL,
+  n_regimes = 2,
+  iter = 2000,
+  thin = 1,
+  chains = 1,
+  ...) {
+
   est_sigma <- 0
   if (is.null(sds)) {
     # estimate sigma, instead of using fixed values
@@ -79,9 +86,9 @@ fit_regimes <- function(y, sds = NULL, n_regimes = 2, iter = 2000, thin = 1, cha
     )
   }
 
-  log_lik = loo::extract_log_lik(m, merge_chains=FALSE)
+  log_lik <- loo::extract_log_lik(m, merge_chains=FALSE)
   #n_chains = dim(rstan::extract(m, "log_lik", permuted=FALSE))[2]
-  rel_eff = loo::relative_eff(exp(log_lik))
+  rel_eff <- loo::relative_eff(exp(log_lik))
   # calculate looic
   looic <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
 
