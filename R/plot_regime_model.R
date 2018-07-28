@@ -76,7 +76,7 @@ plot_regime_model <- function(model, probs = c(0.05, 0.95),
         data = df_y,
         ggplot2::aes_string(x = "Time", y = "y"), inherit.aes = FALSE
       ) +
-      ggplot2::ylab("Probability of being in given state")
+      ggplot2::ylab("Probability")
   } else {
     plot(as.numeric(model$y),
       col = "#FF000070", pch = 3, ylab = "Time series value",
