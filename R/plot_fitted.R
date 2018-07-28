@@ -9,10 +9,12 @@
 #' @importFrom ggplot2 geom_ribbon facet_wrap
 #'
 #' @examples
+#' \donttest{
 #' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
 #' m <- fit_dfa(y = y, num_trends = 2, iter = 600)
 #' p <- plot_fitted(m)
 #' print(p)
+#' }
 
 plot_fitted <- function(modelfit, names = NULL) {
   n_ts <- dim(modelfit$data)[1]

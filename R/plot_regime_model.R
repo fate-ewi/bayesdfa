@@ -10,6 +10,8 @@
 #' @param flip_regimes Optional whether to flip regimes in plots, defaults to FALSE
 #' @details Note that the original timeseries data (dots) are shown scaled
 #'   between 0 and 1.
+#' @importFrom dplyr "%>%"
+#' @importFrom rlang .data
 #' @export
 #' @examples
 #' data(Nile)
@@ -21,10 +23,12 @@
 plot_regime_model <- function(model, probs = c(0.05, 0.95),
                               type = c("probability", "means"),
                               regime_prob_threshold = 0.9,
-  plot_prob_indices = NULL,
-  flip_regimes=FALSE) {
+                              plot_prob_indices = NULL,
+                              flip_regimes = FALSE) {
+  type <- match.arg(type)
   gamma_tk <- rstan::extract(model$model, pars = "gamma_tk")[[1]]
   mu_k <- rstan::extract(model$model, pars = "mu_k")[[1]]
+
   l <- apply(gamma_tk, 2:3, quantile, probs = probs[[1]])
   u <- apply(gamma_tk, 2:3, quantile, probs = probs[[2]])
   med <- apply(gamma_tk, 2:3, quantile, probs = 0.5)
@@ -36,36 +40,43 @@ plot_regime_model <- function(model, probs = c(0.05, 0.95),
     mean(x > 0.5) > regime_prob_threshold)
   regime_indexes <- apply(confident_regimes, 1, function(x) {
     w <- which(x)
-    ifelse(length(w) == 0, NA, w)
+    if (length(w) == 0) NA else w
   })
 
-  if(flip_regimes==TRUE) {
-    mu_k = 1 - mu_k
-    u = 1-u
-    l = 1-l
-    med = 1 - med
+  if (flip_regimes) {
+    mu_k <- 1 - mu_k
+    u <- 1 - u
+    l <- 1 - l
+    med <- 1 - med
   }
 
-  if(is.null(plot_prob_indices)) {
+  if (is.null(plot_prob_indices)) {
     # then plot all panels
-    plot_prob_indices = seq_len(ncol(med))
+    plot_prob_indices <- seq_len(ncol(med))
   }
-  n_prob_plots = length(plot_prob_indices)
 
-  if (type[[1]] == "probability") {
-    oldpar <- par("mfrow")
-    par(mfrow = c(1, n_prob_plots))
-    for (i in plot_prob_indices) {
-      plot(l[, i],
-        ylim = c(0, 1), col = "grey40", lty = 2, type = "n",
-        main = paste("State", LETTERS[i]), ylab = "Probability of being in given state",
-        xlab = "Time"
-      )
-      polygon(c(1:nrow(u), nrow(u):1), c(l[, i], rev(u[, i])), col = "grey70", border = "grey70")
-      lines(1:nrow(u), med[, i], col = "black", lwd = 2)
-      points(1:nrow(u), range01(model$y), col = "#FF000070", pch = 3)
-    }
-    par(mfrow = oldpar)
+  if (type == "probability") {
+    df_l <- reshape2::melt(l, varnames = c("Time", "State"), value.name = "lwr")
+    df_u <- reshape2::melt(u, varnames = c("Time", "State"), value.name = "upr")
+    df_m <- reshape2::melt(med, varnames = c("Time", "State"), value.name = "median")
+    df_y <- data.frame(y = range01(model$y), Time = seq_along(model$y))
+
+    dplyr::inner_join(df_l, df_u, by = c("Time", "State")) %>%
+      dplyr::inner_join(df_m, by = c("Time", "State")) %>%
+      dplyr::filter(.data$State %in% plot_prob_indices) %>%
+      dplyr::mutate(State = paste("State", .data$State)) %>%
+      ggplot2::ggplot(
+        ggplot2::aes_string("Time", y = "median", ymin = "lwr", ymax = "upr")
+      ) +
+      ggplot2::geom_ribbon(fill = "grey60") +
+      ggplot2::geom_line(colour = "grey10", lwd = 0.8) +
+      ggplot2::facet_wrap(~State) +
+      ggplot2::coord_cartesian(expand = FALSE, ylim = c(0, 1)) +
+      ggplot2::geom_point(
+        data = df_y,
+        ggplot2::aes_string(x = "Time", y = "y"), inherit.aes = FALSE
+      ) +
+      ggplot2::ylab("Probability of being in given state")
   } else {
     plot(as.numeric(model$y),
       col = "#FF000070", pch = 3, ylab = "Time series value",

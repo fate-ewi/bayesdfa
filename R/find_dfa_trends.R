@@ -17,6 +17,7 @@
 #' @param ... Other arguments to pass to `fit_dfa()`
 #' @export
 #' @examples
+#' \donttest{
 #' set.seed(42)
 #' s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
 #' # only 1 chain and 1000 iterations used so example runs quickly:
@@ -27,6 +28,7 @@
 #'   control = list(adapt_delta = 0.95, max_treedepth = 20))
 #' m$summary
 #' m$best_model
+#' }
 #' @importFrom loo loo extract_log_lik
 #' @importFrom stats quantile time varimax
 #' @importFrom rlang .data

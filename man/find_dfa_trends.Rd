@@ -35,6 +35,7 @@ Fit a DFA with different number of trends and return the leave one out (LOO)
 value as calculated by the \link[loo:loo-package]{loo} package.
 }
 \examples{
+\donttest{
 set.seed(42)
 s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
 # only 1 chain and 1000 iterations used so example runs quickly:
@@ -45,4 +46,5 @@ m <- find_dfa_trends(
   control = list(adapt_delta = 0.95, max_treedepth = 20))
 m$summary
 m$best_model
+}
 }

@@ -5,12 +5,12 @@
 \alias{loo}
 \title{LOO information criteria}
 \usage{
-\method{loo}{bayesdfa}(x, cores = getOption("mc.cores", 1))
+\method{loo}{bayesdfa}(x, ...)
 }
 \arguments{
 \item{x}{Output from \code{\link[=fit_dfa]{fit_dfa()}}.}
 
-\item{cores}{Number of cores to use for parallelization.}
+\item{...}{Arguments for \code{\link[loo:relative_eff]{loo::relative_eff()}} and \code{\link[loo:loo.array]{loo::loo.array()}}.}
 }
 \description{
 Extract the LOOIC (leave-one-out information criterion) using
