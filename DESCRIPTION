@@ -1,6 +1,6 @@
 Package: bayesdfa
 Type: Package
-Title: Baysian DFA with 'Stan'
+Title: Bayesian DFA with 'Stan'
 Version: 0.1.0
 Authors@R: c(
     person(c("Eric", "J."), "Ward", role = c("aut", "cre"), email = "eric.ward@noaa.gov"),
