@@ -11,7 +11,7 @@
 #' @examples
 #' \donttest{
 #' y <- t(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")])
-#' m <- fit_dfa(y = y, num_trends = 2, iter = 250, chains = 1)
+#' m <- fit_dfa(y = y, num_trends = 2, iter = 200, chains = 1)
 #' p <- plot_fitted(m)
 #' print(p)
 #' }
