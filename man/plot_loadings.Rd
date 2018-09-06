@@ -31,8 +31,8 @@ Plot the loadings from a DFA
 \examples{
 set.seed(42)
 s <- sim_dfa(num_trends = 2, num_ts = 4, num_years = 10)
-# only 1 chain and 500 iterations used so example runs quickly:
-m <- fit_dfa(y = s$y_sim, num_trends = 2, iter = 500, chains = 1)
+# only 1 chain and 180 iterations used so example runs quickly:
+m <- fit_dfa(y = s$y_sim, num_trends = 2, iter = 180, chains = 1)
 r <- rotate_trends(m)
 plot_loadings(r, violin = FALSE, facet = TRUE)
 plot_loadings(r, violin = FALSE, facet = FALSE)
