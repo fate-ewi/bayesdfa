@@ -19,7 +19,8 @@ Defaults to \code{c(0.05, 0.95)}.}
 \item{regime_prob_threshold}{The probability density that must be above 0.5.
 Defaults to 0.9 before we classify a regime (only affects \code{"means"} plot).}
 
-\item{plot_prob_indices}{Optional indices of probability plots to plot. Defaults to showing all}
+\item{plot_prob_indices}{Optional indices of probability plots to plot.
+Defaults to showing all.}
 
 \item{flip_regimes}{Optional whether to flip regimes in plots, defaults to FALSE}
 }
