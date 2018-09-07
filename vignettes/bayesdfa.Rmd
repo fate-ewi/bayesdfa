@@ -9,8 +9,8 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-Here we will use the bayesdfa package to fit dynamic factor analysis (DFA) model to simulated time series data. In addition to working through an example of DFA for multivariate time series, we'll apply bayesdfa routines for fitting hidden Markov models (HMMs) to the estimated trends to identify latent regimes.  
-  
+Here we will use the bayesdfa package to fit dynamic factor analysis (DFA) model to simulated time series data. In addition to working through an example of DFA for multivariate time series, we'll apply bayesdfa routines for fitting hidden Markov models (HMMs) to the estimated trends to identify latent regimes. Most of the core functions of the package are included here, including `fit_dfa()` and `find_dfa_trends` for fitting DFA models, `plot_trends()`, `plot_fitted()` and `plot_loadings()` for plotting estimates, `find_swans()` for flagging extremes, `fit_regimes()` and `find_regimes()` for fitting HMM models, and `plot_regimes()` for plotting HMM output. 
+   
 ```{r set-knitr-options, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
 library("knitr")
 opts_chunk$set(message = FALSE, fig.width = 5.5)
@@ -167,6 +167,13 @@ And the loadings,
 ```{r plot-extreme-loadings, fig.align='center', fig.cap="Estimated loadings, from a model with 2 latent trends Student-t deviations.\\label{fig:plot-extreme-loadings}"}
 plot_loadings(r)
 ```
+
+One way to look for extremes is using the `find_swans()` function, which evaluates the probability of observing a deviation in the estimated trend (or data) greater than what is expected from a normal distribution. This function takes a `threshold` argument, which specifies the cutoff. For example, to find extremes greater than 1 in 1000 under a normal distribution, the function call is 
+
+```{r eval=FALSE}
+find_swans(r, plot = FALSE, threshold = 1/1000)
+```
+Setting plot to TRUE also creates a time series plot that flags these values.
 
 We can also look at the estimated `nu` parameter, which shows some support for using the Student-t distribution (values greater than ~ 30 lead to similar behavior as a normal distribution), 
 
