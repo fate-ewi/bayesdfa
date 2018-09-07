@@ -47,6 +47,12 @@ f1 <- fit_dfa(y = sim_dat$y_sim, num_trends = 1, zscore = TRUE,
   iter = 200, chains = 1, thin = 1)
 ```
 
+Convergence of DFA models can be evaluated with our `is_converged()` function. This function takes a fitted object, and specified `threshold` argument representing the maximum allowed Rhat value (default = 1.05). The convergence test isn't that useful for a model with such a short number of iterations, but is called with
+
+```{r}
+is_converged(f1, threshold=1.05)
+```
+
 Before we extract the trends from the model, we need to rotate the loadings matrix and trends. By default we use the varimax rotation, implemented in the `rotate_trends()` function. An optional argument is the `conf_level` argument, which calculates the specified confidence (credible) interval of the estimates (by default, this is set to 0.95).
 
 ```{r rot-1-trend, warning=FALSE, message=FALSE, results='hide'}
