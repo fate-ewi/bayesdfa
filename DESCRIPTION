@@ -1,13 +1,23 @@
 Package: bayesdfa
 Type: Package
-Title: Bayesian DFA with 'Stan'
+Title: Bayesian Dynamic Factor Analysis (DFA) with 'Stan'
 Version: 0.1.0
 Authors@R: c(
-    person(c("Eric", "J."), "Ward", role = c("aut", "cre"), email = "eric.ward@noaa.gov"),
+    person(c("Eric", "J."), "Ward", role = c("aut", "cre"), 
+      email = "eric.ward@noaa.gov"),
     person(c("Sean", "C."), "Anderson", role = "aut"),
-    person("Luis", "Damiano", role = "aut"),
+    person(c("Luis", "A."), "Damiano", role = "aut"),
+    person(c("Mary", "E."), "Hunsicker,", role = "ctb"),
+    person(c("Mike", "A."), "Litzow", role = "ctb"),
     person("Trustees of", "Columbia University", role = "cph"))
-Description: Implements Bayesian dynamic factor analysis with 'Stan'. Dynamic factor analysis is a dimension reduction tool for multivariate time series. 'bayesdfa' extends conventional dynamic factor models in several ways. First, extreme events may be estimated in the latent trend by modeling process error with a student-t distribution. Second, autoregressive and moving average components can be optionally included. Third, the estimated dynamic factors can be analyzed with hidden Markov models to evaluate support for latent regimes. 
+Description: Implements Bayesian dynamic factor analysis with 'Stan'. Dynamic 
+    factor analysis is a dimension reduction tool for multivariate time series.
+    'bayesdfa' extends conventional dynamic factor models in several ways. 
+    First, extreme events may be estimated in the latent trend by modeling
+    process error with a student-t distribution. Second, autoregressive and 
+    moving average components can be optionally included. Third, the estimated
+    dynamic factors can be analyzed with hidden Markov models to evaluate
+    support for latent regimes.
 License: GPL (>=3)
 Encoding: UTF-8
 LazyData: true
@@ -22,8 +32,8 @@ Imports:
     methods,
     rlang,
     reshape2
-LinkingTo: StanHeaders (>= 2.16.0), rstan (>= 2.16.0), BH (>= 1.62.0), Rcpp (>=
-    0.12.0), RcppEigen
+LinkingTo: StanHeaders (>= 2.16.0), rstan (>= 2.16.0), BH (>= 1.62.0), 
+    Rcpp (>= 0.12.0), RcppEigen
 Suggests:
     testthat,
     parallel,
@@ -32,6 +42,6 @@ Suggests:
     MARSS
 URL: https://github.com/fate-ewi/bayesdfa
 BugReports: https://github.com/fate-ewi/bayesdfa/issues
-RoxygenNote: 6.0.1.9000
+RoxygenNote: 6.1.0
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
