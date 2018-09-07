@@ -40,11 +40,11 @@ matplot(t(sim_dat$y_sim), type = "l",
   ylab="Response", xlab="Time")
 ```
 
-Next, we'll fit a 1-trend, 2-trend, and 3-trend DFA model to the simulated time series using the `fit_dfa()` function. Starting with the 1-trend model, we'll estimate the posterior distributions of the trends and loadings. Note that this example uses 1 MCMC chain and 250 iterations -- for real examples, you'll want to use more (say 4 chains, 5000 iterations).
+Next, we'll fit a 1-trend, 2-trend, and 3-trend DFA model to the simulated time series using the `fit_dfa()` function. Starting with the 1-trend model, we'll estimate the posterior distributions of the trends and loadings. Note that this example uses 1 MCMC chain and 200 iterations -- for real examples, you'll want to use more (say 4 chains, 5000 iterations).
 
 ```{r fit-1-trend, message=FALSE, warning=FALSE, results='hide'}
 f1 <- fit_dfa(y = sim_dat$y_sim, num_trends = 1, zscore = TRUE,
-  iter = 250, chains = 1, thin = 1)
+  iter = 200, chains = 1, thin = 1)
 ```
 
 Before we extract the trends from the model, we need to rotate the loadings matrix and trends. By default we use the varimax rotation, implemented in the `rotate_trends()` function. An optional argument is the `conf_level` argument, which calculates the specified confidence (credible) interval of the estimates (by default, this is set to 0.95).
@@ -58,7 +58,6 @@ The rotated object has several quantities of interest, including the mean values
 ```{r}
 names(r)
 ```
-
 
 We can then plot the trends and intervals, with 
 ```{r plot-1-trend, fig.align='center', fig.cap="Estimated trend and 95% CI for a 1-trend DFA model applied to simulated data.\\label{fig:simulate-data-plot}"}
@@ -76,11 +75,11 @@ Moving to a more complex model, we'll fit the 2-trend and 3-trend models. All ot
 
 ```{r fit-models, warning=FALSE, results='hide', message=FALSE}
 f2 <- fit_dfa(y = sim_dat$y_sim, num_trends = 2, zscore = TRUE,
-  iter = 250, chains = 1, thin = 1)
+  iter = 200, chains = 1, thin = 1)
 r2 = rotate_trends(f2)
 
 f3 <- fit_dfa(y = sim_dat$y_sim, num_trends = 3, zscore = TRUE,
-  iter = 250, chains = 1, thin = 1)
+  iter = 200, chains = 1, thin = 1)
 r3 = rotate_trends(f3)
 ```
 
@@ -148,7 +147,7 @@ Instead of fitting a model with normal process deviations, we may be interested 
 
 ```{r fit-2-trend-extreme, message=FALSE, warning=FALSE, results='hide'}
 t2 <- fit_dfa(y = sim_dat$y_sim, num_trends = 2, zscore = TRUE,
-  iter = 250, chains = 1, thin = 1, estimate_nu = TRUE)
+  iter = 200, chains = 1, thin = 1, estimate_nu = TRUE)
 ```
 
 Again we have to rotate the trends before plotting,
