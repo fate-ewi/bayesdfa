@@ -22,7 +22,6 @@ Let's load the necessary packages:
 library(bayesdfa)
 library(ggplot2)
 library(dplyr)
-library(rstan)
 ```
 
 ## DFA model with no extreme events  
@@ -31,32 +30,39 @@ First, let's simulate some data. We will use the built-in function `sim_dfa()`, 
 
 ```{r simulate-data}
 set.seed(1)
-sim_dat = sim_dfa(num_trends = 2,
-  num_years = 20, num_ts = 4)
+sim_dat <- sim_dfa(
+  num_trends = 2,
+  num_years = 20,
+  num_ts = 4
+)
 ```
 
 ```{r simulate-data-plot, fig.align='center', fig.cap="Simulated data, from a model with 2 latent trends and no extremes.\\label{fig:simulate-data-plot}"}
-matplot(t(sim_dat$y_sim), type = "l", 
-  ylab="Response", xlab="Time")
+matplot(t(sim_dat$y_sim),
+  type = "l",
+  ylab = "Response", xlab = "Time"
+)
 ```
 
-Next, we'll fit a 1-trend, 2-trend, and 3-trend DFA model to the simulated time series using the `fit_dfa()` function. Starting with the 1-trend model, we'll estimate the posterior distributions of the trends and loadings. Note that this example uses 1 MCMC chain and 200 iterations -- for real examples, you'll want to use more (say 4 chains, 5000 iterations).
+Next, we'll fit a 1-trend, 2-trend, and 3-trend DFA model to the simulated time series using the `fit_dfa()` function. Starting with the 1-trend model, we'll estimate the posterior distributions of the trends and loadings. Note that this example uses 1 MCMC chain and 200 iterations --- for real examples, you'll want to use more (say 4 chains, 5000 iterations).
 
 ```{r fit-1-trend, message=FALSE, warning=FALSE, results='hide'}
-f1 <- fit_dfa(y = sim_dat$y_sim, num_trends = 1, zscore = TRUE,
-  iter = 200, chains = 1, thin = 1)
+f1 <- fit_dfa(
+  y = sim_dat$y_sim, num_trends = 1, zscore = TRUE,
+  iter = 200, chains = 1, thin = 1
+)
 ```
 
 Convergence of DFA models can be evaluated with our `is_converged()` function. This function takes a fitted object, and specified `threshold` argument representing the maximum allowed Rhat value (default = 1.05). The convergence test isn't that useful for a model with such a short number of iterations, but is called with
 
 ```{r}
-is_converged(f1, threshold=1.05)
+is_converged(f1, threshold = 1.05)
 ```
 
 Before we extract the trends from the model, we need to rotate the loadings matrix and trends. By default we use the varimax rotation, implemented in the `rotate_trends()` function. An optional argument is the `conf_level` argument, which calculates the specified confidence (credible) interval of the estimates (by default, this is set to 0.95).
 
 ```{r rot-1-trend, warning=FALSE, message=FALSE, results='hide'}
-r = rotate_trends(f1)
+r <- rotate_trends(f1)
 ```
 
 The rotated object has several quantities of interest, including the mean values of the trends "trends_mean" and loadings "Z_rot_mean",
@@ -80,13 +86,17 @@ plot_fitted(f1)
 Moving to a more complex model, we'll fit the 2-trend and 3-trend models. All other arguments stay the same as before,
 
 ```{r fit-models, warning=FALSE, results='hide', message=FALSE}
-f2 <- fit_dfa(y = sim_dat$y_sim, num_trends = 2, zscore = TRUE,
-  iter = 200, chains = 1, thin = 1)
-r2 = rotate_trends(f2)
+f2 <- fit_dfa(
+  y = sim_dat$y_sim, num_trends = 2, zscore = TRUE,
+  iter = 200, chains = 1, thin = 1
+)
+r2 <- rotate_trends(f2)
 
-f3 <- fit_dfa(y = sim_dat$y_sim, num_trends = 3, zscore = TRUE,
-  iter = 200, chains = 1, thin = 1)
-r3 = rotate_trends(f3)
+f3 <- fit_dfa(
+  y = sim_dat$y_sim, num_trends = 3, zscore = TRUE,
+  iter = 200, chains = 1, thin = 1
+)
+r3 <- rotate_trends(f3)
 ```
 
 The fits from the 2-trend model look considerably better than that from the 1-trend model,
@@ -109,7 +119,7 @@ plot_loadings(r2)
 Finally, we might be interested in comparing some measure of model selection across these models to identify whether the data support the 1-trend, 2-trend, or 3-trend models. The Leave One Out Information Criterion can be calculated with the `loo()` function, for example the LOOIC for the 1-trend model can be accessed with
 
 ```{r loo, warning=FALSE, message=FALSE}
-loo1 = loo(f1)
+loo1 <- loo(f1)
 loo1$estimates
 ```
 
@@ -119,46 +129,48 @@ As an alternative to fitting each model individually as we did above, we also de
 
 ```{r eval=FALSE}
 m <- find_dfa_trends(
- y = s$y_sim, iter = 180,
- kmin = 1, kmax = 5, chains = 1, compare_normal = TRUE,
- variance = c("equal","unequal"))
+  y = s$y_sim, iter = 180,
+  kmin = 1, kmax = 5, chains = 1, compare_normal = TRUE,
+  variance = c("equal", "unequal")
+)
 ```
-
 
 ## DFA model with extreme events 
 
-In this example, we'll simulate data with an extreme anomaly. As before, this will be 20 data points from 4 time series, generated from 2 latent processes. The `sim_dfa()` function's arguments `extreme_value` and `extreme_loc` allow the user to specify the magnitude of the extreme (as an additve term in the random walk), and the location of the extreme (defaults to the midpoint of the time series). Here we'll include an extreme value of 6,
+In this example, we'll simulate data with an extreme anomaly. As before, this will be 20 data points from 4 time series, generated from 2 latent processes. The `sim_dfa()` function's arguments `extreme_value` and `extreme_loc` allow the user to specify the magnitude of the extreme (as an additive term in the random walk), and the location of the extreme (defaults to the midpoint of the time series). Here we'll include an extreme value of 6,
 
 ```{r simulate-data2}
 set.seed(1)
-sim_dat = sim_dfa(num_trends = 2,
+sim_dat <- sim_dfa(
+  num_trends = 2,
   num_years = 20, num_ts = 4,
-  extreme_value = 6)
+  extreme_value = 6
+)
 ```
 
-Plotting the data shows the anomaly occuring between time step 9 and 10,
+Plotting the data shows the anomaly occurring between time step 9 and 10,
 ```{r simulate-data-plot2, fig.align='center', fig.cap="Simulated data, from a model with 2 latent trends and an extreme in the midpoint of the time series.\\label{fig:simulate-data-plot2}"}
-matplot(t(sim_dat$y_sim), type = "l", 
-  ylab="Response", xlab="Time")
+matplot(t(sim_dat$y_sim), type = "l", ylab = "Response", xlab = "Time")
 ```
 
 Though the plot is a little more clear if we standardize the time series first,
 
 ```{r simulate-data-plot3, fig.align='center', fig.cap="Simulated data (z-scored), from a model with 2 latent trends and an extreme in the midpoint of the time series.\\label{fig:simulate-data-plot3}"}
-matplot(scale(t(sim_dat$y_sim)), type = "l", 
-  ylab="Response", xlab="Time")
+matplot(scale(t(sim_dat$y_sim)), type = "l", ylab = "Response", xlab = "Time")
 ```
 
 Instead of fitting a model with normal process deviations, we may be interested in fitting the model with Student-t deviations. We can turn on the estimation of `nu` with the `estimate_nu` argument. [Alternatively, nu can also be fixed a priori by setting the argument `nu_fixed`]. Here's the code for a 2-trend model with Student-t deviations,
 
 ```{r fit-2-trend-extreme, message=FALSE, warning=FALSE, results='hide'}
-t2 <- fit_dfa(y = sim_dat$y_sim, num_trends = 2, zscore = TRUE,
-  iter = 200, chains = 1, thin = 1, estimate_nu = TRUE)
+t2 <- fit_dfa(
+  y = sim_dat$y_sim, num_trends = 2, zscore = TRUE,
+  iter = 200, chains = 1, thin = 1, estimate_nu = TRUE
+)
 ```
 
 Again we have to rotate the trends before plotting,
 ```{r fit-extreme-dfa, fig.align='center', fig.cap="Estimated trends, from a model with 2 latent trends Student-t deviations.\\label{fig:fit-extreme-dfa}"}
-r = rotate_trends(t2)
+r <- rotate_trends(t2)
 plot_trends(r)
 ```
 
@@ -171,7 +183,7 @@ plot_loadings(r)
 One way to look for extremes is using the `find_swans()` function, which evaluates the probability of observing a deviation in the estimated trend (or data) greater than what is expected from a normal distribution. This function takes a `threshold` argument, which specifies the cutoff. For example, to find extremes greater than 1 in 1000 under a normal distribution, the function call is 
 
 ```{r eval=FALSE}
-find_swans(r, plot = FALSE, threshold = 1/1000)
+find_swans(r, plot = FALSE, threshold = 1 / 1000)
 ```
 Setting plot to TRUE also creates a time series plot that flags these values.
 
@@ -183,13 +195,18 @@ summary(rstan::extract(t2$model, "nu")[[1]])
 
 ## Applying Hidden Markov Models to identify latent regimes
 
-Finally, we might be interested in evaulating evidence for the estimated trends changing between multiple regimes. We've implemented HMMs in the functions `fit_regimes()` and `find_regimes()`. `fit_regimes` fits a HMM with a pre-specified number of latent states, while `find_regimes()` loops over a range of models so that support can be evaluated with LOOIC.
+Finally, we might be interested in evaluating evidence for the estimated trends changing between multiple regimes. We've implemented HMMs in the functions `fit_regimes()` and `find_regimes()`. `fit_regimes` fits a HMM with a pre-specified number of latent states, while `find_regimes()` loops over a range of models so that support can be evaluated with LOOIC.
 
 We'll illustrate an example of the `fit_regimes()` function. Note that in the current version of the package, this has to be applied to each trend separately. Also, uncertainty estimates from the DFA trends may also be included as data (instead of estimated) -- this may be particularly useful for datasets with lots of missing values in portions of the time series (where the uncertainty balloons up).
 
 Applying the 2-regime model to the first trend,
 ```{r, warning=FALSE, message=FALSE, results='hide'}
-reg_mod = fit_regimes(y = r$trends_mean[1,], sds = (r$trends_upper-r$trends_mean)[1,]/1.96, n_regimes=2, iter=200, chains=1)
+reg_mod <- fit_regimes(
+  y = r$trends_mean[1, ],
+  sds = (r$trends_upper - r$trends_mean)[1, ] / 1.96,
+  n_regimes = 2,
+  iter = 200, chains = 1
+)
 ```
 
 In addition to getting diagnostics and quantities like LOOIC out of the `reg_mod` object, we can plot the estimated states. 
@@ -201,5 +218,6 @@ plot_regime_model(reg_mod)
 In this case, there might be some support for the 2-regime model. Sometimes (but not in this example) label switching makes the plots a little challenging to interpret, and the labels need to be reversed. We've included the argument `flip_regimes` to help with this,
 
 ```{r plot-regime-flipped, fig.align='center', fig.cap="Estimated regimes (after flipping), from a HMM model applied to the first trend of a 2-trend DFA model with Student-t deviations.\\label{fig:plot-regime-flipped}"}
-plot_regime_model(reg_mod, flip_regimes=TRUE)
+plot_regime_model(reg_mod, flip_regimes = TRUE)
 ```
+
