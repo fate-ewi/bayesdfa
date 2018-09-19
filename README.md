@@ -12,3 +12,9 @@ You can install the development version of the package with:
 # install.packages("devtools")
 devtools::install_github("fate-ewi/bayesdfa")
 ```
+
+Funding
+The 'bayesdfa' package was funded by a FATE grant on early warning indicators, led by Mary Hunsicker and Mike Litzow. 
+
+Applications
+The 'bayesdfa' models were presented to the PFMC's SSC in November 2017 and have been included in the 2018 California Current Integrated Ecosystem Report, https://www.integratedecosystemassessment.noaa.gov/Assets/iea/california/Report/pdf/CCIEA-status-report-2018.pdf
