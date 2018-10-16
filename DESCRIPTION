@@ -1,7 +1,7 @@
 Package: bayesdfa
 Type: Package
 Title: Bayesian Dynamic Factor Analysis (DFA) with 'Stan'
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person(c("Eric", "J."), "Ward", role = c("aut", "cre"), 
       email = "eric.ward@noaa.gov"),
@@ -25,14 +25,14 @@ Depends:
     R (>= 3.4.0),
     Rcpp (>= 0.12.0)
 Imports:
-    rstan (>= 2.16.0),
+    rstan (>= 2.18.1),
     ggplot2 (>= 2.2.0),
     loo,
     dplyr (>= 0.7.0),
     methods,
     rlang,
     reshape2
-LinkingTo: StanHeaders (>= 2.16.0), rstan (>= 2.16.0), BH (>= 1.62.0), 
+LinkingTo: StanHeaders (>= 2.18.0), rstan (>= 2.18.1), BH (>= 1.66.0), 
     Rcpp (>= 0.12.0), RcppEigen
 Suggests:
     testthat,
