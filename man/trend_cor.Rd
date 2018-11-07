@@ -4,9 +4,8 @@
 \alias{trend_cor}
 \title{Estimate the correlation between a DFA trend and some other timeseries}
 \usage{
-trend_cor(rotated_modelfit, y, trend = 1,
-  time_window = seq_len(length(y)), trend_samples = 100,
-  stan_iter = 300, stan_chains = 1, ...)
+trend_cor(rotated_modelfit, y, trend = 1, time_window = seq_len(length(y)),
+  trend_samples = 100, stan_iter = 300, stan_chains = 1, ...)
 }
 \arguments{
 \item{rotated_modelfit}{Output from \code{\link[=rotate_trends]{rotate_trends()}}.}

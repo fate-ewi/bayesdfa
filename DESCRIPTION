@@ -1,7 +1,7 @@
 Package: bayesdfa
 Type: Package
 Title: Bayesian Dynamic Factor Analysis (DFA) with 'Stan'
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: c(
     person(c("Eric", "J."), "Ward", role = c("aut", "cre"), 
       email = "eric.ward@noaa.gov"),
@@ -45,3 +45,4 @@ BugReports: https://github.com/fate-ewi/bayesdfa/issues
 RoxygenNote: 6.1.0
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
+SystemRequirements: GNU make
