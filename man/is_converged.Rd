@@ -4,8 +4,8 @@
 \alias{is_converged}
 \title{Summarize Rhat convergence statistics across parameters}
 \usage{
-is_converged(fitted_model, threshold = 1.05, parameters = c("sigma", "x",
-  "Z"))
+is_converged(fitted_model, threshold = 1.05, parameters = c("sigma",
+  "x", "Z"))
 }
 \arguments{
 \item{fitted_model}{Samples extracted (with \code{permuted = FALSE}) from a Stan

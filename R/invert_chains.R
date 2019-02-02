@@ -23,15 +23,21 @@
 
 find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
 
+  chains = NULL # required for dplyr 0.8 update
+  parameters = NULL
+  value = NULL
+
   e <- rstan::extract(model, permuted = FALSE)
   v <- reshape2::melt(e)
   vv <- v[grepl(paste0("x\\[", trend), v$parameters), ]
-  vv <- dplyr::group_by_(vv, "chains", "parameters")
-  vv <- dplyr::summarize_(vv, estimate = "stats::median(value)")
+  vv$parameters = as.factor(as.character(vv$parameters)) # needed with dplyr 0.8, all levels returned otherwise
+  vv <- dplyr::group_by(vv, chains, parameters)
+  vv <- dplyr::summarise(vv, estimate = stats::median(value))
   zz <- v[grepl(paste0("Z\\["), v$parameters), ]
+  zz$parameters = as.factor(as.character(zz$parameters)) # needed with dplyr 0.8, all levels returned otherwise
   zz <- zz[grepl(paste0(trend, "]"), zz$parameters), ]
-  zz <- dplyr::group_by_(zz, "chains", "parameters")
-  zz <- dplyr::summarize_(zz, estimate = "stats::median(value)")
+  zz <- dplyr::group_by(zz, chains, parameters)
+  zz <- dplyr::summarise(zz, estimate = stats::median(value))
   ## vv is dimensioned nchains * nyears (x[1:nyears,trend=i])
   ## zz is dimensioned n_time series  (Z[1:time series,trend=i])
 
