@@ -11,9 +11,15 @@ RcppExport SEXP _rcpp_module_boot_stan_fit4corr_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4dfa_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4hmm_gaussian_mod();
 RcppExport SEXP _rcpp_module_boot_stan_fit4regime_1_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4dfa_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4hmm_gaussian_mod();
+RcppExport SEXP _rcpp_module_boot_stan_fit4regime_1_mod();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_rcpp_module_boot_stan_fit4corr_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4corr_mod, 0},
+    {"_rcpp_module_boot_stan_fit4dfa_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4dfa_mod, 0},
+    {"_rcpp_module_boot_stan_fit4hmm_gaussian_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4hmm_gaussian_mod, 0},
+    {"_rcpp_module_boot_stan_fit4regime_1_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4regime_1_mod, 0},
     {"_rcpp_module_boot_stan_fit4dfa_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4dfa_mod, 0},
     {"_rcpp_module_boot_stan_fit4hmm_gaussian_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4hmm_gaussian_mod, 0},
     {"_rcpp_module_boot_stan_fit4regime_1_mod", (DL_FUNC) &_rcpp_module_boot_stan_fit4regime_1_mod, 0},
