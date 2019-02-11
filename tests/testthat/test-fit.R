@@ -2,21 +2,23 @@ context("Fitting")
 
 if (interactive()) options(mc.cores = parallel::detectCores())
 
-y <- t(scale(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")]))
-
 set.seed(1)
-fit1 <- fit_dfa(y = y, num_trends = 1, iter = 800, chains = 1)
 
-test_that("MARSS and bayesdfa match", {
-  ml_fit <- MARSS::MARSS(y, form = "dfa", model = list(m = 1))
-  ml_means <- c(ml_fit$states)
-  bayes_means <- apply(extract(fit1$model, "x")$x[, 1, ], 2, mean)
-  expect_equal(cor(abs(bayes_means), abs(ml_means)), 1, tolerance = 0.01)
-})
+marss_installed <- "MARSS" %in% rownames(installed.packages())
+if (marss_installed) {
+  y <- t(scale(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")]))
+  fit1 <- fit_dfa(y = y, num_trends = 1, iter = 600, chains = 1)
+  test_that("MARSS and bayesdfa match", {
+    ml_fit <- MARSS::MARSS(y, form = "dfa", model = list(m = 1))
+    ml_means <- c(ml_fit$states)
+    bayes_means <- apply(extract(fit1$model, "x")$x[, 1, ], 2, mean)
+    expect_equal(cor(abs(bayes_means), abs(ml_means)), 1, tolerance = 0.01)
+  })
 
-test_that("print method works", {
-  expect_output(print(fit1), "n_eff")
-})
+  test_that("print method works", {
+    expect_output(print(fit1), "n_eff")
+  })
+}
 
 test_that("NA indexing works", {
   yy <- matrix(nrow = 3, ncol = 3, data = 1)
@@ -38,12 +40,13 @@ test_that("find_dfa_trends works", {
 
   set.seed(42)
   s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
-  x <- find_dfa_trends(
-    y = s$y_sim, iter = 1000,
-    kmin = 1, kmax = 2, chains = 1, compare_normal = FALSE,
-    variance = "equal", convergence_threshold = 1.1,
-    control = list(adapt_delta = 0.95, max_treedepth = 20)
-  )
+  expect_warning({
+    x <- find_dfa_trends(
+      y = s$y_sim, iter = 1000,
+      kmin = 1, kmax = 2, chains = 1, compare_normal = FALSE,
+      variance = "equal", convergence_threshold = 1.1,
+      control = list(adapt_delta = 0.95, max_treedepth = 20)
+    )})
 
   expect_equal(x$summary$model, c(2L, 1L))
   expect_lt(x$summary$looic[[1]], x$summary$looic[[2]])
