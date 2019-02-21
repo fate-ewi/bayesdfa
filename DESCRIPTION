@@ -28,7 +28,7 @@ Imports:
     methods,
     Rcpp (>= 0.12.0),
     rstan (>= 2.18.1),
-    rstantools (>= 1.5.1),
+    rstantools (>= 1.5.1.9000),
     ggplot2 (>= 2.2.0),
     loo,
     dplyr (>= 0.8.0),
@@ -45,6 +45,7 @@ Suggests:
 URL: https://github.com/fate-ewi/bayesdfa
 BugReports: https://github.com/fate-ewi/bayesdfa/issues
 RoxygenNote: 6.1.1
+Remotes: stan-dev/rstantools@c3c59fb
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 SystemRequirements: GNU make
