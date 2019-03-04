@@ -23,19 +23,14 @@ Encoding: UTF-8
 LazyData: true
 Biarch: true
 Depends:
-    R (>= 3.4.0),
+    R (>= 3.5.0), Rcpp (>= 0.12.0), rlang (>= 0.3.1)
 Imports:
     methods,
-    Rcpp (>= 0.12.0),
-    rstan (>= 2.18.1),
-    rstantools (>= 1.5.1.9000),
+    rstan (>= 2.14.0),
     ggplot2 (>= 2.2.0),
-    loo,
+    loo (>= 2.0.0),
     dplyr (>= 0.8.0),
-    rlang,
     reshape2
-LinkingTo: StanHeaders (>= 2.18.0), rstan (>= 2.18.1), BH (>= 1.66.0), 
-    Rcpp (>= 0.12.0), RcppEigen (>= 0.3.3.3.0)
 Suggests:
     testthat,
     parallel,
@@ -45,7 +40,6 @@ Suggests:
 URL: https://github.com/fate-ewi/bayesdfa
 BugReports: https://github.com/fate-ewi/bayesdfa/issues
 RoxygenNote: 6.1.1
-Remotes: stan-dev/rstantools@c3c59fb
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 SystemRequirements: GNU make
