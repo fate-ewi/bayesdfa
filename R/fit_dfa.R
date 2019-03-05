@@ -216,14 +216,8 @@ fit_dfa <- function(y = y,
   if (estimate_trend_ar) pars <- c(pars, "phi")
   if (estimate_trend_ma) pars <- c(pars, "theta")
 
-  if (exists(".dfa.stan.model")) {
-    model <- .dfa.stan.model
-  } else {
-    model <- get_stan_model(model_name="dfa")
-  }
-
   sampling_args <- list(
-    object = model,
+    object = stanmodels$dfa,
     data = data_list,
     pars = pars,
     control = control,
@@ -254,49 +248,3 @@ fit_dfa <- function(y = y,
   out
 }
 
-
-
-#' Load compiled Stan model
-#'
-#' @param model_name String that is dfa, regime_1, hmm_gaussian, or corr
-#'
-#' @return Stan model.
-#'
-#' @export
-get_stan_model <- function(model_name) {
-  ## If the cached model doesn't work, just compile a new one.
-  tryCatch({
-    binary <- system.file(
-      'libs',
-      Sys.getenv('R_ARCH'),
-      paste0(model_name,'_stan_model.RData'),
-      package = 'bayesdfa',
-      mustWork = TRUE
-    )
-    load(binary)
-    obj.name <- 'model.stanm'
-    stanm <- eval(parse(text = obj.name))
-
-    ## Should cause an error if the model doesn't work.
-    stanm@mk_cppmodule(stanm)
-    stanm
-  }, error = function(cond) {
-    compile_stan_model(model_name)
-  })
-}
-
-#' Compile Stan model
-#'
-#' @param model_name String that is dfa, regime_1, hmm_gaussian, or corr
-#'
-#' @return Stan model.
-#'
-#' @export
-compile_stan_model <- function(model_name) {
-  fn <- paste0('stan/',model_name,'.stan')
-
-  stan.src <- system.file(fn, package = 'bayesdfa', mustWork = TRUE)
-  stanc <- rstan::stanc(stan.src)
-
-  return(rstan::stan_model(stanc_ret = stanc, model_name = paste0(model_name, '_model')))
-}

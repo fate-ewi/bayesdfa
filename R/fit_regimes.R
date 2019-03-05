@@ -49,13 +49,7 @@ fit_regimes <- function(y,
       pars = c("mu_k", "sigma_k", "log_lik")
     )
 
-    if (exists(".regime.stan.model")) {
-      model <- .regime.stan.model
-    } else {
-      model <- get_stan_model(model_name="regime_1")
-    }
-
-    m <- rstan::sampling(object=model,
+    m <- rstan::sampling(object=stanmodels$regime_1,
       data = stan_data,
       iter = iter,
       chains = chains,
@@ -80,13 +74,7 @@ fit_regimes <- function(y,
       )
     )
 
-    if (exists(".hmm.stan.model")) {
-      model <- .hmm.stan.model
-    } else {
-      model <- get_stan_model(model_name="hmm_gaussian")
-    }
-
-    m <- rstan::sampling(object=model,
+    m <- rstan::sampling(object=stanmodels$hmm_gaussian,
       data = stan_data,
       iter = iter,
       thin = thin,

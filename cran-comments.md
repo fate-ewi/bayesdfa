@@ -6,9 +6,11 @@
 
 ## R CMD check results
 
-0 errors | 0 warnings | 2 notes
+0 errors | 0 warnings | 3 notes
 
-* installed size is  5.2Mb; sub-directories of 1Mb or more: libs 4.5Mb
+* installed size is  5.4Mb; sub-directories of 1Mb or more: libs 4.7Mb
+* Non-standard files/directories found at top level:
+    ‘CRAN-RELEASE’ ‘README.Rmd’ ‘cran-comments.md’
 * GNU make is a SystemRequirements
 
 Explanation: this is from the compiled 'Stan' model and associated libraries, and is necessary https://mc-stan.org/rstantools/articles/minimal-rstan-package.html.

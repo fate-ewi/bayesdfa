@@ -21,16 +21,18 @@ Description: Implements Bayesian dynamic factor analysis with 'Stan'. Dynamic
 License: GPL (>=3)
 Encoding: UTF-8
 LazyData: true
-Biarch: true
 Depends:
-    R (>= 3.5.0), Rcpp (>= 0.12.0), rlang (>= 0.3.1)
+    R (>= 3.4.0), Rcpp (>= 0.12.18), methods
 Imports:
-    methods,
-    rstan (>= 2.14.0),
-    ggplot2 (>= 2.2.0),
+    rstan (>= 2.18.2),
+    rstantools (>= 1.5.1),
+    ggplot2,
     loo (>= 2.0.0),
     dplyr (>= 0.8.0),
-    reshape2
+    reshape2,
+    rlang (>= 0.3.1)
+LinkingTo: StanHeaders (>= 2.18.0), rstan (>= 2.18.2), BH (>= 1.66),
+        Rcpp (>= 0.12.7), RcppEigen (>= 0.3.3.3.0)
 Suggests:
     testthat,
     parallel,

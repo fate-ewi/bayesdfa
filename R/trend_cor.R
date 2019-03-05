@@ -65,15 +65,9 @@ trend_cor <- function(rotated_modelfit,
 
   samples <- sample(seq_len(nrow(x)), size = trend_samples)
 
-  if (exists(".corr.stan.model")) {
-    model <- .corr.stan.model
-  } else {
-    model <- get_stan_model(model_name="corr")
-  }
-
   out <- vapply(seq_len(length(samples)), FUN = function(i) {
     xi <- as.numeric(scale(as.numeric(x[samples[i], ])))
-    m <- rstan::sampling(object=model,
+    m <- rstan::sampling(object=stanmodels$corr,
       data = list(x = xi, y = y, N = length(y)),
       iter = stan_iter, chains = stan_chains, warmup = stan_iter / 2, ...
     )
