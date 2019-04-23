@@ -37,6 +37,12 @@
 #'   values through time. This matches the MARSS input data format. If `long`
 #'   then the input data should have columns representing the various timeseries
 #'   and rows representing the values through time.
+#' @param obs_covar Optional dataframe of data with 4 named columns ("time","timeseries","covariate","value"), representing: (1) time, (2) the time series
+#'   affected, (3) the covariate number for models with more than one covariate affecting each
+#'   trend, and (4) the value of the covariate
+#' @param pro_covar Optional dataframe of data with 4 named columns ("time","trend","covariate","value"), representing: (1) time, (2) the trend
+#'   affected, (3) the covariate number for models with more than one covariate affecting each
+#'   trend, and (4) the value of the covariate
 #' @param ... Any other arguments to pass to [rstan::sampling()].
 #' @details Note that there is nothing restricting the loadings and trends from
 #'   being inverted (i.e. multiplied by `-1`) for a given chain. Therefore, if
@@ -56,7 +62,17 @@
 #' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 #' # only 1 chain and 250 iterations used so example runs quickly:
 #' m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1)
-
+#'\dontrun{
+#' # example of observation error covariates
+#' obs_covar = expand.grid("time"=1:20,"timeseries"=1:3,"covariate"=1)
+#' obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
+#' m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1, obs_covar=obs_covar)
+#'
+#' # example of process error covariates
+#' pro_covar = expand.grid("time"=1:20,"trend"=1:3,"covariate"=1)
+#' pro_covar$value=rnorm(nrow(pro_covar),0,0.1)
+#' m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1, pro_covar=pro_covar)
+#'}
 fit_dfa <- function(y = y,
                     covar = NULL,
                     covar_index = NULL,
@@ -74,6 +90,8 @@ fit_dfa <- function(y = y,
                     estimate_trend_ma = FALSE,
                     sample = TRUE,
                     data_shape = c("wide", "long"),
+                    obs_covar = NULL,
+                    pro_covar = NULL,
                     ...) {
   data_shape <- match.arg(data_shape)
   if (ncol(y) > nrow(y) && data_shape == "long") {
@@ -95,6 +113,17 @@ fit_dfa <- function(y = y,
   if (nrow(y) < 3) {
     stop("fit_dfa() only works with 3 or more time series. We detected ",
       nrow(y), " time series.")
+  }
+
+  if(!is.null(obs_covar)) {
+    if(ncol(obs_covar) != 4) {
+      stop("observation covariates must be in a data frame with 4 columns")
+    }
+  }
+  if(!is.null(pro_covar)) {
+    if(ncol(pro_covar) != 4) {
+      stop("process covariates must be in a data frame with 4 columns")
+    }
   }
 
   # parameters for DFA
@@ -175,6 +204,30 @@ fit_dfa <- function(y = y,
   use_normal <- if (nu_fixed > 100) 1 else 0
   if (estimate_nu) use_normal <- 0 # competing flags
 
+  # covariates
+  if(!is.null(obs_covar)) {
+    obs_covar_index = as.matrix(obs_covar[,c("time","timeseries","covariate")])
+    num_obs_covar = nrow(obs_covar_index)
+    n_obs_covar = length(unique(obs_covar_index[,"covariate"]))
+    obs_covar_value = obs_covar[,"value"]
+  } else {
+    num_obs_covar = 0
+    n_obs_covar = 0
+    obs_covar_value = c(0)[0]
+    obs_covar_index = matrix(0,1,3)[c(0)[0],]
+  }
+  if(!is.null(pro_covar)) {
+    pro_covar_index = as.matrix(pro_covar[,c("time","trend","covariate")])
+    num_pro_covar = nrow(pro_covar_index)
+    n_pro_covar = length(unique(pro_covar_index[,"covariate"]))
+    pro_covar_value = pro_covar[,"value"]
+  } else {
+    num_pro_covar = 0
+    n_pro_covar = 0
+    pro_covar_value = c(0)[0]
+    pro_covar_index = matrix(0,1,3)[c(0)[0],]
+  }
+
   data_list <- list(
     N = N,
     P = P,
@@ -206,7 +259,15 @@ fit_dfa <- function(y = y,
     use_normal = use_normal,
     est_cor = as.numeric(est_correlation),
     est_phi = as.numeric(estimate_trend_ar),
-    est_theta = as.numeric(estimate_trend_ma)
+    est_theta = as.numeric(estimate_trend_ma),
+    num_obs_covar = num_obs_covar,
+    n_obs_covar = n_obs_covar,
+    obs_covar_value = obs_covar_value,
+    obs_covar_index = obs_covar_index,
+    num_pro_covar = num_pro_covar,
+    n_pro_covar = n_pro_covar,
+    pro_covar_value = pro_covar_value,
+    pro_covar_index = pro_covar_index
   )
 
   pars <- c("x", "Z", "sigma", "log_lik", "psi") # removed pred
@@ -215,6 +276,8 @@ fit_dfa <- function(y = y,
   if (estimate_nu) pars <- c(pars, "nu")
   if (estimate_trend_ar) pars <- c(pars, "phi")
   if (estimate_trend_ma) pars <- c(pars, "theta")
+  if(!is.null(obs_covar)) pars = c(pars, "b_obs")
+  if(!is.null(pro_covar)) pars = c(pars, "b_pro")
 
   sampling_args <- list(
     object = stanmodels$dfa,

@@ -18,15 +18,19 @@ data {
   int<lower=0> row_indx_na[n_na]; // row indices of missing obs
   int<lower=0> col_indx_na[n_na]; // col indices of missing obs
   real<lower=1> nu_fixed; // df on student-t
-  int<lower=0> num_covar; // number of unique covariates
-  int<lower=0> num_unique_covar; // number of covar parameters to estimate
-  matrix[num_covar,N] d_covar; // inputted covariate matrix
-  int covar_indexing[P,num_covar]; // index of covariates to estimate
   int estimate_nu; // Estimate degrees of freedom?
   int use_normal; // flag, for large values of nu > 100, use normal instead
   int est_cor; // whether to estimate correlation in obs error (=1) or not (=0)
   int est_phi; // whether to estimate autocorrelation in trends (=1) or not (= 0)
   int est_theta; // whether to estimate moving-average in trends (=1) or not (= 0
+  int<lower=0> num_obs_covar; // number of unique observation covariates, dimension of matrix
+  int<lower=0> n_obs_covar; // number of unique covariates included
+  int obs_covar_index[num_obs_covar,3] ;// indexed by time, trend, covariate #, covariate value. +1 because of indexing issues
+  real obs_covar_value[num_obs_covar];
+  int<lower=0> num_pro_covar; // number of unique process covariates, dimension of matrix
+  int<lower=0> n_pro_covar; // number of unique process covariates included
+  int pro_covar_index[num_pro_covar,3] ;// indexed by time, trend, covariate #, covariate value. +1 because of indexing issues
+  real pro_covar_value[num_pro_covar];
 }
 transformed data {
   int n_pcor; // dimension for cov matrix
@@ -58,6 +62,8 @@ parameters {
   vector<lower=0>[K] psi; // expansion parameters
   vector[nZ] z; // estimated loadings in vec form
   vector[K] zpos; // constrained positive values
+  matrix[n_obs_covar, P] b_obs; // coefficients on observation model
+  matrix[n_pro_covar, K] b_pro; // coefficients on process model
   real<lower=0> sigma[nVariances];
   real<lower=2> nu[estimate_nu]; // df on student-t
   real ymiss[n_na];
@@ -151,9 +157,25 @@ transformed parameters {
     }
   }
 
+  // adjust predictions if process covariates exist
+  if(num_pro_covar > 0) {
+    for(i in 1:num_pro_covar) {
+      // indexed by time, trend, covariate #, covariate value
+      x[pro_covar_index[i,2],pro_covar_index[i,1]] = x[pro_covar_index[i,2],pro_covar_index[i,1]] + b_pro[pro_covar_index[i,3], pro_covar_index[i,2]] * pro_covar_value[i];
+    }
+  }
+
   // N is sample size, P = time series, K = number trends
   // [PxN] = [PxK] * [KxN]
   pred = Z * x;
+
+  // adjust predictions if observation covariates exist
+  if(num_obs_covar > 0) {
+    for(i in 1:num_obs_covar) {
+      // indexed by time, trend, covariate #, covariate value
+      pred[obs_covar_index[i,2],obs_covar_index[i,1]] = pred[obs_covar_index[i,2],obs_covar_index[i,1]] + b_obs[obs_covar_index[i,3], obs_covar_index[i,2]] * obs_covar_value[i];
+    }
+  }
 }
 model {
   // initial state for each trend

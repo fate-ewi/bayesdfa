@@ -9,7 +9,8 @@ fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 1,
   thin = 1, control = list(adapt_delta = 0.99, max_treedepth = 20),
   nu_fixed = 101, est_correlation = FALSE, estimate_nu = FALSE,
   estimate_trend_ar = FALSE, estimate_trend_ma = FALSE,
-  sample = TRUE, data_shape = c("wide", "long"), ...)
+  sample = TRUE, data_shape = c("wide", "long"), obs_covar = NULL,
+  pro_covar = NULL, ...)
 }
 \arguments{
 \item{y}{A matrix of data to fit. See \code{data_shape} option to specify whether
@@ -66,6 +67,14 @@ values through time. This matches the MARSS input data format. If \code{long}
 then the input data should have columns representing the various timeseries
 and rows representing the values through time.}
 
+\item{obs_covar}{Optional dataframe of data with 4 named columns ("time","timeseries","covariate","value"), representing: (1) time, (2) the time series
+affected, (3) the covariate number for models with more than one covariate affecting each
+trend, and (4) the value of the covariate}
+
+\item{pro_covar}{Optional dataframe of data with 4 named columns ("time","trend","covariate","value"), representing: (1) time, (2) the trend
+affected, (3) the covariate number for models with more than one covariate affecting each
+trend, and (4) the value of the covariate}
+
 \item{...}{Any other arguments to pass to \code{\link[rstan:sampling]{rstan::sampling()}}.}
 }
 \description{
@@ -82,6 +91,17 @@ set.seed(42)
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 # only 1 chain and 250 iterations used so example runs quickly:
 m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1)
+\dontrun{
+# example of observation error covariates
+obs_covar = expand.grid("time"=1:20,"timeseries"=1:3,"covariate"=1)
+obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
+m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1, obs_covar=obs_covar)
+
+# example of process error covariates
+pro_covar = expand.grid("time"=1:20,"trend"=1:3,"covariate"=1)
+pro_covar$value=rnorm(nrow(pro_covar),0,0.1)
+m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1, pro_covar=pro_covar)
+}
 }
 \seealso{
 plot_loadings plot_trends rotate_trends find_swans
