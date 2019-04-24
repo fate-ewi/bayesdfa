@@ -1,0 +1,142 @@
+---
+title: "Identifying extremes and latent regimes with glmmfields"
+author: ""
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimating latent trends with bayesdfa}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+Here we will walk through how to use the bayesdfa package to fit dynamic factor analysis (DFA) models with covariates. 
+   
+```{r set-knitr-options, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+library("knitr")
+opts_chunk$set(message = FALSE, fig.width = 5.5)
+```
+
+Let's load the necessary packages:
+
+```{r, message=FALSE, warning=FALSE}
+library(bayesdfa)
+library(ggplot2)
+library(dplyr)
+library(rstan)
+```
+
+## Notation review for DFA models
+
+Covariates in dynamic factor analysis are generally included in the observation model, rather than the process model. Without covariates, the model can be expressed as 
+
+$${x}_{t}={x}_{t-1}+{e}_t\\ { e }_{ t }\sim MVN(0,\textbf{Q})\\ { y }_{ t }=\textbf{Z}{ x }_{ t }+{ v }_{ t }\\ { v }_{ t }\sim MVN(0,\textbf{R})$$
+
+where the matrix $\textbf{Z}$ is dimensioned as the number of time series by number of trends, and maps the observed data $y_{t}$ to the latent trends $x_{t}$. 
+
+### Observation covariates
+
+Observation covariates can be 
+$${x}_{t}={x}_{t-1}+{e}_t\\ { e }_{ t }\sim MVN(0,\textbf{Q})\\ { y }_{ t }=\textbf{Z}{ x }_{ t }+\textbf{D}{ d }_{ t }+{ v }_{ t }\\ { v }_{ t }\sim MVN(0,\textbf{R})$$
+where the matrix $\textbf{D}$ represents time series by number of covariates at time $t$. For a single covariate, such as temperature, this would mean estimating $P$ parameters, where $P$ is the number of time series. For a model including 2 covariates, the number of estimated coefficients would be $2P$ and so forth.
+
+### Process covariates
+
+Process covariates on the trends are less common but can be written as 
+$${x}_{t}={x}_{t-1}+\textbf{C}{ c }_{ t }+{e}_t\\ { e }_{ t }\sim MVN(0,\textbf{Q})\\ { y }_{ t }=\textbf{Z}{ x }_{ t }+{ v }_{ t }\\ { v }_{ t }\sim MVN(0,\textbf{R})$$
+where the matrix $\textbf{C}$ represents the number of trends by number of covariates at time $t$. For a single trend, this would mean estimating $K$ parameters, where $K$ is the number of trends. For a model including 2 covariates, the number of estimated coefficients would be $2K$ and so forth.
+
+
+## Examples -- observation covariates
+
+We'll start by simulating some random trends using the `sim_dat` function,
+```{r simulate-data}
+set.seed(1)
+sim_dat <- sim_dfa(
+  num_trends = 1,
+  num_years = 20,
+  num_ts = 4
+)
+```
+
+Next, we can add a covariate effect to the trend estimate, `x`. For example,
+
+```{r}
+cov = expand.grid("time"=1:20, "timeseries"=1:4, "covariate"=1)
+cov$value = rnorm(nrow(cov),0,0.1)
+
+for(i in 1:nrow(cov)) {
+  sim_dat$y[cov$timeseries[i],cov$time[i]] = sim_dat$pred[cov$timeseries[i],cov$time[i]] + c(0.1,0.2,0.3,0.4)[cov$timeseries[i]]*cov$value[i]
+}
+```
+
+And now fit the model with `fit_dfa`
+
+```{r eval=FALSE}
+mod = fit_dfa(y = sim_dat$y, obs_covar = cov, num_trends = 1,
+  chains=1, iter=300)
+```
+
+We can then make plots of the true and estimated trend,
+
+```{r}
+plot(c(sim_dat$x), xlab="Time", ylab="True trend")
+```
+
+```{r}
+plot_trends(rotate_trends(mod)) + ylab("Estimated trend")
+```
+
+This approach could be modified to have covariates not affecting some time series. For example, if we didn't want the covariate to affect the last time series, we could say
+
+```{r}
+cov = cov[which(cov$timeseries!=4),]
+```
+
+And then again fit the model
+```{r eval=FALSE}
+mod = fit_dfa(y = sim_dat$y, obs_covar = cov, num_trends = 1,
+  chains=1)
+```
+
+## Examples -- process covariates
+
+We'll start by simulating some random trends using the `sim_dat` function,
+```{r simulate-data}
+set.seed(1)
+sim_dat <- sim_dfa(
+  num_trends = 2,
+  num_years = 20,
+  num_ts = 3
+)
+```
+
+Next, we can add a covariate effect to the trend estimate, `x`. For example,
+
+```{r}
+cov = rnorm(20, 0, 1)
+b_pro = c(0.1,0.3)
+x = matrix(0,2,20)
+
+for(i in 1:2) {
+  x[i,1] = cov[1]*b_pro[i]
+}
+
+for(i in 2:length(cov)) {
+  x[1,i] = x[1,i-1] + cov[i]*b_pro[1] + rnorm(1,0,1)
+  x[2,i] = x[2,i-1] + cov[i]*b_pro[2] + rnorm(1,0,1)
+}
+
+y = sim_dat$Z %*% x
+```
+
+And now fit the model with `fit_dfa`
+
+```{r}
+pro_cov = expand.grid("trend"=1:2, "time"=1:20, "covariate"=1)
+pro_cov$value = cov[pro_cov$time]
+
+mod = fit_dfa(y = sim_dat$y, pro_covar = pro_cov, num_trends = 2,
+  chains=1, iter=1000)
+```
+
+

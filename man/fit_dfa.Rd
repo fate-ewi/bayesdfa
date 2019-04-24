@@ -4,25 +4,16 @@
 \alias{fit_dfa}
 \title{Fit a Bayesian DFA}
 \usage{
-fit_dfa(y = y, covar = NULL, covar_index = NULL, num_trends = 1,
-  varIndx = NULL, zscore = TRUE, iter = 2000, chains = 4,
-  thin = 1, control = list(adapt_delta = 0.99, max_treedepth = 20),
-  nu_fixed = 101, est_correlation = FALSE, estimate_nu = FALSE,
-  estimate_trend_ar = FALSE, estimate_trend_ma = FALSE,
-  sample = TRUE, data_shape = c("wide", "long"), obs_covar = NULL,
-  pro_covar = NULL, ...)
+fit_dfa(y = y, num_trends = 1, varIndx = NULL, zscore = TRUE,
+  iter = 2000, chains = 4, thin = 1, control = list(adapt_delta =
+  0.99, max_treedepth = 20), nu_fixed = 101, est_correlation = FALSE,
+  estimate_nu = FALSE, estimate_trend_ar = FALSE,
+  estimate_trend_ma = FALSE, sample = TRUE, data_shape = c("wide",
+  "long"), obs_covar = NULL, pro_covar = NULL, ...)
 }
 \arguments{
 \item{y}{A matrix of data to fit. See \code{data_shape} option to specify whether
 this is long or wide format data.}
-
-\item{covar}{A matrix of covariates, defaults to NULL (not included)}
-
-\item{covar_index}{A matrix, dimensioned as the number of time series x
-number of covariates that indexes which elements of the covariate matrix
-are shared across time series. Defaults to a matrix with unique
-coefficients estimated for each covariate-time series combination. Elements
-may be shared across time series or covariates.}
 
 \item{num_trends}{Number of trends to fit.}
 
@@ -76,6 +67,14 @@ affected, (3) the covariate number for models with more than one covariate affec
 trend, and (4) the value of the covariate}
 
 \item{...}{Any other arguments to pass to \code{\link[rstan:sampling]{rstan::sampling()}}.}
+
+\item{covar}{A matrix of covariates, defaults to NULL (not included)}
+
+\item{covar_index}{A matrix, dimensioned as the number of time series x
+number of covariates that indexes which elements of the covariate matrix
+are shared across time series. Defaults to a matrix with unique
+coefficients estimated for each covariate-time series combination. Elements
+may be shared across time series or covariates.}
 }
 \description{
 Fit a Bayesian DFA

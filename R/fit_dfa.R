@@ -74,8 +74,6 @@
 #' m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1, pro_covar=pro_covar)
 #'}
 fit_dfa <- function(y = y,
-                    covar = NULL,
-                    covar_index = NULL,
                     num_trends = 1,
                     varIndx = NULL,
                     zscore = TRUE,
@@ -146,22 +144,6 @@ fit_dfa <- function(y = y,
     }
   }
   Y <- y # included in returned object at end
-  # Deal with covariates
-  d_covar <- covar
-
-  num_covar <- nrow(d_covar)
-  covar_indexing <- covar_index
-  if (!is.null(d_covar) && is.null(covar_indexing)) {
-    # covariates included but index matrix not, assume independent for all elements
-    covar_indexing <- matrix(seq(1, num_covar * P), P, num_covar)
-    num_unique_covar <- max(covar_indexing)
-  }
-  if (is.null(d_covar)) {
-    covar_indexing <- matrix(0, P, 0)
-    d_covar <- matrix(0, 0, N)
-    num_covar <- 0
-    num_unique_covar <- 0
-  }
 
   # mat_indx now references the unconstrained values of the Z matrix.
   mat_indx <- matrix(0, P, K)
@@ -251,10 +233,6 @@ fit_dfa <- function(y = y,
     col_indx_na = col_indx_na,
     n_na = n_na,
     nu_fixed = nu_fixed,
-    d_covar = d_covar,
-    num_covar = num_covar,
-    covar_indexing = covar_indexing,
-    num_unique_covar = num_unique_covar,
     estimate_nu = as.integer(estimate_nu),
     use_normal = use_normal,
     est_cor = as.numeric(est_correlation),
@@ -272,7 +250,6 @@ fit_dfa <- function(y = y,
 
   pars <- c("x", "Z", "sigma", "log_lik", "psi") # removed pred
   if (est_correlation) pars <- c(pars, "Omega") # add correlation matrix
-  if (!is.null(covar)) pars <- c(pars, "D")
   if (estimate_nu) pars <- c(pars, "nu")
   if (estimate_trend_ar) pars <- c(pars, "phi")
   if (estimate_trend_ma) pars <- c(pars, "theta")
