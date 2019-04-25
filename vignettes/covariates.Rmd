@@ -1,10 +1,10 @@
 ---
-title: "Identifying extremes and latent regimes with glmmfields"
+title: "Examples of including covariates with bayesdfa"
 author: ""
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Estimating latent trends with bayesdfa}
+  %\VignetteIndexEntry{Including covariates with bayesdfa}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -49,7 +49,7 @@ where the matrix $\textbf{C}$ represents the number of trends by number of covar
 ## Examples -- observation covariates
 
 We'll start by simulating some random trends using the `sim_dat` function,
-```{r simulate-data}
+```{r simulate-data-obs}
 set.seed(1)
 sim_dat <- sim_dfa(
   num_trends = 1,
@@ -71,7 +71,7 @@ for(i in 1:nrow(cov)) {
 
 And now fit the model with `fit_dfa`
 
-```{r eval=FALSE}
+```{r}
 mod = fit_dfa(y = sim_dat$y, obs_covar = cov, num_trends = 1,
   chains=1, iter=300)
 ```
@@ -100,7 +100,10 @@ mod = fit_dfa(y = sim_dat$y, obs_covar = cov, num_trends = 1,
 
 ## Examples -- process covariates
 
+As a cautionary note, there's some identifiability issues with including covariates in the process model. Covariates need to be standardized or centered prior to being included. Future versions of this vignette will include more clear examples and recommendations.
+
 We'll start by simulating some random trends using the `sim_dat` function,
+
 ```{r simulate-data}
 set.seed(1)
 sim_dat <- sim_dfa(
