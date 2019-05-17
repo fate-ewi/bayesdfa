@@ -2,12 +2,6 @@
 #'
 #' @param y A matrix of data to fit. See `data_shape` option to specify whether
 #'   this is long or wide format data.
-#' @param covar A matrix of covariates, defaults to NULL (not included)
-#' @param covar_index A matrix, dimensioned as the number of time series x
-#'   number of covariates that indexes which elements of the covariate matrix
-#'   are shared across time series. Defaults to a matrix with unique
-#'   coefficients estimated for each covariate-time series combination. Elements
-#'   may be shared across time series or covariates.
 #' @param num_trends Number of trends to fit.
 #' @param varIndx Indices indicating which timeseries should have shared
 #'   variances.
