@@ -15,11 +15,13 @@
 #' @importFrom rlang .data
 #' @export
 #' @examples
+#' \donttest{
 #' data(Nile)
 #' m <- fit_regimes(log(Nile), n_regimes = 2, chains = 1, iter = 800)
 #' plot_regime_model(m)
 #' plot_regime_model(m, plot_prob_indices=c(2))
 #' plot_regime_model(m, type = "means")
+#' }
 
 plot_regime_model <- function(model, probs = c(0.05, 0.95),
                               type = c("probability", "means"),
