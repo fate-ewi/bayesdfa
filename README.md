@@ -18,3 +18,21 @@ The 'bayesdfa' package was funded by a NOAA Fisheries and the Environment (FATE)
 
 **Applications**  
 The 'bayesdfa' models were presented to the PFMC's SSC in November 2017 and have been included in the 2018 California Current Integrated Ecosystem Report, https://www.integratedecosystemassessment.noaa.gov/Assets/iea/california/Report/pdf/CCIEA-status-report-2018.pdf
+
+**Citation**
+
+<https://doi.org/10.32614/RJ-2019-007>
+
+```
+@article{ward_etal_2019,
+  author = {Eric J. Ward and Sean C. Anderson and Luis A. Damiano and
+          Mary E. Hunsicker and Michael A. Litzow},
+  title = {{Modeling regimes with extremes: the bayesdfa package for
+          identifying and forecasting common trends and anomalies in
+          multivariate time-series data}},
+  year = {2019},
+  journal = {{The R Journal}},
+  doi = {10.32614/RJ-2019-007},
+  url = {https://journal.r-project.org/archive/2019/RJ-2019-007/index.html}
+}
+```
