@@ -20,6 +20,14 @@ if (marss_installed) {
   })
 }
 
+test_that("est_correlation = TRUE works", {
+  skip_on_cran()
+  set.seed(42)
+  s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
+  m <- fit_dfa(y = s$y_sim, iter = 200, chains = 1, num_trends = 2, est_correlation = TRUE)
+  expect_equal(class(m$model)[[1]], "stanfit")
+})
+
 test_that("NA indexing works", {
   yy <- matrix(nrow = 3, ncol = 3, data = 1)
   yy[1, 1] <- NA

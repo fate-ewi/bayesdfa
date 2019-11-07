@@ -251,10 +251,11 @@ generated quantities {
   matrix[n_pcor, n_pcor] Omega;
   matrix[n_pcor, n_pcor] Sigma;
   int<lower=0> j;
+  j = 0;
 
   if(est_cor == 1) {
-  Omega = multiply_lower_tri_self_transpose(Lcorr);
-  Sigma = quad_form_diag(Omega, sigma_vec);
+    Omega = multiply_lower_tri_self_transpose(Lcorr);
+    Sigma = quad_form_diag(Omega, sigma_vec);
   }
 
   // calculate pointwise log_lik for loo package:
