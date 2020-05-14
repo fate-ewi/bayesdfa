@@ -20,7 +20,6 @@ The 'bayesdfa' package was funded by a NOAA Fisheries and the Environment (FATE)
 The 'bayesdfa' models were presented to the PFMC's SSC in November 2017 and have been included in the 2018 California Current Integrated Ecosystem Report, https://www.integratedecosystemassessment.noaa.gov/Assets/iea/california/Report/pdf/CCIEA-status-report-2018.pdf
 
 **Citation**
-
 <https://journal.r-project.org/archive/2019/RJ-2019-007/index.html>
 
 ```
