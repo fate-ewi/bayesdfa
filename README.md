@@ -21,7 +21,7 @@ The 'bayesdfa' models were presented to the PFMC's SSC in November 2017 and have
 
 **Citation**
 
-<https://doi.org/10.32614/RJ-2019-007>
+<https://journal.r-project.org/archive/2019/RJ-2019-007/index.html>
 
 ```
 @article{ward_etal_2019,
