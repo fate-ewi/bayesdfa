@@ -1,7 +1,12 @@
 #' Fit a Bayesian DFA
 #'
 #' @param y A matrix of data to fit. See `data_shape` option to specify whether
-#'   this is long or wide format data.
+#'   this is long or wide format data. Wide format data (default) is a matrix with
+#'   time across columns and unique time series across rows, and can only contain 1 observation
+#'   per time series - time combination. In contrast, long format data is a data frame that includes
+#'   observations ("obs"), time ("time") and time series ("ts") identifiers -- the benefit of long
+#'   format is that multiple observations per time series can be included. Correlation matrix currently
+#'   not estimated if data shape is long.
 #' @param num_trends Number of trends to fit.
 #' @param varIndx Indices indicating which timeseries should have shared
 #'   variances.
@@ -16,7 +21,7 @@
 #'   greater than 100, a normal random walk is used instead of a random walk
 #'   with a t-distribution. Defaults to `101`.
 #' @param est_correlation Boolean, whether to estimate correlation of
-#'   observation error matrix `R`. Defaults to `FALSE`.
+#'   observation error matrix `R`. Defaults to `FALSE`. Currently can't be estimated if data are in long format.
 #' @param estimate_nu Logical. Estimate the student t degrees of freedom
 #'   parameter? Defaults to `FALSE`,
 #' @param estimate_trend_ar Logical. Estimate AR(1) parameters on DFA trends?
@@ -29,14 +34,16 @@
 #' @param data_shape If `wide` (the current default) then the input data should
 #'   have rows representing the various timeseries and columns representing the
 #'   values through time. This matches the MARSS input data format. If `long`
-#'   then the input data should have columns representing the various timeseries
-#'   and rows representing the values through time.
+#'   then the long format data is a data frame that includes observations ("obs"),
+#'   time ("time") and time series ("ts") identifiers -- the benefit of long
+#'   format is that multiple observations per time series can be included
 #' @param obs_covar Optional dataframe of data with 4 named columns ("time","timeseries","covariate","value"), representing: (1) time, (2) the time series
 #'   affected, (3) the covariate number for models with more than one covariate affecting each
 #'   trend, and (4) the value of the covariate
 #' @param pro_covar Optional dataframe of data with 4 named columns ("time","trend","covariate","value"), representing: (1) time, (2) the trend
 #'   affected, (3) the covariate number for models with more than one covariate affecting each
 #'   trend, and (4) the value of the covariate
+#' @param z_bound Optional hard constraints for estimated factor loadings -- really only applies to model with 1 trend. Passed in as a 2-element vector representing the lower and upper bound, e.g. (0, 100) to constrain positive
 #' @param ... Any other arguments to pass to [rstan::sampling()].
 #' @details Note that there is nothing restricting the loadings and trends from
 #'   being inverted (i.e. multiplied by `-1`) for a given chain. Therefore, if
@@ -66,6 +73,11 @@
 #' pro_covar = expand.grid("time"=1:20,"trend"=1:3,"covariate"=1)
 #' pro_covar$value=rnorm(nrow(pro_covar),0,0.1)
 #' m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1, pro_covar=pro_covar)
+#'
+#' # example of long format data
+#' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+#' long = data.frame("obs" = c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,]), "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
+#' m = fit_dfa(y = long, data_shape = "long", iter = 500, chains = 1, num_trends = 1, seed = 42)
 #'}
 fit_dfa <- function(y = y,
                     num_trends = 1,
@@ -84,14 +96,19 @@ fit_dfa <- function(y = y,
                     data_shape = c("wide", "long"),
                     obs_covar = NULL,
                     pro_covar = NULL,
+                    z_bound = NULL,
                     ...) {
   data_shape <- match.arg(data_shape)
-  if (ncol(y) > nrow(y) && data_shape == "long") {
-    warning(
-      "ncol(y) > nrow(y) and data_shape == 'long'; are you sure your",
-      "input data is in long format?"
-    )
-  }
+
+  #if (ncol(y) > nrow(y) && data_shape == "long") {
+  #  warning(
+  #    "ncol(y) > nrow(y) and data_shape == 'long'; are you sure your",
+  #    "input data is in long format?"
+  #  )
+  #}
+  #if (data_shape == "long") {
+  #  y <- t(y)
+  #}
   if (ncol(y) < nrow(y) && data_shape == "wide") {
     warning(
       "ncol(y) < nrow(y) and data_shape == 'wide'; are you sure your",
@@ -99,12 +116,32 @@ fit_dfa <- function(y = y,
     )
   }
   if (data_shape == "long") {
-    y <- t(y)
+    if(est_correlation==TRUE) {
+      stop("Estimation of the observation error correlation matrix not currently estimated when data are in long format")
+    }
+    if(length(which(names(y)=="ts"))==0) {
+      stop("Error: data shape is long, and must contain a field 'ts' representing time series dimension")
+    }
+    if(length(which(names(y)=="time"))==0) {
+      stop("Error: data shape is long, and must contain a field 'time' representing time dimension")
+    }
+    if(length(which(names(y)=="obs"))==0) {
+      stop("Error: data shape is long, and must contain a field 'obs' representing observations")
+    }
+    # rescale if needed
+    y$time = y$time - min(y[,"time"]) + 1 # min time now = 1
+    y$ts = as.numeric(as.factor(y[,"ts"]))
+    N = max(y[,"time"])
+    P = max(y[,"ts"])
   }
 
-  if (nrow(y) < 3) {
-    stop("fit_dfa() only works with 3 or more time series. We detected ",
-      nrow(y), " time series.")
+  if(data_shape=="wide") {
+    N <- ncol(y) # number of time steps
+    P <- nrow(y) # number of time series
+    if (nrow(y) < 3) {
+      stop("fit_dfa() only works with 3 or more time series. We detected ",
+        nrow(y), " time series.")
+    }
   }
 
   if(!is.null(obs_covar)) {
@@ -117,24 +154,42 @@ fit_dfa <- function(y = y,
       stop("process covariates must be in a data frame with 4 columns")
     }
   }
+  if(!is.null(z_bound) && length(z_bound)!=2) {
+    stop("if you're using z bounds, this needs to be a 2-element vector")
+  }
 
   # parameters for DFA
-  N <- ncol(y) # number of time steps
-  P <- nrow(y) # number of time series
   K <- num_trends # number of dfa trends
   nZ <- P * K - sum(seq_len(K)) # number of non-zero parameters that are unconstrained
 
-  for (i in seq_len(P)) {
-    if (zscore) {
-      if (length(unique(na.omit(c(y[i, ])))) == 1L) {
-        stop("Can't scale one or more of the time series because all values ",
-          "are the same. Remove this/these time series or set `zscore = FALSE`.",
-          call. = FALSE
-        )
+  # standardizing data by rows only works if data provided in "wide" format
+  if(data_shape == "wide") {
+    for (i in seq_len(P)) {
+      if (zscore) {
+        if (length(unique(na.omit(c(y[i, ])))) == 1L) {
+          stop("Can't scale one or more of the time series because all values ",
+            "are the same. Remove this/these time series or set `zscore = FALSE`.",
+            call. = FALSE
+          )
+        }
+        y[i, ] <- scale(y[i, ], center = TRUE, scale = TRUE)
+      } else {
+        y[i, ] <- scale(y[i, ], center = TRUE, scale = FALSE)
       }
-      y[i, ] <- scale(y[i, ], center = TRUE, scale = TRUE)
+    }
+  } else {
+    if(zscore) {
+      # standardize
+      for(i in seq_len(P)) {
+        indx = which(y[,"ts"] == i)
+        y[indx,"obs"] = scale(y[indx,"obs" ], center = TRUE, scale = TRUE)
+      }
     } else {
-      y[i, ] <- scale(y[i, ], center = TRUE, scale = FALSE)
+      # just center
+      for(i in seq_len(P)) {
+        indx = which(y[,"ts"] == i)
+        y[indx,"obs"] = scale(y[indx, "obs"], center = TRUE, scale = FALSE)
+      }
     }
   }
   Y <- y # included in returned object at end
@@ -152,6 +207,7 @@ fit_dfa <- function(y = y,
   row_indx <- matrix((rep(seq_len(P), K)), P, K)[mat_indx > 0]
   col_indx <- matrix(sort(rep(seq_len(K), P)), P, K)[mat_indx > 0]
 
+  # row_indx_z and col_indx_z contain locations of zeros in Z matrix of loadings
   diag(mat_indx) <- 1
   row_indx_z <- matrix((rep(seq_len(P), K)), P, K)[mat_indx == 0]
   col_indx_z <- matrix(sort(rep(seq_len(K), P)), P, K)[mat_indx == 0]
@@ -166,15 +222,24 @@ fit_dfa <- function(y = y,
   nVariances <- length(unique(varIndx))
 
   # indices of positive values - Stan can't handle NAs
-  row_indx_pos <- matrix(rep(seq_len(P), N), P, N)[!is.na(y)]
-  col_indx_pos <- matrix(sort(rep(seq_len(N), P)), P, N)[!is.na(y)]
-  n_pos <- length(row_indx_pos)
-
-  row_indx_na <- matrix(rep(seq_len(P), N), P, N)[is.na(y)]
-  col_indx_na <- matrix(sort(rep(seq_len(N), P)), P, N)[is.na(y)]
-  n_na <- length(row_indx_na)
-
-  y <- y[!is.na(y)]
+  if(data_shape == "wide") {
+    row_indx_pos <- matrix(rep(seq_len(P), N), P, N)[!is.na(y)]
+    col_indx_pos <- matrix(sort(rep(seq_len(N), P)), P, N)[!is.na(y)]
+    n_pos <- length(row_indx_pos)
+    row_indx_na <- matrix(rep(seq_len(P), N), P, N)[is.na(y)]
+    col_indx_na <- matrix(sort(rep(seq_len(N), P)), P, N)[is.na(y)]
+    n_na <- length(row_indx_na)
+    y <- y[!is.na(y)]
+  } else {
+    row_indx_pos = y[,"ts"]
+    col_indx_pos = y[,"time"]
+    n_pos = length(row_indx_pos)
+    # these are just dummy placeholders
+    row_indx_na = matrix(1,1,1)[is.na(runif(1))]
+    col_indx_na = matrix(1,1,1)[is.na(runif(1))]
+    n_na <- length(row_indx_na)
+    y = y[,"obs"]
+  }
 
   # flag for whether to use a normal dist
   use_normal <- if (nu_fixed > 100) 1 else 0
@@ -204,6 +269,9 @@ fit_dfa <- function(y = y,
     pro_covar_index = matrix(0,1,3)[c(0)[0],]
   }
 
+  if(is.null(z_bound)) {
+    z_bound = c(-100,100)
+  }
   data_list <- list(
     N = N,
     P = P,
@@ -239,7 +307,9 @@ fit_dfa <- function(y = y,
     num_pro_covar = num_pro_covar,
     n_pro_covar = n_pro_covar,
     pro_covar_value = pro_covar_value,
-    pro_covar_index = pro_covar_index
+    pro_covar_index = pro_covar_index,
+    z_bound = z_bound,
+    long_format = ifelse(data_shape=="wide",0,1)
   )
 
   pars <- c("x", "Z", "sigma", "log_lik", "psi") # removed pred
@@ -275,6 +345,7 @@ fit_dfa <- function(y = y,
     }
 
     out[["data"]] <- Y # keep data included
+    out[["shape"]] = data_shape
     out <- structure(out, class = "bayesdfa")
   } else {
     out <- data_list

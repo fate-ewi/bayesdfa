@@ -4,8 +4,14 @@
 \alias{plot_loadings}
 \title{Plot the loadings from a DFA}
 \usage{
-plot_loadings(rotated_modelfit, names = NULL, facet = TRUE,
-  violin = TRUE, conf_level = 0.95, threshold = NULL)
+plot_loadings(
+  rotated_modelfit,
+  names = NULL,
+  facet = TRUE,
+  violin = TRUE,
+  conf_level = 0.95,
+  threshold = NULL
+)
 }
 \arguments{
 \item{rotated_modelfit}{Output from \code{\link[=rotate_trends]{rotate_trends()}}.}
@@ -22,7 +28,7 @@ violin plot? Defaults to \code{TRUE}.}
 
 \item{threshold}{Numeric (0-1). Optional for plots, if included, only plot
 loadings who have Pr(<0) or Pr(>0) > threshold. For example \code{threshold = 0.8}
-would only display estimates where 80% of posterior density was above/below
+would only display estimates where 80\% of posterior density was above/below
 zero. Defaults to \code{NULL} (not used).}
 }
 \description{

@@ -4,8 +4,12 @@
 \alias{plot_trends}
 \title{Plot the trends from a DFA}
 \usage{
-plot_trends(rotated_modelfit, years = NULL, highlight_outliers = FALSE,
-  threshold = 0.01)
+plot_trends(
+  rotated_modelfit,
+  years = NULL,
+  highlight_outliers = FALSE,
+  threshold = 0.01
+)
 }
 \arguments{
 \item{rotated_modelfit}{Output from \code{\link{rotate_trends}}}

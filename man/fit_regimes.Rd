@@ -4,8 +4,15 @@
 \alias{fit_regimes}
 \title{Fit models with differing numbers of regimes to trend data}
 \usage{
-fit_regimes(y, sds = NULL, n_regimes = 2, iter = 2000, thin = 1,
-  chains = 1, ...)
+fit_regimes(
+  y,
+  sds = NULL,
+  n_regimes = 2,
+  iter = 2000,
+  thin = 1,
+  chains = 1,
+  ...
+)
 }
 \arguments{
 \item{y}{Data, time series or trend from fitted DFA model.}

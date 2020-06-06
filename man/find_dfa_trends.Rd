@@ -4,9 +4,17 @@
 \alias{find_dfa_trends}
 \title{Find the best number of trends according to LOOIC}
 \usage{
-find_dfa_trends(y = y, kmin = 1, kmax = 5, iter = 2000, thin = 1,
-  compare_normal = FALSE, convergence_threshold = 1.05,
-  variance = c("equal", "unequal"), ...)
+find_dfa_trends(
+  y = y,
+  kmin = 1,
+  kmax = 5,
+  iter = 2000,
+  thin = 1,
+  compare_normal = FALSE,
+  convergence_threshold = 1.05,
+  variance = c("equal", "unequal"),
+  ...
+)
 }
 \arguments{
 \item{y}{A matrix of data to fit. Columns represent time element.}

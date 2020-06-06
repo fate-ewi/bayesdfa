@@ -1,3 +1,51 @@
+functions {
+
+  // this function subsets a matrix by dropping the row/column labeled 'drop'. P represents dimensions
+  matrix subset(matrix x, int drop, int P) {
+   // count number of rows in result
+
+   // assign rows in result
+   {
+     matrix[P-1,P-1] result;
+
+      int rowindx;
+      int colindx;
+      rowindx = 0;
+      for (i in 1:P) {
+        if (i != drop) {
+          rowindx = rowindx + 1;
+          colindx = 0;
+          for (j in 1:P) {
+            if (j != drop) {
+              colindx = colindx + 1;
+              result[rowindx, colindx] = x[i, j];
+            }
+          } // end j loop
+        } // end i!= drop
+      } // end i loop
+
+     return result;
+   }
+   }
+
+matrix subsetvec(matrix x, int drop, int P) {
+   // assign rows in result
+   {
+     matrix[P-1,1] result;
+
+      int rowindx;
+      rowindx = 0;
+      for (i in 1:P) {
+        if (i != drop) {
+          rowindx = rowindx + 1;
+          result[rowindx,1] = x[i, drop];
+        } // end i!= drop
+      } // end i loop
+
+     return result;
+   }
+   }
+}
 data {
   int<lower=0> N; // number of data points
   int<lower=0> P; // number of time series of data
@@ -31,20 +79,29 @@ data {
   int<lower=0> n_pro_covar; // number of unique process covariates included
   int pro_covar_index[num_pro_covar,3] ;// indexed by time, trend, covariate #, covariate value. +1 because of indexing issues
   real pro_covar_value[num_pro_covar];
+  real z_bound[2];
+  int<lower=0> long_format; // data shape, 0 == wide (default), 1 = long with potential for multiple observations
 }
 transformed data {
   int n_pcor; // dimension for cov matrix
   int n_loglik; // dimension for loglik calculation
   vector[K] zeros;
+  int counter[P];
+  for(p in 1:P) {
+    counter[p] = p;
+  }
 
   for(k in 1:K) {
     zeros[k] = 0; // used in MVT / MVN below
   }
 
-  if(est_cor == 0) {
-     n_loglik = P * N;
-  } else {
-    n_loglik = N; // TODO: likely needs to be fixed
+  n_loglik = n_pos;
+  if(long_format==0) {
+    if(est_cor == 0) {
+       n_loglik = P * N;
+    } else {
+      n_loglik = N; // TODO: likely needs to be fixed
+    }
   }
 
   if(est_cor == 0) {
@@ -60,7 +117,7 @@ parameters {
   matrix[K,N-1] devs; // random deviations of trends
   vector[K] x0; // initial state
   vector<lower=0>[K] psi; // expansion parameters
-  vector[nZ] z; // estimated loadings in vec form
+  vector<lower=z_bound[1],upper=z_bound[2]>[nZ] z; // estimated loadings in vec form
   vector[K] zpos; // constrained positive values
   matrix[n_obs_covar, P] b_obs; // coefficients on observation model
   matrix[n_pro_covar, K] b_pro; // coefficients on process model
@@ -82,6 +139,13 @@ transformed parameters {
   matrix[K,N] x; //vector[N] x[P]; // random walk-trends
   vector[K] indicator; // indicates whether diagonal is neg or pos
   vector[K] psi_root; // derived sqrt(expansion parameter psi)
+  //matrix[n_pcor, n_pcor] Omega_derived;
+  //matrix[n_pcor, n_pcor] Sigma_derived;
+  //matrix[n_pcor-1, n_pcor-1] Sigma_temp;
+  //matrix[n_pcor-1,1] sigma12_vec;
+  //vector[P] cond_sigma_vec;
+  //vector[P] cond_mean_vec;
+  //real sigma11;
 
   // phi is the ar(1) parameter, fixed or estimated
   if(est_phi == 1) {
@@ -101,14 +165,16 @@ transformed parameters {
     sigma_vec[p] = sigma[varIndx[p]]; // convert estimated sigmas to vec form
   }
 
-  // Fill yall with non-missing values
-  for(i in 1:n_pos) {
-    yall[row_indx_pos[i], col_indx_pos[i]] = y[i];
-  }
-  // Include missing observations
-  if(n_na > 0) {
-    for(i in 1:n_na) {
-      yall[row_indx_na[i], col_indx_na[i]] = ymiss[i];
+  if(long_format==0) {
+    // Fill yall with non-missing values
+    for(i in 1:n_pos) {
+      yall[row_indx_pos[i], col_indx_pos[i]] = y[i];
+    }
+    // Include missing observations
+    if(n_na > 0) {
+      for(i in 1:n_na) {
+        yall[row_indx_na[i], col_indx_na[i]] = ymiss[i];
+      }
     }
   }
 
@@ -176,6 +242,22 @@ transformed parameters {
       pred[obs_covar_index[i,2],obs_covar_index[i,1]] = pred[obs_covar_index[i,2],obs_covar_index[i,1]] + b_obs[obs_covar_index[i,3], obs_covar_index[i,2]] * obs_covar_value[i];
     }
   }
+
+  //if(long_format==1) {
+  //  Omega_derived = multiply_lower_tri_self_transpose(Lcorr);
+  //  Sigma_derived = quad_form_diag(Omega_derived, sigma_vec);
+  //
+  //  for(p in 1:P) {
+  //    sigma11 = Sigma_derived[p,p];
+  //    Sigma_temp = inverse(subset(Sigma_derived, p, P)); // this is sigma22^-1
+  //    sigma12_vec = subsetvec(Sigma_derived, p, P); // P-1 x 1 matrix
+  //    // conditional mean for multivariate normal, e.g. https://en.wikipedia.org/wiki/Multivariate_normal_distribution
+  //    cond_mean_vec[p] = 0;//to_matrix(sigma12_vec,1,P-1) * Sigma_temp;
+  //    // conditional variance of multivariate normal, e.g. https://en.wikipedia.org/wiki/Multivariate_normal_distribution
+  //    cond_sigma_vec[p] = sigma12_vec' * sigma12_vec;
+  //  }
+  //}
+
 }
 model {
   // initial state for each trend
@@ -236,13 +318,28 @@ model {
 
   // likelihood for independent
   if(est_cor == 0) {
-    for(i in 1:P){
-      target += normal_lpdf(yall[i] | pred[i], sigma_vec[i]);
+    if(long_format==0) {
+      for(i in 1:P){
+        target += normal_lpdf(yall[i] | pred[i], sigma_vec[i]);
+      }
+    } else {
+      for(i in 1:n_pos) {
+        //row_indx_pos[i] is the time series, col_index_pos is the time
+        target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);
+      }
     }
   } else {
     // need to loop over time slices / columns - each ~ MVN
-    for(i in 1:N) {
-      target += multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));
+    if(long_format==0) {
+      for(i in 1:N) {
+        target += multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));
+      }
+    } else {
+      //for(i in 1:n_pos) {
+      //  //row_indx_pos[i] is the time series, col_index_pos is the time. note that cond_sigma_vec and cond_mean_vec
+      //  // used here, calculated for univariation conditionals above
+      //  target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);
+      //}
     }
   }
 }
@@ -260,17 +357,31 @@ generated quantities {
 
   // calculate pointwise log_lik for loo package:
   if(est_cor == 0) {
-    j = 0;
-    for(n in 1:N) {
-      for(p in 1:P) {
-        j = j + 1;
-        log_lik[j] = normal_lpdf(yall[p,n] | pred[p,n], sigma_vec[p]);
+    if(long_format==0) {
+      j = 0;
+      for(n in 1:N) {
+        for(p in 1:P) {
+          j = j + 1;
+          log_lik[j] = normal_lpdf(yall[p,n] | pred[p,n], sigma_vec[p]);
+        }
+      }
+    } else {
+      for(i in 1:n_pos) {
+        //row_indx_pos[i] is the time series, col_index_pos is the time
+        log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);
       }
     }
+
   } else {
-    // TODO: this needs to be fixed:
-    for(i in 1:N) {
-      log_lik[i] = multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));
+    if(long_format==0) {
+      for(i in 1:N) {
+        log_lik[i] = multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));
+      }
+    } else {
+      //for(i in 1:n_pos) {
+      //  //row_indx_pos[i] is the time series, col_index_pos is the time
+      //  log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);
+      //}
     }
   }
 }

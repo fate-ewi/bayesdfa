@@ -4,8 +4,16 @@
 \alias{find_regimes}
 \title{Fit multiple models with differing numbers of regimes to trend data}
 \usage{
-find_regimes(y, sds = NULL, min_regimes = 1, max_regimes = 3,
-  iter = 2000, thin = 1, chains = 1, ...)
+find_regimes(
+  y,
+  sds = NULL,
+  min_regimes = 1,
+  max_regimes = 3,
+  iter = 2000,
+  thin = 1,
+  chains = 1,
+  ...
+)
 }
 \arguments{
 \item{y}{Data, time series or trend from fitted DFA model.}

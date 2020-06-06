@@ -4,16 +4,36 @@
 \alias{fit_dfa}
 \title{Fit a Bayesian DFA}
 \usage{
-fit_dfa(y = y, num_trends = 1, varIndx = NULL, zscore = TRUE,
-  iter = 2000, chains = 4, thin = 1, control = list(adapt_delta =
-  0.99, max_treedepth = 20), nu_fixed = 101, est_correlation = FALSE,
-  estimate_nu = FALSE, estimate_trend_ar = FALSE,
-  estimate_trend_ma = FALSE, sample = TRUE, data_shape = c("wide",
-  "long"), obs_covar = NULL, pro_covar = NULL, ...)
+fit_dfa(
+  y = y,
+  num_trends = 1,
+  varIndx = NULL,
+  zscore = TRUE,
+  iter = 2000,
+  chains = 4,
+  thin = 1,
+  control = list(adapt_delta = 0.99, max_treedepth = 20),
+  nu_fixed = 101,
+  est_correlation = FALSE,
+  estimate_nu = FALSE,
+  estimate_trend_ar = FALSE,
+  estimate_trend_ma = FALSE,
+  sample = TRUE,
+  data_shape = c("wide", "long"),
+  obs_covar = NULL,
+  pro_covar = NULL,
+  z_bound = NULL,
+  ...
+)
 }
 \arguments{
 \item{y}{A matrix of data to fit. See \code{data_shape} option to specify whether
-this is long or wide format data.}
+this is long or wide format data. Wide format data (default) is a matrix with
+time across columns and unique time series across rows, and can only contain 1 observation
+per time series - time combination. In contrast, long format data is a data frame that includes
+observations ("obs"), time ("time") and time series ("ts") identifiers -- the benefit of long
+format is that multiple observations per time series can be included. Correlation matrix currently
+not estimated if data shape is long.}
 
 \item{num_trends}{Number of trends to fit.}
 
@@ -37,7 +57,7 @@ greater than 100, a normal random walk is used instead of a random walk
 with a t-distribution. Defaults to \code{101}.}
 
 \item{est_correlation}{Boolean, whether to estimate correlation of
-observation error matrix \code{R}. Defaults to \code{FALSE}.}
+observation error matrix \code{R}. Defaults to \code{FALSE}. Currently can't be estimated if data are in long format.}
 
 \item{estimate_nu}{Logical. Estimate the student t degrees of freedom
 parameter? Defaults to \code{FALSE},}
@@ -55,8 +75,9 @@ This is useful for debugging and simulation. Defaults to \code{TRUE}.}
 \item{data_shape}{If \code{wide} (the current default) then the input data should
 have rows representing the various timeseries and columns representing the
 values through time. This matches the MARSS input data format. If \code{long}
-then the input data should have columns representing the various timeseries
-and rows representing the values through time.}
+then the long format data is a data frame that includes observations ("obs"),
+time ("time") and time series ("ts") identifiers -- the benefit of long
+format is that multiple observations per time series can be included}
 
 \item{obs_covar}{Optional dataframe of data with 4 named columns ("time","timeseries","covariate","value"), representing: (1) time, (2) the time series
 affected, (3) the covariate number for models with more than one covariate affecting each
@@ -65,6 +86,8 @@ trend, and (4) the value of the covariate}
 \item{pro_covar}{Optional dataframe of data with 4 named columns ("time","trend","covariate","value"), representing: (1) time, (2) the trend
 affected, (3) the covariate number for models with more than one covariate affecting each
 trend, and (4) the value of the covariate}
+
+\item{z_bound}{Optional hard constraints for estimated factor loadings -- really only applies to model with 1 trend. Passed in as a 2-element vector representing the lower and upper bound, e.g. (0, 100) to constrain positive}
 
 \item{...}{Any other arguments to pass to \code{\link[rstan:sampling]{rstan::sampling()}}.}
 }
@@ -92,6 +115,11 @@ m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1, obs_covar=obs_covar)
 pro_covar = expand.grid("time"=1:20,"trend"=1:3,"covariate"=1)
 pro_covar$value=rnorm(nrow(pro_covar),0,0.1)
 m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1, pro_covar=pro_covar)
+
+# example of long format data
+s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+long = data.frame("obs" = c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,]), "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
+m = fit_dfa(y = long, data_shape = "long", iter = 500, chains = 1, num_trends = 1, seed = 42)
 }
 }
 \seealso{

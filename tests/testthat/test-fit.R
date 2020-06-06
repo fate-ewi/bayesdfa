@@ -60,6 +60,20 @@ test_that("find_dfa_trends works", {
   expect_lt(x$summary$looic[[1]], x$summary$looic[[2]])
 })
 
+test_that("long format data works", {
+  skip_on_cran()
+  set.seed(42)
+  s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+  m <- fit_dfa(y = s$y_sim, iter = 500, chains = 1, num_trends = 1, seed = 42)
+  wide_means = apply(extract(m$model, "x")$x[, 1, ], 2, mean)
+  # fit long format data
+  long = data.frame("obs" = c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,]),
+    "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
+  m2 = fit_dfa(y = long, data_shape = "long", iter = 500, chains = 1, num_trends = 1, seed = 42)
+  long_means = apply(extract(m2$model, "x")$x[, 1, ], 2, mean)
+  expect_equal(cor(wide_means, long_means), 1, tolerance = 0.01)
+})
+
 # test_that("we can find which chains to flip", {
 #   skip_on_cran()
 #   skip_on_travis()
