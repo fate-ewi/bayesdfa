@@ -2,11 +2,11 @@ functions {
 
   // this function subsets a matrix by dropping the row/column labeled 'drop'. P represents dimensions
   matrix subset(matrix x, int drop, int P) {
-   // count number of rows in result
+    // count number of rows in result
 
-   // assign rows in result
-   {
-     matrix[P-1,P-1] result;
+    // assign rows in result
+    {
+      matrix[P-1,P-1] result;
 
       int rowindx;
       int colindx;
@@ -24,14 +24,14 @@ functions {
         } // end i!= drop
       } // end i loop
 
-     return result;
-   }
-   }
+      return result;
+    }
+  }
 
-matrix subsetvec(matrix x, int drop, int P) {
-   // assign rows in result
-   {
-     matrix[P-1,1] result;
+  matrix subsetvec(matrix x, int drop, int P) {
+    // assign rows in result
+    {
+      matrix[P-1,1] result;
 
       int rowindx;
       rowindx = 0;
@@ -42,9 +42,27 @@ matrix subsetvec(matrix x, int drop, int P) {
         } // end i!= drop
       } // end i loop
 
-     return result;
-   }
-   }
+      return result;
+    }
+  }
+
+  matrix subsetvec2(vector x, int drop, int P) {
+    // assign rows in result
+    {
+      matrix[P-1,1] result;
+
+      int rowindx;
+      rowindx = 0;
+      for (i in 1:P) {
+        if (i != drop) {
+          rowindx = rowindx + 1;
+          result[rowindx,1] = x[i];
+        } // end i!= drop
+      } // end i loop
+
+      return result;
+    }
+  }
 }
 data {
   int<lower=0> N; // number of data points
@@ -86,30 +104,30 @@ transformed data {
   int n_pcor; // dimension for cov matrix
   int n_loglik; // dimension for loglik calculation
   vector[K] zeros;
-  int counter[P];
-  for(p in 1:P) {
-    counter[p] = p;
-  }
 
   for(k in 1:K) {
     zeros[k] = 0; // used in MVT / MVN below
   }
 
+  // this is number of points of log-likelihood, depends if model is MVN or not and data is in wide/long format
   n_loglik = n_pos;
   if(long_format==0) {
     if(est_cor == 0) {
        n_loglik = P * N;
     } else {
-      n_loglik = N; // TODO: likely needs to be fixed
+      n_loglik = N;
     }
   }
 
   if(est_cor == 0) {
+    // MVN correlation matrix not estimated
     n_pcor = P;
     if(nVariances < 2) {
+      // minimum bound, just for Stan types
       n_pcor = 2;
     }
   } else {
+    // MVN correlation matrix is estimated
     n_pcor = P;
   }
 }
@@ -139,13 +157,14 @@ transformed parameters {
   matrix[K,N] x; //vector[N] x[P]; // random walk-trends
   vector[K] indicator; // indicates whether diagonal is neg or pos
   vector[K] psi_root; // derived sqrt(expansion parameter psi)
-  //matrix[n_pcor, n_pcor] Omega_derived;
-  //matrix[n_pcor, n_pcor] Sigma_derived;
-  //matrix[n_pcor-1, n_pcor-1] Sigma_temp;
-  //matrix[n_pcor-1,1] sigma12_vec;
-  //vector[P] cond_sigma_vec;
-  //vector[P] cond_mean_vec;
-  //real sigma11;
+  matrix[n_pcor*long_format*est_cor, n_pcor*long_format*est_cor] Sigma_derived;// temporary for calculations for MVN model
+  matrix[(n_pcor-1)*long_format*est_cor, (n_pcor-1)*long_format*est_cor] Sigma_temp;// temporary for calculations for MVN model
+  matrix[n_pcor-1,1] sigma12_vec;// temporary for calculations for MVN model
+  matrix[P*long_format*est_cor, N*long_format*est_cor] temp_sums;// temporary for calculations for MVN model
+  matrix[P*long_format*est_cor, N*long_format*est_cor] temp_counts;// temporary for calculations for MVN model
+  vector[P*long_format*est_cor] cond_sigma_vec;// temporary for calculations for MVN model
+  vector[P*long_format*est_cor] cond_mean_vec;// temporary for calculations for MVN model
+  real sigma11;// temporary for calculations for MVN model
 
   // phi is the ar(1) parameter, fixed or estimated
   if(est_phi == 1) {
@@ -243,20 +262,37 @@ transformed parameters {
     }
   }
 
-  //if(long_format==1) {
-  //  Omega_derived = multiply_lower_tri_self_transpose(Lcorr);
-  //  Sigma_derived = quad_form_diag(Omega_derived, sigma_vec);
-  //
-  //  for(p in 1:P) {
-  //    sigma11 = Sigma_derived[p,p];
-  //    Sigma_temp = inverse(subset(Sigma_derived, p, P)); // this is sigma22^-1
-  //    sigma12_vec = subsetvec(Sigma_derived, p, P); // P-1 x 1 matrix
-  //    // conditional mean for multivariate normal, e.g. https://en.wikipedia.org/wiki/Multivariate_normal_distribution
-  //    cond_mean_vec[p] = 0;//to_matrix(sigma12_vec,1,P-1) * Sigma_temp;
-  //    // conditional variance of multivariate normal, e.g. https://en.wikipedia.org/wiki/Multivariate_normal_distribution
-  //    cond_sigma_vec[p] = sigma12_vec' * sigma12_vec;
-  //  }
-  //}
+  if(long_format==1) {
+    // this is a pain, but we need to calculate the deviations (basically mean y - E[y] for each time point/time series)
+    for(n in 1:N) {
+      for(p in 1:P) {
+        temp_sums[p,n] = 0.0;
+        temp_counts[p,n] = 0.0;
+      }
+    }
+    for(i in 1:n_pos) {
+      temp_sums[row_indx_pos[i],col_indx_pos[i]] = temp_sums[row_indx_pos[i],col_indx_pos[i]] + (y[i] - pred[row_indx_pos[i],col_indx_pos[i]]);//PxN
+      temp_counts[row_indx_pos[i],col_indx_pos[i]] = temp_counts[row_indx_pos[i],col_indx_pos[i]] + 1;
+    }
+    for(n in 1:N) {
+      for(p in 1:P) {
+        // Now temp_sums will hold the mean residual for each time - timeseries combination
+        temp_sums[p,n] = temp_sums[p,n]/temp_counts[p,n];
+      }
+    }
+    //Omega_derived = multiply_lower_tri_self_transpose(Lcorr);
+    Sigma_derived = quad_form_diag(multiply_lower_tri_self_transpose(Lcorr), sigma_vec);
+
+    for(p in 1:P) {
+      sigma11 = Sigma_derived[p,p]; //
+      Sigma_temp = inverse(subset(Sigma_derived, p, P)); // this is sigma22^-1
+      sigma12_vec = subsetvec(Sigma_derived, p, P); // P-1 x 1 matrix
+      // conditional mean for multivariate normal, e.g. https://en.wikipedia.org/wiki/Multivariate_normal_distribution
+      cond_mean_vec[p] = to_row_vector(sigma12_vec) * Sigma_temp * to_vector(subsetvec2(col(temp_sums,p), p, P));
+      // conditional variance of multivariate normal, e.g. https://en.wikipedia.org/wiki/Multivariate_normal_distribution
+      cond_sigma_vec[p] = sqrt(sigma11 - to_row_vector(sigma12_vec) * Sigma_temp * to_vector(sigma12_vec));
+    }
+  }
 
 }
 model {
@@ -335,11 +371,11 @@ model {
         target += multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));
       }
     } else {
-      //for(i in 1:n_pos) {
+      for(i in 1:n_pos) {
       //  //row_indx_pos[i] is the time series, col_index_pos is the time. note that cond_sigma_vec and cond_mean_vec
       //  // used here, calculated for univariation conditionals above
-      //  target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);
-      //}
+        target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);
+      }
     }
   }
 }
@@ -378,10 +414,10 @@ generated quantities {
         log_lik[i] = multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));
       }
     } else {
-      //for(i in 1:n_pos) {
+      for(i in 1:n_pos) {
       //  //row_indx_pos[i] is the time series, col_index_pos is the time
-      //  log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);
-      //}
+        log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);
+      }
     }
   }
 }

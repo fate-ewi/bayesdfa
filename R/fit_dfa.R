@@ -100,15 +100,6 @@ fit_dfa <- function(y = y,
                     ...) {
   data_shape <- match.arg(data_shape)
 
-  #if (ncol(y) > nrow(y) && data_shape == "long") {
-  #  warning(
-  #    "ncol(y) > nrow(y) and data_shape == 'long'; are you sure your",
-  #    "input data is in long format?"
-  #  )
-  #}
-  #if (data_shape == "long") {
-  #  y <- t(y)
-  #}
   if (ncol(y) < nrow(y) && data_shape == "wide") {
     warning(
       "ncol(y) < nrow(y) and data_shape == 'wide'; are you sure your",
