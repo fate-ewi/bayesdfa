@@ -23,6 +23,7 @@ fit_dfa(
   obs_covar = NULL,
   pro_covar = NULL,
   z_bound = NULL,
+  z_model = c("dfa", "proportion"),
   ...
 )
 }
@@ -89,6 +90,8 @@ trend, and (4) the value of the covariate}
 
 \item{z_bound}{Optional hard constraints for estimated factor loadings -- really only applies to model with 1 trend. Passed in as a 2-element vector representing the lower and upper bound, e.g. (0, 100) to constrain positive}
 
+\item{z_model}{Optional argument allowing for elements of Z to be constrained to be proportions (each time series modeled as a mixture of trends). Arguments can be "dfa" (default) or "proportion"}
+
 \item{...}{Any other arguments to pass to \code{\link[rstan:sampling]{rstan::sampling()}}.}
 }
 \description{
@@ -120,6 +123,16 @@ m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1, pro_covar=pro_covar)
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 long = data.frame("obs" = c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,]), "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
 m = fit_dfa(y = long, data_shape = "long", iter = 500, chains = 1, num_trends = 1, seed = 42)
+
+# example of model with Z constrained to be proportions and wide format data
+s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+long = data.frame("obs" = c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,]), "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
+m = fit_dfa(y = s$y_sim, data_shape = "wide", z_model = "proportion", iter = 500, chains = 1, num_trends = 1, seed = 42)
+
+# example of model with Z constrained to be proportions and long format data
+s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+long = data.frame("obs" = c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,]), "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
+m = fit_dfa(y = long, data_shape = "long", z_model = "proportion", iter = 500, chains = 1, num_trends = 1, seed = 42)
 }
 }
 \seealso{

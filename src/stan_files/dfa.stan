@@ -99,11 +99,13 @@ data {
   real pro_covar_value[num_pro_covar];
   real z_bound[2];
   int<lower=0> long_format; // data shape, 0 == wide (default), 1 = long with potential for multiple observations
+  int<lower=0> proportional_model;
 }
 transformed data {
   int n_pcor; // dimension for cov matrix
   int n_loglik; // dimension for loglik calculation
   vector[K] zeros;
+  vector[K*proportional_model] alpha_vec;
 
   for(k in 1:K) {
     zeros[k] = 0; // used in MVT / MVN below
@@ -130,13 +132,19 @@ transformed data {
     // MVN correlation matrix is estimated
     n_pcor = P;
   }
+
+  // for compositional model
+  if(proportional_model==1) {
+    for(k in 1:K) alpha_vec[k] = 1;
+  }
 }
 parameters {
   matrix[K,N-1] devs; // random deviations of trends
   vector[K] x0; // initial state
   vector<lower=0>[K] psi; // expansion parameters
-  vector<lower=z_bound[1],upper=z_bound[2]>[nZ] z; // estimated loadings in vec form
-  vector[K] zpos; // constrained positive values
+  vector<lower=z_bound[1],upper=z_bound[2]>[nZ*(1-proportional_model)] z; // estimated loadings in vec form
+  vector[K*(1-proportional_model)] zpos; // constrained positive values
+  simplex[K*proportional_model] p_z[P*proportional_model]; // alternative for proportional Z
   matrix[n_obs_covar, P] b_obs; // coefficients on observation model
   matrix[n_pro_covar, K] b_pro; // coefficients on process model
   real<lower=0> sigma[nVariances];
@@ -197,32 +205,42 @@ transformed parameters {
     }
   }
 
-  for(i in 1:nZ) {
-    Z[row_indx[i],col_indx[i]] = z[i]; // convert z to from vec to matrix
-  }
-  // fill in zero elements in upper diagonal
-  if(nZero > 2) {
-    for(i in 1:(nZero-2)) {
-      Z[row_indx_z[i],col_indx_z[i]] = 0;
+  if(proportional_model == 0) {
+    for(i in 1:nZ) {
+      Z[row_indx[i],col_indx[i]] = z[i]; // convert z to from vec to matrix
     }
-  }
-
-  for(k in 1:K) {
-    Z[k,k] = zpos[k];// add constraint for Z diagonal
-  }
-
-  // this block is for the expansion prior
-  for(k in 1:K) {
-    if(zpos[k] < 0) {
-      indicator[k] = -1;
-    } else {
-      indicator[k] = 1;
+    // fill in zero elements in upper diagonal
+    if(nZero > 2) {
+      for(i in 1:(nZero-2)) {
+        Z[row_indx_z[i],col_indx_z[i]] = 0;
+      }
     }
-    psi_root[k] = sqrt(psi[k]);
+    for(k in 1:K) {
+      Z[k,k] = zpos[k];// add constraint for Z diagonal
+    }
+
+    // this block is for the expansion prior
+    for(k in 1:K) {
+      if(zpos[k] < 0) {
+        indicator[k] = -1;
+      } else {
+        indicator[k] = 1;
+      }
+      psi_root[k] = sqrt(psi[k]);
+      for(p in 1:P) {
+        Z[p,k] = Z[p,k] * indicator[k] * (1/psi_root[k]);
+      }
+    }
+
+  } else {
+    // then try proportional model
     for(p in 1:P) {
-      Z[p,k] = Z[p,k] * indicator[k] * (1/psi_root[k]);
+      for(k in 1:K) {
+        Z[p,k] = p_z[p,k]; // compositions sum to 1 for a time series
+      }
     }
   }
+
 
   // initial state for each trend
   for(k in 1:K) {
@@ -234,11 +252,12 @@ transformed parameters {
       x[k,t] = phi_vec[k]*x[k,t-1] + devs[k,t-1];
     }
   }
-  // this block also for the expansion prior, used to convert trends
-  for(k in 1:K) {
-    //  x[k,1:N] = x[k,1:N] * indicator[k] * psi_root[k];
-    for(t in 1:N) {
-      x[k,t] = x[k,t] * indicator[k] * psi_root[k];
+  if(proportional_model == 0) {
+    // this block also for the expansion prior, used to convert trends
+    for(k in 1:K) {
+      for(t in 1:N) {
+        x[k,t] = x[k,t] * indicator[k] * psi_root[k];
+      }
     }
   }
 
@@ -262,7 +281,7 @@ transformed parameters {
     }
   }
 
-  if(long_format==1) {
+  if(long_format==1 && est_cor==1) {
     // this is a pain, but we need to calculate the deviations (basically mean y - E[y] for each time point/time series)
     for(n in 1:N) {
       for(p in 1:P) {
@@ -342,9 +361,15 @@ model {
     theta ~ uniform(0,1); // K elements
   }
 
-  // prior on loadings
-  z ~ normal(0, 1);
-  zpos ~ normal(0, 1);// diagonal
+  if(proportional_model == 0) {
+    // prior on loadings
+    z ~ normal(0, 1);
+    zpos ~ normal(0, 1);// diagonal
+  } else {
+    for(p in 1:P) {
+      p_z[p] ~ dirichlet(alpha_vec);
+    }
+  }
 
   // observation variance
   sigma ~ student_t(3, 0, 2);

@@ -44,6 +44,7 @@
 #'   affected, (3) the covariate number for models with more than one covariate affecting each
 #'   trend, and (4) the value of the covariate
 #' @param z_bound Optional hard constraints for estimated factor loadings -- really only applies to model with 1 trend. Passed in as a 2-element vector representing the lower and upper bound, e.g. (0, 100) to constrain positive
+#' @param z_model Optional argument allowing for elements of Z to be constrained to be proportions (each time series modeled as a mixture of trends). Arguments can be "dfa" (default) or "proportion"
 #' @param ... Any other arguments to pass to [rstan::sampling()].
 #' @details Note that there is nothing restricting the loadings and trends from
 #'   being inverted (i.e. multiplied by `-1`) for a given chain. Therefore, if
@@ -78,6 +79,16 @@
 #' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 #' long = data.frame("obs" = c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,]), "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
 #' m = fit_dfa(y = long, data_shape = "long", iter = 500, chains = 1, num_trends = 1, seed = 42)
+#'
+#' # example of model with Z constrained to be proportions and wide format data
+#' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+#' long = data.frame("obs" = c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,]), "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
+#' m = fit_dfa(y = s$y_sim, data_shape = "wide", z_model = "proportion", iter = 500, chains = 1, num_trends = 1, seed = 42)
+#'
+#' # example of model with Z constrained to be proportions and long format data
+#' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+#' long = data.frame("obs" = c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,]), "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
+#' m = fit_dfa(y = long, data_shape = "long", z_model = "proportion", iter = 500, chains = 1, num_trends = 1, seed = 42)
 #'}
 fit_dfa <- function(y = y,
                     num_trends = 1,
@@ -97,8 +108,11 @@ fit_dfa <- function(y = y,
                     obs_covar = NULL,
                     pro_covar = NULL,
                     z_bound = NULL,
+                    z_model = c("dfa","proportion"),
                     ...) {
+  # check arguments
   data_shape <- match.arg(data_shape)
+  z_model <- match.arg(z_model)
 
   if (ncol(y) < nrow(y) && data_shape == "wide") {
     warning(
@@ -300,11 +314,12 @@ fit_dfa <- function(y = y,
     pro_covar_value = pro_covar_value,
     pro_covar_index = pro_covar_index,
     z_bound = z_bound,
-    long_format = ifelse(data_shape=="wide",0,1)
+    long_format = ifelse(data_shape=="wide",0,1),
+    proportional_model = ifelse(z_model[[1]]=="dfa",0,1)
   )
 
   pars <- c("x", "Z", "sigma", "log_lik", "psi") # removed pred
-  if (est_correlation) pars <- c(pars, "Omega") # add correlation matrix
+  if (est_correlation) pars <- c(pars, "Omega", "Sigma") # add correlation matrix
   if (estimate_nu) pars <- c(pars, "nu")
   if (estimate_trend_ar) pars <- c(pars, "phi")
   if (estimate_trend_ma) pars <- c(pars, "theta")
@@ -337,6 +352,7 @@ fit_dfa <- function(y = y,
 
     out[["data"]] <- Y # keep data included
     out[["shape"]] = data_shape
+    out[["z_model"]] = z_model[[1]]
     out <- structure(out, class = "bayesdfa")
   } else {
     out <- data_list
