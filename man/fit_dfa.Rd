@@ -121,18 +121,19 @@ m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1, pro_covar=pro_covar)
 
 # example of long format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-long = data.frame("obs" = c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,]), "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
-m = fit_dfa(y = long, data_shape = "long", iter = 500, chains = 1, num_trends = 1, seed = 42)
+obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
+long = data.frame("obs" = obs, "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
+m = fit_dfa(y = long, data_shape = "long", iter = 500, chains = 1)
 
 # example of model with Z constrained to be proportions and wide format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-long = data.frame("obs" = c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,]), "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
-m = fit_dfa(y = s$y_sim, data_shape = "wide", z_model = "proportion", iter = 500, chains = 1, num_trends = 1, seed = 42)
+m = fit_dfa(y = s$y_sim, z_model = "proportion", iter = 500, chains = 1)
 
 # example of model with Z constrained to be proportions and long format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-long = data.frame("obs" = c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,]), "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
-m = fit_dfa(y = long, data_shape = "long", z_model = "proportion", iter = 500, chains = 1, num_trends = 1, seed = 42)
+obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
+long = data.frame("obs" = obs, "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
+m = fit_dfa(y = long, data_shape = "long", z_model = "proportion", iter = 500, chains = 1)
 }
 }
 \seealso{
