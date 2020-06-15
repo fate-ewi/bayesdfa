@@ -112,16 +112,16 @@ fit_dfa <- function(y = y,
                     z_model = c("dfa","proportion"),
                     ...) {
   # check arguments
-  data_shape <- match.arg(data_shape)
-  z_model <- match.arg(z_model)
+  data_shape <- match.arg(data_shape, c("wide","long"))
+  z_model <- match.arg(z_model, c("dfa","proportion"))
 
-  if (ncol(y) < nrow(y) && data_shape == "wide") {
+  if (ncol(y) < nrow(y) && data_shape[1] == "wide") {
     warning(
       "ncol(y) < nrow(y) and data_shape == 'wide'; are you sure your",
       "input data is in wide format?"
     )
   }
-  if (data_shape == "long") {
+  if (data_shape[1] == "long") {
     if(est_correlation==TRUE) {
       stop("Estimation of the observation error correlation matrix not currently estimated when data are in long format")
     }
@@ -141,7 +141,7 @@ fit_dfa <- function(y = y,
     P = max(y[,"ts"])
   }
 
-  if(data_shape=="wide") {
+  if(data_shape[1]=="wide") {
     N <- ncol(y) # number of time steps
     P <- nrow(y) # number of time series
     if (nrow(y) < 3) {
@@ -169,7 +169,7 @@ fit_dfa <- function(y = y,
   nZ <- P * K - sum(seq_len(K)) # number of non-zero parameters that are unconstrained
 
   # standardizing data by rows only works if data provided in "wide" format
-  if(data_shape == "wide") {
+  if(data_shape[1] == "wide") {
     for (i in seq_len(P)) {
       if (zscore) {
         if (length(unique(na.omit(c(y[i, ])))) == 1L) {
@@ -228,7 +228,7 @@ fit_dfa <- function(y = y,
   nVariances <- length(unique(varIndx))
 
   # indices of positive values - Stan can't handle NAs
-  if(data_shape == "wide") {
+  if(data_shape[1] == "wide") {
     row_indx_pos <- matrix(rep(seq_len(P), N), P, N)[!is.na(y)]
     col_indx_pos <- matrix(sort(rep(seq_len(N), P)), P, N)[!is.na(y)]
     n_pos <- length(row_indx_pos)
@@ -291,9 +291,6 @@ fit_dfa <- function(y = y,
     nVariances = nVariances,
     row_indx_z = row_indx_z,
     col_indx_z = col_indx_z,
-    nZero = nZero,
-    row_indx_z = row_indx_z,
-    col_indx_z = col_indx_z,
     row_indx_pos = row_indx_pos,
     col_indx_pos = col_indx_pos,
     n_pos = n_pos,
@@ -315,8 +312,8 @@ fit_dfa <- function(y = y,
     pro_covar_value = pro_covar_value,
     pro_covar_index = pro_covar_index,
     z_bound = z_bound,
-    long_format = ifelse(data_shape=="wide",0,1),
-    proportional_model = ifelse(z_model[[1]]=="dfa",0,1)
+    long_format = ifelse(data_shape[1]=="wide",0,1),
+    proportional_model = ifelse(z_model[1]=="dfa",0,1)
   )
 
   pars <- c("x", "Z", "sigma", "log_lik", "psi") # removed pred
@@ -353,7 +350,7 @@ fit_dfa <- function(y = y,
 
     out[["data"]] <- Y # keep data included
     out[["shape"]] = data_shape
-    out[["z_model"]] = z_model[[1]]
+    out[["z_model"]] = z_model
     out <- structure(out, class = "bayesdfa")
   } else {
     out <- data_list

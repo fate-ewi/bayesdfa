@@ -141,10 +141,10 @@ transformed data {
 parameters {
   matrix[K,N-1] devs; // random deviations of trends
   vector[K] x0; // initial state
-  vector<lower=0>[K] psi; // expansion parameters
+  vector<lower=0>[K*(1-proportional_model)] psi; // expansion parameters
   vector<lower=z_bound[1],upper=z_bound[2]>[nZ*(1-proportional_model)] z; // estimated loadings in vec form
   vector[K*(1-proportional_model)] zpos; // constrained positive values
-  simplex[K*proportional_model] p_z[P*proportional_model]; // alternative for proportional Z
+  simplex[K] p_z[P*proportional_model]; // alternative for proportional Z
   matrix[n_obs_covar, P] b_obs; // coefficients on observation model
   matrix[n_pro_covar, K] b_pro; // coefficients on process model
   real<lower=0> sigma[nVariances];
@@ -207,56 +207,63 @@ transformed parameters {
 
   if(proportional_model == 0) {
     for(i in 1:nZ) {
-      Z[row_indx[i],col_indx[i]] = z[i]; // convert z to from vec to matrix
-    }
-    // fill in zero elements in upper diagonal
-    if(nZero > 2) {
-      for(i in 1:(nZero-2)) {
-        Z[row_indx_z[i],col_indx_z[i]] = 0;
+        Z[row_indx[i],col_indx[i]] = z[i]; // convert z to from vec to matrix
       }
-    }
-    for(k in 1:K) {
-      Z[k,k] = zpos[k];// add constraint for Z diagonal
-    }
+      // fill in zero elements in upper diagonal
+      if(nZero > 2) {
+        for(i in 1:(nZero-2)) {
+          Z[row_indx_z[i],col_indx_z[i]] = 0;
+        }
+      }
+      for(k in 1:K) {
+        Z[k,k] = zpos[k];// add constraint for Z diagonal
+      }
+      // this block is for the expansion prior
+      for(k in 1:K) {
+        if(zpos[k] < 0) {
+          indicator[k] = -1;
+        } else {
+          indicator[k] = 1;
+        }
+        psi_root[k] = sqrt(psi[k]);
+        for(p in 1:P) {
+          Z[p,k] = Z[p,k] * indicator[k] * (1/psi_root[k]);
+        }
+      }
+      // initial state for each trend
+      for(k in 1:K) {
+        x[k,1] = x0[k];
+        // trend is modeled as random walk, with optional
+        // AR(1) component = phi, and optional MA(1) component
+        // theta. Theta is included in the model block below.
+        for(t in 2:N) {
+          x[k,t] = phi_vec[k]*x[k,t-1] + devs[k,t-1];
+        }
+      }
+      // this block also for the expansion prior, used to convert trends
+      for(k in 1:K) {
+        //  x[k,1:N] = x[k,1:N] * indicator[k] * psi_root[k];
+        for(t in 1:N) {
+          x[k,t] = x[k,t] * indicator[k] * psi_root[k];
+        }
+      }
 
-    // this block is for the expansion prior
+   }
+  if(proportional_model == 1) {
+    // initial state for each trend
     for(k in 1:K) {
-      if(zpos[k] < 0) {
-        indicator[k] = -1;
-      } else {
-        indicator[k] = 1;
-      }
-      psi_root[k] = sqrt(psi[k]);
-      for(p in 1:P) {
-        Z[p,k] = Z[p,k] * indicator[k] * (1/psi_root[k]);
+      x[k,1] = x0[k];
+      // trend is modeled as random walk, with optional
+      // AR(1) component = phi, and optional MA(1) component
+      // theta. Theta is included in the model block below.
+      for(t in 2:N) {
+        x[k,t] = phi_vec[k]*x[k,t-1] + devs[k,t-1];
       }
     }
-
-  } else {
     // then try proportional model
     for(p in 1:P) {
       for(k in 1:K) {
         Z[p,k] = p_z[p,k]; // compositions sum to 1 for a time series
-      }
-    }
-  }
-
-
-  // initial state for each trend
-  for(k in 1:K) {
-    x[k,1] = x0[k];
-    // trend is modeled as random walk, with optional
-    // AR(1) component = phi, and optional MA(1) component
-    // theta. Theta is included in the model block below.
-    for(t in 2:N) {
-      x[k,t] = phi_vec[k]*x[k,t-1] + devs[k,t-1];
-    }
-  }
-  if(proportional_model == 0) {
-    // this block also for the expansion prior, used to convert trends
-    for(k in 1:K) {
-      for(t in 1:N) {
-        x[k,t] = x[k,t] * indicator[k] * psi_root[k];
       }
     }
   }
