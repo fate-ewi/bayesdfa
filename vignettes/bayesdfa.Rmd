@@ -1,5 +1,5 @@
 ---
-title: "Identifying extremes and latent regimes with glmmfields"
+title: "Identifying extremes and latent regimes with bayesdfa"
 author: "Eric J. Ward, Sean C. Anderson, Luis A. Damiano, Mary E. Hunsicker, Mike A. Litzow"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette

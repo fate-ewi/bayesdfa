@@ -100,6 +100,8 @@ data {
   real z_bound[2];
   int<lower=0> long_format; // data shape, 0 == wide (default), 1 = long with potential for multiple observations
   int<lower=0> proportional_model;
+  int<lower=0> est_sigma_process; // optional, 0 == not estimate sigma_pro (default), 1 == estimate
+  int<lower=0> n_sigma_process; // single value, or equal number of tre
 }
 transformed data {
   int n_pcor; // dimension for cov matrix
@@ -153,6 +155,7 @@ parameters {
   real<lower=-1,upper=1> phi[est_phi*K];
   real<lower=-1,upper=1> theta[est_theta*K];
   cholesky_factor_corr[n_pcor] Lcorr;
+  real<lower=0> sigma_process[est_sigma_process * n_sigma_process];
 }
 transformed parameters {
   matrix[P,N] pred; //vector[P] pred[N];
@@ -322,9 +325,22 @@ transformed parameters {
 
 }
 model {
+  vector[K] sigma_pro;
   // initial state for each trend
   x0 ~ normal(0, 1); // initial state estimate at t=1
   psi ~ gamma(2, 1); // expansion parameter for par-expanded priors
+
+  // block for process errors - can be estimated or not, and shared or not
+  for(k in 1:K) {
+    sigma_pro[k] = 1; // default constraint of all DFAs
+    if(est_sigma_process==1) {
+      if(n_sigma_process==1) {
+        sigma_pro[k] = sigma_process[1];
+      } else {
+        sigma_pro[k] = sigma_process[k];
+      }
+    }
+  }
 
   // This is deviations - either normal or Student t, and
   // if Student-t, df parameter nu can be estimated or fixed
@@ -332,24 +348,24 @@ model {
     if(use_normal == 0) {
       for(t in 1:1) {
         if (estimate_nu == 1) {
-          devs[k,t] ~ student_t(nu[1], 0, 1); // random walk
+          devs[k,t] ~ student_t(nu[1], 0, sigma_pro[k]); // random walk
         } else {
-          devs[k,t] ~ student_t(nu_fixed, 0, 1); // random walk
+          devs[k,t] ~ student_t(nu_fixed, 0, sigma_pro[k]); // random walk
         }
       }
       for(t in 2:(N-1)) {
         // if MA is not included, theta_vec = 0
         if (estimate_nu == 1) {
-          devs[k,t] ~ student_t(nu[1], theta_vec[k]*devs[k,t-1], 1); // random walk
+          devs[k,t] ~ student_t(nu[1], theta_vec[k]*devs[k,t-1], sigma_pro[k]); // random walk
         } else {
-          devs[k,t] ~ student_t(nu_fixed, theta_vec[k]*devs[k,t-1], 1); // random walk
+          devs[k,t] ~ student_t(nu_fixed, theta_vec[k]*devs[k,t-1], sigma_pro[k]); // random walk
         }
       }
     } else {
       devs[k,1] ~ normal(0, 1);
       for(t in 2:(N-1)) {
         // if MA is not included, theta_vec = 0
-        devs[k,t] ~ normal(theta_vec[k]*devs[k,t-1], 1);
+        devs[k,t] ~ normal(theta_vec[k]*devs[k,t-1], sigma_pro[k]);
       }
     }
 
@@ -366,6 +382,9 @@ model {
   // prior on MA(1) component if included
   if(est_theta == 1) {
     theta ~ uniform(0,1); // K elements
+  }
+  if(est_sigma_process) {
+    sigma_process ~ student_t(3, 0, 2);
   }
 
   if(proportional_model == 0) {

@@ -18,6 +18,8 @@ fit_dfa(
   estimate_nu = FALSE,
   estimate_trend_ar = FALSE,
   estimate_trend_ma = FALSE,
+  estimate_process_sigma = FALSE,
+  equal_process_sigma = TRUE,
   sample = TRUE,
   data_shape = c("wide", "long"),
   obs_covar = NULL,
@@ -69,6 +71,12 @@ Defaults to `FALSE``, in which case AR(1) parameters are set to 1}
 \item{estimate_trend_ma}{Logical. Estimate MA(1) parameters on DFA trends?
 Defaults to `FALSE``, in which case MA(1) parameters are set to 0.}
 
+\item{estimate_process_sigma}{Logical. Defaults FALSE, whether or not to estimate process error sigma. If not estimated,
+sigma is fixed at 1, like conventional DFAs.}
+
+\item{equal_process_sigma}{Logical. If process sigma is estimated, whether or not to estimate a single shared value across trends (default)
+or estimate equal values for each trend}
+
 \item{sample}{Logical. Should the model be sampled from? If \code{FALSE}, then the
 data list object that would have been passed to Stan is returned instead.
 This is useful for debugging and simulation. Defaults to \code{TRUE}.}
@@ -92,7 +100,7 @@ trend, and (4) the value of the covariate}
 
 \item{z_model}{Optional argument allowing for elements of Z to be constrained to be proportions (each time series modeled as a mixture of trends). Arguments can be "dfa" (default) or "proportion"}
 
-\item{...}{Any other arguments to pass to \code{\link[rstan:sampling]{rstan::sampling()}}.}
+\item{...}{Any other arguments to pass to \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.}
 }
 \description{
 Fit a Bayesian DFA

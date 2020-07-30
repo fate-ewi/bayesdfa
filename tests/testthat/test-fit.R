@@ -84,6 +84,35 @@ test_that("compositional model works", {
   expect_equal(class(m$model)[[1]], "stanfit")
 })
 
+test_that("compositional model works_2", {
+  skip_on_cran()
+  set.seed(42)
+  s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
+  m <- fit_dfa(y = s$y_sim, iter = 500, chains = 1, num_trends = 2, seed = 42,
+    z_model = "proportion")
+
+  expect_equal(class(m$model)[[1]], "stanfit")
+})
+
+test_that("estimate_sigma_process_1", {
+  skip_on_cran()
+  set.seed(42)
+  s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+  m <- fit_dfa(y = s$y_sim, iter = 500, chains = 1, num_trends = 2, seed = 42,
+    estimate_process_sigma = TRUE, equal_process_sigma = TRUE)
+
+  expect_equal(class(m$model)[[1]], "stanfit")
+})
+
+test_that("estimate_sigma_process_k", {
+  skip_on_cran()
+  set.seed(42)
+  s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+  m <- fit_dfa(y = s$y_sim, iter = 500, chains = 1, num_trends = 2, seed = 42,
+    estimate_process_sigma = TRUE, equal_process_sigma = FALSE)
+
+  expect_equal(class(m$model)[[1]], "stanfit")
+})
 # test_that("we can find which chains to flip", {
 #   skip_on_cran()
 #   skip_on_travis()

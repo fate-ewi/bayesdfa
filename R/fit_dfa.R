@@ -28,6 +28,10 @@
 #'   Defaults to `FALSE``, in which case AR(1) parameters are set to 1
 #' @param estimate_trend_ma Logical. Estimate MA(1) parameters on DFA trends?
 #'   Defaults to `FALSE``, in which case MA(1) parameters are set to 0.
+#' @param estimate_process_sigma Logical. Defaults FALSE, whether or not to estimate process error sigma. If not estimated,
+#'   sigma is fixed at 1, like conventional DFAs.
+#' @param equal_process_sigma Logical. If process sigma is estimated, whether or not to estimate a single shared value across trends (default)
+#'   or estimate equal values for each trend
 #' @param sample Logical. Should the model be sampled from? If `FALSE`, then the
 #'   data list object that would have been passed to Stan is returned instead.
 #'   This is useful for debugging and simulation. Defaults to `TRUE`.
@@ -104,6 +108,8 @@ fit_dfa <- function(y = y,
                     estimate_nu = FALSE,
                     estimate_trend_ar = FALSE,
                     estimate_trend_ma = FALSE,
+                    estimate_process_sigma = FALSE,
+                    equal_process_sigma = TRUE,
                     sample = TRUE,
                     data_shape = c("wide", "long"),
                     obs_covar = NULL,
@@ -278,6 +284,12 @@ fit_dfa <- function(y = y,
   if(is.null(z_bound)) {
     z_bound = c(-100,100)
   }
+
+  n_sigma_process = 1
+  if(equal_process_sigma == FALSE) n_sigma_process = K
+  est_sigma_process = 0
+  if(estimate_process_sigma == TRUE) est_sigma_process = 1
+
   data_list <- list(
     N = N,
     P = P,
@@ -313,7 +325,9 @@ fit_dfa <- function(y = y,
     pro_covar_index = pro_covar_index,
     z_bound = z_bound,
     long_format = ifelse(data_shape[1]=="wide",0,1),
-    proportional_model = ifelse(z_model[1]=="dfa",0,1)
+    proportional_model = ifelse(z_model[1]=="dfa",0,1),
+    est_sigma_process = est_sigma_process,
+    n_sigma_process = n_sigma_process
   )
 
   pars <- c("x", "Z", "sigma", "log_lik", "psi") # removed pred
@@ -321,8 +335,9 @@ fit_dfa <- function(y = y,
   if (estimate_nu) pars <- c(pars, "nu")
   if (estimate_trend_ar) pars <- c(pars, "phi")
   if (estimate_trend_ma) pars <- c(pars, "theta")
-  if(!is.null(obs_covar)) pars = c(pars, "b_obs")
-  if(!is.null(pro_covar)) pars = c(pars, "b_pro")
+  if(!is.null(obs_covar)) pars <- c(pars, "b_obs")
+  if(!is.null(pro_covar)) pars <- c(pars, "b_pro")
+  if(est_sigma_process) pars <- c(pars, "sigma_process")
 
   sampling_args <- list(
     object = stanmodels$dfa,

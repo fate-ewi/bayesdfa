@@ -10,7 +10,7 @@
 \arguments{
 \item{x}{Output from \code{\link[=fit_dfa]{fit_dfa()}}.}
 
-\item{...}{Arguments for \code{\link[loo:relative_eff]{loo::relative_eff()}} and \code{\link[loo:loo.array]{loo::loo.array()}}.}
+\item{...}{Arguments for \code{\link[loo:relative_eff]{loo::relative_eff()}} and \code{\link[loo:loo]{loo::loo.array()}}.}
 }
 \description{
 Extract the LOOIC (leave-one-out information criterion) using
