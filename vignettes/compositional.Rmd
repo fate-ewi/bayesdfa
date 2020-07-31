@@ -1,0 +1,133 @@
+---
+title: "Fitting compositional dynamic factor models"
+author: ""
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimating compositional models with bayesdfa}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+An extension of conventional DFA is to change the constraints on the estimated loadings, $Z$. DFA models generally impose constraints for identifiability, where individual time series are allowed to map onto dynamic factors with loadings ranging from large negative to large positive ones. Instead, if we viewed a collection of multivariate time series as originating from a compositional model - such that the loadings $Z$ were forced to be positive, and each of the time series arises as a mixture of the estimated loadings.
+   
+```{r set-knitr-options, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+library("knitr")
+opts_chunk$set(message = FALSE, fig.width = 5.5)
+```
+
+Let's load the necessary packages:
+
+```{r, message=FALSE, warning=FALSE}
+library(bayesdfa)
+library(ggplot2)
+library(dplyr)
+library(rstan)
+```
+
+## 2 - trend model
+
+First, let's simulate some data. The compositional DFA model is not interesting with a single trend, so we'll initially start with 2 trends. We'll use the sim_dfa function to simulate the random walks (assuming 20 time steps, and 2 latent trends).
+
+```{r}
+set.seed(1)
+s = sim_dfa(num_trends = 2, num_years = 20,
+  num_ts = 5)
+```
+
+Next, we can create some compositional loadings for the mixture. These could random (e.g. using 'rdirichlet'), but we'll pass in known values.
+
+```{r}
+m = matrix(0, nrow=5,ncol=2)
+m[1,] = c(0.8, 0.2) # time series # 1 is 80% trend 1
+m[2,] = c(0.9, 0.1) # time series # 2 is 90% trend 1
+m[3,] = c(0.3, 0.7) # time series # 3 is 30% trend 1
+m[4,] = c(0.35, 0.65) # time series # 4 is 35% trend 1
+m[5,] = c(0.7, 0.2) # time series # 5 is 70% trend 1
+```
+
+Using the simulated trends and compositional data $m$, we can now create the simulated data,
+
+```{r}
+pred = m%*%s$x
+y = pred + matrix(rnorm(nrow(pred)*ncol(pred),0,0.1), nrow=nrow(pred), ncol = ncol(pred))
+```
+
+Next, we can pass this data to the fit_dfa() function and try to recover our known loadings. Note: the compositional model has a nasty label-switching issue that our 'chain flipping' function doesn't handle well. Multiple chains may be run, but need to be examined to evaluate whether they need to be flipped. To avoid that situation, we'll just use a single chain.
+
+```{r}
+fit <- fit_dfa(y = y, iter = 2000, chains = 1, num_trends = 2, seed = 42,
+    z_model = "proportion",zscore=FALSE)
+```
+
+We can't rotate the Z matrix -- because the compositional constraint would be destroyed. Other than the loadings on time series 3 and 4, these loadings are close to those in the simualting model,
+
+```{r}
+pars = rstan::extract(fit$model,permuted=TRUE)
+rounded_Z = round(apply(pars$Z,c(2,3),mean),2)
+print(rounded_Z[,c(2,1)])
+```
+
+Combining the estimated trends and true trends in the simulation shows that the trends are offset by an intercept, but track the overall simulated values very well (time series 1 represents the estimated trend trying to recover the true trend indicated with time series 3, time series 2 represents the estimated trend trying to recover the true trend indicated with time series 4)
+
+```{r}
+x = apply(pars$x, c(2,3), mean)[c(2,1),]
+matplot(t(rbind(x,s$x)))
+```
+
+
+## 3 - trend model
+
+We can extend this approach to also include a model with 3 trends,
+
+```{r}
+set.seed(1)
+s = sim_dfa(num_trends = 3, num_years = 20,
+  num_ts = 5)
+```
+
+Next, we can create some compositional loadings for the mixture. These could random (e.g. using 'rdirichlet'), but we'll pass in known values.
+
+```{r}
+m = matrix(0, nrow=5,ncol=3)
+m[1,] = c(0.31, 0.48,0.21) # time series # 1
+m[2,] = c(0.25, 0.04, 0.71) # time series # 2
+m[3,] = c(0.21, 0.28, 0.51) # time series # 3
+m[4,] = c(0.6, 0.02, 0.38) # time series # 4
+m[5,] = c(0.15, 0.21, 0.64) # time series # 5
+```
+
+Add observation error
+```{r}
+pred = m%*%s$x
+y = pred + matrix(rnorm(nrow(pred)*ncol(pred),0,0.01), nrow=nrow(pred), ncol = ncol(pred))
+```
+
+Next we can fit the compositional DFA model,
+
+```{r}
+fit <- fit_dfa(y = y, iter = 2000, chains = 1, num_trends = 3, seed = 42,
+    z_model = "proportion",zscore=FALSE)
+```
+
+We can look at the true values of the loadings (open triangles) and estimated values (solid circles) to see that for some of the loadings, the model estimates the parameters well. 
+
+```{r echo=FALSE}
+pars = rstan::extract(fit$model,permuted=TRUE)
+rounded_Z = round(apply(pars$Z,c(2,3),mean),2)
+
+df = data.frame("value"=c(rounded_Z), "id" = "estimated",
+  "trend"=as.factor(sort(rep(1:3,5))), "ts" = as.factor(rep(1:5,3)))
+
+df2 = data.frame("value"=c(m[,c(3,2,1)]), "id" = "true",
+  "trend"=as.factor(sort(rep(1:3,5))), "ts" = as.factor(rep(1:5,3)))
+
+ggplot(data=rbind(df,df2), aes(ts,value,group=trend,col=trend,
+  fill=trend,shape=id)) + 
+  geom_point(size=4) +
+  xlab("Time series") + ylab("Value")
+```
+
+
+
+

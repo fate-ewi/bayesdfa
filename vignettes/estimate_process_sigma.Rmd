@@ -1,0 +1,187 @@
+---
+title: "Estimating variability of random walks (process error standard deviations)"
+author: ""
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Estimating process trend variability with bayesdfa}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+A constraint of most DFA models is that the latent trends are modeled as random walks with fixed standard deviations (= 1). We can evaluate the ability to estimate these parameters in a Bayesian context below.
+
+```{r set-knitr-options, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+library("knitr")
+opts_chunk$set(message = FALSE, fig.width = 5.5)
+```
+
+Let's load the necessary packages:
+
+```{r, message=FALSE, warning=FALSE}
+library(bayesdfa)
+library(ggplot2)
+library(dplyr)
+library(rstan)
+```
+
+## Case 1: unequal trend variability
+
+First, let's simulate some data. We will use the built-in function `sim_dfa()`, but normally you would start with your own data. We will simulate 20 data points from 4 time series, generated from 2 latent processes. For this first dataset, the data won't include extremes, and loadings will be randomly assigned (default).
+
+```{r simulate-data}
+set.seed(1)
+sim_dat <- sim_dfa(
+  num_trends = 2,
+  num_years = 20,
+  num_ts = 4
+)
+```
+
+We'll tweak the default code though to model slightly different random walks, with different standard deviations for each trend. We'll assume these standard deviations are 0.3 and 0.5, respectively.
+
+```{r}
+set.seed(1)
+sim_dat$x[1,] = cumsum(rnorm(n=ncol(sim_dat$x), 0, 0.1))
+sim_dat$x[2,] = cumsum(rnorm(n=ncol(sim_dat$x), 0, 1))
+```
+
+Looking at the random walks, we can see the 2nd trend (red dashed line) is more variable than the black line. 
+
+```{r simulate-data-plot, fig.align='center', fig.cap="Simulated data, from a model with 2 latent trends and no extremes.\\label{fig:simulate-data-plot}"}
+matplot(t(sim_dat$x),
+  type = "l",
+  ylab = "Response", xlab = "Time"
+)
+```
+
+Next, we'll calculate the predicted values of each time series and add observation error
+```{r}
+sim_dat$pred = sim_dat$Z %*% sim_dat$x
+for(i in 1:nrow(sim_dat$pred)) {
+  for(j in 1:ncol(sim_dat$pred)) {
+    sim_dat$y_sim[i,j] = sim_dat$pred[i,j] + rnorm(1,0,0.1)
+  }
+}
+```
+
+### Candidate models 
+Next, we'll fit a 2-trend DFA model to the simulated time series using the `fit_dfa()` function. This default model fixed the variances of the trends at 1 -- and implicitly assumes that they have equal variance.
+
+```{r fit-model, message=FALSE, warning=FALSE, results='hide'}
+f1 <- fit_dfa(
+  y = sim_dat$y_sim, num_trends = 2, zscore = TRUE,
+  iter = 1000, chains = 1, thin = 1
+)
+r1 <- rotate_trends(f1)
+```
+
+Next, we'll fit the model with process errors being estimated -- and assume unequal variances by trend.
+
+```{r fit-model-2, message=FALSE, warning=FALSE, results='hide'}
+f2 <- fit_dfa(
+  y = sim_dat$y_sim, num_trends = 2, zscore = TRUE, estimate_process_sigma = TRUE,
+  equal_process_sigma = FALSE,
+  iter = 1000, chains = 1, thin = 1
+)
+r2 <- rotate_trends(f2)
+```
+
+Third, we'll fit the model with process errors being estimated, unequal variances by trend, and not z-score 
+the data (this is just a test of the scaling).
+```{r fit-model-3, message=FALSE, warning=FALSE, results='hide'}
+f3 <- fit_dfa(
+  y = sim_dat$y_sim, num_trends = 2, zscore = FALSE, estimate_process_sigma = TRUE,
+  equal_process_sigma = FALSE,
+  iter = 1000, chains = 1, thin = 1
+)
+r3 <- rotate_trends(f3)
+```
+
+Our fourth and fifth models will be the same as # 2 and # 3, but will estimate a single variance for both trends. 
+
+```{r fit-model-4, message=FALSE, warning=FALSE, results='hide'}
+f4 <- fit_dfa(
+  y = sim_dat$y_sim, num_trends = 2, zscore = TRUE, estimate_process_sigma = TRUE,
+  equal_process_sigma = TRUE,
+  iter = 1000, chains = 1, thin = 1
+)
+r4 <- rotate_trends(f4)
+
+f5 <- fit_dfa(
+  y = sim_dat$y_sim, num_trends = 2, zscore = FALSE, estimate_process_sigma = TRUE,
+  equal_process_sigma = TRUE,
+  iter = 1000, chains = 1, thin = 1
+)
+r5 <- rotate_trends(f5)
+```
+
+
+### Recovering loadings 
+As a reminder, let's look at the loadings from the original simulation model
+
+```{r}
+print(round(sim_dat$Z,2))
+```
+
+The estimated loadings from the DFA where the trends are forced to have the same fixed variance are good
+
+```{r}
+print(round(r1$Z_rot_mean,2))
+```
+
+but some of the loadings are far off. These loadings are also not well estimated for either of the models that estimate the process variances,
+
+```{r}
+print(round(r2$Z_rot_mean,2))
+```
+or
+```{r}
+print(round(r3$Z_rot_mean,2))
+```
+
+The loadings for Model 4 are given by
+```{r}
+print(round(r4$Z_rot_mean,2))
+```
+and Model 5 by
+```{r}
+print(round(r5$Z_rot_mean,2))
+```
+
+
+If we calculate the RMSE of the different models, model # 3 (estimated process trends, raw data not standardized) performs the best
+
+```{r echo=FALSE}
+m = matrix(0,5,2)
+m[,1] = 1:5
+m[1,2] = sum((r1$Z_rot_mean - sim_dat$Z)^2)
+m[2,2] = sum((r2$Z_rot_mean - sim_dat$Z)^2)
+m[3,2] = sum((r3$Z_rot_mean - sim_dat$Z)^2)
+m[4,2] = sum((r4$Z_rot_mean - sim_dat$Z)^2)
+m[5,2] = sum((r5$Z_rot_mean - sim_dat$Z)^2)
+colnames(m) = c("Model", "RMSE-loadings")
+knitr::kable(m)
+```
+
+### Recovering trends
+
+Let's do the same kind of summary with the trends
+
+```{r echo=FALSE}
+m = matrix(0,5,2)
+m[,1] = 1:5
+m[1,2] = sum((r1$trends_mean - sim_dat$x)^2)
+m[2,2] = sum((r2$trends_mean - sim_dat$x)^2)
+m[3,2] = sum((r3$trends_mean - sim_dat$x)^2)
+m[4,2] = sum((r4$trends_mean - sim_dat$x)^2)
+m[5,2] = sum((r5$trends_mean - sim_dat$x)^2)
+colnames(m) = c("Model", "RMSE-trends")
+knitr::kable(m)
+```
+
+These show that model 3 (trend variances are estimated, with data not standardized) performs best
+
+### Summary
+
+In this example, the estimation model that treated the variances of the random walks as parameters performed better than models that didn't. A caveat is that we simulated the random walk variances to be an order of magnitude difference between the 2 trends, more similar trends would need additional simulations and more thorough validation studies. Similarly, we found that not standardizing the raw time series data (instead, just centering each time series) yielded estimates of the loadings and estimated trends that were more similar to those in the simulation model. Standardizing each time series a priori yields slightly worse estimates of the trends and loadings (comparing models 2 v 3 and 4 v 5). 
