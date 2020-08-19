@@ -8,3 +8,5 @@ cleanup*
 ^\.travis\.yml$
 ^appveyor\.yml$
 ^Session.vim$
+^doc$
+^Meta$

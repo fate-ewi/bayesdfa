@@ -2064,13 +2064,13 @@ public:
             if (as_bool(logical_eq(est_phi, 1))) {
 
                 current_statement_begin__ = 380;
-                lp_accum__.add(uniform_log<propto__>(phi, 0, 1));
+                lp_accum__.add(normal_log<propto__>(phi, 0, 1));
             }
             current_statement_begin__ = 383;
             if (as_bool(logical_eq(est_theta, 1))) {
 
                 current_statement_begin__ = 384;
-                lp_accum__.add(uniform_log<propto__>(theta, 0, 1));
+                lp_accum__.add(normal_log<propto__>(theta, 0, 1));
             }
             current_statement_begin__ = 386;
             if (as_bool(est_sigma_process)) {

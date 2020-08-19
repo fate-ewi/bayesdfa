@@ -91,7 +91,7 @@ data {
   int est_theta; // whether to estimate moving-average in trends (=1) or not (= 0
   int<lower=0> num_obs_covar; // number of unique observation covariates, dimension of matrix
   int<lower=0> n_obs_covar; // number of unique covariates included
-  int obs_covar_index[num_obs_covar,3] ;// indexed by time, trend, covariate #, covariate value. +1 because of indexing issues
+  int obs_covar_index[num_obs_covar,3];// indexed by time, trend, covariate #, covariate value. +1 because of indexing issues
   real obs_covar_value[num_obs_covar];
   int<lower=0> num_pro_covar; // number of unique process covariates, dimension of matrix
   int<lower=0> n_pro_covar; // number of unique process covariates included
@@ -377,11 +377,11 @@ model {
   }
   // prior on AR(1) component if included
   if(est_phi == 1) {
-    phi ~ uniform(0,1); // K elements
+    phi ~ normal(0,1); // K elements
   }
   // prior on MA(1) component if included
   if(est_theta == 1) {
-    theta ~ uniform(0,1); // K elements
+    theta ~ normal(0,1); // K elements
   }
   if(est_sigma_process) {
     sigma_process ~ student_t(3, 0, 2);
