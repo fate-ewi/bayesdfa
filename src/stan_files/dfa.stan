@@ -361,6 +361,7 @@ model {
           devs[k,t] ~ student_t(nu_fixed, theta_vec[k]*devs[k,t-1], sigma_pro[k]); // random walk
         }
       }
+
     } else {
       devs[k,1] ~ normal(0, 1);
       for(t in 2:(N-1)) {
@@ -434,6 +435,9 @@ generated quantities {
   vector[n_loglik] log_lik;
   matrix[n_pcor, n_pcor] Omega;
   matrix[n_pcor, n_pcor] Sigma;
+  matrix[K,1] xstar; //random walk-trends in future
+  vector[K] sigma_pro;
+  vector[K] future_devs; // deviations in future
   int<lower=0> j;
   j = 0;
 
@@ -471,4 +475,32 @@ generated quantities {
       }
     }
   }
+
+  // future deviations
+  // block for process errors - can be estimated or not, and shared or not
+  for(k in 1:K) {
+    sigma_pro[k] = 1; // default constraint of all DFAs
+    if(est_sigma_process==1) {
+      if(n_sigma_process==1) {
+        sigma_pro[k] = sigma_process[1];
+      } else {
+        sigma_pro[k] = sigma_process[k];
+      }
+    }
+  }
+  for(k in 1:K) {
+    if(use_normal == 0) {
+      // if MA is not included, theta_vec = 0
+      if (estimate_nu == 1) {
+        future_devs[k] = student_t_rng(nu[1], theta_vec[k]*devs[k,N-1], sigma_pro[k]); // random walk
+      } else {
+        future_devs[k] = student_t_rng(nu_fixed, theta_vec[k]*devs[k,N-1], sigma_pro[k]); // random walk
+      }
+    } else {
+      // if MA is not included, theta_vec = 0
+      future_devs[k] = normal_rng(theta_vec[k]*devs[k,N-1], sigma_pro[k]);
+    }
+    xstar[k,1] = x[k,N] + future_devs[k]; // future value of trend at t+1
+  }
+
 }

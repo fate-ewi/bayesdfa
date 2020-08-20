@@ -330,7 +330,7 @@ fit_dfa <- function(y = y,
     n_sigma_process = n_sigma_process
   )
 
-  pars <- c("x", "Z", "sigma", "log_lik", "psi") # removed pred
+  pars <- c("x", "Z", "sigma", "log_lik", "psi","xstar") # removed pred
   if (est_correlation) pars <- c(pars, "Omega", "Sigma") # add correlation matrix
   if (estimate_nu) pars <- c(pars, "nu")
   if (estimate_trend_ar) pars <- c(pars, "phi")
