@@ -56,7 +56,7 @@ y = pred + matrix(rnorm(nrow(pred)*ncol(pred),0,0.1), nrow=nrow(pred), ncol = nc
 Next, we can pass this data to the fit_dfa() function and try to recover our known loadings. Note: the compositional model has a nasty label-switching issue that our 'chain flipping' function doesn't handle well. Multiple chains may be run, but need to be examined to evaluate whether they need to be flipped. To avoid that situation, we'll just use a single chain.
 
 ```{r}
-fit <- fit_dfa(y = y, iter = 2000, chains = 1, num_trends = 2, seed = 42,
+fit <- fit_dfa(y = y, iter = 500, chains = 1, num_trends = 2, seed = 42,
     z_model = "proportion",zscore=FALSE)
 ```
 
@@ -106,7 +106,7 @@ y = pred + matrix(rnorm(nrow(pred)*ncol(pred),0,0.01), nrow=nrow(pred), ncol = n
 Next we can fit the compositional DFA model,
 
 ```{r}
-fit <- fit_dfa(y = y, iter = 2000, chains = 1, num_trends = 3, seed = 42,
+fit <- fit_dfa(y = y, iter = 500, chains = 1, num_trends = 3, seed = 42,
     z_model = "proportion",zscore=FALSE)
 ```
 

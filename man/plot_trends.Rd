@@ -29,7 +29,7 @@ Plot the trends from a DFA
 \examples{
 set.seed(1)
 s <- sim_dfa(num_trends = 1)
-m <- fit_dfa(y = s$y_sim, num_trends = 1, iter = 500, chains = 1)
+m <- fit_dfa(y = s$y_sim, num_trends = 1, iter = 50, chains = 1)
 r <- rotate_trends(m)
 p <- plot_trends(r)
 print(p)

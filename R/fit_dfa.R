@@ -50,6 +50,12 @@
 #' @param z_bound Optional hard constraints for estimated factor loadings -- really only applies to model with 1 trend. Passed in as a 2-element vector representing the lower and upper bound, e.g. (0, 100) to constrain positive
 #' @param z_model Optional argument allowing for elements of Z to be constrained to be proportions (each time series modeled as a mixture of trends). Arguments can be "dfa" (default) or "proportion"
 #' @param ... Any other arguments to pass to [rstan::sampling()].
+#' @param par_list A vector of parameter names of variables to be estimated by Stan. If NULL, this will default to
+#'   c("x", "Z", "sigma", "log_lik", "psi","xstar") for most models -- though if AR / MA, or Student-t models are used
+#'   additional parameters will be monitored. If you want to use diagnostic tools in rstan, including moment_matching,
+#'   you will need to pass in a larger list. Setting this argument to "all" will monitor all parameters, enabling the use
+#'   of diagnostic functions -- but making the models a lot larger for storage. Finally, this argument may be a custom string
+#'   of parameters to monitor, e.g. c("x","sigma")
 #' @details Note that there is nothing restricting the loadings and trends from
 #'   being inverted (i.e. multiplied by `-1`) for a given chain. Therefore, if
 #'   you fit multiple chains, the package will attempt to determine which chains
@@ -67,33 +73,33 @@
 #' set.seed(42)
 #' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 #' # only 1 chain and 250 iterations used so example runs quickly:
-#' m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1)
+#' m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1)
 #'\dontrun{
 #' # example of observation error covariates
 #' obs_covar = expand.grid("time"=1:20,"timeseries"=1:3,"covariate"=1)
 #' obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
-#' m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1, obs_covar=obs_covar)
+#' m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, obs_covar=obs_covar)
 #'
 #' # example of process error covariates
 #' pro_covar = expand.grid("time"=1:20,"trend"=1:3,"covariate"=1)
 #' pro_covar$value=rnorm(nrow(pro_covar),0,0.1)
-#' m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1, pro_covar=pro_covar)
+#' m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, pro_covar=pro_covar)
 #'
 #' # example of long format data
 #' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 #' obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
 #' long = data.frame("obs" = obs, "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
-#' m = fit_dfa(y = long, data_shape = "long", iter = 500, chains = 1)
+#' m = fit_dfa(y = long, data_shape = "long", iter = 50, chains = 1)
 #'
 #' # example of model with Z constrained to be proportions and wide format data
 #' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-#' m = fit_dfa(y = s$y_sim, z_model = "proportion", iter = 500, chains = 1)
+#' m = fit_dfa(y = s$y_sim, z_model = "proportion", iter = 50, chains = 1)
 #'
 #' # example of model with Z constrained to be proportions and long format data
 #' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 #' obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
 #' long = data.frame("obs" = obs, "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
-#' m = fit_dfa(y = long, data_shape = "long", z_model = "proportion", iter = 500, chains = 1)
+#' m = fit_dfa(y = long, data_shape = "long", z_model = "proportion", iter = 50, chains = 1)
 #'}
 fit_dfa <- function(y = y,
                     num_trends = 1,
@@ -116,6 +122,7 @@ fit_dfa <- function(y = y,
                     pro_covar = NULL,
                     z_bound = NULL,
                     z_model = c("dfa","proportion"),
+                    par_list = NULL,
                     ...) {
   # check arguments
   data_shape <- match.arg(data_shape, c("wide","long"))
@@ -330,7 +337,13 @@ fit_dfa <- function(y = y,
     n_sigma_process = n_sigma_process
   )
 
-  pars <- c("x", "Z", "sigma", "log_lik", "psi","xstar") # removed pred
+  if(is.null(par_list)) {
+    pars <- c("x", "Z", "sigma", "log_lik", "psi","xstar")
+  } else {
+    if(par_list == "all") pars <- c("x", "Z", "sigma", "log_lik", "psi","xstar",
+      "devs","x0","z","zpos","sigma_process","p_z",
+      "b_obs","b_pro","phi","theta","Lcorr","ymiss","nu") # removed pred
+  }
   if (est_correlation) pars <- c(pars, "Omega", "Sigma") # add correlation matrix
   if (estimate_nu) pars <- c(pars, "nu")
   if (estimate_trend_ar) pars <- c(pars, "phi")

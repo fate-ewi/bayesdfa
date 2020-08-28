@@ -45,12 +45,12 @@ matplot(t(sim_dat$y_sim),
 )
 ```
 
-Next, we'll fit a 1-trend, 2-trend, and 3-trend DFA model to the simulated time series using the `fit_dfa()` function. Starting with the 1-trend model, we'll estimate the posterior distributions of the trends and loadings. Note that this example uses 1 MCMC chain and 200 iterations --- for real examples, you'll want to use more (say 4 chains, 5000 iterations).
+Next, we'll fit a 1-trend, 2-trend, and 3-trend DFA model to the simulated time series using the `fit_dfa()` function. Starting with the 1-trend model, we'll estimate the posterior distributions of the trends and loadings. Note that this example uses 1 MCMC chain and 50 iterations --- for real examples, you'll want to use more (say 4 chains, 5000 iterations).
 
 ```{r fit-1-trend, message=FALSE, warning=FALSE, results='hide'}
 f1 <- fit_dfa(
   y = sim_dat$y_sim, num_trends = 1, zscore = TRUE,
-  iter = 200, chains = 1, thin = 1
+  iter = 50, chains = 1, thin = 1
 )
 ```
 
@@ -89,13 +89,13 @@ Moving to a more complex model, we'll fit the 2-trend and 3-trend models. All ot
 ```{r fit-models, warning=FALSE, results='hide', message=FALSE}
 f2 <- fit_dfa(
   y = sim_dat$y_sim, num_trends = 2, zscore = TRUE,
-  iter = 200, chains = 1, thin = 1
+  iter = 50, chains = 1, thin = 1
 )
 r2 <- rotate_trends(f2)
 
 f3 <- fit_dfa(
   y = sim_dat$y_sim, num_trends = 3, zscore = TRUE,
-  iter = 200, chains = 1, thin = 1
+  iter = 50, chains = 1, thin = 1
 )
 r3 <- rotate_trends(f3)
 ```
@@ -130,7 +130,7 @@ As an alternative to fitting each model individually as we did above, we also de
 
 ```{r eval=FALSE}
 m <- find_dfa_trends(
-  y = s$y_sim, iter = 180,
+  y = s$y_sim, iter = 50,
   kmin = 1, kmax = 5, chains = 1, compare_normal = TRUE,
   variance = c("equal", "unequal")
 )
@@ -165,7 +165,7 @@ Instead of fitting a model with normal process deviations, we may be interested 
 ```{r fit-2-trend-extreme, message=FALSE, warning=FALSE, results='hide'}
 t2 <- fit_dfa(
   y = sim_dat$y_sim, num_trends = 2, zscore = TRUE,
-  iter = 200, chains = 1, thin = 1, estimate_nu = TRUE
+  iter = 50, chains = 1, thin = 1, estimate_nu = TRUE
 )
 ```
 
@@ -206,7 +206,7 @@ reg_mod <- fit_regimes(
   y = r$trends_mean[1, ],
   sds = (r$trends_upper - r$trends_mean)[1, ] / 1.96,
   n_regimes = 2,
-  iter = 200, chains = 1
+  iter = 50, chains = 1
 )
 ```
 

@@ -2076,7 +2076,7 @@ public:
             if (as_bool(est_sigma_process)) {
 
                 current_statement_begin__ = 388;
-                lp_accum__.add(student_t_log<propto__>(sigma_process, 3, 0, 2));
+                lp_accum__.add(student_t_log<propto__>(sigma_process, 3, 0, 5));
             }
             current_statement_begin__ = 391;
             if (as_bool(logical_eq(proportional_model, 0))) {
@@ -2095,7 +2095,7 @@ public:
                 }
             }
             current_statement_begin__ = 402;
-            lp_accum__.add(student_t_log<propto__>(sigma, 3, 0, 2));
+            lp_accum__.add(student_t_log<propto__>(sigma, 3, 0, 5));
             current_statement_begin__ = 403;
             if (as_bool(logical_eq(est_cor, 1))) {
 

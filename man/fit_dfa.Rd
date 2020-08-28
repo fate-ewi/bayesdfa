@@ -26,6 +26,7 @@ fit_dfa(
   pro_covar = NULL,
   z_bound = NULL,
   z_model = c("dfa", "proportion"),
+  par_list = NULL,
   ...
 )
 }
@@ -100,6 +101,13 @@ trend, and (4) the value of the covariate}
 
 \item{z_model}{Optional argument allowing for elements of Z to be constrained to be proportions (each time series modeled as a mixture of trends). Arguments can be "dfa" (default) or "proportion"}
 
+\item{par_list}{A vector of parameter names of variables to be estimated by Stan. If NULL, this will default to
+c("x", "Z", "sigma", "log_lik", "psi","xstar") for most models -- though if AR / MA, or Student-t models are used
+additional parameters will be monitored. If you want to use diagnostic tools in rstan, including moment_matching,
+you will need to pass in a larger list. Setting this argument to "all" will monitor all parameters, enabling the use
+of diagnostic functions -- but making the models a lot larger for storage. Finally, this argument may be a custom string
+of parameters to monitor, e.g. c("x","sigma")}
+
 \item{...}{Any other arguments to pass to \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.}
 }
 \description{
@@ -115,33 +123,33 @@ need to be inverted using the function \code{\link[=find_inverted_chains]{find_i
 set.seed(42)
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 # only 1 chain and 250 iterations used so example runs quickly:
-m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1)
+m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1)
 \dontrun{
 # example of observation error covariates
 obs_covar = expand.grid("time"=1:20,"timeseries"=1:3,"covariate"=1)
 obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
-m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1, obs_covar=obs_covar)
+m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, obs_covar=obs_covar)
 
 # example of process error covariates
 pro_covar = expand.grid("time"=1:20,"trend"=1:3,"covariate"=1)
 pro_covar$value=rnorm(nrow(pro_covar),0,0.1)
-m <- fit_dfa(y = s$y_sim, iter = 250, chains = 1, pro_covar=pro_covar)
+m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, pro_covar=pro_covar)
 
 # example of long format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
 long = data.frame("obs" = obs, "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
-m = fit_dfa(y = long, data_shape = "long", iter = 500, chains = 1)
+m = fit_dfa(y = long, data_shape = "long", iter = 50, chains = 1)
 
 # example of model with Z constrained to be proportions and wide format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-m = fit_dfa(y = s$y_sim, z_model = "proportion", iter = 500, chains = 1)
+m = fit_dfa(y = s$y_sim, z_model = "proportion", iter = 50, chains = 1)
 
 # example of model with Z constrained to be proportions and long format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
 long = data.frame("obs" = obs, "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
-m = fit_dfa(y = long, data_shape = "long", z_model = "proportion", iter = 500, chains = 1)
+m = fit_dfa(y = long, data_shape = "long", z_model = "proportion", iter = 50, chains = 1)
 }
 }
 \seealso{

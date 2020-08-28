@@ -1,0 +1,136 @@
+---
+title: "Combining data with bayesdfa"
+author: ""
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Examples for combining datasets}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+For some applications using DFA, datasets may need to be combined from several data sources, and they may differ in time series length (or precision). Here we'll use some simple examples using `fit_dfa()` and to illustrate some cautionary points. 
+   
+```{r set-knitr-options, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+library("knitr")
+opts_chunk$set(message = FALSE, warning=FALSE, fig.width = 5.5)
+```
+
+Let's load the necessary packages:
+
+```{r, message=FALSE, warning=FALSE}
+library(bayesdfa)
+library(ggplot2)
+library(dplyr)
+library(rstan)
+#library(viridis)
+```
+
+## Example
+
+First, let's simulate some simple data with `sim_dfa()`. First, using just a 1 - trend model. This example has 3 time series, and is simulated from 1 underlying trend. The first time series doesn't load heavily on the trend (it's mostly generated via white noise) but time series 2-3 have stronger loadings on the trend.
+
+```{r}
+set.seed(123)
+loadings = matrix(0, 3, 1)
+loadings[1,1] = c(0.1)
+loadings[2:3,1] = runif(2, 0.4,1)
+round(loadings,3)
+sim = sim_dfa(num_trends = 1, num_years = 100, 
+  num_ts = 3, loadings_matrix = loadings, 
+  sigma=0.6)
+```
+
+Here we can see that time series 1 is more variable because the random component is playing a relatively larger role.  
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+#id variable for position in matrix 
+Y = as.data.frame(sim$y_sim)
+#as.data.frame(t(scale(t(Y))))
+Y$ts <- as.factor(1:nrow(Y))
+plot_data <- reshape2::melt(Y,id.var="ts")
+plot_data$x = as.numeric(substr(plot_data$variable, 2, length(plot_data$variable)))
+g1 = ggplot(plot_data, aes(x=x,y=value,group=ts,colour=ts)) +
+  geom_point()+
+  geom_line() + xlab("Time") #+ scale_color_viridis(end=0.8, discrete = TRUE)
+
+
+g1
+#grid.arrange(g1,g2,nrow=2)
+```
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+Y = as.data.frame(t(scale(t(sim$y_sim))))
+Y$ts <- as.factor(1:nrow(Y))
+plot_data <- reshape2::melt(Y,id.var="ts")
+plot_data$x = as.numeric(substr(plot_data$variable, 2, length(plot_data$variable)))
+g2 = ggplot(plot_data, aes(x=x,y=value,group=ts,colour=ts)) +
+  geom_point()+
+  geom_line() + xlab("Time") + 
+  ylab("Standardized time series") #+ 
+  #scale_color_viridis(end=0.8, discrete = TRUE)
+g2
+```
+
+Let's initially treat the first ~ 50 time points as a burn in, and fit a DFA model to the latter half of the time series, using all data. We don't really have to rotate trends (because there's just 1). The loadings are estimated ok for trend 1, but underestimated for the others.  
+
+```{r results='hide'}
+fit_1 = fit_dfa(y = sim$y_sim[,51:100], num_trends = 1, chains=1, iter=200)
+r = rotate_trends(fit_1)
+```
+```{r}
+round(r$Z_rot_mean,3)
+```
+
+Now, we'll pretend that in time steps 1:50 we have observations from time series 1 (but not the others). We'll fit several additional models, adding in back data points in steps of 10, and going backwards in time. All these runs would use time points 51:100 for time series 2 and 3, but they would include time steps 51:100, then 41:100, 31:100, etc. for time series 1.
+
+*Note for comparison purposes, we'll also standardize all time series 1 time before passing them in as an argument. Time series # 1 won't be re-scaled, but will be re-centered for each iteration. This is important because the time-series are non-stationary.*
+
+```{r results='hide', warning=FALSE, message=FALSE}
+
+output = expand.grid("ts_start"=c(0,25,50), 
+  "x"=1:100, "estimated_trend"=NA, "obs"=NA)
+
+l = matrix(0, 3, 3)
+
+for(i in 1:nrow(l)) {
+  idx = c(1,26,51) # seq(1,60,10)[nrow(l)+1-i]
+  Y = sim$y_sim
+  Y = t(scale(t(Y)))
+  Y[1,1:(idx-1)] = NA
+  Y[2:3,1:50] = NA
+  fit_2 = fit_dfa(y = Y, num_trends = 1, chains=1, iter=200, zscore = FALSE)
+  r = rotate_trends(fit_2)
+  l[i,] = c(r$Z_rot_mean)
+  output$estimated_trend[which(output$ts_start==(idx-1))] = scale((r$Z_rot_mean %*% r$trends_mean)[2,])
+  output$obs[which(output$ts_start==(idx-1))] = Y[2,51:100]
+}
+```
+
+Now we can look at the effects of adding in the extra data from time series 2. Here are the predictions for time series 2 over time steps 51:100, adding more data in from time series 1. What this shows is that in general the trends are the same -- though there are nuanced differences between them. 
+
+```{r echo=FALSE}
+#output$estimated_trend[which(output$ts_start==41)] = -1 * output$estimated_trend[which(output$ts_start==41)]
+output$ts_start=as.factor(output$ts_start)
+Y = sim$y_sim
+Y = t(scale(t(Y)))
+ts2 = data.frame(x = 1:100, y = Y[2,])
+ggplot(output, aes(x,y=estimated_trend,group=ts_start,col=ts_start)) + geom_line(size=2, alpha=0.7) + 
+  #scale_color_viridis(end=0.8,discrete = TRUE) + xlim(51,100) + 
+  xlab("Time") + 
+  ylab("Estimated time series (# 2)")
+```
+
+As a cautionary note, any time time series of different lenghts are combined using similar approaches, simulations should be done to try to estimate the influence of adding new data to shared trends or other quantities of interest.  
+
+```{r echo=FALSE, results='hide', include=FALSE}
+L = as.data.frame(t(l))
+L$trend = as.factor(seq(1:nrow(L)))
+plot_data <- reshape2::melt(L,id.var="trend")
+plot_data$x = as.numeric(substr(plot_data$variable, 2, length(plot_data$variable)))
+plot_data$x = seq(1,50,5)[11-plot_data$x]
+ggplot(plot_data, aes(x=x,y=value,group=trend,colour=trend)) +
+  geom_point()+
+  geom_line() + xlab("Time") #+ scale_color_viridis(end=0.8, discrete = TRUE)
+```
+

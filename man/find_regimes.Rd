@@ -40,5 +40,5 @@ Fit multiple models with differing numbers of regimes to trend data
 }
 \examples{
 data(Nile)
-find_regimes(log(Nile), iter = 500, chains = 1, max_regimes = 2)
+find_regimes(log(Nile), iter = 50, chains = 1, max_regimes = 2)
 }

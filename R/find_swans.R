@@ -17,7 +17,7 @@
 #' plot(s$y_sim[1,], type = "o")
 #' abline(v = 15, col = "red")
 #' # only 1 chain and 250 iterations used so example runs quickly:
-#' m <- fit_dfa(y = s$y_sim, num_trends = 1, iter = 250, chains = 1, nu_fixed = 2)
+#' m <- fit_dfa(y = s$y_sim, num_trends = 1, iter = 50, chains = 1, nu_fixed = 2)
 #' r <- rotate_trends(m)
 #' p <- plot_trends(r) #+ geom_vline(xintercept = 15, colour = "red")
 #' print(p)

@@ -385,7 +385,7 @@ model {
     theta ~ normal(0,1); // K elements
   }
   if(est_sigma_process) {
-    sigma_process ~ student_t(3, 0, 2);
+    sigma_process ~ student_t(3, 0, 5);
   }
 
   if(proportional_model == 0) {
@@ -399,7 +399,7 @@ model {
   }
 
   // observation variance
-  sigma ~ student_t(3, 0, 2);
+  sigma ~ student_t(3, 0, 5);
   if(est_cor == 1) {
     Lcorr ~ lkj_corr_cholesky(1);
   }
