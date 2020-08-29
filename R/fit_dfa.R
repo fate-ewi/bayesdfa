@@ -339,10 +339,6 @@ fit_dfa <- function(y = y,
 
   if(is.null(par_list)) {
     pars <- c("x", "Z", "sigma", "log_lik", "psi","xstar")
-  } else {
-    if(par_list == "all") pars <- c("x", "Z", "sigma", "log_lik", "psi","xstar",
-      "devs","x0","z","zpos","sigma_process","p_z",
-      "b_obs","b_pro","phi","theta","Lcorr","ymiss","nu") # removed pred
   }
   if (est_correlation) pars <- c(pars, "Omega", "Sigma") # add correlation matrix
   if (estimate_nu) pars <- c(pars, "nu")
@@ -351,6 +347,14 @@ fit_dfa <- function(y = y,
   if(!is.null(obs_covar)) pars <- c(pars, "b_obs")
   if(!is.null(pro_covar)) pars <- c(pars, "b_pro")
   if(est_sigma_process) pars <- c(pars, "sigma_process")
+
+  if(!is.null(par_list)) {
+    if(par_list=="all") {
+    pars <- pars <- c("x", "Z", "sigma", "log_lik", "psi","xstar",
+      "devs","x0","z","zpos","sigma_process","p_z",
+      "b_obs","b_pro","phi","theta","Lcorr","ymiss","nu") # removed pred
+    }
+  }
 
   sampling_args <- list(
     object = stanmodels$dfa,
