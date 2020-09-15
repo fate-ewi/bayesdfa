@@ -4,21 +4,21 @@ if (interactive()) options(mc.cores = parallel::detectCores())
 
 set.seed(1)
 
-marss_installed <- "MARSS" %in% rownames(installed.packages())
-if (marss_installed) {
-  y <- t(scale(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")]))
-  fit1 <- fit_dfa(y = y, num_trends = 1, iter = 600, chains = 1)
-  test_that("MARSS and bayesdfa match", {
-    ml_fit <- MARSS::MARSS(y, form = "dfa", model = list(m = 1))
-    ml_means <- c(ml_fit$states)
-    bayes_means <- apply(extract(fit1$model, "x")$x[, 1, ], 2, mean)
-    expect_equal(cor(abs(bayes_means), abs(ml_means)), 1, tolerance = 0.01)
-  })
-
-  test_that("print method works", {
-    expect_output(print(fit1), "n_eff")
-  })
-}
+# marss_installed <- "MARSS" %in% rownames(installed.packages())
+# if (marss_installed) {
+#   y <- t(scale(MARSS::harborSealWA[, c("SJF", "SJI", "EBays", "PSnd")]))
+#   fit1 <- fit_dfa(y = y, num_trends = 1, iter = 600, chains = 1)
+#   test_that("MARSS and bayesdfa match", {
+#     ml_fit <- MARSS::MARSS(y, form = "dfa", model = list(m = 1))
+#     ml_means <- c(ml_fit$states)
+#     bayes_means <- apply(extract(fit1$model, "x")$x[, 1, ], 2, mean)
+#     expect_equal(cor(abs(bayes_means), abs(ml_means)), 1, tolerance = 0.01)
+#   })
+#
+#   test_that("print method works", {
+#     expect_output(print(fit1), "n_eff")
+#   })
+# }
 
 test_that("est_correlation = TRUE works", {
   skip_on_cran()

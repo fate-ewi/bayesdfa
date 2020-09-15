@@ -37,11 +37,10 @@ Suggests:
     testthat,
     parallel,
     knitr,
-    rmarkdown,
-    MARSS
+    rmarkdown
 URL: https://github.com/fate-ewi/bayesdfa
 BugReports: https://github.com/fate-ewi/bayesdfa/issues
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.1.9000
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 SystemRequirements: GNU make
