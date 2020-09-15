@@ -39,7 +39,9 @@ fit_regimes <- function(y,
     est_sigma <- 1
   }
 
-  if (n_regimes == 1) {
+  if (n_regimes < 1) stop("`n_regimes` must be an integer >= 1.", call. = FALSE)
+
+  if (identical(as.integer(n_regimes), 1L)) {
     stan_data <- list(
       T = length(y),
       K = 1,
