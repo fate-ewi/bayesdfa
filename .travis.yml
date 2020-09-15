@@ -1,5 +1,5 @@
 language: r
-sudo: true
+sudo: false
 r: devel
 latex: false
 cache:
@@ -27,6 +27,5 @@ before_install:
   - echo "PKG_CPPFLAG=-DBOOST_NO_AUTO_PTR" >> ~/.R/Makevars
   - echo "CXX14FLAGS=-O3 -mtune=native -march=native -Wno-macro-redefined -Wno-unused -Wno-deprecated-declarations" >> ~/.R/Makevars
   - echo "CXX14=g++ -std=c++1y -fext-numeric-literals -fPIC" >> ~/.R/Makevars
-  - sudo ln -s /usr/lib/R/modules/lapack.so /usr/lib/libRlapack.so
 
 warnings_are_errors: true
