@@ -17,3 +17,7 @@
 # bayesdfa 0.1.5
 
 * Added additional functionality to relax limits on AR(1) parameter (phi), MA(1) parameter (theta), and flexibility in estimated the standard deviation of latent trends. Also modified the data object passed in to be either a wide matrix (as previously done) or a long format data frame. The latter allows for multiple observations / time step. Finally, an additional and alternative constraint was introduced for Z, allowing elements to be modeled as a Dirchlet process, rather than conventional DFA. 
+
+# bayesdfa 0.1.6
+
+* Removed warning related to vignette and noLD test
