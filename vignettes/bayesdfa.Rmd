@@ -201,7 +201,7 @@ Finally, we might be interested in evaluating evidence for the estimated trends 
 We'll illustrate an example of the `fit_regimes()` function. Note that in the current version of the package, this has to be applied to each trend separately. Also, uncertainty estimates from the DFA trends may also be included as data (instead of estimated) -- this may be particularly useful for datasets with lots of missing values in portions of the time series (where the uncertainty balloons up).
 
 Applying the 2-regime model to the first trend,
-```{r, warning=FALSE, message=FALSE, results='hide'}
+```{r eval = FALSE, warning=FALSE, message=FALSE, results='hide'}
 reg_mod <- fit_regimes(
   y = r$trends_mean[1, ],
   sds = (r$trends_upper - r$trends_mean)[1, ] / 1.96,
@@ -212,13 +212,13 @@ reg_mod <- fit_regimes(
 
 In addition to getting diagnostics and quantities like LOOIC out of the `reg_mod` object, we can plot the estimated states. 
 
-```{r plot-regime, fig.align='center', fig.cap="Estimated regimes, from a HMM model applied to the first trend of a 2-trend DFA model with Student-t deviations.\\label{fig:plot-regime}"}
+```{r plot-regime, eval=FALSE, fig.align='center', fig.cap="Estimated regimes, from a HMM model applied to the first trend of a 2-trend DFA model with Student-t deviations.\\label{fig:plot-regime}"}
 plot_regime_model(reg_mod)
 ```
 
 In this case, there might be some support for the 2-regime model. Sometimes (but not in this example) label switching makes the plots a little challenging to interpret, and the labels need to be reversed. We've included the argument `flip_regimes` to help with this,
 
-```{r plot-regime-flipped, fig.align='center', fig.cap="Estimated regimes (after flipping), from a HMM model applied to the first trend of a 2-trend DFA model with Student-t deviations.\\label{fig:plot-regime-flipped}"}
+```{r plot-regime-flipped, eval=FALSE, fig.align='center', fig.cap="Estimated regimes (after flipping), from a HMM model applied to the first trend of a 2-trend DFA model with Student-t deviations.\\label{fig:plot-regime-flipped}"}
 plot_regime_model(reg_mod, flip_regimes = TRUE)
 ```
 
