@@ -33,6 +33,8 @@ e.g. NA}
 \item{chains}{Number of chains in Stan sampling, defaults to 4.}
 
 \item{thin}{Thinning rate in Stan sampling, defaults to 1.}
+
+\item{...}{Any other arguments to pass to \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.}
 }
 \description{
 Apply cross validation to DFA model

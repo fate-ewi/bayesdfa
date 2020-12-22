@@ -27,6 +27,7 @@ Imports:
     rstan (>= 2.18.2),
     rstantools (>= 1.5.1),
     ggplot2,
+    viridisLite,
     loo (>= 2.0.0),
     dplyr (>= 0.8.0),
     reshape2,

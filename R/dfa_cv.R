@@ -11,7 +11,9 @@
 #' @param iter Number of iterations in Stan sampling, defaults to 2000.
 #' @param thin Thinning rate in Stan sampling, defaults to 1.
 #' @param chains Number of chains in Stan sampling, defaults to 4.
+#' @param ... Any other arguments to pass to [rstan::sampling()].
 #'
+#' @importFrom stats dnorm var
 #' @export
 #'
 #' @examples
@@ -61,7 +63,9 @@ dfa_cv <- function(stanfit,
     stop("Error, please reshape the data into long format")
   }
 
+  if(!is.null(fold_ids)) n_folds = max(fold_ids)
   y <- stanfit$orig_data
+  y$time = y$time - min(y$time) + 1
 
   # loop over the folds, re-fitting the dfa model each time with the folds held out
   log_lik <- matrix(0, nrow=chains*iter/2, ncol = n_folds)

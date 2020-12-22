@@ -33,9 +33,9 @@ test_that("NA indexing works", {
   yy[1, 1] <- NA
   yy[2, 3] <- NA
   m <- fit_dfa(yy, num_trends = 1, sample = FALSE, zscore = FALSE)
-  expect_equal(m$n_na, 2L)
-  expect_equal(m$row_indx_na, c(1L, 2L))
-  expect_equal(m$col_indx_na, c(1L, 3L))
+  expect_equal(m$sampling_args$data$n_na, 2L)
+  expect_equal(m$sampling_args$data$row_indx_na, c(1L, 2L))
+  expect_equal(m$sampling_args$data$col_indx_na, c(1L, 3L))
 })
 
 test_that("if time series all same value then zscore stops with error", {

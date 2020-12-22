@@ -8,7 +8,7 @@
 #' @seealso plot_loadings fit_dfa rotate_trends
 #'
 #' @importFrom ggplot2 geom_ribbon facet_wrap scale_color_identity
-#' @importFrom viridis viridis
+#' @importFrom viridisLite viridis
 #'
 #' @examples
 #' \donttest{
