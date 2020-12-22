@@ -4,12 +4,14 @@
 \alias{plot_fitted}
 \title{Plot the trends from a DFA}
 \usage{
-plot_fitted(modelfit, names = NULL)
+plot_fitted(modelfit, names = NULL, spaghetti = FALSE)
 }
 \arguments{
 \item{modelfit}{Output from \code{\link{fit_dfa}}, a rstanfit object}
 
 \item{names}{Optional vector of names for plotting labels}
+
+\item{spaghetti}{Defaults to FALSE, but if TRUE puts all raw time series (grey) and trends on a single plot}
 }
 \description{
 Plot the trends from a DFA
@@ -19,6 +21,9 @@ Plot the trends from a DFA
 y <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 4)
 m <- fit_dfa(y = y$y_sim, num_trends = 2, iter = 50, chains = 1)
 p <- plot_fitted(m)
+print(p)
+
+p <- plot_fitted(m, spaghetti = TRUE)
 print(p)
 }
 }

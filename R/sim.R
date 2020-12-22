@@ -66,37 +66,36 @@ sim_dfa <- function(num_trends = 1,
 
   d <- fit_dfa(y_ignore,
     num_trends = num_trends, sample = FALSE, zscore = FALSE,
-    varIndx = varIndx, nu_fixed = nu_fixed
+    varIndx = varIndx, nu_fixed = nu_fixed, trend_model = "rw"
   )
 
   Z <- loadings_matrix
-  y <- vector(mode = "numeric", length = d$N)
+  y <- vector(mode = "numeric", length = d$sampling_args$data$N)
 
-  for (k in seq_len(d$K)) {
+  for (k in seq_len(d$sampling_args$data$K)) {
     Z[k, k] <- abs(Z[k, k]) # add constraint for Z diagonal
   }
   # fill in 0s
-  for (k in seq_len(d$K)) {
-    for (p in seq_len(d$P)) {
+  for (k in seq_len(d$sampling_args$data$K)) {
+    for (p in seq_len(d$sampling_args$data$P)) {
       if (p < k) Z[p, k] <- 0
     }
   }
 
-  x <- matrix(nrow = d$K, ncol = d$N) # random walk-trends
-
+  x <- matrix(nrow = d$sampling_args$data$K, ncol = d$sampling_args$data$N) # random walk-trends
 
   # initial state for each trend
-  for (k in seq_len(d$K)) {
+  for (k in seq_len(d$sampling_args$data$K)) {
 
     if (!is.null(user_supplied_deviations)) {
       devs <- user_supplied_deviations[,k]
     } else {
-      devs <- rt(d$N, df = d$nu_fixed)
+      devs <- rt(d$sampling_args$data$N, df = d$sampling_args$data$nu_fixed)
     }
 
     x[k, 1] <- rnorm(1, 0, 1)
     if (is.null(extreme_value)) {
-      for (t in seq(2, d$N)) {
+      for (t in seq(2, d$sampling_args$data$N)) {
         x[k, t] <- x[k, t - 1] + devs[t] # random walk
       }
     } else {
@@ -110,19 +109,19 @@ sim_dfa <- function(num_trends = 1,
       } else {
         x[k, extreme_loc] <- x[k, extreme_loc - 1] + devs[t]
       }
-      for (t in seq(extreme_loc + 1, d$N)) {
+      for (t in seq(extreme_loc + 1, d$sampling_args$data$N)) {
         x[k, t] <- x[k, t - 1] + devs[t] # random walk
       }
     }
   }
 
   pred <- Z %*% x
-  for (i in seq_len(d$n_pos)) {
+  for (i in seq_len(d$sampling_args$data$n_pos)) {
     y[i] <- rnorm(
-      1, pred[d$row_indx_pos[i], d$col_indx_pos[i]],
-      sigma[d$varIndx[d$row_indx_pos[i]]]
+      1, pred[d$sampling_args$data$row_indx_pos[i], d$sampling_args$data$col_indx_pos[i]],
+      sigma[d$sampling_args$data$varIndx[d$sampling_args$data$row_indx_pos[i]]]
     )
   }
-  y_sim <- matrix(y, nrow = d$P)
+  y_sim <- matrix(y, nrow = d$sampling_args$data$P)
   list(y_sim = y_sim, pred = pred, x = x, Z = Z, sigma = sigma)
 }

@@ -95,22 +95,34 @@ data {
   real obs_covar_value[num_obs_covar];
   int<lower=0> num_pro_covar; // number of unique process covariates, dimension of matrix
   int<lower=0> n_pro_covar; // number of unique process covariates included
-  int pro_covar_index[num_pro_covar,3] ;// indexed by time, trend, covariate #, covariate value. +1 because of indexing issues
+  int pro_covar_index[num_pro_covar,3];// indexed by time, trend, covariate #, covariate value. +1 because of indexing issues
   real pro_covar_value[num_pro_covar];
   real z_bound[2];
   int<lower=0> long_format; // data shape, 0 == wide (default), 1 = long with potential for multiple observations
   int<lower=0> proportional_model;
   int<lower=0> est_sigma_process; // optional, 0 == not estimate sigma_pro (default), 1 == estimate
   int<lower=0> n_sigma_process; // single value, or equal number of tre
+  int<lower=0> est_rw; // // single value, 0 if false 1 if true [model trends as latend AR process = default]
+  int<lower=0> est_spline; // single value, 0 if false 1 if true to model trends with b-splines
+  int<lower=0> est_gp; // single value, 0 if false 1 if true to model trends with predictive gaussian process
+  int<lower=0> n_knots; // single value representing knots for b-spline or gp process
+  matrix[n_knots, N] B_spline;
+  matrix[n_knots, n_knots] distKnots;
+  matrix[N, n_knots] distKnots21;
+  matrix[1, n_knots] distKnots21_pred;
 }
 transformed data {
   int n_pcor; // dimension for cov matrix
   int n_loglik; // dimension for loglik calculation
   vector[K] zeros;
   vector[K*proportional_model] alpha_vec;
+  vector[n_knots] muZeros;
 
   for(k in 1:K) {
     zeros[k] = 0; // used in MVT / MVN below
+  }
+  for(k in 1:n_knots) {
+    muZeros[k] = 0; // used for GP
   }
 
   // this is number of points of log-likelihood, depends if model is MVN or not and data is in wide/long format
@@ -141,21 +153,24 @@ transformed data {
   }
 }
 parameters {
-  matrix[K,N-1] devs; // random deviations of trends
+  matrix[K * est_rw,(N-1) * est_rw] devs; // random deviations of trends
   vector[K] x0; // initial state
   vector<lower=0>[K*(1-proportional_model)] psi; // expansion parameters
   vector<lower=z_bound[1],upper=z_bound[2]>[nZ*(1-proportional_model)] z; // estimated loadings in vec form
   vector[K*(1-proportional_model)] zpos; // constrained positive values
   simplex[K] p_z[P*proportional_model]; // alternative for proportional Z
+  matrix[K * est_spline, n_knots * est_spline] spline_a; // weights for b-splines
   matrix[n_obs_covar, P] b_obs; // coefficients on observation model
   matrix[n_pro_covar, K] b_pro; // coefficients on process model
   real<lower=0> sigma[nVariances];
   real<lower=2> nu[estimate_nu]; // df on student-t
   real ymiss[n_na];
-  real<lower=-1,upper=1> phi[est_phi*K];
-  real<lower=-1,upper=1> theta[est_theta*K];
-  cholesky_factor_corr[n_pcor] Lcorr;
-  real<lower=0> sigma_process[est_sigma_process * n_sigma_process];
+  real<lower=-1,upper=1> phi[est_phi*K]; // AR(1) coefficients specific to each trend
+  real<lower=-1,upper=1> theta[est_theta*K];// MA(1) coefficients specific to each trend
+  real<lower=0> gp_theta[est_gp*K];// gp_theta coefficients specific to each trend
+  cholesky_factor_corr[n_pcor] Lcorr; // matrix for correlated errros
+  real<lower=0> sigma_process[est_sigma_process * n_sigma_process]; // process variances, potentially unique
+  vector[n_knots* est_gp] effectsKnots[K * est_gp]; // gaussian predictive process
 }
 transformed parameters {
   matrix[P,N] pred; //vector[P] pred[N];
@@ -176,6 +191,23 @@ transformed parameters {
   vector[P*long_format*est_cor] cond_sigma_vec;// temporary for calculations for MVN model
   vector[P*long_format*est_cor] cond_mean_vec;// temporary for calculations for MVN model
   real sigma11;// temporary for calculations for MVN model
+  vector[K] sigma_pro;
+  matrix[K * est_spline, n_knots * est_spline] spline_a_trans; // weights for b-splines
+  matrix[n_knots, n_knots] SigmaKnots; // matrix for GP model
+  matrix[N, n_knots] SigmaOffDiag;// matrix for GP model
+  matrix[N, n_knots] SigmaOffDiagTemp;// matrix for GP model
+
+  // block for process errors - can be estimated or not, and shared or not
+  for(k in 1:K) {
+    sigma_pro[k] = 1; // default constraint of all DFAs
+    if(est_sigma_process==1) {
+      if(n_sigma_process==1) {
+        sigma_pro[k] = sigma_process[1];
+      } else {
+        sigma_pro[k] = sigma_process[k];
+      }
+    }
+  }
 
   // phi is the ar(1) parameter, fixed or estimated
   if(est_phi == 1) {
@@ -210,30 +242,31 @@ transformed parameters {
 
   if(proportional_model == 0) {
     for(i in 1:nZ) {
-        Z[row_indx[i],col_indx[i]] = z[i]; // convert z to from vec to matrix
+      Z[row_indx[i],col_indx[i]] = z[i]; // convert z to from vec to matrix
+    }
+    // fill in zero elements in upper diagonal
+    if(nZero > 2) {
+      for(i in 1:(nZero-2)) {
+        Z[row_indx_z[i],col_indx_z[i]] = 0;
       }
-      // fill in zero elements in upper diagonal
-      if(nZero > 2) {
-        for(i in 1:(nZero-2)) {
-          Z[row_indx_z[i],col_indx_z[i]] = 0;
-        }
+    }
+    for(k in 1:K) {
+      Z[k,k] = zpos[k];// add constraint for Z diagonal
+    }
+    // this block is for the expansion prior
+    for(k in 1:K) {
+      if(zpos[k] < 0) {
+        indicator[k] = -1;
+      } else {
+        indicator[k] = 1;
       }
-      for(k in 1:K) {
-        Z[k,k] = zpos[k];// add constraint for Z diagonal
+      psi_root[k] = sqrt(psi[k]);
+      for(p in 1:P) {
+        Z[p,k] = Z[p,k] * indicator[k] * (1/psi_root[k]);
       }
-      // this block is for the expansion prior
-      for(k in 1:K) {
-        if(zpos[k] < 0) {
-          indicator[k] = -1;
-        } else {
-          indicator[k] = 1;
-        }
-        psi_root[k] = sqrt(psi[k]);
-        for(p in 1:P) {
-          Z[p,k] = Z[p,k] * indicator[k] * (1/psi_root[k]);
-        }
-      }
-      // initial state for each trend
+    }
+    // initial state for each trend
+    if(est_rw == 1) {
       for(k in 1:K) {
         x[k,1] = x0[k];
         // trend is modeled as random walk, with optional
@@ -243,27 +276,68 @@ transformed parameters {
           x[k,t] = phi_vec[k]*x[k,t-1] + devs[k,t-1];
         }
       }
-      // this block also for the expansion prior, used to convert trends
-      for(k in 1:K) {
-        //  x[k,1:N] = x[k,1:N] * indicator[k] * psi_root[k];
-        for(t in 1:N) {
-          x[k,t] = x[k,t] * indicator[k] * psi_root[k];
+    }
+    if(est_spline==1) {
+      for(k in 1:K) spline_a_trans[k] = spline_a[k] * sigma_pro[k];
+      x = spline_a_trans * B_spline;
+      for(k in 1:K) {x[k] = x0[k] + x[k];}
+    }
+    if(est_gp == 1) {
+      for (k in 1:K) {
+        SigmaKnots = square(sigma_pro[k]) * exp(-distKnots / gp_theta[k]);
+        for(i in 1:n_knots) {
+          SigmaKnots[i,i] = SigmaKnots[i,i]+0.00001; // stabilizing
         }
-      }
-
-   }
-  if(proportional_model == 1) {
-    // initial state for each trend
-    for(k in 1:K) {
-      x[k,1] = x0[k];
-      // trend is modeled as random walk, with optional
-      // AR(1) component = phi, and optional MA(1) component
-      // theta. Theta is included in the model block below.
-      for(t in 2:N) {
-        x[k,t] = phi_vec[k]*x[k,t-1] + devs[k,t-1];
+        // cov matrix between knots and projected locs
+        SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / gp_theta[k]);
+        // multiply and invert once, used below:
+        SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots);
+        x[k] = to_row_vector(SigmaOffDiag * effectsKnots[k]);
       }
     }
-    // then try proportional model
+
+    // this block also for the expansion prior, used to convert trends
+    for(k in 1:K) {
+      //  x[k,1:N] = x[k,1:N] * indicator[k] * psi_root[k];
+      for(t in 1:N) {
+        x[k,t] = x[k,t] * indicator[k] * psi_root[k];
+      }
+    }
+
+  }
+  if(proportional_model == 1) {
+    // initial state for each trend
+    if(est_rw == 1) {
+      for(k in 1:K) {
+        x[k,1] = x0[k];
+        // trend is modeled as random walk, with optional
+        // AR(1) component = phi, and optional MA(1) component
+        // theta. Theta is included in the model block below.
+        for(t in 2:N) {
+          x[k,t] = phi_vec[k]*x[k,t-1] + devs[k,t-1];
+        }
+      }
+    }
+    if(est_spline==1) {
+      for(k in 1:K) spline_a_trans[k] = spline_a[k] * sigma_pro[k];
+      x = spline_a_trans * B_spline;
+      for(k in 1:K) {x[k] = x0[k] + x[k];}
+    }
+    if(est_gp == 1) {
+      for (k in 1:K) {
+        SigmaKnots = square(sigma_pro[k]) * exp(-distKnots / gp_theta[k]);
+        for(i in 1:n_knots) {
+          SigmaKnots[i,i] = SigmaKnots[i,i]+0.00001; // stabilizing
+        }
+        // cov matrix between knots and projected locs
+        SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / gp_theta[k]);
+        // multiply and invert once, used below:
+        SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots);
+        x[k] = to_row_vector(SigmaOffDiag * effectsKnots[k]);
+      }
+    }
+
+    // proportional model
     for(p in 1:P) {
       for(k in 1:K) {
         Z[p,k] = p_z[p,k]; // compositions sum to 1 for a time series
@@ -285,10 +359,24 @@ transformed parameters {
 
   // adjust predictions if observation covariates exist
   if(num_obs_covar > 0) {
-    for(i in 1:num_obs_covar) {
-      // indexed by time, trend, covariate #, covariate value
-      pred[obs_covar_index[i,2],obs_covar_index[i,1]] = pred[obs_covar_index[i,2],obs_covar_index[i,1]] + b_obs[obs_covar_index[i,3], obs_covar_index[i,2]] * obs_covar_value[i];
-    }
+    //if(long_format==0) {
+      for(i in 1:num_obs_covar) {
+        // if data are in wide format, only 1 obs exists per prediction + pred matrix can just be adjusted
+        // indexed by time, trend, covariate #, covariate value
+        pred[obs_covar_index[i,2],obs_covar_index[i,1]] = pred[obs_covar_index[i,2],obs_covar_index[i,1]] + b_obs[obs_covar_index[i,3], obs_covar_index[i,2]] * obs_covar_value[i];
+      }
+    // } else {
+    //   // if data are in long format, multiple obs might exist per time point, and need to use ugly loops
+    //   // loop over dataframe of obs error covariates -- may be > observations if multiple covariates exist
+    //   for(i in 1:num_obs_covar) {
+    //     // loop over observatinos and find the one that corresponds to this data point
+    //     for(j in 1:n_pos) {
+    //       if(row_indx_pos[j] == obs_covar_index[i,1] && col_indx_pos[j] == obs_covar_index[i,2]) {
+    //         obs_cov_offset[i] = obs_cov_offset[i] + b_obs[obs_covar_index[i,3], obs_covar_index[i,2]] * obs_covar_value[i];
+    //       }
+    //     }
+    //   }
+    // }
   }
 
   if(long_format==1 && est_cor==1) {
@@ -325,51 +413,53 @@ transformed parameters {
 
 }
 model {
-  vector[K] sigma_pro;
+
   // initial state for each trend
   x0 ~ normal(0, 1); // initial state estimate at t=1
   psi ~ gamma(2, 1); // expansion parameter for par-expanded priors
 
-  // block for process errors - can be estimated or not, and shared or not
-  for(k in 1:K) {
-    sigma_pro[k] = 1; // default constraint of all DFAs
-    if(est_sigma_process==1) {
-      if(n_sigma_process==1) {
-        sigma_pro[k] = sigma_process[1];
-      } else {
-        sigma_pro[k] = sigma_process[k];
-      }
+  if(est_gp==1) {
+    gp_theta ~ student_t(3, 0, 0.5);
+    // random effects estimated for each trend
+    for(k in 1:K) {
+      effectsKnots[k] ~ multi_normal(muZeros, SigmaKnots);
     }
   }
-
   // This is deviations - either normal or Student t, and
   // if Student-t, df parameter nu can be estimated or fixed
-  for(k in 1:K) {
-    if(use_normal == 0) {
-      for(t in 1:1) {
-        if (estimate_nu == 1) {
-          devs[k,t] ~ student_t(nu[1], 0, sigma_pro[k]); // random walk
-        } else {
-          devs[k,t] ~ student_t(nu_fixed, 0, sigma_pro[k]); // random walk
+  if(est_rw == 1) {
+    for(k in 1:K) {
+      if(use_normal == 0) {
+        for(t in 1:1) {
+          if (estimate_nu == 1) {
+            devs[k,t] ~ student_t(nu[1], 0, sigma_pro[k]); // random walk
+          } else {
+            devs[k,t] ~ student_t(nu_fixed, 0, sigma_pro[k]); // random walk
+          }
         }
-      }
-      for(t in 2:(N-1)) {
-        // if MA is not included, theta_vec = 0
-        if (estimate_nu == 1) {
-          devs[k,t] ~ student_t(nu[1], theta_vec[k]*devs[k,t-1], sigma_pro[k]); // random walk
-        } else {
-          devs[k,t] ~ student_t(nu_fixed, theta_vec[k]*devs[k,t-1], sigma_pro[k]); // random walk
+        for(t in 2:(N-1)) {
+          // if MA is not included, theta_vec = 0
+          if (estimate_nu == 1) {
+            devs[k,t] ~ student_t(nu[1], theta_vec[k]*devs[k,t-1], sigma_pro[k]); // random walk
+          } else {
+            devs[k,t] ~ student_t(nu_fixed, theta_vec[k]*devs[k,t-1], sigma_pro[k]); // random walk
+          }
+        }
+
+      } else {
+        devs[k,1] ~ normal(0, 1);
+        for(t in 2:(N-1)) {
+          // if MA is not included, theta_vec = 0
+          devs[k,t] ~ normal(theta_vec[k]*devs[k,t-1], sigma_pro[k]);
         }
       }
 
-    } else {
-      devs[k,1] ~ normal(0, 1);
-      for(t in 2:(N-1)) {
-        // if MA is not included, theta_vec = 0
-        devs[k,t] ~ normal(theta_vec[k]*devs[k,t-1], sigma_pro[k]);
-      }
     }
-
+  }
+  if(est_spline==1) {
+    for(k in 1:K) {
+      spline_a[k] ~ normal(0,1);
+    }
   }
 
   // prior for df parameter for t-distribution
@@ -436,8 +526,9 @@ generated quantities {
   matrix[n_pcor, n_pcor] Omega;
   matrix[n_pcor, n_pcor] Sigma;
   matrix[K,1] xstar; //random walk-trends in future
-  vector[K] sigma_pro;
   vector[K] future_devs; // deviations in future
+  matrix[n_knots, n_knots] SigmaKnots_pred; // matrix for GP model
+  row_vector[n_knots] SigmaOffDiag_pred;// matrix for GP model
   int<lower=0> j;
   j = 0;
 
@@ -476,31 +567,41 @@ generated quantities {
     }
   }
 
+  for(k in 1:K) {
+    future_devs[k] = 0;
+  }
   // future deviations
-  // block for process errors - can be estimated or not, and shared or not
-  for(k in 1:K) {
-    sigma_pro[k] = 1; // default constraint of all DFAs
-    if(est_sigma_process==1) {
-      if(n_sigma_process==1) {
-        sigma_pro[k] = sigma_process[1];
+  if(est_rw==1) {
+    for(k in 1:K) {
+      if(use_normal == 0) {
+        // if MA is not included, theta_vec = 0
+        if (estimate_nu == 1) {
+          future_devs[k] = student_t_rng(nu[1], theta_vec[k]*devs[k,N-1], sigma_pro[k]); // random walk
+        } else {
+          future_devs[k] = student_t_rng(nu_fixed, theta_vec[k]*devs[k,N-1], sigma_pro[k]); // random walk
+        }
       } else {
-        sigma_pro[k] = sigma_process[k];
+        // if MA is not included, theta_vec = 0
+        future_devs[k] = normal_rng(theta_vec[k]*devs[k,N-1], sigma_pro[k]);
       }
+      xstar[k,1] = x[k,N] + future_devs[k]; // future value of trend at t+1
     }
   }
-  for(k in 1:K) {
-    if(use_normal == 0) {
-      // if MA is not included, theta_vec = 0
-      if (estimate_nu == 1) {
-        future_devs[k] = student_t_rng(nu[1], theta_vec[k]*devs[k,N-1], sigma_pro[k]); // random walk
-      } else {
-        future_devs[k] = student_t_rng(nu_fixed, theta_vec[k]*devs[k,N-1], sigma_pro[k]); // random walk
-      }
-    } else {
-      // if MA is not included, theta_vec = 0
-      future_devs[k] = normal_rng(theta_vec[k]*devs[k,N-1], sigma_pro[k]);
+  if(est_spline == 1) {
+    // b-spline, only affected by endpoint where weight -> 1
+    for(k in 1:K) {
+      xstar[k,1] = spline_a_trans[k,n_knots] * B_spline[n_knots,N];
     }
-    xstar[k,1] = x[k,N] + future_devs[k]; // future value of trend at t+1
   }
-
+  if(est_gp == 1) {
+    for (k in 1:K) {
+      SigmaKnots_pred = square(sigma_pro[k]) * exp(-distKnots / gp_theta[k]);
+      for(i in 1:n_knots) {
+        SigmaKnots_pred[i,i] = SigmaKnots_pred[i,i]+0.00001; // stabilizing
+      }
+      // cov matrix between knots and projected locs
+      SigmaOffDiag_pred = to_row_vector(square(sigma_pro[k]) * exp(-distKnots21_pred / gp_theta[k])) * inverse_spd(SigmaKnots_pred);
+      xstar[k,1] = SigmaOffDiag_pred * effectsKnots[k]; // RHS is real
+    }
+  }
 }

@@ -113,6 +113,62 @@ test_that("estimate_sigma_process_k", {
 
   expect_equal(class(m$model)[[1]], "stanfit")
 })
+
+test_that("estimate_spline_model", {
+  skip_on_cran()
+  set.seed(42)
+  s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+  m <- fit_dfa(y = s$y_sim, iter = 100, chains = 1, num_trends = 2, seed = 42,
+    estimate_process_sigma = TRUE, n_knots = 10, trend_model = "spline")
+
+  expect_equal(class(m$model)[[1]], "stanfit")
+})
+
+test_that("estimate_gp_model", {
+  skip_on_cran()
+  set.seed(42)
+  s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+  m <- fit_dfa(y = s$y_sim, iter = 100, chains = 1, num_trends = 2, seed = 42,
+    estimate_process_sigma = TRUE, n_knots = 5, trend_model = "gp")
+  expect_equal(class(m$model)[[1]], "stanfit")
+})
+
+test_that("estimate_rw_model_pars", {
+  skip_on_cran()
+  set.seed(42)
+  s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+  m <- fit_dfa(y = s$y_sim, iter = 100, chains = 1, num_trends = 1, seed = 42,
+    estimate_process_sigma = TRUE)
+  x_mean = apply(rstan::extract(m$model,"x")$x[,1,], 2, mean)
+  true_x = c(0.17, -0.40,  0.42, -1.45, -0.16, -1.85, -1.35, -0.62,
+    -2.15, -4.69, -5.22, -5.81, -2.81, -0.04,  3.35,  5.22,  7.55,  5.21,  2.51,  1.53)
+  expect_lt(sum(abs(true_x - x_mean)), 0.06)
+})
+
+test_that("estimate_gp_model_pars", {
+  skip_on_cran()
+  set.seed(42)
+  s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+  m <- fit_dfa(y = s$y_sim, iter = 100, chains = 1, num_trends = 2, seed = 42,
+    estimate_process_sigma = TRUE, n_knots = 5, trend_model = "gp")
+  x_mean = apply(rstan::extract(m$model,"x")$x[,1,], 2, mean)
+  true_x = c(-0.06, -0.08, -0.08, -0.10, -0.15, -0.29, -0.50, -0.84, -1.36, -2.16, -2.04,
+    -0.98, -0.13,  0.68,  1.63,  1.47,  1.11,  0.95,  0.93,  1.09)
+  expect_lt(sum(abs(true_x - x_mean)), 0.06)
+})
+
+test_that("estimate_spline_model_pars", {
+  skip_on_cran()
+  set.seed(42)
+  s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+  m <- fit_dfa(y = s$y_sim, iter = 100, chains = 1, num_trends = 1, seed = 42,
+    estimate_process_sigma = TRUE, n_knots = 10, trend_model = "spline")
+  x_mean = apply(rstan::extract(m$model,"x")$x[,1,], 2, mean)
+  true_x = c(0.34,  0.05, -0.17, -0.31, -0.37, -0.39, -0.42,
+    -0.58, -1.07, -2.00, -2.86, -2.89, -1.71,  0.12,  1.87,  3.01,  3.27,  2.46,  1.14,  0.30)
+  expect_lt(sum(abs(true_x - x_mean)), 0.06)
+})
+
 # test_that("we can find which chains to flip", {
 #   skip_on_cran()
 #   skip_on_travis()

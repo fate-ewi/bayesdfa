@@ -26,7 +26,11 @@ fit_dfa(
   pro_covar = NULL,
   z_bound = NULL,
   z_model = c("dfa", "proportion"),
+  trend_model = c("rw", "spline", "gp"),
+  n_knots = NULL,
+  knot_locs = NULL,
   par_list = NULL,
+  verbose = FALSE,
   ...
 )
 }
@@ -101,12 +105,26 @@ trend, and (4) the value of the covariate}
 
 \item{z_model}{Optional argument allowing for elements of Z to be constrained to be proportions (each time series modeled as a mixture of trends). Arguments can be "dfa" (default) or "proportion"}
 
+\item{trend_model}{Optional argument to change the model of the underlying latent trend. By default this is set to 'rw', where the trend
+is modeled as a random walk - as in conentional DFA. Alternative options are 'spline', where B-splines are used to model the trends
+or 'gp', where gaussian predictive processes are used. If models other than 'rw' are used, there are some key points. First, the MA and AR
+parameters on these models will be turned off. Second, for B-splines the process_sigma becomes an optional scalar on the spline coefficients,
+and is turned off by default. Third, the number of knots can be specified (more knots = more wiggliness, and n_knots < N). For models
+with > 2 trends, each trend has their own spline coefficients estimated though the knot locations are assumed shared. If knots aren't specified,
+the default is N/3.}
+
+\item{n_knots}{The number of knots for the B-spline of Gaussian predictive process models. Optional}
+
+\item{knot_locs}{Locations of knots (optional), defaults to uniform spacing between 1 and N}
+
 \item{par_list}{A vector of parameter names of variables to be estimated by Stan. If NULL, this will default to
 c("x", "Z", "sigma", "log_lik", "psi","xstar") for most models -- though if AR / MA, or Student-t models are used
 additional parameters will be monitored. If you want to use diagnostic tools in rstan, including moment_matching,
 you will need to pass in a larger list. Setting this argument to "all" will monitor all parameters, enabling the use
 of diagnostic functions -- but making the models a lot larger for storage. Finally, this argument may be a custom string
 of parameters to monitor, e.g. c("x","sigma")}
+
+\item{verbose}{Whether to print iterations and information from Stan, defaults to FALSE.}
 
 \item{...}{Any other arguments to pass to \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.}
 }
@@ -131,9 +149,9 @@ obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
 m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, obs_covar=obs_covar)
 
 # example of process error covariates
-pro_covar = expand.grid("time"=1:20,"trend"=1:3,"covariate"=1)
+pro_covar = expand.grid("time"=1:20,"trend"=1:2,"covariate"=1)
 pro_covar$value=rnorm(nrow(pro_covar),0,0.1)
-m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, pro_covar=pro_covar)
+m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, num_trends = 2, pro_covar=pro_covar)
 
 # example of long format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
@@ -150,6 +168,14 @@ s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
 long = data.frame("obs" = obs, "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
 m = fit_dfa(y = long, data_shape = "long", z_model = "proportion", iter = 50, chains = 1)
+
+#' # example of B-spline model with wide format data
+s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+m = fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "spline", n_knots = 10)
+
+# example of B-spline model with wide format data
+s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+m = fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "gp", n_knots = 5)
 }
 }
 \seealso{
