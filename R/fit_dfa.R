@@ -277,6 +277,7 @@ fit_dfa <- function(y = y,
     n_na <- length(row_indx_na)
     y <- y[!is.na(y)]
   } else {
+    y = y[which(!is.na(y[["obs"]])),]
     row_indx_pos = y[["ts"]]
     col_indx_pos = y[["time"]]
     n_pos = length(row_indx_pos)

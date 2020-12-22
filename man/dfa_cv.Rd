@@ -49,14 +49,14 @@ m <- fit_dfa(y = long, iter = 50, chains = 1, data_shape="long", sample=FALSE)
 fit_cv = dfa_cv(m, cv_method="loocv", n_folds = 5, iter=50, chains=1)
 
 # folds can also be passed in
-fold_ids = sample(1:5, size=nrow(long), replace=T)
+fold_ids = sample(1:5, size=nrow(long), replace=TRUE)
 m <- fit_dfa(y = long, iter = 50, chains = 1, data_shape="long", sample=FALSE)
 fit_cv = dfa_cv(m, cv_method="loocv", n_folds = 5, iter=50, chains=1, fold_ids=fold_ids)
 
 # do an example of leave-time-out cross validation where years are dropped
 fold_ids = long$time
 m <- fit_dfa(y = long, iter = 50, chains = 1, data_shape="long", sample=FALSE)
-fit_cv = dfa_cv(m, cv_method="loocv", iter=50, chains=1, fold_ids = fold_ids)
+fit_cv = dfa_cv(m, cv_method="loocv", iter=100, chains=1, fold_ids = fold_ids)
 obs_covar = expand.grid("time"=1:20,"timeseries"=1:3,"covariate"=1:2)
 obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
 
