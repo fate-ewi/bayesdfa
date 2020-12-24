@@ -346,6 +346,7 @@ fit_dfa <- function(y = y,
     B_spline <- t(splines::bs(1:N, df=n_knots, degree = 3, intercept = TRUE))
   }
   if(trend_model == "gp") {
+    # Gaussian kernel
     est_gp = 1
     est_rw <- 0
     if(is.null(knot_locs)) knot_locs = seq(1,N,length.out=n_knots)
@@ -353,7 +354,10 @@ fit_dfa <- function(y = y,
     distAll = as.matrix(stats::dist(c(1:N,knot_locs))) # distances between data and knot locs
     distKnots21 <- t(distAll[-seq_len(N), 1:N])
     distKnots21_pred <- as.matrix(stats::dist(c(N+1,knot_locs)))[1,-1]
-    est_sigma_process = 1 # turn this on as a scale for variance
+    distKnots <- distKnots ^ 2
+    distKnots21 <- distKnots21 ^ 2
+    distKnots21_pred <- distKnots21_pred ^ 2
+    est_sigma_process <- 1 # turn this on as a scale for variance
     estimate_trend_ar <- FALSE
     estimate_trend_ma <- FALSE
     estimate_nu <- FALSE

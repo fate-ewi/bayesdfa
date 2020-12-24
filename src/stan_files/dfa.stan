@@ -284,12 +284,12 @@ transformed parameters {
     }
     if(est_gp == 1) {
       for (k in 1:K) {
-        SigmaKnots = square(sigma_pro[k]) * exp(-distKnots / gp_theta[k]);
+        SigmaKnots = square(sigma_pro[k]) * exp(-distKnots / (2.0*gp_theta[k]));
         for(i in 1:n_knots) {
           SigmaKnots[i,i] = SigmaKnots[i,i]+0.00001; // stabilizing
         }
         // cov matrix between knots and projected locs
-        SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / gp_theta[k]);
+        SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*gp_theta[k]));
         // multiply and invert once, used below:
         SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots);
         x[k] = to_row_vector(SigmaOffDiag * effectsKnots[k]);
@@ -325,12 +325,12 @@ transformed parameters {
     }
     if(est_gp == 1) {
       for (k in 1:K) {
-        SigmaKnots = square(sigma_pro[k]) * exp(-distKnots / gp_theta[k]);
+        SigmaKnots = square(sigma_pro[k]) * exp(-distKnots / (2.0*gp_theta[k]));
         for(i in 1:n_knots) {
           SigmaKnots[i,i] = SigmaKnots[i,i]+0.00001; // stabilizing
         }
         // cov matrix between knots and projected locs
-        SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / gp_theta[k]);
+        SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*gp_theta[k]));
         // multiply and invert once, used below:
         SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots);
         x[k] = to_row_vector(SigmaOffDiag * effectsKnots[k]);
@@ -595,12 +595,12 @@ generated quantities {
   }
   if(est_gp == 1) {
     for (k in 1:K) {
-      SigmaKnots_pred = square(sigma_pro[k]) * exp(-distKnots / gp_theta[k]);
+      SigmaKnots_pred = square(sigma_pro[k]) * exp(-distKnots / (2.0*gp_theta[k]));
       for(i in 1:n_knots) {
         SigmaKnots_pred[i,i] = SigmaKnots_pred[i,i]+0.00001; // stabilizing
       }
       // cov matrix between knots and projected locs
-      SigmaOffDiag_pred = to_row_vector(square(sigma_pro[k]) * exp(-distKnots21_pred / gp_theta[k])) * inverse_spd(SigmaKnots_pred);
+      SigmaOffDiag_pred = to_row_vector(square(sigma_pro[k]) * exp(-distKnots21_pred / (2.0*gp_theta[k]))) * inverse_spd(SigmaKnots_pred);
       xstar[k,1] = SigmaOffDiag_pred * effectsKnots[k]; // RHS is real
     }
   }

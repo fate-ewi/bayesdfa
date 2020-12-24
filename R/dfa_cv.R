@@ -77,9 +77,9 @@ dfa_cv <- function(stanfit,
     y_test <- y[which(fold_ids == f),]
     obs_covar_train=NULL
     if(length(stanfit$sampling_args$data$obs_covar_value) > 0) {
-      stanfit$obs_covar$time_timeseries = paste(stanfit$obs_covar$time,stanfit$obs_covar$timeseries)
-      y_train$time_timeseries = paste(y_train$time,y_train$ts)
-      y_test$time_timeseries = paste(y_test$time,y_test$ts)
+      stanfit$obs_covar$time_timeseries <- paste(stanfit$obs_covar$time,stanfit$obs_covar$timeseries)
+      y_train$time_timeseries <- paste(y_train$time,y_train$ts)
+      y_test$time_timeseries <- paste(y_test$time,y_test$ts)
       obs_covar_train <- stanfit$obs_covar[which(stanfit$obs_covar$time_timeseries %in% y_train$time_timeseries),1:4]
       obs_covar_test <- stanfit$obs_covar[which(stanfit$obs_covar$time_timeseries %in% y_test$time_timeseries),1:4]
     }
@@ -113,27 +113,30 @@ dfa_cv <- function(stanfit,
       z_model = stanfit$z_model,
       verbose = FALSE)
 
-    # extract log_lik for new data
+    # extract posterior parameters for the training set
     pars <- rstan::extract(fit.mod$model)
 
+    # loop over each iterations (mcmc sample)
     for(j in 1:nrow(log_lik)) {
-      # loop over iterations
+
+      # determine if covariates are included
       obs_covar_offset = rep(0, nrow(y_test))
       if(is.null(obs_covar_train) & is.null(pro_covar_train)) {
         pred <- pars$Z[j,,] %*% matrix(pars$x[j,,],nrow=stanfit$sampling_args$data$K)
         # subset predictions corresponding to observations
-        pred = pred[cbind(y_test$ts,y_test$time)]
+        pred <- pred[cbind(y_test$ts,y_test$time)]
         #pred = pars$Z[j,,] %*% matrix(pars$xstar[j,,],ncol=1)
       }
       if(!is.null(obs_covar_train) & is.null(pro_covar_train)) {
         #pred = pars$Z[j,,] %*% matrix(pars$xstar[j,,],ncol=1) + pars$b_obs[j,,] * obs_covar_test$value
         pred <- pars$Z[j,,] %*% matrix(pars$x[j,,],nrow=stanfit$sampling_args$data$K)
-        pred = pred[cbind(y_test$ts,y_test$time)]
+        pred <- pred[cbind(y_test$ts,y_test$time)]
         for(i in 1:max(obs_covar_test$covariate)) {
-          indx = which(obs_covar_test$covariate == i)
-          pred = pred + pars$b_obs[j,i,] * obs_covar_test$value[indx]
+          indx <- which(obs_covar_test$covariate == i)
+          pred <- pred + pars$b_obs[j,i,] * obs_covar_test$value[indx]
         }
       }
+
       log_lik[j,f] <- sum(dnorm(x = y_test$obs,
         mean = pred,
         sd = pars$sigma[j,stanfit$sampling_args$data$varIndx], log=TRUE), na.rm=T)
@@ -159,7 +162,9 @@ dfa_cv <- function(stanfit,
   }
 
   elpds <- apply(log_lik,2,log_sum_exp)
-  elpd <- list("elpds" = elpds, "elpd_kfold"=sum(elpds),
+  elpd <- list("log_lik"=log_lik,
+    "elpds" = elpds,
+    "elpd_kfold"=sum(elpds),
     "se_elpd_kfold" = sqrt(length(elpds) * var(elpds)))
   return(elpd)
 }

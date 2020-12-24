@@ -1956,7 +1956,7 @@ public:
                     for (int k = 1; k <= K; ++k) {
 
                         current_statement_begin__ = 287;
-                        stan::math::assign(SigmaKnots, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots), get_base1(gp_theta, k, "gp_theta", 1)))));
+                        stan::math::assign(SigmaKnots, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots), (2.0 * get_base1(gp_theta, k, "gp_theta", 1))))));
                         current_statement_begin__ = 288;
                         for (int i = 1; i <= n_knots; ++i) {
 
@@ -1967,7 +1967,7 @@ public:
                                         "assigning variable SigmaKnots");
                         }
                         current_statement_begin__ = 292;
-                        stan::math::assign(SigmaOffDiagTemp, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots21), get_base1(gp_theta, k, "gp_theta", 1)))));
+                        stan::math::assign(SigmaOffDiagTemp, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots21), (2.0 * get_base1(gp_theta, k, "gp_theta", 1))))));
                         current_statement_begin__ = 294;
                         stan::math::assign(SigmaOffDiag, multiply(SigmaOffDiagTemp, inverse_spd(SigmaKnots)));
                         current_statement_begin__ = 295;
@@ -2046,7 +2046,7 @@ public:
                     for (int k = 1; k <= K; ++k) {
 
                         current_statement_begin__ = 328;
-                        stan::math::assign(SigmaKnots, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots), get_base1(gp_theta, k, "gp_theta", 1)))));
+                        stan::math::assign(SigmaKnots, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots), (2.0 * get_base1(gp_theta, k, "gp_theta", 1))))));
                         current_statement_begin__ = 329;
                         for (int i = 1; i <= n_knots; ++i) {
 
@@ -2057,7 +2057,7 @@ public:
                                         "assigning variable SigmaKnots");
                         }
                         current_statement_begin__ = 333;
-                        stan::math::assign(SigmaOffDiagTemp, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots21), get_base1(gp_theta, k, "gp_theta", 1)))));
+                        stan::math::assign(SigmaOffDiagTemp, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots21), (2.0 * get_base1(gp_theta, k, "gp_theta", 1))))));
                         current_statement_begin__ = 335;
                         stan::math::assign(SigmaOffDiag, multiply(SigmaOffDiagTemp, inverse_spd(SigmaKnots)));
                         current_statement_begin__ = 336;
@@ -3415,7 +3415,7 @@ public:
                     for (int k = 1; k <= K; ++k) {
 
                         current_statement_begin__ = 287;
-                        stan::math::assign(SigmaKnots, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots), get_base1(gp_theta, k, "gp_theta", 1)))));
+                        stan::math::assign(SigmaKnots, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots), (2.0 * get_base1(gp_theta, k, "gp_theta", 1))))));
                         current_statement_begin__ = 288;
                         for (int i = 1; i <= n_knots; ++i) {
 
@@ -3426,7 +3426,7 @@ public:
                                         "assigning variable SigmaKnots");
                         }
                         current_statement_begin__ = 292;
-                        stan::math::assign(SigmaOffDiagTemp, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots21), get_base1(gp_theta, k, "gp_theta", 1)))));
+                        stan::math::assign(SigmaOffDiagTemp, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots21), (2.0 * get_base1(gp_theta, k, "gp_theta", 1))))));
                         current_statement_begin__ = 294;
                         stan::math::assign(SigmaOffDiag, multiply(SigmaOffDiagTemp, inverse_spd(SigmaKnots)));
                         current_statement_begin__ = 295;
@@ -3505,7 +3505,7 @@ public:
                     for (int k = 1; k <= K; ++k) {
 
                         current_statement_begin__ = 328;
-                        stan::math::assign(SigmaKnots, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots), get_base1(gp_theta, k, "gp_theta", 1)))));
+                        stan::math::assign(SigmaKnots, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots), (2.0 * get_base1(gp_theta, k, "gp_theta", 1))))));
                         current_statement_begin__ = 329;
                         for (int i = 1; i <= n_knots; ++i) {
 
@@ -3516,7 +3516,7 @@ public:
                                         "assigning variable SigmaKnots");
                         }
                         current_statement_begin__ = 333;
-                        stan::math::assign(SigmaOffDiagTemp, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots21), get_base1(gp_theta, k, "gp_theta", 1)))));
+                        stan::math::assign(SigmaOffDiagTemp, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots21), (2.0 * get_base1(gp_theta, k, "gp_theta", 1))))));
                         current_statement_begin__ = 335;
                         stan::math::assign(SigmaOffDiag, multiply(SigmaOffDiagTemp, inverse_spd(SigmaKnots)));
                         current_statement_begin__ = 336;
@@ -3967,7 +3967,7 @@ public:
                 for (int k = 1; k <= K; ++k) {
 
                     current_statement_begin__ = 598;
-                    stan::math::assign(SigmaKnots_pred, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots), get_base1(gp_theta, k, "gp_theta", 1)))));
+                    stan::math::assign(SigmaKnots_pred, multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots), (2.0 * get_base1(gp_theta, k, "gp_theta", 1))))));
                     current_statement_begin__ = 599;
                     for (int i = 1; i <= n_knots; ++i) {
 
@@ -3978,7 +3978,7 @@ public:
                                     "assigning variable SigmaKnots_pred");
                     }
                     current_statement_begin__ = 603;
-                    stan::math::assign(SigmaOffDiag_pred, multiply(to_row_vector(multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots21_pred), get_base1(gp_theta, k, "gp_theta", 1))))), inverse_spd(SigmaKnots_pred)));
+                    stan::math::assign(SigmaOffDiag_pred, multiply(to_row_vector(multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots21_pred), (2.0 * get_base1(gp_theta, k, "gp_theta", 1)))))), inverse_spd(SigmaKnots_pred)));
                     current_statement_begin__ = 604;
                     stan::model::assign(xstar, 
                                 stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list())), 
