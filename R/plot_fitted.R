@@ -22,16 +22,13 @@
 #' }
 
 plot_fitted <- function(modelfit, names = NULL, spaghetti = FALSE) {
-  if(modelfit$shape == "wide") {
-    n_ts <- dim(modelfit$orig_data)[1]
-    n_years <- dim(modelfit$orig_data)[2]
-  } else {
-    n_ts = max(modelfit$orig_data[,"ts"])
-    n_years = max(modelfit$orig_data[,"time"])
-  }
 
   # pred and Y have same dimensions if data is wide
   pred <- predicted(modelfit)
+  n_mcmc = dim(pred)[1]
+  n_chains = dim(pred)[2]
+  n_years = dim(pred)[3]
+  n_ts = dim(pred)[4]
 
   # this is the same for both data types
   df_pred <- data.frame(
@@ -48,10 +45,11 @@ plot_fitted <- function(modelfit, names = NULL, spaghetti = FALSE) {
     "y" = c(modelfit$orig_data))
   } else {
     df_obs <- data.frame(
-      "ID" = modelfit$orig_data[,"ts"],
-      "Time" = modelfit$orig_data[,"time"],
-      "y" = modelfit$orig_data[,"obs"])
+      "ID" = modelfit$orig_data[["ts"]],
+      "Time" = modelfit$orig_data[["time"]],
+      "y" = modelfit$orig_data[["obs"]])
   }
+  df_obs$Time <- df_obs$Time - min(df_obs$Time) + 1
   # standardize
   for(i in seq_len(n_ts)) {
     indx = which(df_obs[["ID"]] == i)

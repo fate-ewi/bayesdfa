@@ -278,6 +278,7 @@ transformed parameters {
       }
     }
     if(est_spline==1) {
+      // modified from Milad Kharratzadeh's example on B-splines/stan
       for(k in 1:K) spline_a_trans[k] = spline_a[k] * sigma_pro[k];
       x = spline_a_trans * B_spline;
       for(k in 1:K) {x[k] = x0[k] + x[k];}
