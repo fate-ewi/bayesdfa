@@ -2,7 +2,8 @@
 bayesdfa
 ========
 
-<!-- badges: start --> [![R-CMD-check](https://github.com/fate-ewi/bayesdfa/workflows/R-CMD-check/badge.svg)](https://github.com/fate-ewi/bayesdfa/actions)
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/fate-ewi/bayesdfa/workflows/R-CMD-check/badge.svg)](https://github.com/fate-ewi/bayesdfa/actions)
 <!-- badges: end -->
 
 bayesdfa implements Bayesian Dynamic Factor Analysis (DFA) with Stan.
