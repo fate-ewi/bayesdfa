@@ -9,13 +9,15 @@ Authors@R: c(
     person(c("Luis", "A."), "Damiano", role = "aut"),
     person(c("Mary", "E."), "Hunsicker,", role = "ctb"),
     person(c("Mike", "A."), "Litzow", role = "ctb"),
+    person(c("Mark", "D."), "Scheuerell", role = "ctb"),
+    person(c("Elizabeth", "E."), "Holmes", role = "ctb"),
     person("Trustees of", "Columbia University", role = "cph"))
 Description: Implements Bayesian dynamic factor analysis with 'Stan'. Dynamic 
     factor analysis is a dimension reduction tool for multivariate time series.
     'bayesdfa' extends conventional dynamic factor models in several ways. 
     First, extreme events may be estimated in the latent trend by modeling
-    process error with a student-t distribution. Second, autoregressive and 
-    moving average components can be optionally included. Third, the estimated
+    process error with a student-t distribution. Second, alternative constraints
+    (including proportions are allowed). Third, the estimated
     dynamic factors can be analyzed with hidden Markov models to evaluate
     support for latent regimes.
 License: GPL (>=3)
