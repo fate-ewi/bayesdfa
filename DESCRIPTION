@@ -11,6 +11,7 @@ Authors@R: c(
     person(c("Mike", "A."), "Litzow", role = "ctb"),
     person(c("Mark", "D."), "Scheuerell", role = "ctb"),
     person(c("Elizabeth", "E."), "Holmes", role = "ctb"),
+    person(c("Nick",""), "Tolimieri", role = "ctb"),
     person("Trustees of", "Columbia University", role = "cph"))
 Description: Implements Bayesian dynamic factor analysis with 'Stan'. Dynamic 
     factor analysis is a dimension reduction tool for multivariate time series.
