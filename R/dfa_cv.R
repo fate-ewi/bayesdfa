@@ -115,21 +115,23 @@ dfa_cv <- function(stanfit,
 
     # extract posterior parameters for the training set
     pars <- rstan::extract(fit.mod$model)
-
+    r <- rotate_trends(fit.mod)
     # loop over each iterations (mcmc sample)
     for(j in 1:nrow(log_lik)) {
 
       # determine if covariates are included
       obs_covar_offset = rep(0, nrow(y_test))
       if(is.null(obs_covar_train) & is.null(pro_covar_train)) {
-        pred <- pars$Z[j,,] %*% matrix(pars$x[j,,],nrow=stanfit$sampling_args$data$K)
+        #pred <- pars$Z[j,,] %*% matrix(pars$x[j,,],nrow=stanfit$sampling_args$data$K)
+        pred <- r$Z_rot[j,,] %*% matrix(r$trends[j,,],nrow=stanfit$sampling_args$data$K)
         # subset predictions corresponding to observations
         pred <- pred[cbind(y_test$ts,y_test$time)]
         #pred = pars$Z[j,,] %*% matrix(pars$xstar[j,,],ncol=1)
       }
       if(!is.null(obs_covar_train) & is.null(pro_covar_train)) {
         #pred = pars$Z[j,,] %*% matrix(pars$xstar[j,,],ncol=1) + pars$b_obs[j,,] * obs_covar_test$value
-        pred <- pars$Z[j,,] %*% matrix(pars$x[j,,],nrow=stanfit$sampling_args$data$K)
+        #pred <- pars$Z[j,,] %*% matrix(pars$x[j,,],nrow=stanfit$sampling_args$data$K)
+        pred <- r$Z_rot[j,,] %*% matrix(r$trends[j,,],nrow=stanfit$sampling_args$data$K)
         pred <- pred[cbind(y_test$ts,y_test$time)]
         for(i in 1:max(obs_covar_test$covariate)) {
           indx <- which(obs_covar_test$covariate == i)
