@@ -80,6 +80,7 @@ data {
   int<lower=0> row_indx_pos[n_pos]; // row indices of non-missing obs
   int<lower=0> col_indx_pos[n_pos]; // col indices of non-missing obs
   real y[n_pos]; // vectorized matrix of observations
+  int<lower=0> y_int[n_pos]; // vectorized matrix of observations
   int<lower=0> n_na; // number of missing observations
   int<lower=0> row_indx_na[n_na]; // row indices of missing obs
   int<lower=0> col_indx_na[n_na]; // col indices of missing obs
@@ -110,6 +111,10 @@ data {
   matrix[n_knots, n_knots] distKnots;
   matrix[N, n_knots] distKnots21;
   matrix[1, n_knots] distKnots21_pred;
+  int obs_model; // 1 = normal, 2 = bernoulli, 3 = poisson, 4 = gamma, 6 = lognormal
+  int<lower=0, upper=1> est_sigma_params;
+  int<lower=0, upper=1> est_gamma_params;
+  int<lower=0, upper=1> est_nb2_params;
 }
 transformed data {
   int n_pcor; // dimension for cov matrix
@@ -162,7 +167,9 @@ parameters {
   matrix[K * est_spline, n_knots * est_spline] spline_a; // weights for b-splines
   matrix[n_obs_covar, P] b_obs; // coefficients on observation model
   matrix[n_pro_covar, K] b_pro; // coefficients on process model
-  real<lower=0> sigma[nVariances];
+  real<lower=0> sigma[nVariances*est_sigma_params];
+  real<lower=0> gamma_a[nVariances*est_gamma_params];
+  real<lower=0> nb2_phi[nVariances*est_nb2_params];
   real<lower=2> nu[estimate_nu]; // df on student-t
   real ymiss[n_na];
   real<lower=-1,upper=1> phi[est_phi*K]; // AR(1) coefficients specific to each trend
@@ -177,7 +184,10 @@ transformed parameters {
   matrix[P,K] Z;
   //vector[N] yall[P]; // combined vectors of missing and non-missing values
   matrix[P,N] yall;
-  vector[P] sigma_vec;
+  matrix[P,N] yall_int; // int representation
+  vector[P*est_sigma_params] sigma_vec;
+  vector[P*est_gamma_params] gamma_a_vec;
+  vector[P*est_nb2_params] nb_phi_vec;
   vector[K] phi_vec; // for AR(1) part
   vector[K] theta_vec; // for MA(1) part
   matrix[K,N] x; //vector[N] x[P]; // random walk-trends
@@ -223,8 +233,14 @@ transformed parameters {
     for(k in 1:K) {theta_vec[k] = 0;}
   }
 
-  for(p in 1:P) {
-    sigma_vec[p] = sigma[varIndx[p]]; // convert estimated sigmas to vec form
+  if(est_sigma_params == 1) {
+    for(p in 1:P) {sigma_vec[p] = sigma[varIndx[p]];} // convert estimated sigmas to vec form
+  }
+  if(est_gamma_params == 1) {
+    for(p in 1:P) {gamma_a_vec[p] = gamma_a[varIndx[p]];} // convert estimated sigmas to vec form
+  }
+  if(est_nb2_params == 1) {
+    for(p in 1:P) {nb_phi_vec[p] = nb2_phi[varIndx[p]];} // convert estimated sigmas to vec form
   }
 
   if(long_format==0) {
@@ -490,7 +506,10 @@ model {
   }
 
   // observation variance
-  sigma ~ student_t(3, 0, 5);
+  if(est_sigma_params==1) sigma ~ student_t(3, 0, 5);
+  if(est_gamma_params==1) gamma_a ~ student_t(3, 0, 5);
+  if(est_nb2_params==1) nb2_phi ~ student_t(3, 0, 5);
+
   if(est_cor == 1) {
     Lcorr ~ lkj_corr_cholesky(1);
   }
@@ -498,27 +517,30 @@ model {
   // likelihood for independent
   if(est_cor == 0) {
     if(long_format==0) {
-      for(i in 1:P){
-        target += normal_lpdf(yall[i] | pred[i], sigma_vec[i]);
-      }
+      if(obs_model == 1) {for(i in 1:P) target += normal_lpdf(yall[i] | pred[i], sigma_vec[i]);} // gaussian
     } else {
-      for(i in 1:n_pos) {
-        //row_indx_pos[i] is the time series, col_index_pos is the time
-        target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);
-      }
+      // for(i in 1:n_pos) {
+      //   //row_indx_pos[i] is the time series, col_index_pos is the time
+      //   target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);
+      // }
+      if(obs_model == 1) {for(i in 1:n_pos) target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);}
+      if(obs_model == 2) {for(i in 1:n_pos) target += gamma_lpdf(y[i] | gamma_a_vec[row_indx_pos[i]], gamma_a_vec[row_indx_pos[i]] / exp(pred[row_indx_pos[i],col_indx_pos[i]]));} // gamma
+      if(obs_model == 3) {for(i in 1:n_pos) target += poisson_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]]);} // poisson
+      if(obs_model == 4) {for(i in 1:n_pos) target += neg_binomial_2_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]], nb_phi_vec[row_indx_pos[i]]);} // negbin
+      if(obs_model == 5) {for(i in 1:n_pos) target += bernoulli_logit_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]]);} // binomial
+      if(obs_model == 6) {for(i in 1:n_pos) target += lognormal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);} // lognormal
     }
   } else {
     // need to loop over time slices / columns - each ~ MVN
     if(long_format==0) {
-      for(i in 1:N) {
-        target += multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));
-      }
+      if(obs_model == 1) {for(i in 1:N) target += multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));}
     } else {
-      for(i in 1:n_pos) {
-      //  //row_indx_pos[i] is the time series, col_index_pos is the time. note that cond_sigma_vec and cond_mean_vec
-      //  // used here, calculated for univariation conditionals above
-        target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);
-      }
+      // for(i in 1:n_pos) {
+      // //  //row_indx_pos[i] is the time series, col_index_pos is the time. note that cond_sigma_vec and cond_mean_vec
+      // //  // used here, calculated for univariation conditionals above
+      //   target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);
+      // }
+      if(obs_model == 1) {for(i in 1:n_pos) target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);}
     }
   }
 }
@@ -549,10 +571,16 @@ generated quantities {
         }
       }
     } else {
-      for(i in 1:n_pos) {
-        //row_indx_pos[i] is the time series, col_index_pos is the time
-        log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);
-      }
+      if(obs_model == 1) {for(i in 1:n_pos) log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);}
+      if(obs_model == 2) {for(i in 1:n_pos) log_lik[i] = gamma_lpdf(y[i] | gamma_a_vec[row_indx_pos[i]], gamma_a_vec[row_indx_pos[i]] / exp(pred[row_indx_pos[i],col_indx_pos[i]]));} // gamma
+      if(obs_model == 3) {for(i in 1:n_pos) log_lik[i] = poisson_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]]);} // poisson
+      if(obs_model == 4) {for(i in 1:n_pos) log_lik[i] = neg_binomial_2_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]], nb_phi_vec[row_indx_pos[i]]);} // negbin
+      if(obs_model == 5) {for(i in 1:n_pos) log_lik[i] = bernoulli_logit_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]]);} // binomial
+      if(obs_model == 6) {for(i in 1:n_pos) log_lik[i] = lognormal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);} // lognormal
+      // for(i in 1:n_pos) {
+      //   //row_indx_pos[i] is the time series, col_index_pos is the time
+      //   log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);
+      // }
     }
 
   } else {

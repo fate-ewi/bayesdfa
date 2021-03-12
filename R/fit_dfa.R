@@ -58,6 +58,10 @@
 #' the default is N/3.
 #' @param n_knots The number of knots for the B-spline of Gaussian predictive process models. Optional
 #' @param knot_locs Locations of knots (optional), defaults to uniform spacing between 1 and N
+#' @param family String describing the observation model. Default is "gaussian",
+#'   but included options are "gamma", "lognormal", negative binomial ("nbinom2"),
+#'   "poisson", or "binomial". The binomial family is assumed to have logit link,
+#'   gaussian family is assumed to be identity, and the rest are log-link.
 #' @param ... Any other arguments to pass to [rstan::sampling()].
 #' @param par_list A vector of parameter names of variables to be estimated by Stan. If NULL, this will default to
 #'   c("x", "Z", "sigma", "log_lik", "psi","xstar") for most models -- though if AR / MA, or Student-t models are used
@@ -76,7 +80,7 @@
 #'
 #' @importFrom rstan sampling
 #' @importFrom splines bs
-#' @importFrom stats dist
+#' @importFrom stats dist gaussian
 #' @import Rcpp
 #' @importFrom graphics lines par plot points polygon segments
 #' @importFrom stats na.omit runif
@@ -146,12 +150,23 @@ fit_dfa <- function(y = y,
                     n_knots = NULL,
                     knot_locs = NULL,
                     par_list = NULL,
+                    family = "gaussian",
                     verbose = FALSE,
                     ...) {
   # check arguments
   data_shape <- match.arg(data_shape, c("wide","long"))
   z_model <- match.arg(z_model, c("dfa","proportion"))
   trend_model <- match.arg(trend_model, c("rw","spline","gp"))
+
+  obs_model <- match(family, c("gaussian", "gamma", "poisson", "nbinom2",
+  "binomial", "lognormal"))
+  if(is.na(obs_model)) {
+    stop("Error: family not found. Please enter family as gaussian(), gamma(), etc.")
+  }
+  if(family != "gaussian") {
+    if(data_shape=="wide") stop("Error: if family is non-gaussian, data must be in long format")
+    if(est_correlation == TRUE) stop("Error: correlation can't be estimated with non-gaussian data. Please set est_correlation=FALSE")
+  }
 
   orig_data = y # save original data
 
@@ -209,32 +224,34 @@ fit_dfa <- function(y = y,
   nZ <- P * K - sum(seq_len(K)) # number of non-zero parameters that are unconstrained
 
   # standardizing data by rows only works if data provided in "wide" format
-  if(data_shape[1] == "wide") {
-    for (i in seq_len(P)) {
-      if (zscore) {
-        if (length(unique(na.omit(c(y[i, ])))) == 1L) {
-          stop("Can't scale one or more of the time series because all values ",
-            "are the same. Remove this/these time series or set `zscore = FALSE`.",
-            call. = FALSE
-          )
+  if(family == "gaussian") {
+    if(data_shape[1] == "wide") {
+      for (i in seq_len(P)) {
+        if (zscore) {
+          if (length(unique(na.omit(c(y[i, ])))) == 1L) {
+            stop("Can't scale one or more of the time series because all values ",
+              "are the same. Remove this/these time series or set `zscore = FALSE`.",
+              call. = FALSE
+            )
+          }
+          y[i, ] <- scale(y[i, ], center = TRUE, scale = TRUE)
+        } else {
+          y[i, ] <- scale(y[i, ], center = TRUE, scale = FALSE)
         }
-        y[i, ] <- scale(y[i, ], center = TRUE, scale = TRUE)
-      } else {
-        y[i, ] <- scale(y[i, ], center = TRUE, scale = FALSE)
-      }
-    }
-  } else {
-    if(zscore) {
-      # standardize
-      for(i in seq_len(P)) {
-        indx = which(y[["ts"]] == i)
-        y[indx,"obs"] = scale(y[indx,"obs" ], center = TRUE, scale = TRUE)
       }
     } else {
-      # just center
-      for(i in seq_len(P)) {
-        indx = which(y[["ts"]] == i)
-        y[indx,"obs"] = scale(y[indx, "obs"], center = TRUE, scale = FALSE)
+      if(zscore) {
+        # standardize
+        for(i in seq_len(P)) {
+          indx = which(y[["ts"]] == i)
+          y[indx,"obs"] = scale(y[indx,"obs" ], center = TRUE, scale = TRUE)
+        }
+      } else {
+        # just center
+        for(i in seq_len(P)) {
+          indx = which(y[["ts"]] == i)
+          y[indx,"obs"] = scale(y[indx, "obs"], center = TRUE, scale = FALSE)
+        }
       }
     }
   }
@@ -363,12 +380,21 @@ fit_dfa <- function(y = y,
     estimate_nu <- FALSE
   }
 
+  y_int <- rep(0, length(y))
+  if(family %in% c("binomial", "nbinom2", "poisson")) {
+    y_int = as.integer(y)
+  }
+  est_sigma_params <- ifelse(family %in% c("gaussian","lognormal"), 1, 0);
+  est_gamma_params <- ifelse(family=="gamma",1,0);
+  est_nb2_params <- ifelse(family=="nbinom2",1,0);
+
   data_list <- list(
     N = N,
     P = P,
     K = K,
     nZ = nZ,
     y = y,
+    y_int = y_int,
     row_indx = row_indx,
     col_indx = col_indx,
     nZero = nZero,
@@ -408,14 +434,24 @@ fit_dfa <- function(y = y,
     est_gp = est_gp,
     distKnots = distKnots,
     distKnots21 = distKnots21,
-    distKnots21_pred = matrix(distKnots21_pred,nrow=1)
+    obs_model = obs_model,
+    distKnots21_pred = matrix(distKnots21_pred,nrow=1),
+    est_sigma_params = est_sigma_params,
+    est_gamma_params = est_gamma_params,
+    est_nb2_params = est_nb2_params
   )
 
   if(is.null(par_list)) {
-    pars <- c("x", "Z", "sigma", "log_lik", "psi","xstar")
+    pars <- c("x", "Z", "log_lik", "psi","xstar")
   } else {
     pars = par_list
   }
+
+  # family
+  if(family %in% c("gaussian","lognormal")) pars <- c(pars, "sigma")
+  if(family %in% c("gamma")) pars <- c(pars, "gamma_a")
+  if(family %in% c("nbinom2")) pars <- c(pars, "nb2_phi")
+
   if (est_correlation) pars <- c(pars, "Omega", "Sigma") # add correlation matrix
   if (estimate_nu) pars <- c(pars, "nu")
   if (estimate_trend_ar) pars <- c(pars, "phi")
@@ -426,7 +462,7 @@ fit_dfa <- function(y = y,
 
   if(!is.null(par_list)) {
     if(par_list[1]=="all") {
-    pars <- pars <- c("x", "Z", "sigma", "log_lik", "psi","xstar",
+    pars <- pars <- c("x", "Z","log_lik", "psi","xstar",
       "devs","x0","z","zpos","sigma_process","p_z",
       "b_obs","b_pro","phi","theta","Lcorr","ymiss","nu") # removed pred
     }
@@ -468,6 +504,7 @@ fit_dfa <- function(y = y,
   out[["zscore"]] <- zscore
   out[["obs_covar"]] <- obs_covar
   out[["pro_covar"]] <- pro_covar
+  out[["family"]] <- family
 
   out <- structure(out, class = "bayesdfa")
   out

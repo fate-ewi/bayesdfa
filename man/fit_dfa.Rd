@@ -30,6 +30,7 @@ fit_dfa(
   n_knots = NULL,
   knot_locs = NULL,
   par_list = NULL,
+  family = "gaussian",
   verbose = FALSE,
   ...
 )
@@ -123,6 +124,11 @@ additional parameters will be monitored. If you want to use diagnostic tools in 
 you will need to pass in a larger list. Setting this argument to "all" will monitor all parameters, enabling the use
 of diagnostic functions -- but making the models a lot larger for storage. Finally, this argument may be a custom string
 of parameters to monitor, e.g. c("x","sigma")}
+
+\item{family}{String describing the observation model. Default is "gaussian",
+but included options are "gamma", "lognormal", negative binomial ("nbinom2"),
+"poisson", or "binomial". The binomial family is assumed to have logit link,
+gaussian family is assumed to be identity, and the rest are log-link.}
 
 \item{verbose}{Whether to print iterations and information from Stan, defaults to FALSE.}
 
