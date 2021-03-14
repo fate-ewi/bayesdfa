@@ -23,8 +23,8 @@ library(bayesdfa)
 library(ggplot2)
 library(dplyr)
 library(rstan)
-chains = 3
-iter = 2000
+chains = 1
+iter = 10
 #library(viridis)
 ```
 
