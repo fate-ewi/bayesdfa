@@ -92,6 +92,7 @@
 #' m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1)
 #'\dontrun{
 #' # example of observation error covariates
+#' set.seed(42)
 #' obs_covar = expand.grid("time"=1:20,"timeseries"=1:3,"covariate"=1)
 #' obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
 #' m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, obs_covar=obs_covar)
@@ -106,6 +107,14 @@
 #' obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
 #' long = data.frame("obs" = obs, "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
 #' m = fit_dfa(y = long, data_shape = "long", iter = 50, chains = 1)
+#'
+#' # example of long format data with obs covariates
+#' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+#' obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
+#' long = data.frame("obs" = obs, "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
+#' obs_covar = expand.grid("time"=1:20,"timeseries"=1:3,"covariate"=1:2)
+#' obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
+#' m = fit_dfa(y = long, data_shape = "long", iter = 50, chains = 1,obs_covar=obs_covar)
 #'
 #' # example of model with Z constrained to be proportions and wide format data
 #' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
@@ -190,7 +199,7 @@ fit_dfa <- function(y = y,
       stop("Error: data shape is long, and must contain a field 'obs' representing observations")
     }
     # rescale if needed
-    y$time <- y$time - min(y[["time"]]) + 1 # min time now = 1
+    #y$time <- y$time - min(y[["time"]]) + 1 # min time now = 1
     y$ts <- as.numeric(as.factor(y[["ts"]]))
     N <- max(y[["time"]])
     P <- max(y[["ts"]])
@@ -315,10 +324,18 @@ fit_dfa <- function(y = y,
     num_obs_covar <- nrow(obs_covar_index)
     n_obs_covar <- length(unique(obs_covar_index[,"covariate"]))
     obs_covar_value <- obs_covar[,"value"]
+
+    if(data_shape[1] == "wide") {
+      match_obs_covar <- rep(0, num_obs_covar)
+    } else {
+      match_obs_covar <- match(paste(obs_covar$time,obs_covar$timeseries), paste(Y$time[which(!is.na(Y$obs))],Y$ts[which(!is.na(Y$obs))]))
+    }
+
   } else {
     num_obs_covar <- 0
     n_obs_covar <- 0
     obs_covar_value <- c(0)[0]
+    match_obs_covar <- c(0)[0]
     obs_covar_index <- matrix(0,1,3)[c(0)[0],]
   }
   if(!is.null(pro_covar)) {
@@ -326,6 +343,7 @@ fit_dfa <- function(y = y,
     num_pro_covar <- nrow(pro_covar_index)
     n_pro_covar <- length(unique(pro_covar_index[,"covariate"]))
     pro_covar_value <- pro_covar[,"value"]
+
   } else {
     num_pro_covar <- 0
     n_pro_covar <- 0
@@ -347,6 +365,7 @@ fit_dfa <- function(y = y,
   est_gp <- 0
   est_rw <- 1 # these are flags specifying model structure. default is rw
   if(is.null(n_knots)) n_knots <- round(N/3)
+  if(is.null(knot_locs)) knot_locs = seq(1,N,length.out=n_knots)
   distKnots <- matrix(0, n_knots, n_knots)
   distKnots21 <- matrix(0, N, n_knots)
   distKnots21_pred <- rep(0, n_knots)
@@ -418,6 +437,7 @@ fit_dfa <- function(y = y,
     n_obs_covar = n_obs_covar,
     obs_covar_value = obs_covar_value,
     obs_covar_index = obs_covar_index,
+    match_obs_covar = match_obs_covar,
     num_pro_covar = num_pro_covar,
     n_pro_covar = n_pro_covar,
     pro_covar_value = pro_covar_value,
@@ -431,6 +451,7 @@ fit_dfa <- function(y = y,
     est_spline = est_spline,
     B_spline = B_spline,
     n_knots = n_knots,
+    knot_locs = knot_locs,
     est_gp = est_gp,
     distKnots = distKnots,
     distKnots21 = distKnots21,

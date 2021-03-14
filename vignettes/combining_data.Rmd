@@ -1,6 +1,6 @@
 ---
 title: "Combining data with bayesdfa"
-author: ""
+author: "Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -13,7 +13,7 @@ For some applications using DFA, datasets may need to be combined from several d
    
 ```{r set-knitr-options, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
 library("knitr")
-opts_chunk$set(message = FALSE, warning=FALSE, fig.width = 5.5)
+opts_chunk$set(message = FALSE, fig.width = 5.5)
 ```
 
 Let's load the necessary packages:
@@ -52,7 +52,8 @@ plot_data <- reshape2::melt(Y,id.var="ts")
 plot_data$x = as.numeric(substr(plot_data$variable, 2, length(plot_data$variable)))
 g1 = ggplot(plot_data, aes(x=x,y=value,group=ts,colour=ts)) +
   geom_point()+
-  geom_line() + xlab("Time") #+ scale_color_viridis(end=0.8, discrete = TRUE)
+  geom_line() + xlab("Time") +
+  theme_bw()#+ scale_color_viridis(end=0.8, discrete = TRUE)
 
 
 g1
@@ -67,7 +68,8 @@ plot_data$x = as.numeric(substr(plot_data$variable, 2, length(plot_data$variable
 g2 = ggplot(plot_data, aes(x=x,y=value,group=ts,colour=ts)) +
   geom_point()+
   geom_line() + xlab("Time") + 
-  ylab("Standardized time series") #+ 
+  ylab("Standardized time series") +
+  theme_bw() #+ 
   #scale_color_viridis(end=0.8, discrete = TRUE)
 g2
 ```
@@ -75,7 +77,7 @@ g2
 Let's initially treat the first ~ 50 time points as a burn in, and fit a DFA model to the latter half of the time series, using all data. We don't really have to rotate trends (because there's just 1). The loadings are estimated ok for trend 1, but underestimated for the others.  
 
 ```{r results='hide'}
-fit_1 = fit_dfa(y = sim$y_sim[,51:100], num_trends = 1, chains=1, iter=200)
+fit_1 = fit_dfa(y = sim$y_sim[,51:100], num_trends = 1, chains=1, iter=10)
 r = rotate_trends(fit_1)
 ```
 ```{r}
@@ -99,7 +101,7 @@ for(i in 1:nrow(l)) {
   Y = t(scale(t(Y)))
   Y[1,1:(idx-1)] = NA
   Y[2:3,1:50] = NA
-  fit_2 = fit_dfa(y = Y, num_trends = 1, chains=1, iter=200, zscore = FALSE)
+  fit_2 = fit_dfa(y = Y, num_trends = 1, chains=1, iter=10, zscore = FALSE)
   r = rotate_trends(fit_2)
   l[i,] = c(r$Z_rot_mean)
   output$estimated_trend[which(output$ts_start==(idx-1))] = scale((r$Z_rot_mean %*% r$trends_mean)[2,])
@@ -118,7 +120,7 @@ ts2 = data.frame(x = 1:100, y = Y[2,])
 ggplot(output, aes(x,y=estimated_trend,group=ts_start,col=ts_start)) + geom_line(size=2, alpha=0.7) + 
   #scale_color_viridis(end=0.8,discrete = TRUE) + xlim(51,100) + 
   xlab("Time") + 
-  ylab("Estimated time series (# 2)")
+  ylab("Estimated time series (# 2)") +theme_bw()
 ```
 
 As a cautionary note, any time time series of different lenghts are combined using similar approaches, simulations should be done to try to estimate the influence of adding new data to shared trends or other quantities of interest.  

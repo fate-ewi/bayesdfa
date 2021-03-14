@@ -1,10 +1,10 @@
 ---
-title: "Identifying extremes and latent regimes with bayesdfa"
-author: "Eric J. Ward, Sean C. Anderson, Luis A. Damiano, Mary E. Hunsicker, Mike A. Litzow"
+title: "Overview of the bayesdfa package"
+author: "Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Estimating latent trends with bayesdfa}
+  %\VignetteIndexEntry{Overview of the bayesdfa package}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -25,6 +25,18 @@ library(dplyr)
 library(rstan)
 ```
 
+## Introduction to the DFA model
+
+We adopt the same notation used in the MARSS package for dynamic factor analysis models. The DFA model consists of two models, one describing the latent process or states, and an observation or data model linking the process model to observations. Slight variations on this model are described below, but the process model for the basic DFA model is written as a multivariate random walk,
+
+$$\textbf{x}_{t+1}= \textbf{x}_{t} + \textbf{w}_{t}$$
+where the matrix $\textbf{x}$ is dimensioned as the number of years $N$ by the number of latent trends $K$. The process error is assumed to be multivariate normal, $\textbf{w}_{t} \sim MVN(0,\textbf{Q})$ where $\textbf{Q}$ is generally assumed to be a $K$-by-$K$ identity matrix. 
+
+The observation or data model linking $\textbf{x}_{t}$ to observed data $\textbf{y}_{t}$ is 
+
+$$\textbf{y}_{t} = \textbf{Zx}_{t} + \textbf{B}\textbf{d}_{t} + \textbf{e}_{t}$$
+The matrix $Z$ represents a matrix of estimated loadings, dimensioned as number of time series $P$ by number of latent trends $K$. Optional covariates $\textbf{d}_{t}$ are included in the observation model with estimated coefficients $B$. The residual errors $\textbf{e}_{t}$ are assumed to be normally distributed, e.g. $\textbf{e}_{t} \sim MVN(0, \textbf{R})$. There are a number of choices for $\textbf{R}$ -- these can be a diagonal matrix with equal or unequal elements, or an unconstrained covariance matrix.  
+
 ## DFA model with no extreme events  
 
 First, let's simulate some data. We will use the built-in function `sim_dfa()`, but normally you would start with your own data. We will simulate 20 data points from 4 time series, generated from 2 latent processes. For this first dataset, the data won't include extremes, and loadings will be randomly assigned (default).
@@ -38,11 +50,11 @@ sim_dat <- sim_dfa(
 )
 ```
 
-```{r simulate-data-plot, fig.align='center', fig.cap="Simulated data, from a model with 2 latent trends and no extremes.\\label{fig:simulate-data-plot}"}
-matplot(t(sim_dat$y_sim),
-  type = "l",
-  ylab = "Response", xlab = "Time"
-)
+```{r simulate-data-plot, echo=FALSE, fig.align='center', fig.cap="Simulated data, from a model with 2 latent trends and no extremes.\\label{fig:simulate-data-plot}"}
+df = data.frame("time" = rep(1:20,4),"y"=c(t(sim_dat$y_sim)), 
+                "ts"=as.factor(sort(rep(1:4,20))))
+ggplot(df, aes(time,y,group=ts,col=ts)) + geom_line() + theme_bw() + 
+  xlab("Time") + ylab("Observed data")
 ```
 
 Next, we'll fit a 1-trend, 2-trend, and 3-trend DFA model to the simulated time series using the `fit_dfa()` function. Starting with the 1-trend model, we'll estimate the posterior distributions of the trends and loadings. Note that this example uses 1 MCMC chain and 50 iterations --- for real examples, you'll want to use more (say 4 chains, 5000 iterations).
@@ -60,6 +72,8 @@ Convergence of DFA models can be evaluated with our `is_converged()` function. T
 is_converged(f1, threshold = 1.05)
 ```
 
+This function evaluates Rhat values for all parameters and log likelihood values - so be sure to check what's not converging if the model is not passing this test. 
+
 Before we extract the trends from the model, we need to rotate the loadings matrix and trends. By default we use the varimax rotation, implemented in the `rotate_trends()` function. An optional argument is the `conf_level` argument, which calculates the specified confidence (credible) interval of the estimates (by default, this is set to 0.95).
 
 ```{r rot-1-trend, warning=FALSE, message=FALSE, results='hide'}
@@ -74,14 +88,14 @@ names(r)
 
 We can then plot the trends and intervals, with 
 ```{r plot-1-trend, fig.align='center', fig.cap="Estimated trend and 95% CI for a 1-trend DFA model applied to simulated data.\\label{fig:simulate-data-plot}"}
-plot_trends(r)
+plot_trends(r) + theme_bw()
 ```
 
 We can also plot the estimated loadings (we'll show that plot for the more complicated 2-trend model below because it's not as interesting for the 1-trend model) and the fitted values. To plot the fitted values from the 1-trend model, we'll use the `plot_fitted()` function (predicted values can also be returned without a plot, with the `predicted()`) function.
 
-We can then plot the trends and intervals, faceting by time series, with 
+The trends and intervals are plotted, faceting by time series, with 
 ```{r plot-1-fitted-example, fig.align='center', fig.cap="Model predicted values from the 1-trend DFA model applied to simulated data.\\label{fig:fitted-example}"}
-plot_fitted(f1)
+plot_fitted(f1) + theme_bw()
 ```
 
 Moving to a more complex model, we'll fit the 2-trend and 3-trend models. All other arguments stay the same as before,
@@ -102,7 +116,7 @@ r3 <- rotate_trends(f3)
 
 The fits from the 2-trend model look considerably better than that from the 1-trend model,
 ```{r plot-2-fitted-example, fig.align='center', fig.cap="Model predicted values from the 2-trend DFA model applied to simulated data.\\label{fig:fitted-example2}"}
-plot_fitted(f2)
+plot_fitted(f2) + theme_bw()
 ```
 
 The loadings from the 1-trend model aren't as interesting because for a 1-trend model the loadings are a 1-dimensional vector. For the 2 trend model, there's a separate loading of each time series on each trend,
@@ -114,7 +128,7 @@ round(r2$Z_rot_mean, 2)
 These loadings can also be plotted with the `plot_loadings()` function. This shows the distribution of the densities as violin plots, with color proportional to being different from 0.
 
 ```{r plot-loadings, fig.align='center', fig.cap="Estimated loadings from the 2-trend DFA model.\\label{fig:plot-loadings}"}
-plot_loadings(r2)
+plot_loadings(r2) + theme_bw()
 ```
 
 Finally, we might be interested in comparing some measure of model selection across these models to identify whether the data support the 1-trend, 2-trend, or 3-trend models. The Leave One Out Information Criterion can be calculated with the `loo()` function, for example the LOOIC for the 1-trend model can be accessed with
@@ -138,7 +152,16 @@ m <- find_dfa_trends(
 
 ## DFA model with extreme events 
 
-In this example, we'll simulate data with an extreme anomaly. As before, this will be 20 data points from 4 time series, generated from 2 latent processes. The `sim_dfa()` function's arguments `extreme_value` and `extreme_loc` allow the user to specify the magnitude of the extreme (as an additive term in the random walk), and the location of the extreme (defaults to the midpoint of the time series). Here we'll include an extreme value of 6,
+In this example, we'll simulate data with an extreme anomaly. The biggest difference between this model and the conventional model is that in the DFA process model, 
+
+$$\textbf{x}_{t+1}= \textbf{x}_{t} + \textbf{w}_{t}$$
+
+instead of $\textbf{w}_{t}$ being normally distributed, we assume $\textbf{w}_{t}$ is Student-t distributed. With multiple trends, this becomes a multivariate Student-t, 
+
+$$\textbf{w}_{t} \sim MVT(\nu, 0, \textbf{Q})$$
+The parameter $\nu$ controls how much the tails of this distribution deviate from the normal, with smaller values ($\nu$ closer to 2) resulting in more extreme anomalies, and large values ($\nu$ closer to 30) resulting in behavior similar to a normal distribution. 
+
+As before, this will be 20 data points from 4 time series, generated from 2 latent processes. The `sim_dfa()` function's arguments `extreme_value` and `extreme_loc` allow the user to specify the magnitude of the extreme (as an additive term in the random walk), and the location of the extreme (defaults to the midpoint of the time series). Here we'll include an extreme value of 6,
 
 ```{r simulate-data2}
 set.seed(1)
@@ -172,13 +195,13 @@ t2 <- fit_dfa(
 Again we have to rotate the trends before plotting,
 ```{r fit-extreme-dfa, fig.align='center', fig.cap="Estimated trends, from a model with 2 latent trends Student-t deviations.\\label{fig:fit-extreme-dfa}"}
 r <- rotate_trends(t2)
-plot_trends(r)
+plot_trends(r) + theme_bw()
 ```
 
 And the loadings,
 
 ```{r plot-extreme-loadings, fig.align='center', fig.cap="Estimated loadings, from a model with 2 latent trends Student-t deviations.\\label{fig:plot-extreme-loadings}"}
-plot_loadings(r)
+plot_loadings(r) + theme_bw()
 ```
 
 One way to look for extremes is using the `find_swans()` function, which evaluates the probability of observing a deviation in the estimated trend (or data) greater than what is expected from a normal distribution. This function takes a `threshold` argument, which specifies the cutoff. For example, to find extremes greater than 1 in 1000 under a normal distribution, the function call is 
@@ -193,6 +216,92 @@ We can also look at the estimated `nu` parameter, which shows some support for u
 ```{r summarize-nu}
 summary(rstan::extract(t2$model, "nu")[[1]])
 ```
+
+## Fitting DFA models with non-Gaussian families
+
+We've implemented a number of alternative families for cases when the response variable might be non-normally distributed. These alternative families may be specified with the family argument as a text string in the `fit_dfa` function, e.g.
+
+```{r echo=TRUE, eval=FALSE}
+f <- fit_dfa(..., family = "poisson")
+```
+
+The currently supported families can be specified as any of the following -- the link functions are
+currently hard-coded, and included in the table below.
+
+```{r echo=FALSE, results='asis'}
+m = cbind(c("gaussian","lognormal","gamma","binomial","poisson","nbinom2"), 
+                 c("identity","log","log","logit","log","log"))
+colnames(m) = c("Family","link")
+knitr::kable(m)
+```
+
+## Alternative loadings for DFA models
+
+By default, the loadings matrix in a DFA is constrained by zeros. For example, a 3-trend model applied to 5 time series would have a loadings matrix that was constrained as 
+
+```{r, echo=FALSE, results='asis'}
+Z = matrix("",5,3)
+for(i in 1:5) {
+  for(j in 1:3) {
+    Z[i,j] = paste0("z[",i,",",j,"]")
+  }
+}
+Z[1,2:3] = "0"
+Z[2,3] = "0"
+
+colnames(Z) = c("Trend 1","Trend 2","Trend 3")
+knitr::kable(Z)
+```
+
+As an alternative, we may wish to fit a model where each time series arises as a mixture of the trends. In this case, the loadings matrix would be 
+
+```{r, echo=FALSE, results='asis'}
+Z = matrix("",5,3)
+for(i in 1:5) {
+  for(j in 1:3) {
+    Z[i,j] = paste0("z[",i,",",j,"]")
+  }
+}
+colnames(Z) = c("Trend 1", "Trend 2", "Trend 3")
+knitr::kable(Z)
+```
+
+And the added constraint is that each row sums to 1, e.g.
+
+$$\sum_{j=1:3} Z_{1,j} = 1$$
+## Including autoregressive (AR) or moving-average (MA) components on trends
+
+For some models, it may be appropriate to include autoregressive or moving average components to model the latent trends. We've implemented 1st - order components on each, though by default these are not included. 
+
+To include the AR(1) component on the trend, you can specify
+
+```{r eval = FALSE}
+fit <- fit_dfa(..., estimate_trend_ar = TRUE)
+```
+
+This results in a model where trend $i$ is modeled as 
+
+$$x_{i,t+1} = \phi_{i}*x_{i,t} + \delta_{i,t}$$
+Each trend is allowed to have a unique AR(1) parameter, $\phi_{i}$.
+
+In conventional DFA models, the process deviations are assumed to be independent, e.g. $\delta_{i,t} ~ Normal(0, r)$. By including a MA(1) component on the trends, these terms may be modeled as 
+
+$$delta_{i,t+1} \sim Normal( \theta_{i}*delta_{i,t}, q_{i})$$
+
+where $\theta_{i}$ is the trend-specific MA parameter, $q$ is the process variance, and usually constrained to be not estimated and fixed at 1. 
+
+## Estimating process variances
+
+DFA models generally constrain process errors to be normally distributed with unit variance, e.g. 
+
+$$delta_{i,t=1:T} \sim Normal( 0, q)$$
+While we generally recommend following this convention, there are some combinations of models and parameters where $q$ is identifiable. For these models, we can estimate the process error variance as
+
+```{r echo=TRUE, eval=FALSE}
+fit <- fit_dfa(..., estimate_process_sigma = TRUE)
+```
+
+This form of the model allows separate process variances to be estimated on each trend, e.g. $q_{1}, q_{2}, q_{3}, ...$
 
 ## Applying Hidden Markov Models to identify latent regimes
 

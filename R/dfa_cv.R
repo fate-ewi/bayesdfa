@@ -34,10 +34,10 @@
 #' fold_ids = long$time
 #' m <- fit_dfa(y = long, iter = 50, chains = 1, data_shape="long", sample=FALSE)
 #' fit_cv = dfa_cv(m, cv_method="loocv", iter=100, chains=1, fold_ids = fold_ids)
+#'
+#' # example with covariates and long format data
 #' obs_covar = expand.grid("time"=1:20,"timeseries"=1:3,"covariate"=1:2)
 #' obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
-#'
-#' # add in observed data
 #' obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
 #' m <- fit_dfa(y = long, iter = 50, chains = 1, obs_covar=obs_covar,data_shape="long", sample=FALSE)
 #' fit_cv = dfa_cv(m, cv_method="loocv", n_folds = 5, iter=50, chains=1)
@@ -80,7 +80,7 @@ dfa_cv <- function(stanfit,
       stanfit$obs_covar$time_timeseries <- paste(stanfit$obs_covar$time,stanfit$obs_covar$timeseries)
       y_train$time_timeseries <- paste(y_train$time,y_train$ts)
       y_test$time_timeseries <- paste(y_test$time,y_test$ts)
-      obs_covar_train <- stanfit$obs_covar[which(stanfit$obs_covar$time_timeseries %in% y_train$time_timeseries),1:4]
+      obs_covar_train <- stanfit$obs_covar[which(stanfit$obs_covar$time_timeseries %in% y_train$time_timeseries[which(fold_ids!=f)]),1:4]
       obs_covar_test <- stanfit$obs_covar[which(stanfit$obs_covar$time_timeseries %in% y_test$time_timeseries),1:4]
     }
     pro_covar_train=NULL
@@ -135,7 +135,7 @@ dfa_cv <- function(stanfit,
         pred <- pred[cbind(y_test$ts,y_test$time)]
         for(i in 1:max(obs_covar_test$covariate)) {
           indx <- which(obs_covar_test$covariate == i)
-          pred <- pred + pars$b_obs[j,i,] * obs_covar_test$value[indx]
+          pred <- pred + pars$b_obs[j,i,obs_covar_test$timeseries[indx]] * obs_covar_test$value[indx]
         }
       }
 

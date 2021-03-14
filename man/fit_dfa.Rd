@@ -150,6 +150,7 @@ s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1)
 \dontrun{
 # example of observation error covariates
+set.seed(42)
 obs_covar = expand.grid("time"=1:20,"timeseries"=1:3,"covariate"=1)
 obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
 m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, obs_covar=obs_covar)
@@ -164,6 +165,14 @@ s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
 long = data.frame("obs" = obs, "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
 m = fit_dfa(y = long, data_shape = "long", iter = 50, chains = 1)
+
+# example of long format data with obs covariates
+s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
+long = data.frame("obs" = obs, "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
+obs_covar = expand.grid("time"=1:20,"timeseries"=1:3,"covariate"=1:2)
+obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
+m = fit_dfa(y = long, data_shape = "long", iter = 50, chains = 1,obs_covar=obs_covar)
 
 # example of model with Z constrained to be proportions and wide format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)

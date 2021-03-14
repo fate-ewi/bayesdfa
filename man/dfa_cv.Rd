@@ -57,10 +57,10 @@ fit_cv = dfa_cv(m, cv_method="loocv", n_folds = 5, iter=50, chains=1, fold_ids=f
 fold_ids = long$time
 m <- fit_dfa(y = long, iter = 50, chains = 1, data_shape="long", sample=FALSE)
 fit_cv = dfa_cv(m, cv_method="loocv", iter=100, chains=1, fold_ids = fold_ids)
+
+# example with covariates and long format data
 obs_covar = expand.grid("time"=1:20,"timeseries"=1:3,"covariate"=1:2)
 obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
-
-# add in observed data
 obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
 m <- fit_dfa(y = long, iter = 50, chains = 1, obs_covar=obs_covar,data_shape="long", sample=FALSE)
 fit_cv = dfa_cv(m, cv_method="loocv", n_folds = 5, iter=50, chains=1)

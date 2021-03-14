@@ -94,6 +94,7 @@ data {
   int<lower=0> n_obs_covar; // number of unique covariates included
   int obs_covar_index[num_obs_covar,3];// indexed by time, trend, covariate #, covariate value. +1 because of indexing issues
   real obs_covar_value[num_obs_covar];
+  int match_obs_covar[num_obs_covar];
   int<lower=0> num_pro_covar; // number of unique process covariates, dimension of matrix
   int<lower=0> n_pro_covar; // number of unique process covariates included
   int pro_covar_index[num_pro_covar,3];// indexed by time, trend, covariate #, covariate value. +1 because of indexing issues
@@ -108,7 +109,9 @@ data {
   int<lower=0> est_gp; // single value, 0 if false 1 if true to model trends with predictive gaussian process
   int<lower=0> n_knots; // single value representing knots for b-spline or gp process
   matrix[n_knots, N] B_spline;
-  matrix[n_knots, n_knots] distKnots;
+  real knot_locs[n_knots]; // inputs of knot locations for GP model
+  //real data_locs[N]; // locations of data
+  //matrix[n_knots, n_knots] distKnots;
   matrix[N, n_knots] distKnots21;
   matrix[1, n_knots] distKnots21_pred;
   int obs_model; // 1 = normal, 2 = bernoulli, 3 = poisson, 4 = gamma, 6 = lognormal
@@ -122,6 +125,7 @@ transformed data {
   vector[K] zeros;
   vector[K*proportional_model] alpha_vec;
   vector[n_knots] muZeros;
+  real gp_delta = 1e-9; // stabilizing value for GP model
 
   for(k in 1:K) {
     zeros[k] = 0; // used in MVT / MVN below
@@ -134,7 +138,7 @@ transformed data {
   n_loglik = n_pos;
   if(long_format==0) {
     if(est_cor == 0) {
-       n_loglik = P * N;
+      n_loglik = P * N;
     } else {
       n_loglik = N;
     }
@@ -206,6 +210,7 @@ transformed parameters {
   matrix[n_knots, n_knots] SigmaKnots; // matrix for GP model
   matrix[N, n_knots] SigmaOffDiag;// matrix for GP model
   matrix[N, n_knots] SigmaOffDiagTemp;// matrix for GP model
+  vector[n_pos] obs_cov_offset;
 
   // block for process errors - can be estimated or not, and shared or not
   for(k in 1:K) {
@@ -300,13 +305,15 @@ transformed parameters {
       for(k in 1:K) {x[k] = x0[k] + x[k];}
     }
     if(est_gp == 1) {
+      // for the GP model, we use Stan's built in cov_exp_quad for the distance between knots
       for (k in 1:K) {
-        SigmaKnots = square(sigma_pro[k]) * exp(-distKnots / (2.0*gp_theta[k]));
+        SigmaKnots = cov_exp_quad(knot_locs, sigma_pro[k], gp_theta[k]);
+
         for(i in 1:n_knots) {
-          SigmaKnots[i,i] = SigmaKnots[i,i]+0.00001; // stabilizing
+          SigmaKnots[i,i] = SigmaKnots[i,i]+gp_delta; // stabilizing
         }
         // cov matrix between knots and projected locs
-        SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*gp_theta[k]));
+        SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*pow(gp_theta[k],2.0)));
         // multiply and invert once, used below:
         SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots);
         x[k] = to_row_vector(SigmaOffDiag * effectsKnots[k]);
@@ -315,10 +322,11 @@ transformed parameters {
 
     // this block also for the expansion prior, used to convert trends
     for(k in 1:K) {
-      //  x[k,1:N] = x[k,1:N] * indicator[k] * psi_root[k];
-      for(t in 1:N) {
-        x[k,t] = x[k,t] * indicator[k] * psi_root[k];
-      }
+      //x[k,1:N] = x[k,1:N] * indicator[k] * psi_root[k];
+      x[k] = x[k] * indicator[k] * psi_root[k];
+      //for(t in 1:N) {
+      //  x[k,t] = x[k,t] * indicator[k] * psi_root[k];
+      //}
     }
 
   }
@@ -342,12 +350,13 @@ transformed parameters {
     }
     if(est_gp == 1) {
       for (k in 1:K) {
-        SigmaKnots = square(sigma_pro[k]) * exp(-distKnots / (2.0*gp_theta[k]));
+        SigmaKnots = cov_exp_quad(knot_locs, sigma_pro[k], gp_theta[k]);
+
         for(i in 1:n_knots) {
-          SigmaKnots[i,i] = SigmaKnots[i,i]+0.00001; // stabilizing
+          SigmaKnots[i,i] = SigmaKnots[i,i]+gp_delta; // stabilizing
         }
         // cov matrix between knots and projected locs
-        SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*gp_theta[k]));
+        SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*pow(gp_theta[k],2.0)));
         // multiply and invert once, used below:
         SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots);
         x[k] = to_row_vector(SigmaOffDiag * effectsKnots[k]);
@@ -356,9 +365,10 @@ transformed parameters {
 
     // proportional model
     for(p in 1:P) {
-      for(k in 1:K) {
-        Z[p,k] = p_z[p,k]; // compositions sum to 1 for a time series
-      }
+      //for(k in 1:K) {
+      //  Z[p,k] = p_z[p,k]; // compositions sum to 1 for a time series
+      //}
+      Z[p] = to_row_vector(p_z[p]);
     }
   }
 
@@ -374,26 +384,24 @@ transformed parameters {
   // [PxN] = [PxK] * [KxN]
   pred = Z * x;
 
+  for(i in 1:n_pos) {
+    obs_cov_offset[i] = 0;
+  }
   // adjust predictions if observation covariates exist
   if(num_obs_covar > 0) {
-    //if(long_format==0) {
+    if(long_format==0) {
       for(i in 1:num_obs_covar) {
         // if data are in wide format, only 1 obs exists per prediction + pred matrix can just be adjusted
         // indexed by time, trend, covariate #, covariate value
         pred[obs_covar_index[i,2],obs_covar_index[i,1]] = pred[obs_covar_index[i,2],obs_covar_index[i,1]] + b_obs[obs_covar_index[i,3], obs_covar_index[i,2]] * obs_covar_value[i];
       }
-    // } else {
-    //   // if data are in long format, multiple obs might exist per time point, and need to use ugly loops
-    //   // loop over dataframe of obs error covariates -- may be > observations if multiple covariates exist
-    //   for(i in 1:num_obs_covar) {
-    //     // loop over observatinos and find the one that corresponds to this data point
-    //     for(j in 1:n_pos) {
-    //       if(row_indx_pos[j] == obs_covar_index[i,1] && col_indx_pos[j] == obs_covar_index[i,2]) {
-    //         obs_cov_offset[i] = obs_cov_offset[i] + b_obs[obs_covar_index[i,3], obs_covar_index[i,2]] * obs_covar_value[i];
-    //       }
-    //     }
-    //   }
-    // }
+    } else {
+      // if data are in long format, multiple obs might exist per time point, and need to use ugly loops
+      // loop over dataframe of obs error covariates -- may be > observations if multiple covariates exist
+      for(i in 1:num_obs_covar) {
+        obs_cov_offset[match_obs_covar[i]] = obs_cov_offset[match_obs_covar[i]] + b_obs[obs_covar_index[i,3], obs_covar_index[i,2]] * obs_covar_value[i];
+      }
+    }
   }
 
   if(long_format==1 && est_cor==1) {
@@ -491,13 +499,14 @@ model {
   if(est_theta == 1) {
     theta ~ normal(0,1); // K elements
   }
+  // prior on process variance -- if estimated
   if(est_sigma_process) {
     sigma_process ~ student_t(3, 0, 5);
   }
 
   if(proportional_model == 0) {
     // prior on loadings
-    z ~ normal(0, 1);
+    z ~ normal(0, 1); // off-diagonal
     zpos ~ normal(0, 1);// diagonal
   } else {
     for(p in 1:P) {
@@ -505,11 +514,12 @@ model {
     }
   }
 
-  // observation variance
+  // observation variance, which depend on family
   if(est_sigma_params==1) sigma ~ student_t(3, 0, 5);
   if(est_gamma_params==1) gamma_a ~ student_t(3, 0, 5);
   if(est_nb2_params==1) nb2_phi ~ student_t(3, 0, 5);
 
+  // MVN model for observation error variance
   if(est_cor == 1) {
     Lcorr ~ lkj_corr_cholesky(1);
   }
@@ -519,28 +529,19 @@ model {
     if(long_format==0) {
       if(obs_model == 1) {for(i in 1:P) target += normal_lpdf(yall[i] | pred[i], sigma_vec[i]);} // gaussian
     } else {
-      // for(i in 1:n_pos) {
-      //   //row_indx_pos[i] is the time series, col_index_pos is the time
-      //   target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);
-      // }
-      if(obs_model == 1) {for(i in 1:n_pos) target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);}
-      if(obs_model == 2) {for(i in 1:n_pos) target += gamma_lpdf(y[i] | gamma_a_vec[row_indx_pos[i]], gamma_a_vec[row_indx_pos[i]] / exp(pred[row_indx_pos[i],col_indx_pos[i]]));} // gamma
-      if(obs_model == 3) {for(i in 1:n_pos) target += poisson_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]]);} // poisson
-      if(obs_model == 4) {for(i in 1:n_pos) target += neg_binomial_2_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]], nb_phi_vec[row_indx_pos[i]]);} // negbin
-      if(obs_model == 5) {for(i in 1:n_pos) target += bernoulli_logit_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]]);} // binomial
-      if(obs_model == 6) {for(i in 1:n_pos) target += lognormal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);} // lognormal
+        if(obs_model == 1) {for(i in 1:n_pos) target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], sigma_vec[row_indx_pos[i]]);}
+        if(obs_model == 2) {for(i in 1:n_pos) target += gamma_lpdf(y[i] | gamma_a_vec[row_indx_pos[i]], gamma_a_vec[row_indx_pos[i]] / exp(pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]));} // gamma
+        if(obs_model == 3) {for(i in 1:n_pos) target += poisson_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // poisson
+        if(obs_model == 4) {for(i in 1:n_pos) target += neg_binomial_2_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], nb_phi_vec[row_indx_pos[i]]);} // negbin
+        if(obs_model == 5) {for(i in 1:n_pos) target += bernoulli_logit_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // binomial
+        if(obs_model == 6) {for(i in 1:n_pos) target += lognormal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], sigma_vec[row_indx_pos[i]]);} // lognormal
     }
   } else {
     // need to loop over time slices / columns - each ~ MVN
     if(long_format==0) {
       if(obs_model == 1) {for(i in 1:N) target += multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));}
     } else {
-      // for(i in 1:n_pos) {
-      // //  //row_indx_pos[i] is the time series, col_index_pos is the time. note that cond_sigma_vec and cond_mean_vec
-      // //  // used here, calculated for univariation conditionals above
-      //   target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);
-      // }
-      if(obs_model == 1) {for(i in 1:n_pos) target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);}
+      if(obs_model == 1) {for(i in 1:n_pos) target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);}
     }
   }
 }
@@ -571,16 +572,16 @@ generated quantities {
         }
       }
     } else {
-      if(obs_model == 1) {for(i in 1:n_pos) log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);}
-      if(obs_model == 2) {for(i in 1:n_pos) log_lik[i] = gamma_lpdf(y[i] | gamma_a_vec[row_indx_pos[i]], gamma_a_vec[row_indx_pos[i]] / exp(pred[row_indx_pos[i],col_indx_pos[i]]));} // gamma
-      if(obs_model == 3) {for(i in 1:n_pos) log_lik[i] = poisson_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]]);} // poisson
-      if(obs_model == 4) {for(i in 1:n_pos) log_lik[i] = neg_binomial_2_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]], nb_phi_vec[row_indx_pos[i]]);} // negbin
-      if(obs_model == 5) {for(i in 1:n_pos) log_lik[i] = bernoulli_logit_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]]);} // binomial
-      if(obs_model == 6) {for(i in 1:n_pos) log_lik[i] = lognormal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);} // lognormal
+      if(obs_model == 1) {for(i in 1:n_pos) log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], sigma_vec[row_indx_pos[i]]);}
+      if(obs_model == 2) {for(i in 1:n_pos) log_lik[i] = gamma_lpdf(y[i] | gamma_a_vec[row_indx_pos[i]], gamma_a_vec[row_indx_pos[i]] / exp(pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]));} // gamma
+      if(obs_model == 3) {for(i in 1:n_pos) log_lik[i] = poisson_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // poisson
+      if(obs_model == 4) {for(i in 1:n_pos) log_lik[i] = neg_binomial_2_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], nb_phi_vec[row_indx_pos[i]]);} // negbin
+      if(obs_model == 5) {for(i in 1:n_pos) log_lik[i] = bernoulli_logit_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // binomial
+      if(obs_model == 6) {for(i in 1:n_pos) log_lik[i] = lognormal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]] + obs_cov_offset[i]);} // lognormal
       // for(i in 1:n_pos) {
-      //   //row_indx_pos[i] is the time series, col_index_pos is the time
-      //   log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);
-      // }
+        //   //row_indx_pos[i] is the time series, col_index_pos is the time
+        //   log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);
+        // }
     }
 
   } else {
@@ -590,8 +591,8 @@ generated quantities {
       }
     } else {
       for(i in 1:n_pos) {
-      //  //row_indx_pos[i] is the time series, col_index_pos is the time
-        log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);
+        //  //row_indx_pos[i] is the time series, col_index_pos is the time
+        log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);
       }
     }
   }
@@ -624,12 +625,12 @@ generated quantities {
   }
   if(est_gp == 1) {
     for (k in 1:K) {
-      SigmaKnots_pred = square(sigma_pro[k]) * exp(-distKnots / (2.0*gp_theta[k]));
+      SigmaKnots_pred = cov_exp_quad(knot_locs, sigma_pro[k], gp_theta[k]);
       for(i in 1:n_knots) {
         SigmaKnots_pred[i,i] = SigmaKnots_pred[i,i]+0.00001; // stabilizing
       }
       // cov matrix between knots and projected locs
-      SigmaOffDiag_pred = to_row_vector(square(sigma_pro[k]) * exp(-distKnots21_pred / (2.0*gp_theta[k]))) * inverse_spd(SigmaKnots_pred);
+      SigmaOffDiag_pred = to_row_vector(square(sigma_pro[k]) * exp(-distKnots21_pred / (2.0*pow(gp_theta[k],2.0)))) * inverse_spd(SigmaKnots_pred);
       xstar[k,1] = SigmaOffDiag_pred * effectsKnots[k]; // RHS is real
     }
   }
