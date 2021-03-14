@@ -23,6 +23,8 @@ library(bayesdfa)
 library(ggplot2)
 library(dplyr)
 library(rstan)
+chains = 3
+iter = 2000
 ```
 
 ## Notation review for DFA models
@@ -72,9 +74,9 @@ for(i in 1:nrow(cov)) {
 
 And now fit the model with `fit_dfa`
 
-```{r cache=TRUE, results='hide', warning=FALSE, message=FALSE}
+```{r results='hide', warning=FALSE, message=FALSE}
 mod = fit_dfa(y = sim_dat$y, obs_covar = cov, num_trends = 1,
-  chains=1, iter=50)
+  chains=chains, iter=iter)
 ```
 
 We can then make plots of the true and estimated trend,
@@ -95,8 +97,8 @@ cov = cov[which(cov$timeseries!=4),]
 
 And then again fit the model
 ```{r eval=FALSE, results='hide', warning=FALSE, message=FALSE}
-mod = fit_dfa(y = sim_dat$y, obs_covar = cov, num_trends = 1,
-  chains=1)
+mod = fit_dfa(y = sim_dat$y, obs_covar = cov, num_trends = trends,
+  chains=chains)
 ```
 
 ## Examples -- process covariates
@@ -140,6 +142,6 @@ pro_cov = expand.grid("trend"=1:2, "time"=1:20, "covariate"=1)
 pro_cov$value = cov[pro_cov$time]
 
 mod = fit_dfa(y = sim_dat$y, pro_covar = pro_cov, num_trends = 2,
-  chains=1, iter=50)
+  chains=chains, iter=iter)
 
 ```

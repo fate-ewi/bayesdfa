@@ -23,6 +23,8 @@ library(bayesdfa)
 library(ggplot2)
 library(dplyr)
 library(rstan)
+chains = 3
+iter = 2000
 #library(viridis)
 ```
 
@@ -77,7 +79,7 @@ g2
 Let's initially treat the first ~ 50 time points as a burn in, and fit a DFA model to the latter half of the time series, using all data. We don't really have to rotate trends (because there's just 1). The loadings are estimated ok for trend 1, but underestimated for the others.  
 
 ```{r results='hide'}
-fit_1 = fit_dfa(y = sim$y_sim[,51:100], num_trends = 1, chains=1, iter=10)
+fit_1 = fit_dfa(y = sim$y_sim[,51:100], num_trends = 1, chains=chains, iter=iter)
 r = rotate_trends(fit_1)
 ```
 ```{r}

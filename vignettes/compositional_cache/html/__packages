@@ -1,8 +1,0 @@
-base
-knitr
-Rcpp
-bayesdfa
-ggplot2
-dplyr
-StanHeaders
-rstan

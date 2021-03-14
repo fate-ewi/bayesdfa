@@ -23,6 +23,8 @@ library(bayesdfa)
 library(ggplot2)
 library(dplyr)
 library(rstan)
+chains = 3
+iter= 2000
 ```
 
 ## Case 1: unequal trend variability
@@ -71,7 +73,7 @@ Next, we'll fit a 2-trend DFA model to the simulated time series using the `fit_
 ```{r fit-model, message=FALSE, warning=FALSE, results='hide'}
 f1 <- fit_dfa(
   y = sim_dat$y_sim, num_trends = 2, zscore = TRUE,
-  iter = 10, chains = 1, thin = 1
+  iter = iter, chains = chains, thin = 1
 )
 r1 <- rotate_trends(f1)
 ```
@@ -82,7 +84,7 @@ Next, we'll fit the model with process errors being estimated -- and assume uneq
 f2 <- fit_dfa(
   y = sim_dat$y_sim, num_trends = 2, zscore = TRUE, estimate_process_sigma = TRUE,
   equal_process_sigma = FALSE,
-  iter = 10, chains = 1, thin = 1
+  iter = iter, chains = chains, thin = 1
 )
 r2 <- rotate_trends(f2)
 ```
@@ -93,7 +95,7 @@ the data (this is just a test of the scaling).
 f3 <- fit_dfa(
   y = sim_dat$y_sim, num_trends = 2, zscore = FALSE, estimate_process_sigma = TRUE,
   equal_process_sigma = FALSE,
-  iter = 10, chains = 1, thin = 1
+  iter = iter, chains = chains, thin = 1
 )
 r3 <- rotate_trends(f3)
 ```
@@ -104,14 +106,14 @@ Our fourth and fifth models will be the same as # 2 and # 3, but will estimate a
 f4 <- fit_dfa(
   y = sim_dat$y_sim, num_trends = 2, zscore = TRUE, estimate_process_sigma = TRUE,
   equal_process_sigma = TRUE,
-  iter = 10, chains = 1, thin = 1
+  iter = iter, chains = chains, thin = 1
 )
 r4 <- rotate_trends(f4)
 
 f5 <- fit_dfa(
   y = sim_dat$y_sim, num_trends = 2, zscore = FALSE, estimate_process_sigma = TRUE,
   equal_process_sigma = TRUE,
-  iter = 10, chains = 1, thin = 1
+  iter = iter, chains = chains, thin = 1
 )
 r5 <- rotate_trends(f5)
 ```
