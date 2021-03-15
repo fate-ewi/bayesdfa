@@ -21,3 +21,7 @@
 # bayesdfa 0.1.6
 
 * Removed warning related to vignette and noLD test
+
+# bayesdfa 0.1.7
+
+* Added non-gaussian families (poisson, negative binomial, bernoulli, Gamma, lognormal). Also included a function for doing cross validation and calculating the expected log posterior density. Another new feature included smooth models (Gaussian process, B-splines) as alternative models for trends conventionally modeled as random walks. 
