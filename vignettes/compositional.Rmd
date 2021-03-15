@@ -3,10 +3,10 @@ title: "Fitting compositional dynamic factor models with bayesdfa"
 author: "Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-<!-- vignette: > -->
-<!--   %\VignetteIndexEntry{Fitting compositional dynamic factor models with bayesdfa} -->
-<!--   %\VignetteEngine{knitr::rmarkdown} -->
-<!--   \usepackage[utf8]{inputenc} -->
+vignette: >
+  %\VignetteIndexEntry{Fitting compositional dynamic factor models with bayesdfa}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 An extension of conventional DFA is to change the constraints on the estimated loadings, $Z$. DFA models generally impose constraints for identifiability, where individual time series are allowed to map onto dynamic factors with loadings ranging from large negative to large positive ones. Instead, if we viewed a collection of multivariate time series as originating from a compositional model - such that the loadings $Z$ were forced to be positive, and each of the time series arises as a mixture of the estimated loadings.

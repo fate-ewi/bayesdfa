@@ -3,10 +3,10 @@ title: "Examples of including covariates with bayesdfa"
 author: "Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-<!-- vignette: > -->
-<!--   %\VignetteIndexEntry{Examples of including covariates with bayesdfa} -->
-<!--   %\VignetteEngine{knitr::rmarkdown} -->
-<!--   \usepackage[utf8]{inputenc} -->
+vignette: >
+  %\VignetteIndexEntry{Examples of including covariates with bayesdfa}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 Here we will walk through how to use the bayesdfa package to fit dynamic factor analysis (DFA) models with covariates.

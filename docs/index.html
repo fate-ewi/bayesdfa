@@ -73,7 +73,7 @@
       <a href="articles/covariates.html">Examples of including covariates with bayesdfa</a>
     </li>
     <li>
-      <a href="articles/estimate_process_sigma.html">Estimating variability of random walks (process error standard deviations)</a>
+      <a href="articles/estimate_process_sigma.html">Estimating process trend variability with bayesdfa</a>
     </li>
   </ul>
 </li>
@@ -109,22 +109,57 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"fate-ewi/bayesdfa"</span><span class="op">)</span></code></pre></div>
-<p><strong>Funding</strong><br>
-The ‘bayesdfa’ package was funded by a NOAA Fisheries and the Environment (FATE) grant on early warning indicators, led by Mary Hunsicker and Mike Litzow.</p>
-<p><strong>Applications</strong><br>
-The ‘bayesdfa’ models were presented to the PFMC’s SSC in November 2017 and have been included in the 2018 California Current Integrated Ecosystem Report, <a href="https://www.integratedecosystemassessment.noaa.gov/Assets/iea/california/Report/pdf/CCIEA-status-report-2018.pdf" class="uri">https://www.integratedecosystemassessment.noaa.gov/Assets/iea/california/Report/pdf/CCIEA-status-report-2018.pdf</a></p>
-<p><strong>Citation</strong> <a href="https://journal.r-project.org/archive/2019/RJ-2019-007/index.html" class="uri">https://journal.r-project.org/archive/2019/RJ-2019-007/index.html</a></p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="op">@</span>article{ward_etal_<span class="dv">2019</span>,</span>
-<span id="cb2-2"><a href="#cb2-2"></a>  author =<span class="st"> </span>{Eric J. Ward and Sean C. Anderson and Luis A. Damiano and</span>
-<span id="cb2-3"><a href="#cb2-3"></a>          Mary E. Hunsicker and Michael A. Litzow},</span>
-<span id="cb2-4"><a href="#cb2-4"></a>  title =<span class="st"> </span>{{Modeling regimes with extremes<span class="op">:</span><span class="st"> </span>the bayesdfa package <span class="cf">for</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a>          identifying and forecasting common trends and anomalies <span class="cf">in</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a>          multivariate time<span class="op">-</span>series data}},</span>
-<span id="cb2-7"><a href="#cb2-7"></a>  year =<span class="st"> </span>{<span class="dv">2019</span>},</span>
-<span id="cb2-8"><a href="#cb2-8"></a>  journal =<span class="st"> </span>{{The R Journal}},</span>
-<span id="cb2-9"><a href="#cb2-9"></a>  doi =<span class="st"> </span>{<span class="fl">10.32614</span><span class="op">/</span>RJ<span class="dv">-2019-007</span>},</span>
-<span id="cb2-10"><a href="#cb2-10"></a>  url =<span class="st"> </span>{https<span class="op">:</span><span class="er">//</span>journal.r<span class="op">-</span>project.org<span class="op">/</span>archive<span class="op">/</span><span class="dv">2019</span><span class="op">/</span>RJ<span class="dv">-2019-007</span><span class="op">/</span>index.html}</span>
-<span id="cb2-11"><a href="#cb2-11"></a>}</span></code></pre></div>
+<div id="vignettes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#vignettes" class="anchor"></a>Vignettes</h2>
+<p>We’ve put together several vignettes for using the <code>bayesdfa</code> package.<br><a href="https://fate-ewi.github.io/bayesdfa/articles/bayesdfa.html">Overview</a><br><a href="https://fate-ewi.github.io/bayesdfa/articles/combining_data.html">Combining data</a><br><a href="https://fate-ewi.github.io/bayesdfa/articles/compositional.html">Compositional models</a><br><a href="https://fate-ewi.github.io/bayesdfa/articles/covariates.html">Including covariates</a><br><a href="https://fate-ewi.github.io/bayesdfa/articles/estimate_process_sigma.html">Estimating process variance</a></p>
+<p>Additional examples can be found in the course that Eli Holmes, Mark Scheuerell, and Eric Ward teach at the University of Washington:<br><a href="https://nwfsc-timeseries.github.io/atsa/">Course webpage</a><br><a href="https://nwfsc-timeseries.github.io/atsa/">Lab book</a></p>
+</div>
+<div id="citing" class="section level2">
+<h2 class="hasAnchor">
+<a href="#citing" class="anchor"></a>Citing</h2>
+<p>For DFA models in general, we recommend citing the MARSS package or user guide.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="op">@</span>article{marss_package,</span>
+<span id="cb2-2"><a href="#cb2-2"></a>    title =<span class="st"> </span>{{MARSS}<span class="op">:</span><span class="st"> </span>multivariate autoregressive state<span class="op">-</span>space models <span class="cf">for</span> analyzing time<span class="op">-</span>series data},</span>
+<span id="cb2-3"><a href="#cb2-3"></a>    volume =<span class="st"> </span>{<span class="dv">4</span>},</span>
+<span id="cb2-4"><a href="#cb2-4"></a>    url =<span class="st"> </span>{https<span class="op">:</span><span class="er">//</span>pdfs.semanticscholar.org<span class="op">/</span>5d41<span class="op">/</span>b86dff5f977a0eac426a924cf7917220fc9a.pdf},</span>
+<span id="cb2-5"><a href="#cb2-5"></a>    number =<span class="st"> </span>{<span class="dv">1</span>},</span>
+<span id="cb2-6"><a href="#cb2-6"></a>    journal =<span class="st"> </span>{R Journal},</span>
+<span id="cb2-7"><a href="#cb2-7"></a>    author =<span class="st"> </span>{Holmes, E.E. and Ward, Eric J. and Wills, K.},</span>
+<span id="cb2-8"><a href="#cb2-8"></a>    year =<span class="st"> </span>{<span class="dv">2012</span>},</span>
+<span id="cb2-9"><a href="#cb2-9"></a>    pages =<span class="st"> </span>{<span class="dv">11</span><span class="op">--</span><span class="dv">19</span>}</span>
+<span id="cb2-10"><a href="#cb2-10"></a>}</span>
+<span id="cb2-11"><a href="#cb2-11"></a></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="op">@</span>article{marss_user_guide,</span>
+<span id="cb2-13"><a href="#cb2-13"></a>    title =<span class="st"> </span>{{MARSS}<span class="op">:</span><span class="st"> </span>Analysis of multivariate timeseries using the MARSS package},</span>
+<span id="cb2-14"><a href="#cb2-14"></a>    url =<span class="st"> </span>{https<span class="op">:</span><span class="er">//</span>cran.r<span class="op">-</span>project.org<span class="op">/</span>web<span class="op">/</span>packages<span class="op">/</span>MARSS<span class="op">/</span>vignettes<span class="op">/</span>UserGuide.pdf},</span>
+<span id="cb2-15"><a href="#cb2-15"></a>    author =<span class="st"> </span>{Holmes, E.E. and Scheurell, M.D. and Ward, Eric J.},</span>
+<span id="cb2-16"><a href="#cb2-16"></a>    year =<span class="st"> </span>{<span class="dv">2020</span>},</span>
+<span id="cb2-17"><a href="#cb2-17"></a>}</span></code></pre></div>
+<p>For citing the <code>bayesdfa</code> package using Bayesian estimation, or models with extra features (such as extremes), cite</p>
+<p><a href="https://journal.r-project.org/archive/2019/RJ-2019-007/index.html" class="uri">https://journal.r-project.org/archive/2019/RJ-2019-007/index.html</a></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="op">@</span>article{ward_etal_<span class="dv">2019</span>,</span>
+<span id="cb3-2"><a href="#cb3-2"></a>  author =<span class="st"> </span>{Eric J. Ward and Sean C. Anderson and Luis A. Damiano and</span>
+<span id="cb3-3"><a href="#cb3-3"></a>          Mary E. Hunsicker and Michael A. Litzow},</span>
+<span id="cb3-4"><a href="#cb3-4"></a>  title =<span class="st"> </span>{{Modeling regimes with extremes<span class="op">:</span><span class="st"> </span>the bayesdfa package <span class="cf">for</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a>          identifying and forecasting common trends and anomalies <span class="cf">in</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>          multivariate time<span class="op">-</span>series data}},</span>
+<span id="cb3-7"><a href="#cb3-7"></a>  year =<span class="st"> </span>{<span class="dv">2019</span>},</span>
+<span id="cb3-8"><a href="#cb3-8"></a>  journal =<span class="st"> </span>{{The R Journal}},</span>
+<span id="cb3-9"><a href="#cb3-9"></a>  doi =<span class="st"> </span>{<span class="fl">10.32614</span><span class="op">/</span>RJ<span class="dv">-2019-007</span>},</span>
+<span id="cb3-10"><a href="#cb3-10"></a>  url =<span class="st"> </span>{https<span class="op">:</span><span class="er">//</span>journal.r<span class="op">-</span>project.org<span class="op">/</span>archive<span class="op">/</span><span class="dv">2019</span><span class="op">/</span>RJ<span class="dv">-2019-007</span><span class="op">/</span>index.html}</span>
+<span id="cb3-11"><a href="#cb3-11"></a>}</span></code></pre></div>
+<div id="applications" class="section level3">
+<h3 class="hasAnchor">
+<a href="#applications" class="anchor"></a>Applications</h3>
+<p>The ‘bayesdfa’ models were presented to the PFMC’s SSC in November 2017 and have been included in the 2018 California Current Integrated Ecosystem Report, <a href="https://www.integratedecosystemassessment.noaa.gov/Assets/iea/california/Report/pdf/CCIEA-status-report-2018.pdf" class="uri">https://www.integratedecosystemassessment.noaa.gov/Assets/iea/california/Report/pdf/CCIEA-status-report-2018.pdf</a></p>
+</div>
+<div id="funding" class="section level3">
+<h3 class="hasAnchor">
+<a href="#funding" class="anchor"></a>Funding</h3>
+<p>The ‘bayesdfa’ package was funded by a NOAA Fisheries and the Environment (FATE) grant on early warning indicators, led by Mary Hunsicker and Mike Litzow.</p>
+</div>
+</div>
 </div>
   </div>
 

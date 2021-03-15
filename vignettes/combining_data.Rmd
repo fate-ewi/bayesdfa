@@ -3,10 +3,10 @@ title: "Combining data with bayesdfa"
 author: "Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-<!-- vignette: > -->
-<!--   %\VignetteIndexEntry{Combining data with bayesdfa} -->
-<!--   %\VignetteEngine{knitr::rmarkdown} -->
-<!--   \usepackage[utf8]{inputenc} -->
+vignette: >
+  %\VignetteIndexEntry{Combining data with bayesdfa}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 For some applications using DFA, datasets may need to be combined from several data sources, and they may differ in time series length (or precision). Here we'll use some simple examples using `fit_dfa()` and to illustrate some cautionary points. 

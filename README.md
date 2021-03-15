@@ -18,15 +18,21 @@ devtools::install_github("fate-ewi/bayesdfa")
 Vignettes
 ---------
 
-We’ve put together several vignettes for using the `bayesdfa` package.
+We’ve put together several vignettes for using the `bayesdfa` package.  
+[Overview](https://fate-ewi.github.io/bayesdfa/articles/bayesdfa.html)  
 [Combining
-data](https://fate-ewi.github.io/bayesdfa/articles/combining_data.html)
+data](https://fate-ewi.github.io/bayesdfa/articles/combining_data.html)  
 [Compositional
-models](https://fate-ewi.github.io/bayesdfa/articles/compositional.html)
+models](https://fate-ewi.github.io/bayesdfa/articles/compositional.html)  
 [Including
-covariates](https://fate-ewi.github.io/bayesdfa/articles/covariates.html)
+covariates](https://fate-ewi.github.io/bayesdfa/articles/covariates.html)  
 [Estimating process
 variance](https://fate-ewi.github.io/bayesdfa/articles/estimate_process_sigma.html)
+
+Additional examples can be found in the course that Eli Holmes, Mark
+Scheuerell, and Eric Ward teach at the University of Washington:  
+[Course webpage](https://nwfsc-timeseries.github.io/atsa/)  
+[Lab book](https://nwfsc-timeseries.github.io/atsa/)
 
 Citing
 ------
@@ -45,15 +51,11 @@ guide.
         pages = {11--19}
     }
 
-    @article{marss_package,
-        title = {{MARSS}: multivariate autoregressive state-space models for analyzing time-series data},
-        volume = {4},
-        url = {https://pdfs.semanticscholar.org/5d41/b86dff5f977a0eac426a924cf7917220fc9a.pdf},
-        number = {1},
-        journal = {R Journal},
-        author = {Holmes, E.E. and Ward, Eric J. and Wills, K.},
-        year = {2012},
-        pages = {11--19}
+    @article{marss_user_guide,
+        title = {{MARSS}: Analysis of multivariate timeseries using the MARSS package},
+        url = {https://cran.r-project.org/web/packages/MARSS/vignettes/UserGuide.pdf},
+        author = {Holmes, E.E. and Scheurell, M.D. and Ward, Eric J.},
+        year = {2020},
     }
 
 For citing the `bayesdfa` package using Bayesian estimation, or models
