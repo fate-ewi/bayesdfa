@@ -1,5 +1,5 @@
 ---
-title: "Estimating variability of random walks (process error standard deviations)"
+title: "Estimating process trend variability with bayesdfa"
 author: "Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette

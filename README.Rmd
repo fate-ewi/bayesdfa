@@ -28,16 +28,6 @@ You can install the development version of the package with:
 devtools::install_github("fate-ewi/bayesdfa")
 ```
 
-## Vignettes
-
-We've put together several vignettes to demonstrate some common model structures. 
-
-[Introduction]
-[Combining data]
-[Covariates]
-[Estimating process variance]
-[Compositional models]
-
 **Funding**  
 The 'bayesdfa' package was funded by a NOAA Fisheries and the Environment (FATE) grant on early warning indicators, led by Mary Hunsicker and Mike Litzow. 
 

@@ -1,0 +1,34 @@
+reference:
+- title: "Using the bayesdfa package"
+  desc: >
+    Functions for fitting Bayesian dynamic factor analyses
+- contents:
+  - fit_dfa
+  - sim_dfa
+  - find_dfa_trends
+  - dfa_cv
+- title: "Diagnostics for fitted models"
+  desc:  >
+    Functions for evaluating convergence of DFA moddels
+- contents:
+  - find_swans
+  - is_converged
+  - loo
+  - predicted
+  - rotate_trends
+  - trend_cor
+- title: "Univariate Hidden Markov Models"
+  desc:  >
+    Functions for evaluating regimes with univariate HMMs
+- contents:
+  - hmm_init
+  - find_regimes
+  - fit_regimes
+- title: "Plotting"
+  desc:  >
+    Functions for plotting DFA and HMM models
+- contents:
+  - plot_fitted
+  - plot_loadings
+  - plot_regime_model
+  - plot_trends

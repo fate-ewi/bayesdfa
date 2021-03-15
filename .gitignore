@@ -2,10 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-dfa.rds
-tvdfa.rds
-tvdfa_fixed.rds
-run_tvdfa_*
 *.html
 vignettes/*.R
 vignettes/*.html
@@ -16,17 +12,6 @@ vignettes/*.html
 .DS_Store
 *.html
 .DS_Store
-
-DFA.pdf
-
-DFA.Rmd
-
-applications/4 trends.pdf
-
-codes_regions_types.MH.csv
-
-codes_regions_types_ML.csv
-
-DFA_regions.Rmd
 doc
 Meta
+docs
