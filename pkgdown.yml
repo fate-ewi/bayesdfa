@@ -1,0 +1,11 @@
+pandoc: 2.7.3
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  bayesdfa: bayesdfa.html
+  combining_data: combining_data.html
+  compositional: compositional.html
+  covariates: covariates.html
+  estimate_process_sigma: estimate_process_sigma.html
+last_built: 2021-03-15T13:42Z
+
