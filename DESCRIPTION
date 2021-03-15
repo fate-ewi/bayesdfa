@@ -42,7 +42,7 @@ Suggests:
     parallel,
     knitr,
     rmarkdown
-URL: https://github.com/fate-ewi/bayesdfa
+URL: https://fate-ewi.github.io/bayesdfa/
 BugReports: https://github.com/fate-ewi/bayesdfa/issues
 RoxygenNote: 7.1.1.9000
 VignetteBuilder: knitr

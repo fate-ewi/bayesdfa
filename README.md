@@ -1,4 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 bayesdfa
 ========
 
@@ -14,18 +15,50 @@ You can install the development version of the package with:
 devtools::install_github("fate-ewi/bayesdfa")
 ```
 
-**Funding**  
-The ‘bayesdfa’ package was funded by a NOAA Fisheries and the
-Environment (FATE) grant on early warning indicators, led by Mary
-Hunsicker and Mike Litzow.
+Vignettes
+---------
 
-**Applications**  
-The ‘bayesdfa’ models were presented to the PFMC’s SSC in November 2017
-and have been included in the 2018 California Current Integrated
-Ecosystem Report,
-<a href="https://www.integratedecosystemassessment.noaa.gov/Assets/iea/california/Report/pdf/CCIEA-status-report-2018.pdf" class="uri">https://www.integratedecosystemassessment.noaa.gov/Assets/iea/california/Report/pdf/CCIEA-status-report-2018.pdf</a>
+We’ve put together several vignettes for using the `bayesdfa` package.
+[Combining
+data](https://fate-ewi.github.io/bayesdfa/articles/combining_data.html)
+[Compositional
+models](https://fate-ewi.github.io/bayesdfa/articles/compositional.html)
+[Including
+covariates](https://fate-ewi.github.io/bayesdfa/articles/covariates.html)
+[Estimating process
+variance](https://fate-ewi.github.io/bayesdfa/articles/estimate_process_sigma.html)
 
-**Citation**
+Citing
+------
+
+For DFA models in general, we recommend citing the MARSS package or user
+guide.
+
+    @article{marss_package,
+        title = {{MARSS}: multivariate autoregressive state-space models for analyzing time-series data},
+        volume = {4},
+        url = {https://pdfs.semanticscholar.org/5d41/b86dff5f977a0eac426a924cf7917220fc9a.pdf},
+        number = {1},
+        journal = {R Journal},
+        author = {Holmes, E.E. and Ward, Eric J. and Wills, K.},
+        year = {2012},
+        pages = {11--19}
+    }
+
+    @article{marss_package,
+        title = {{MARSS}: multivariate autoregressive state-space models for analyzing time-series data},
+        volume = {4},
+        url = {https://pdfs.semanticscholar.org/5d41/b86dff5f977a0eac426a924cf7917220fc9a.pdf},
+        number = {1},
+        journal = {R Journal},
+        author = {Holmes, E.E. and Ward, Eric J. and Wills, K.},
+        year = {2012},
+        pages = {11--19}
+    }
+
+For citing the `bayesdfa` package using Bayesian estimation, or models
+with extra features (such as extremes), cite
+
 <a href="https://journal.r-project.org/archive/2019/RJ-2019-007/index.html" class="uri">https://journal.r-project.org/archive/2019/RJ-2019-007/index.html</a>
 
     @article{ward_etal_2019,
@@ -39,3 +72,16 @@ Ecosystem Report,
       doi = {10.32614/RJ-2019-007},
       url = {https://journal.r-project.org/archive/2019/RJ-2019-007/index.html}
     }
+
+### Applications
+
+The ‘bayesdfa’ models were presented to the PFMC’s SSC in November 2017
+and have been included in the 2018 California Current Integrated
+Ecosystem Report,
+<a href="https://www.integratedecosystemassessment.noaa.gov/Assets/iea/california/Report/pdf/CCIEA-status-report-2018.pdf" class="uri">https://www.integratedecosystemassessment.noaa.gov/Assets/iea/california/Report/pdf/CCIEA-status-report-2018.pdf</a>
+
+### Funding
+
+The ‘bayesdfa’ package was funded by a NOAA Fisheries and the
+Environment (FATE) grant on early warning indicators, led by Mary
+Hunsicker and Mike Litzow.
