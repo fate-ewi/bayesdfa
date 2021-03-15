@@ -292,19 +292,6 @@ $$delta_{i,t+1} \sim Normal( \theta_{i}*delta_{i,t}, q_{i})$$
 
 where $\theta_{i}$ is the trend-specific MA parameter, $q$ is the process variance, and usually constrained to be not estimated and fixed at 1. 
 
-## Estimating process variances
-
-DFA models generally constrain process errors to be normally distributed with unit variance, e.g. 
-
-$$delta_{i,t=1:T} \sim Normal( 0, q)$$
-While we generally recommend following this convention, there are some combinations of models and parameters where $q$ is identifiable. For these models, we can estimate the process error variance as
-
-```{r echo=TRUE, eval=FALSE}
-fit <- fit_dfa(..., estimate_process_sigma = TRUE)
-```
-
-This form of the model allows separate process variances to be estimated on each trend, e.g. $q_{1}, q_{2}, q_{3}, ...$
-
 ## Applying Hidden Markov Models to identify latent regimes
 
 Finally, we might be interested in evaluating evidence for the estimated trends changing between multiple regimes. We've implemented HMMs in the functions `fit_regimes()` and `find_regimes()`. `fit_regimes` fits a HMM with a pre-specified number of latent states, while `find_regimes()` loops over a range of models so that support can be evaluated with LOOIC.
