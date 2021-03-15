@@ -3,10 +3,10 @@ title: "Estimating process trend variability with bayesdfa"
 author: "Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Estimating process trend variability with bayesdfa}
-  %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+<!-- vignette: > -->
+<!--   %\VignetteIndexEntry{Estimating process trend variability with bayesdfa} -->
+<!--   %\VignetteEngine{knitr::rmarkdown} -->
+<!--   \usepackage[utf8]{inputenc} -->
 ---
 
 A constraint of most DFA models is that the latent trends are modeled as random walks with fixed standard deviations (= 1). We can evaluate the ability to estimate these parameters in a Bayesian context below.

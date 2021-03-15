@@ -13,3 +13,7 @@ cleanup*
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^vignettes\combining_data.Rmd
+^vignettes\compositional.Rmd
+^vignettes\covariates.Rmd
+^vignettes\estimate_process_sigma.Rmd
