@@ -423,22 +423,13 @@ Estimated loadings, from a model with 2 latent trends Student-t deviations.
 <p><span class="math display">\[delta_{i,t+1} \sim Normal( \theta_{i}*delta_{i,t}, q_{i})\]</span></p>
 <p>where <span class="math inline">\(\theta_{i}\)</span> is the trend-specific MA parameter, <span class="math inline">\(q\)</span> is the process variance, and usually constrained to be not estimated and fixed at 1.</p>
 </div>
-<div id="estimating-process-variances" class="section level2">
-<h2 class="hasAnchor">
-<a href="#estimating-process-variances" class="anchor"></a>Estimating process variances</h2>
-<p>DFA models generally constrain process errors to be normally distributed with unit variance, e.g. </p>
-<p><span class="math display">\[delta_{i,t=1:T} \sim Normal( 0, q)\]</span> While we generally recommend following this convention, there are some combinations of models and parameters where <span class="math inline">\(q\)</span> is identifiable. For these models, we can estimate the process error variance as</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span><span class="va">...</span>, estimate_process_sigma <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p>This form of the model allows separate process variances to be estimated on each trend, e.g. <span class="math inline">\(q_{1}, q_{2}, q_{3}, ...\)</span></p>
-</div>
 <div id="applying-hidden-markov-models-to-identify-latent-regimes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#applying-hidden-markov-models-to-identify-latent-regimes" class="anchor"></a>Applying Hidden Markov Models to identify latent regimes</h2>
 <p>Finally, we might be interested in evaluating evidence for the estimated trends changing between multiple regimes. We’ve implemented HMMs in the functions <code><a href="../reference/fit_regimes.html">fit_regimes()</a></code> and <code><a href="../reference/find_regimes.html">find_regimes()</a></code>. <code>fit_regimes</code> fits a HMM with a pre-specified number of latent states, while <code><a href="../reference/find_regimes.html">find_regimes()</a></code> loops over a range of models so that support can be evaluated with LOOIC.</p>
 <p>We’ll illustrate an example of the <code><a href="../reference/fit_regimes.html">fit_regimes()</a></code> function. Note that in the current version of the package, this has to be applied to each trend separately. Also, uncertainty estimates from the DFA trends may also be included as data (instead of estimated) – this may be particularly useful for datasets with lots of missing values in portions of the time series (where the uncertainty balloons up).</p>
 <p>Applying the 2-regime model to the first trend,</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">reg_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_regimes.html">fit_regimes</a></span><span class="op">(</span>
   y <span class="op">=</span> <span class="va">r</span><span class="op">$</span><span class="va">trends_mean</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>,
   sds <span class="op">=</span> <span class="op">(</span><span class="va">r</span><span class="op">$</span><span class="va">trends_upper</span> <span class="op">-</span> <span class="va">r</span><span class="op">$</span><span class="va">trends_mean</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span> <span class="op">/</span> <span class="fl">1.96</span>,
@@ -446,10 +437,10 @@ Estimated loadings, from a model with 2 latent trends Student-t deviations.
   iter <span class="op">=</span> <span class="fl">50</span>, chains <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
 <p>In addition to getting diagnostics and quantities like LOOIC out of the <code>reg_mod</code> object, we can plot the estimated states.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_regime_model.html">plot_regime_model</a></span><span class="op">(</span><span class="va">reg_mod</span><span class="op">)</span></code></pre></div>
 <p>In this case, there might be some support for the 2-regime model. Sometimes (but not in this example) label switching makes the plots a little challenging to interpret, and the labels need to be reversed. We’ve included the argument <code>flip_regimes</code> to help with this,</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_regime_model.html">plot_regime_model</a></span><span class="op">(</span><span class="va">reg_mod</span>, flip_regimes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
   </div>
