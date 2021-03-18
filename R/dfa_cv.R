@@ -68,7 +68,7 @@ dfa_cv <- function(stanfit,
   y$time = y$time - min(y$time) + 1
 
   # loop over the folds, re-fitting the dfa model each time with the folds held out
-  log_lik <- matrix(0, nrow=chains*iter/2, ncol = n_folds)
+  log_lik <- matrix(0, nrow=ceiling(iter/(2*thin))*chains, ncol=n_folds)
   for(f in 1:n_folds) {
 
     # fit model holding out each time slice. subset observed data and covar
@@ -111,6 +111,7 @@ dfa_cv <- function(stanfit,
       pro_covar = pro_covar_train,
       z_bound = stanfit$z_bound,
       z_model = stanfit$z_model,
+      trend_model = stanfit$trend_model,
       verbose = FALSE)
 
     # extract posterior parameters for the training set
