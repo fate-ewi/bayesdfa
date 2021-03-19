@@ -367,7 +367,7 @@ fit_dfa <- function(y = y,
   if(is.null(n_knots)) n_knots <- round(N/3)
   if(is.null(knot_locs)) knot_locs = seq(1,N,length.out=n_knots)
   distKnots <- matrix(0, n_knots, n_knots)
-  distKnots21 <- matrix(0, N, n_knots)
+  #distKnots21 <- matrix(0, N, n_knots)
   distKnots21_pred <- rep(0, n_knots)
   # set up cubic b-splines design matrix
   B_spline <- matrix(0, n_knots, N)
@@ -388,10 +388,10 @@ fit_dfa <- function(y = y,
     if(is.null(knot_locs)) knot_locs = seq(1,N,length.out=n_knots)
     distKnots = as.matrix(stats::dist(knot_locs)) # distances between time stamps
     distAll = as.matrix(stats::dist(c(1:N,knot_locs))) # distances between data and knot locs
-    distKnots21 <- t(distAll[-seq_len(N), 1:N])
+    #distKnots21 <- t(distAll[-seq_len(N), 1:N])
     distKnots21_pred <- as.matrix(stats::dist(c(N+1,knot_locs)))[1,-1]
-    distKnots <- distKnots ^ 2
-    distKnots21 <- distKnots21 ^ 2
+    #distKnots <- distKnots ^ 2
+    #distKnots21 <- distKnots21 ^ 2
     distKnots21_pred <- distKnots21_pred ^ 2
     est_sigma_process <- 1 # turn this on as a scale for variance
     estimate_trend_ar <- FALSE
@@ -453,8 +453,8 @@ fit_dfa <- function(y = y,
     n_knots = n_knots,
     knot_locs = knot_locs,
     est_gp = est_gp,
-    distKnots = distKnots,
-    distKnots21 = distKnots21,
+    #distKnots = distKnots,
+    #distKnots21 = distKnots21,
     obs_model = obs_model,
     distKnots21_pred = matrix(distKnots21_pred,nrow=1),
     est_sigma_params = est_sigma_params,

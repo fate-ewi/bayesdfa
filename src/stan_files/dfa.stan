@@ -112,7 +112,7 @@ data {
   real knot_locs[n_knots]; // inputs of knot locations for GP model
   //real data_locs[N]; // locations of data
   //matrix[n_knots, n_knots] distKnots;
-  matrix[N, n_knots] distKnots21;
+  //matrix[N, n_knots] distKnots21;
   matrix[1, n_knots] distKnots21_pred;
   int obs_model; // 1 = normal, 2 = bernoulli, 3 = poisson, 4 = gamma, 6 = lognormal
   int<lower=0, upper=1> est_sigma_params;
@@ -123,10 +123,14 @@ transformed data {
   int n_pcor; // dimension for cov matrix
   int n_loglik; // dimension for loglik calculation
   vector[K] zeros;
+  real data_locs[N]; // for gp model
   vector[K*proportional_model] alpha_vec;
   vector[n_knots] muZeros;
   real gp_delta = 1e-9; // stabilizing value for GP model
 
+  for(i in 1:N) {
+    data_locs[i] = i;
+  }
   for(k in 1:K) {
     zeros[k] = 0; // used in MVT / MVN below
   }
@@ -226,16 +230,20 @@ transformed parameters {
 
   // phi is the ar(1) parameter, fixed or estimated
   if(est_phi == 1) {
-    for(k in 1:K) {phi_vec[k] = phi[k];}
+    //for(k in 1:K) {phi_vec[k] = phi[k];}
+    phi_vec = to_vector(phi);
   } else {
-    for(k in 1:K) {phi_vec[k] = 1;}
+    //for(k in 1:K) {phi_vec[k] = 1;}
+    phi_vec = rep_vector(1.0, K);
   }
 
   // theta is the ma(1) parameter, fixed or estimated
   if(est_theta == 1) {
-    for(k in 1:K) {theta_vec[k] = theta[k];}
+    //for(k in 1:K) {theta_vec[k] = theta[k];}
+    theta_vec = to_vector(theta);
   } else {
-    for(k in 1:K) {theta_vec[k] = 0;}
+    //for(k in 1:K) {theta_vec[k] = 0;}
+    theta_vec = rep_vector(1.0, K);
   }
 
   if(est_sigma_params == 1) {
@@ -309,11 +317,13 @@ transformed parameters {
       for (k in 1:K) {
         SigmaKnots = cov_exp_quad(knot_locs, sigma_pro[k], gp_theta[k]);
 
+        //SigmaKnots = SigmaKnots+diag_matrix(rep_vector(gp_delta, n_knots));
         for(i in 1:n_knots) {
           SigmaKnots[i,i] = SigmaKnots[i,i]+gp_delta; // stabilizing
         }
         // cov matrix between knots and projected locs
-        SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*pow(gp_theta[k],2.0)));
+        //SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*pow(gp_theta[k],2.0)));
+        SigmaOffDiagTemp = cov_exp_quad(data_locs, knot_locs, sigma_pro[k], gp_theta[k]);
         // multiply and invert once, used below:
         SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots);
         x[k] = to_row_vector(SigmaOffDiag * effectsKnots[k]);
@@ -352,11 +362,13 @@ transformed parameters {
       for (k in 1:K) {
         SigmaKnots = cov_exp_quad(knot_locs, sigma_pro[k], gp_theta[k]);
 
+        //SigmaKnots = SigmaKnots+diag_matrix(rep_vector(gp_delta, n_knots));
         for(i in 1:n_knots) {
           SigmaKnots[i,i] = SigmaKnots[i,i]+gp_delta; // stabilizing
         }
         // cov matrix between knots and projected locs
-        SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*pow(gp_theta[k],2.0)));
+        //SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*pow(gp_theta[k],2.0)));
+        SigmaOffDiagTemp = cov_exp_quad(data_locs, knot_locs, sigma_pro[k], gp_theta[k]);
         // multiply and invert once, used below:
         SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots);
         x[k] = to_row_vector(SigmaOffDiag * effectsKnots[k]);
