@@ -62,6 +62,9 @@
 #'   but included options are "gamma", "lognormal", negative binomial ("nbinom2"),
 #'   "poisson", or "binomial". The binomial family is assumed to have logit link,
 #'   gaussian family is assumed to be identity, and the rest are log-link.
+#' @param gp_theta_prior A 2-element vector controlling the prior on the Gaussian process parameter in cov_exp_quad.
+#'   This prior is a half-Student t prior, with the first argument of gp_theta_prior being the degrees of freedom (nu),
+#'   and the second element being the standard deviation
 #' @param ... Any other arguments to pass to [rstan::sampling()].
 #' @param par_list A vector of parameter names of variables to be estimated by Stan. If NULL, this will default to
 #'   c("x", "Z", "sigma", "log_lik", "psi","xstar") for most models -- though if AR / MA, or Student-t models are used
@@ -161,6 +164,7 @@ fit_dfa <- function(y = y,
                     par_list = NULL,
                     family = "gaussian",
                     verbose = FALSE,
+                    gp_theta_prior = c(3,1),
                     ...) {
   # check arguments
   data_shape <- match.arg(data_shape, c("wide","long"))
@@ -459,7 +463,8 @@ fit_dfa <- function(y = y,
     distKnots21_pred = matrix(distKnots21_pred,nrow=1),
     est_sigma_params = est_sigma_params,
     est_gamma_params = est_gamma_params,
-    est_nb2_params = est_nb2_params
+    est_nb2_params = est_nb2_params,
+    gp_theta_prior = gp_theta_prior
   )
 
   if(is.null(par_list)) {
@@ -480,12 +485,11 @@ fit_dfa <- function(y = y,
   if(!is.null(obs_covar)) pars <- c(pars, "b_obs")
   if(!is.null(pro_covar)) pars <- c(pars, "b_pro")
   if(est_sigma_process) pars <- c(pars, "sigma_process")
+  if(trend_model=="gp") pars <- c(pars, "gp_theta")
 
   if(!is.null(par_list)) {
     if(par_list[1]=="all") {
-    pars <- pars <- c("x", "Z","log_lik", "psi","xstar",
-      "devs","x0","z","zpos","sigma_process","p_z",
-      "b_obs","b_pro","phi","theta","Lcorr","ymiss","nu") # removed pred
+    pars <- NA # removed pred
     }
   }
 

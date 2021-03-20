@@ -118,6 +118,7 @@ data {
   int<lower=0, upper=1> est_sigma_params;
   int<lower=0, upper=1> est_gamma_params;
   int<lower=0, upper=1> est_nb2_params;
+  real gp_theta_prior[2];
 }
 transformed data {
   int n_pcor; // dimension for cov matrix
@@ -211,7 +212,7 @@ transformed parameters {
   real sigma11;// temporary for calculations for MVN model
   vector[K] sigma_pro;
   matrix[K * est_spline, n_knots * est_spline] spline_a_trans; // weights for b-splines
-  matrix[n_knots, n_knots] SigmaKnots; // matrix for GP model
+  matrix[n_knots, n_knots] SigmaKnots[K]; // matrix for GP model, unique for each trend K
   matrix[N, n_knots] SigmaOffDiag;// matrix for GP model
   matrix[N, n_knots] SigmaOffDiagTemp;// matrix for GP model
   vector[n_pos] obs_cov_offset;
@@ -315,17 +316,17 @@ transformed parameters {
     if(est_gp == 1) {
       // for the GP model, we use Stan's built in cov_exp_quad for the distance between knots
       for (k in 1:K) {
-        SigmaKnots = cov_exp_quad(knot_locs, sigma_pro[k], gp_theta[k]);
+        SigmaKnots[k] = cov_exp_quad(knot_locs, sigma_pro[k], gp_theta[k]);
 
         //SigmaKnots = SigmaKnots+diag_matrix(rep_vector(gp_delta, n_knots));
         for(i in 1:n_knots) {
-          SigmaKnots[i,i] = SigmaKnots[i,i]+gp_delta; // stabilizing
+          SigmaKnots[k][i,i] = SigmaKnots[k][i,i]+gp_delta; // stabilizing
         }
         // cov matrix between knots and projected locs
         //SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*pow(gp_theta[k],2.0)));
         SigmaOffDiagTemp = cov_exp_quad(data_locs, knot_locs, sigma_pro[k], gp_theta[k]);
         // multiply and invert once, used below:
-        SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots);
+        SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots[k]);
         x[k] = to_row_vector(SigmaOffDiag * effectsKnots[k]);
       }
     }
@@ -360,17 +361,17 @@ transformed parameters {
     }
     if(est_gp == 1) {
       for (k in 1:K) {
-        SigmaKnots = cov_exp_quad(knot_locs, sigma_pro[k], gp_theta[k]);
+        SigmaKnots[k] = cov_exp_quad(knot_locs, sigma_pro[k], gp_theta[k]);
 
         //SigmaKnots = SigmaKnots+diag_matrix(rep_vector(gp_delta, n_knots));
         for(i in 1:n_knots) {
-          SigmaKnots[i,i] = SigmaKnots[i,i]+gp_delta; // stabilizing
+          SigmaKnots[k][i,i] = SigmaKnots[k][i,i]+gp_delta; // stabilizing
         }
         // cov matrix between knots and projected locs
         //SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*pow(gp_theta[k],2.0)));
         SigmaOffDiagTemp = cov_exp_quad(data_locs, knot_locs, sigma_pro[k], gp_theta[k]);
         // multiply and invert once, used below:
-        SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots);
+        SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots[k]);
         x[k] = to_row_vector(SigmaOffDiag * effectsKnots[k]);
       }
     }
@@ -455,11 +456,41 @@ model {
   x0 ~ normal(0, 1); // initial state estimate at t=1
   psi ~ gamma(2, 1); // expansion parameter for par-expanded priors
 
+  // prior for df parameter for t-distribution
+  if (estimate_nu == 1) {
+    nu[1] ~ gamma(2, 0.1);
+  }
+  // prior on AR(1) component if included
+  if(est_phi == 1) {
+    phi ~ normal(0,1); // K elements
+  }
+  // prior on MA(1) component if included
+  if(est_theta == 1) {
+    theta ~ normal(0,1); // K elements
+  }
+  // prior on process variance if included
+  if(est_sigma_process) {
+    sigma_process ~ normal(0,1);
+  }
+  // observation variance, which depend on family
+  if(est_sigma_params==1) sigma ~ student_t(3, 0, 1);
+  if(est_gamma_params==1) gamma_a ~ student_t(3, 0, 1);
+  if(est_nb2_params==1) nb2_phi ~ student_t(3, 0, 1);
+
+  // MVN model for observation error variance
+  if(est_cor == 1) {
+    Lcorr ~ lkj_corr_cholesky(1);
+  }
   if(est_gp==1) {
-    gp_theta ~ student_t(3, 0, 0.5);
+    // Use Betancort prior, https://betanalpha.github.io/assets/case_studies/gp_part3/part3.html
+    // P[gp_theta < 2.0] = 0.01
+    // P[gp_theta > 10] = 0.01
+    //gp_theta ~ inv_gamma(8.91924, 34.5805);
+    gp_theta ~ inv_gamma(gp_theta_prior[1], gp_theta_prior[2]);
+    //gp_theta ~ student_t(gp_theta_prior[1], 0, gp_theta_prior[2]);
     // random effects estimated for each trend
     for(k in 1:K) {
-      effectsKnots[k] ~ multi_normal(muZeros, SigmaKnots);
+      effectsKnots[k] ~ multi_normal(muZeros, SigmaKnots[k]);
     }
   }
   // This is deviations - either normal or Student t, and
@@ -499,23 +530,6 @@ model {
     }
   }
 
-  // prior for df parameter for t-distribution
-  if (estimate_nu == 1) {
-    nu[1] ~ gamma(2, 0.1);
-  }
-  // prior on AR(1) component if included
-  if(est_phi == 1) {
-    phi ~ normal(0,1); // K elements
-  }
-  // prior on MA(1) component if included
-  if(est_theta == 1) {
-    theta ~ normal(0,1); // K elements
-  }
-  // prior on process variance -- if estimated
-  if(est_sigma_process) {
-    sigma_process ~ student_t(3, 0, 5);
-  }
-
   if(proportional_model == 0) {
     // prior on loadings
     z ~ normal(0, 1); // off-diagonal
@@ -526,15 +540,6 @@ model {
     }
   }
 
-  // observation variance, which depend on family
-  if(est_sigma_params==1) sigma ~ student_t(3, 0, 5);
-  if(est_gamma_params==1) gamma_a ~ student_t(3, 0, 5);
-  if(est_nb2_params==1) nb2_phi ~ student_t(3, 0, 5);
-
-  // MVN model for observation error variance
-  if(est_cor == 1) {
-    Lcorr ~ lkj_corr_cholesky(1);
-  }
 
   // likelihood for independent
   if(est_cor == 0) {
