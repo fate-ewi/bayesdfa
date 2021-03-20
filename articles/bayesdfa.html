@@ -97,7 +97,7 @@
       <h1 data-toc-skip>Overview of the bayesdfa package</h1>
                         <h4 class="author">Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri</h4>
             
-            <h4 class="date">2021-03-19</h4>
+            <h4 class="date">2021-03-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/fate-ewi/bayesdfa/blob/master/vignettes/bayesdfa.Rmd"><code>vignettes/bayesdfa.Rmd</code></a></small>
       <div class="hidden name"><code>bayesdfa.Rmd</code></div>
@@ -216,11 +216,11 @@ Estimated loadings from the 2-trend DFA model.
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">loo1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loo.bayesdfa.html">loo</a></span><span class="op">(</span><span class="va">f1</span><span class="op">)</span>
 <span class="va">loo1</span><span class="op">$</span><span class="va">estimates</span></code></pre></div>
-<pre><code>##           Estimate           SE
-## elpd_loo -27193.43 5.626485e+03
-## p_loo         0.00 2.211998e-15
-## looic     54386.85 1.125297e+04</code></pre>
-<p>where 5.438685310^{4} is the estimate and 1.125296910^{4} is the standard error.</p>
+<pre><code>##               Estimate           SE
+## elpd_loo -2.719359e+04 5.626518e+03
+## p_loo     6.661338e-16 2.176588e-15
+## looic     5.438717e+04 1.125304e+04</code></pre>
+<p>where 5.438717510^{4} is the estimate and 1.125303710^{4} is the standard error.</p>
 <p>As an alternative to fitting each model individually as we did above, we also developed the <code><a href="../reference/find_dfa_trends.html">find_dfa_trends()</a></code> to automate fitting a larger number of models. In addition to evaluating different trends, this function allows the user to optionally evaluate models with normal and Student-t process errors, and alternative variance structures (observation variance of time series being equal, or not). For example, to fit models with 1:5 trends, both Student-t and normal errors, and equal and unequal variances, the call would be</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_dfa_trends.html">find_dfa_trends</a></span><span class="op">(</span>
