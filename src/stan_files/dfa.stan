@@ -647,7 +647,7 @@ generated quantities {
       }
       // cov matrix between knots and projected locs
       SigmaOffDiag_pred = to_row_vector(square(sigma_pro[k]) * exp(-distKnots21_pred / (2.0*pow(gp_theta[k],2.0)))) * inverse_spd(SigmaKnots_pred);
-      xstar[k,1] = SigmaOffDiag_pred * effectsKnots[k]; // RHS is real
+      xstar[k,1] = SigmaOffDiag_pred * cholesky_decompose(SigmaKnots[k]) * effectsKnots[k]; // RHS is real
     }
   }
 }
