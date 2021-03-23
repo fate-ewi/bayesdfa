@@ -36,7 +36,7 @@ static int current_statement_begin__;
 stan::io::program_reader prog_reader__() {
     stan::io::program_reader reader;
     reader.add_event(0, 0, "start", "model_dfa");
-    reader.add_event(656, 654, "end", "model_dfa");
+    reader.add_event(655, 653, "end", "model_dfa");
     return reader;
 }
 
@@ -1878,13 +1878,6 @@ public:
             stan::math::initialize(SigmaKnots, DUMMY_VAR__);
             stan::math::fill(SigmaKnots, DUMMY_VAR__);
 
-            current_statement_begin__ = 216;
-            validate_non_negative_index("SigmaOffDiag", "N", N);
-            validate_non_negative_index("SigmaOffDiag", "n_knots", n_knots);
-            Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, Eigen::Dynamic> SigmaOffDiag(N, n_knots);
-            stan::math::initialize(SigmaOffDiag, DUMMY_VAR__);
-            stan::math::fill(SigmaOffDiag, DUMMY_VAR__);
-
             current_statement_begin__ = 217;
             validate_non_negative_index("SigmaOffDiagTemp", "N", N);
             validate_non_negative_index("SigmaOffDiagTemp", "n_knots", n_knots);
@@ -2143,48 +2136,46 @@ public:
                             current_statement_begin__ = 323;
                             stan::model::assign(SigmaKnots, 
                                         stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(i), stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()))), 
-                                        (get_base1(get_base1(SigmaKnots, k, "SigmaKnots", 1), i, i, "SigmaKnots", 2) + gp_delta), 
+                                        (stan::model::rvalue(SigmaKnots, stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(i), stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()))), "SigmaKnots") + gp_delta), 
                                         "assigning variable SigmaKnots");
                         }
                         current_statement_begin__ = 327;
                         stan::math::assign(SigmaOffDiagTemp, cov_exp_quad(data_locs, knot_locs, get_base1(sigma_pro, k, "sigma_pro", 1), get_base1(gp_theta, k, "gp_theta", 1)));
-                        current_statement_begin__ = 329;
-                        stan::math::assign(SigmaOffDiag, multiply(SigmaOffDiagTemp, inverse_spd(get_base1(SigmaKnots, k, "SigmaKnots", 1))));
-                        current_statement_begin__ = 330;
+                        current_statement_begin__ = 331;
                         stan::model::assign(x, 
                                     stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
-                                    to_row_vector(multiply(SigmaOffDiag, get_base1(effectsKnots, k, "effectsKnots", 1))), 
+                                    to_row_vector(multiply(multiply(multiply(SigmaOffDiagTemp, inverse_spd(get_base1(SigmaKnots, k, "SigmaKnots", 1))), cholesky_decompose(get_base1(SigmaKnots, k, "SigmaKnots", 1))), get_base1(effectsKnots, k, "effectsKnots", 1))), 
                                     "assigning variable x");
                     }
                 }
-                current_statement_begin__ = 335;
+                current_statement_begin__ = 336;
                 for (int k = 1; k <= K; ++k) {
 
-                    current_statement_begin__ = 337;
+                    current_statement_begin__ = 338;
                     stan::model::assign(x, 
                                 stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                 multiply(multiply(get_base1(x, k, "x", 1), get_base1(indicator, k, "indicator", 1)), get_base1(psi_root, k, "psi_root", 1)), 
                                 "assigning variable x");
                 }
             }
-            current_statement_begin__ = 344;
+            current_statement_begin__ = 342;
             if (as_bool(logical_eq(proportional_model, 1))) {
 
-                current_statement_begin__ = 346;
+                current_statement_begin__ = 344;
                 if (as_bool(logical_eq(est_rw, 1))) {
 
-                    current_statement_begin__ = 347;
+                    current_statement_begin__ = 345;
                     for (int k = 1; k <= K; ++k) {
 
-                        current_statement_begin__ = 348;
+                        current_statement_begin__ = 346;
                         stan::model::assign(x, 
                                     stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list())), 
                                     get_base1(x0, k, "x0", 1), 
                                     "assigning variable x");
-                        current_statement_begin__ = 352;
+                        current_statement_begin__ = 350;
                         for (int t = 2; t <= N; ++t) {
 
-                            current_statement_begin__ = 353;
+                            current_statement_begin__ = 351;
                             stan::model::assign(x, 
                                         stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(t), stan::model::nil_index_list())), 
                                         ((get_base1(phi_vec, k, "phi_vec", 1) * get_base1(x, k, (t - 1), "x", 1)) + get_base1(devs, k, (t - 1), "devs", 1)), 
@@ -2192,187 +2183,185 @@ public:
                         }
                     }
                 }
-                current_statement_begin__ = 357;
+                current_statement_begin__ = 355;
                 if (as_bool(logical_eq(est_spline, 1))) {
 
-                    current_statement_begin__ = 358;
+                    current_statement_begin__ = 356;
                     for (int k = 1; k <= K; ++k) {
-                        current_statement_begin__ = 358;
+                        current_statement_begin__ = 356;
                         stan::model::assign(spline_a_trans, 
                                     stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                     multiply(get_base1(spline_a, k, "spline_a", 1), get_base1(sigma_pro, k, "sigma_pro", 1)), 
                                     "assigning variable spline_a_trans");
                     }
-                    current_statement_begin__ = 359;
+                    current_statement_begin__ = 357;
                     stan::math::assign(x, multiply(spline_a_trans, B_spline));
-                    current_statement_begin__ = 360;
+                    current_statement_begin__ = 358;
                     for (int k = 1; k <= K; ++k) {
 
-                        current_statement_begin__ = 360;
+                        current_statement_begin__ = 358;
                         stan::model::assign(x, 
                                     stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                     add(get_base1(x0, k, "x0", 1), get_base1(x, k, "x", 1)), 
                                     "assigning variable x");
                     }
                 }
-                current_statement_begin__ = 362;
+                current_statement_begin__ = 360;
                 if (as_bool(logical_eq(est_gp, 1))) {
 
-                    current_statement_begin__ = 363;
+                    current_statement_begin__ = 361;
                     for (int k = 1; k <= K; ++k) {
 
-                        current_statement_begin__ = 364;
+                        current_statement_begin__ = 362;
                         stan::model::assign(SigmaKnots, 
                                     stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                     cov_exp_quad(knot_locs, get_base1(sigma_pro, k, "sigma_pro", 1), get_base1(gp_theta, k, "gp_theta", 1)), 
                                     "assigning variable SigmaKnots");
-                        current_statement_begin__ = 367;
+                        current_statement_begin__ = 365;
                         for (int i = 1; i <= n_knots; ++i) {
 
-                            current_statement_begin__ = 368;
+                            current_statement_begin__ = 366;
                             stan::model::assign(SigmaKnots, 
                                         stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(i), stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()))), 
-                                        (get_base1(get_base1(SigmaKnots, k, "SigmaKnots", 1), i, i, "SigmaKnots", 2) + gp_delta), 
+                                        (stan::model::rvalue(SigmaKnots, stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(i), stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()))), "SigmaKnots") + gp_delta), 
                                         "assigning variable SigmaKnots");
                         }
-                        current_statement_begin__ = 372;
+                        current_statement_begin__ = 370;
                         stan::math::assign(SigmaOffDiagTemp, cov_exp_quad(data_locs, knot_locs, get_base1(sigma_pro, k, "sigma_pro", 1), get_base1(gp_theta, k, "gp_theta", 1)));
                         current_statement_begin__ = 374;
-                        stan::math::assign(SigmaOffDiag, multiply(SigmaOffDiagTemp, inverse_spd(get_base1(SigmaKnots, k, "SigmaKnots", 1))));
-                        current_statement_begin__ = 375;
                         stan::model::assign(x, 
                                     stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
-                                    to_row_vector(multiply(SigmaOffDiag, get_base1(effectsKnots, k, "effectsKnots", 1))), 
+                                    to_row_vector(multiply(multiply(multiply(SigmaOffDiagTemp, inverse_spd(get_base1(SigmaKnots, k, "SigmaKnots", 1))), cholesky_decompose(get_base1(SigmaKnots, k, "SigmaKnots", 1))), get_base1(effectsKnots, k, "effectsKnots", 1))), 
                                     "assigning variable x");
                     }
                 }
-                current_statement_begin__ = 380;
+                current_statement_begin__ = 379;
                 for (int p = 1; p <= P; ++p) {
 
-                    current_statement_begin__ = 384;
+                    current_statement_begin__ = 383;
                     stan::model::assign(Z, 
                                 stan::model::cons_list(stan::model::index_uni(p), stan::model::nil_index_list()), 
                                 to_row_vector(get_base1(p_z, p, "p_z", 1)), 
                                 "assigning variable Z");
                 }
             }
-            current_statement_begin__ = 389;
+            current_statement_begin__ = 388;
             if (as_bool(logical_gt(num_pro_covar, 0))) {
 
-                current_statement_begin__ = 390;
+                current_statement_begin__ = 389;
                 for (int i = 1; i <= num_pro_covar; ++i) {
 
-                    current_statement_begin__ = 392;
+                    current_statement_begin__ = 391;
                     stan::model::assign(x, 
                                 stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 2, "pro_covar_index", 2)), stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 1, "pro_covar_index", 2)), stan::model::nil_index_list())), 
-                                (get_base1(x, get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 2, "pro_covar_index", 2), get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 1, "pro_covar_index", 2), "x", 1) + (get_base1(b_pro, get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 3, "pro_covar_index", 2), get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 2, "pro_covar_index", 2), "b_pro", 1) * get_base1(pro_covar_value, i, "pro_covar_value", 1))), 
+                                (stan::model::rvalue(x, stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 2, "pro_covar_index", 2)), stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 1, "pro_covar_index", 2)), stan::model::nil_index_list())), "x") + (get_base1(b_pro, get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 3, "pro_covar_index", 2), get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 2, "pro_covar_index", 2), "b_pro", 1) * get_base1(pro_covar_value, i, "pro_covar_value", 1))), 
                                 "assigning variable x");
                 }
             }
-            current_statement_begin__ = 398;
+            current_statement_begin__ = 397;
             stan::math::assign(pred, multiply(Z, x));
-            current_statement_begin__ = 400;
+            current_statement_begin__ = 399;
             for (int i = 1; i <= n_pos; ++i) {
 
-                current_statement_begin__ = 401;
+                current_statement_begin__ = 400;
                 stan::model::assign(obs_cov_offset, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             0, 
                             "assigning variable obs_cov_offset");
             }
-            current_statement_begin__ = 404;
+            current_statement_begin__ = 403;
             if (as_bool(logical_gt(num_obs_covar, 0))) {
 
-                current_statement_begin__ = 405;
+                current_statement_begin__ = 404;
                 if (as_bool(logical_eq(long_format, 0))) {
 
-                    current_statement_begin__ = 406;
+                    current_statement_begin__ = 405;
                     for (int i = 1; i <= num_obs_covar; ++i) {
 
-                        current_statement_begin__ = 409;
+                        current_statement_begin__ = 408;
                         stan::model::assign(pred, 
                                     stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 2, "obs_covar_index", 2)), stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 1, "obs_covar_index", 2)), stan::model::nil_index_list())), 
-                                    (get_base1(pred, get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 2, "obs_covar_index", 2), get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 1, "obs_covar_index", 2), "pred", 1) + (get_base1(b_obs, get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 3, "obs_covar_index", 2), get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 2, "obs_covar_index", 2), "b_obs", 1) * get_base1(obs_covar_value, i, "obs_covar_value", 1))), 
+                                    (stan::model::rvalue(pred, stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 2, "obs_covar_index", 2)), stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 1, "obs_covar_index", 2)), stan::model::nil_index_list())), "pred") + (get_base1(b_obs, get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 3, "obs_covar_index", 2), get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 2, "obs_covar_index", 2), "b_obs", 1) * get_base1(obs_covar_value, i, "obs_covar_value", 1))), 
                                     "assigning variable pred");
                     }
                 } else {
 
-                    current_statement_begin__ = 414;
+                    current_statement_begin__ = 413;
                     for (int i = 1; i <= num_obs_covar; ++i) {
 
-                        current_statement_begin__ = 415;
+                        current_statement_begin__ = 414;
                         stan::model::assign(obs_cov_offset, 
                                     stan::model::cons_list(stan::model::index_uni(get_base1(match_obs_covar, i, "match_obs_covar", 1)), stan::model::nil_index_list()), 
-                                    (get_base1(obs_cov_offset, get_base1(match_obs_covar, i, "match_obs_covar", 1), "obs_cov_offset", 1) + (get_base1(b_obs, get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 3, "obs_covar_index", 2), get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 2, "obs_covar_index", 2), "b_obs", 1) * get_base1(obs_covar_value, i, "obs_covar_value", 1))), 
+                                    (stan::model::rvalue(obs_cov_offset, stan::model::cons_list(stan::model::index_uni(get_base1(match_obs_covar, i, "match_obs_covar", 1)), stan::model::nil_index_list()), "obs_cov_offset") + (get_base1(b_obs, get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 3, "obs_covar_index", 2), get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 2, "obs_covar_index", 2), "b_obs", 1) * get_base1(obs_covar_value, i, "obs_covar_value", 1))), 
                                     "assigning variable obs_cov_offset");
                     }
                 }
             }
-            current_statement_begin__ = 420;
+            current_statement_begin__ = 419;
             if (as_bool((primitive_value(logical_eq(long_format, 1)) && primitive_value(logical_eq(est_cor, 1))))) {
 
-                current_statement_begin__ = 422;
+                current_statement_begin__ = 421;
                 for (int n = 1; n <= N; ++n) {
 
-                    current_statement_begin__ = 423;
+                    current_statement_begin__ = 422;
                     for (int p = 1; p <= P; ++p) {
 
-                        current_statement_begin__ = 424;
+                        current_statement_begin__ = 423;
                         stan::model::assign(temp_sums, 
                                     stan::model::cons_list(stan::model::index_uni(p), stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list())), 
                                     0.0, 
                                     "assigning variable temp_sums");
-                        current_statement_begin__ = 425;
+                        current_statement_begin__ = 424;
                         stan::model::assign(temp_counts, 
                                     stan::model::cons_list(stan::model::index_uni(p), stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list())), 
                                     0.0, 
                                     "assigning variable temp_counts");
                     }
                 }
-                current_statement_begin__ = 428;
+                current_statement_begin__ = 427;
                 for (int i = 1; i <= n_pos; ++i) {
 
-                    current_statement_begin__ = 429;
+                    current_statement_begin__ = 428;
                     stan::model::assign(temp_sums, 
                                 stan::model::cons_list(stan::model::index_uni(get_base1(row_indx_pos, i, "row_indx_pos", 1)), stan::model::cons_list(stan::model::index_uni(get_base1(col_indx_pos, i, "col_indx_pos", 1)), stan::model::nil_index_list())), 
-                                (get_base1(temp_sums, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "temp_sums", 1) + (get_base1(y, i, "y", 1) - get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1))), 
+                                (stan::model::rvalue(temp_sums, stan::model::cons_list(stan::model::index_uni(get_base1(row_indx_pos, i, "row_indx_pos", 1)), stan::model::cons_list(stan::model::index_uni(get_base1(col_indx_pos, i, "col_indx_pos", 1)), stan::model::nil_index_list())), "temp_sums") + (get_base1(y, i, "y", 1) - get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1))), 
                                 "assigning variable temp_sums");
-                    current_statement_begin__ = 430;
+                    current_statement_begin__ = 429;
                     stan::model::assign(temp_counts, 
                                 stan::model::cons_list(stan::model::index_uni(get_base1(row_indx_pos, i, "row_indx_pos", 1)), stan::model::cons_list(stan::model::index_uni(get_base1(col_indx_pos, i, "col_indx_pos", 1)), stan::model::nil_index_list())), 
-                                (get_base1(temp_counts, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "temp_counts", 1) + 1), 
+                                (stan::model::rvalue(temp_counts, stan::model::cons_list(stan::model::index_uni(get_base1(row_indx_pos, i, "row_indx_pos", 1)), stan::model::cons_list(stan::model::index_uni(get_base1(col_indx_pos, i, "col_indx_pos", 1)), stan::model::nil_index_list())), "temp_counts") + 1), 
                                 "assigning variable temp_counts");
                 }
-                current_statement_begin__ = 432;
+                current_statement_begin__ = 431;
                 for (int n = 1; n <= N; ++n) {
 
-                    current_statement_begin__ = 433;
+                    current_statement_begin__ = 432;
                     for (int p = 1; p <= P; ++p) {
 
-                        current_statement_begin__ = 435;
+                        current_statement_begin__ = 434;
                         stan::model::assign(temp_sums, 
                                     stan::model::cons_list(stan::model::index_uni(p), stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list())), 
                                     (get_base1(temp_sums, p, n, "temp_sums", 1) / get_base1(temp_counts, p, n, "temp_counts", 1)), 
                                     "assigning variable temp_sums");
                     }
                 }
-                current_statement_begin__ = 439;
+                current_statement_begin__ = 438;
                 stan::math::assign(Sigma_derived, quad_form_diag(multiply_lower_tri_self_transpose(Lcorr), sigma_vec));
-                current_statement_begin__ = 441;
+                current_statement_begin__ = 440;
                 for (int p = 1; p <= P; ++p) {
 
-                    current_statement_begin__ = 442;
+                    current_statement_begin__ = 441;
                     stan::math::assign(sigma11, get_base1(Sigma_derived, p, p, "Sigma_derived", 1));
-                    current_statement_begin__ = 443;
+                    current_statement_begin__ = 442;
                     stan::math::assign(Sigma_temp, inverse(subset(Sigma_derived, p, P, pstream__)));
-                    current_statement_begin__ = 444;
+                    current_statement_begin__ = 443;
                     stan::math::assign(sigma12_vec, subsetvec(Sigma_derived, p, P, pstream__));
-                    current_statement_begin__ = 446;
+                    current_statement_begin__ = 445;
                     stan::model::assign(cond_mean_vec, 
                                 stan::model::cons_list(stan::model::index_uni(p), stan::model::nil_index_list()), 
                                 multiply(multiply(to_row_vector(sigma12_vec), Sigma_temp), to_vector(subsetvec2(col(temp_sums, p), p, P, pstream__))), 
                                 "assigning variable cond_mean_vec");
-                    current_statement_begin__ = 448;
+                    current_statement_begin__ = 447;
                     stan::model::assign(cond_sigma_vec, 
                                 stan::model::cons_list(stan::model::index_uni(p), stan::model::nil_index_list()), 
                                 stan::math::sqrt((sigma11 - multiply(multiply(to_row_vector(sigma12_vec), Sigma_temp), to_vector(sigma12_vec)))), 
@@ -2627,18 +2616,6 @@ public:
                     }
                 }
             }
-            current_statement_begin__ = 216;
-            size_t SigmaOffDiag_j_1_max__ = N;
-            size_t SigmaOffDiag_j_2_max__ = n_knots;
-            for (size_t j_1__ = 0; j_1__ < SigmaOffDiag_j_1_max__; ++j_1__) {
-                for (size_t j_2__ = 0; j_2__ < SigmaOffDiag_j_2_max__; ++j_2__) {
-                    if (stan::math::is_uninitialized(SigmaOffDiag(j_1__, j_2__))) {
-                        std::stringstream msg__;
-                        msg__ << "Undefined transformed parameter: SigmaOffDiag" << "(" << j_1__ << ", " << j_2__ << ")";
-                        stan::lang::rethrow_located(std::runtime_error(std::string("Error initializing variable SigmaOffDiag: ") + msg__.str()), current_statement_begin__, prog_reader__());
-                    }
-                }
-            }
             current_statement_begin__ = 217;
             size_t SigmaOffDiagTemp_j_1_max__ = N;
             size_t SigmaOffDiagTemp_j_2_max__ = n_knots;
@@ -2663,237 +2640,237 @@ public:
 
             // model body
 
-            current_statement_begin__ = 456;
+            current_statement_begin__ = 455;
             lp_accum__.add(normal_log<propto__>(x0, 0, 1));
-            current_statement_begin__ = 457;
+            current_statement_begin__ = 456;
             lp_accum__.add(gamma_log<propto__>(psi, 2, 1));
-            current_statement_begin__ = 460;
+            current_statement_begin__ = 459;
             if (as_bool(logical_eq(estimate_nu, 1))) {
 
-                current_statement_begin__ = 461;
+                current_statement_begin__ = 460;
                 lp_accum__.add(gamma_log<propto__>(get_base1(nu, 1, "nu", 1), 2, 0.1));
             }
-            current_statement_begin__ = 464;
+            current_statement_begin__ = 463;
             if (as_bool(logical_eq(est_phi, 1))) {
 
-                current_statement_begin__ = 465;
+                current_statement_begin__ = 464;
                 lp_accum__.add(normal_log<propto__>(phi, 0, 1));
             }
-            current_statement_begin__ = 468;
+            current_statement_begin__ = 467;
             if (as_bool(logical_eq(est_theta, 1))) {
 
-                current_statement_begin__ = 469;
+                current_statement_begin__ = 468;
                 lp_accum__.add(normal_log<propto__>(theta, 0, 1));
             }
-            current_statement_begin__ = 472;
+            current_statement_begin__ = 471;
             if (as_bool(est_sigma_process)) {
 
-                current_statement_begin__ = 473;
+                current_statement_begin__ = 472;
                 lp_accum__.add(normal_log<propto__>(sigma_process, 0, 1));
             }
-            current_statement_begin__ = 476;
+            current_statement_begin__ = 475;
             if (as_bool(logical_eq(est_sigma_params, 1))) {
-                current_statement_begin__ = 476;
+                current_statement_begin__ = 475;
                 lp_accum__.add(student_t_log<propto__>(sigma, 3, 0, 1));
             }
-            current_statement_begin__ = 477;
+            current_statement_begin__ = 476;
             if (as_bool(logical_eq(est_gamma_params, 1))) {
-                current_statement_begin__ = 477;
+                current_statement_begin__ = 476;
                 lp_accum__.add(student_t_log<propto__>(gamma_a, 3, 0, 1));
             }
-            current_statement_begin__ = 478;
+            current_statement_begin__ = 477;
             if (as_bool(logical_eq(est_nb2_params, 1))) {
-                current_statement_begin__ = 478;
+                current_statement_begin__ = 477;
                 lp_accum__.add(student_t_log<propto__>(nb2_phi, 3, 0, 1));
             }
-            current_statement_begin__ = 481;
+            current_statement_begin__ = 480;
             if (as_bool(logical_eq(est_cor, 1))) {
 
-                current_statement_begin__ = 482;
+                current_statement_begin__ = 481;
                 lp_accum__.add(lkj_corr_cholesky_log<propto__>(Lcorr, 1));
             }
-            current_statement_begin__ = 484;
+            current_statement_begin__ = 483;
             if (as_bool(logical_eq(est_gp, 1))) {
 
-                current_statement_begin__ = 489;
+                current_statement_begin__ = 488;
                 lp_accum__.add(inv_gamma_log<propto__>(gp_theta, get_base1(gp_theta_prior, 1, "gp_theta_prior", 1), get_base1(gp_theta_prior, 2, "gp_theta_prior", 1)));
-                current_statement_begin__ = 492;
+                current_statement_begin__ = 491;
                 for (int k = 1; k <= K; ++k) {
 
-                    current_statement_begin__ = 493;
-                    lp_accum__.add(multi_normal_log<propto__>(get_base1(effectsKnots, k, "effectsKnots", 1), muZeros, get_base1(SigmaKnots, k, "SigmaKnots", 1)));
+                    current_statement_begin__ = 492;
+                    lp_accum__.add(std_normal_log<propto__>(get_base1(effectsKnots, k, "effectsKnots", 1)));
                 }
             }
-            current_statement_begin__ = 498;
+            current_statement_begin__ = 497;
             if (as_bool(logical_eq(est_rw, 1))) {
 
-                current_statement_begin__ = 499;
+                current_statement_begin__ = 498;
                 for (int k = 1; k <= K; ++k) {
 
-                    current_statement_begin__ = 500;
+                    current_statement_begin__ = 499;
                     if (as_bool(logical_eq(use_normal, 0))) {
 
-                        current_statement_begin__ = 501;
+                        current_statement_begin__ = 500;
                         for (int t = 1; t <= 1; ++t) {
 
-                            current_statement_begin__ = 502;
+                            current_statement_begin__ = 501;
                             if (as_bool(logical_eq(estimate_nu, 1))) {
 
-                                current_statement_begin__ = 503;
+                                current_statement_begin__ = 502;
                                 lp_accum__.add(student_t_log<propto__>(get_base1(devs, k, t, "devs", 1), get_base1(nu, 1, "nu", 1), 0, get_base1(sigma_pro, k, "sigma_pro", 1)));
                             } else {
 
-                                current_statement_begin__ = 505;
+                                current_statement_begin__ = 504;
                                 lp_accum__.add(student_t_log<propto__>(get_base1(devs, k, t, "devs", 1), nu_fixed, 0, get_base1(sigma_pro, k, "sigma_pro", 1)));
                             }
                         }
-                        current_statement_begin__ = 508;
+                        current_statement_begin__ = 507;
                         for (int t = 2; t <= (N - 1); ++t) {
 
-                            current_statement_begin__ = 510;
+                            current_statement_begin__ = 509;
                             if (as_bool(logical_eq(estimate_nu, 1))) {
 
-                                current_statement_begin__ = 511;
+                                current_statement_begin__ = 510;
                                 lp_accum__.add(student_t_log<propto__>(get_base1(devs, k, t, "devs", 1), get_base1(nu, 1, "nu", 1), (get_base1(theta_vec, k, "theta_vec", 1) * get_base1(devs, k, (t - 1), "devs", 1)), get_base1(sigma_pro, k, "sigma_pro", 1)));
                             } else {
 
-                                current_statement_begin__ = 513;
+                                current_statement_begin__ = 512;
                                 lp_accum__.add(student_t_log<propto__>(get_base1(devs, k, t, "devs", 1), nu_fixed, (get_base1(theta_vec, k, "theta_vec", 1) * get_base1(devs, k, (t - 1), "devs", 1)), get_base1(sigma_pro, k, "sigma_pro", 1)));
                             }
                         }
                     } else {
 
-                        current_statement_begin__ = 518;
+                        current_statement_begin__ = 517;
                         lp_accum__.add(normal_log<propto__>(get_base1(devs, k, 1, "devs", 1), 0, 1));
-                        current_statement_begin__ = 519;
+                        current_statement_begin__ = 518;
                         for (int t = 2; t <= (N - 1); ++t) {
 
-                            current_statement_begin__ = 521;
+                            current_statement_begin__ = 520;
                             lp_accum__.add(normal_log<propto__>(get_base1(devs, k, t, "devs", 1), (get_base1(theta_vec, k, "theta_vec", 1) * get_base1(devs, k, (t - 1), "devs", 1)), get_base1(sigma_pro, k, "sigma_pro", 1)));
                         }
                     }
                 }
             }
-            current_statement_begin__ = 527;
+            current_statement_begin__ = 526;
             if (as_bool(logical_eq(est_spline, 1))) {
 
-                current_statement_begin__ = 528;
+                current_statement_begin__ = 527;
                 for (int k = 1; k <= K; ++k) {
 
-                    current_statement_begin__ = 529;
+                    current_statement_begin__ = 528;
                     lp_accum__.add(normal_log<propto__>(get_base1(spline_a, k, "spline_a", 1), 0, 1));
                 }
             }
-            current_statement_begin__ = 533;
+            current_statement_begin__ = 532;
             if (as_bool(logical_eq(proportional_model, 0))) {
 
-                current_statement_begin__ = 535;
+                current_statement_begin__ = 534;
                 lp_accum__.add(normal_log<propto__>(z, 0, 1));
-                current_statement_begin__ = 536;
+                current_statement_begin__ = 535;
                 lp_accum__.add(normal_log<propto__>(zpos, 0, 1));
             } else {
 
-                current_statement_begin__ = 538;
+                current_statement_begin__ = 537;
                 for (int p = 1; p <= P; ++p) {
 
-                    current_statement_begin__ = 539;
+                    current_statement_begin__ = 538;
                     lp_accum__.add(dirichlet_log<propto__>(get_base1(p_z, p, "p_z", 1), alpha_vec));
                 }
             }
-            current_statement_begin__ = 545;
+            current_statement_begin__ = 544;
             if (as_bool(logical_eq(est_cor, 0))) {
 
-                current_statement_begin__ = 546;
+                current_statement_begin__ = 545;
                 if (as_bool(logical_eq(long_format, 0))) {
 
-                    current_statement_begin__ = 547;
+                    current_statement_begin__ = 546;
                     if (as_bool(logical_eq(obs_model, 1))) {
 
-                        current_statement_begin__ = 547;
+                        current_statement_begin__ = 546;
                         for (int i = 1; i <= P; ++i) {
-                            current_statement_begin__ = 547;
+                            current_statement_begin__ = 546;
                             lp_accum__.add(normal_log(get_base1(yall, i, "yall", 1), get_base1(pred, i, "pred", 1), get_base1(sigma_vec, i, "sigma_vec", 1)));
                         }
                     }
                 } else {
 
-                    current_statement_begin__ = 549;
+                    current_statement_begin__ = 548;
                     if (as_bool(logical_eq(obs_model, 1))) {
+
+                        current_statement_begin__ = 548;
+                        for (int i = 1; i <= n_pos; ++i) {
+                            current_statement_begin__ = 548;
+                            lp_accum__.add(normal_log(get_base1(y, i, "y", 1), (get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1)), get_base1(sigma_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "sigma_vec", 1)));
+                        }
+                    }
+                    current_statement_begin__ = 549;
+                    if (as_bool(logical_eq(obs_model, 2))) {
 
                         current_statement_begin__ = 549;
                         for (int i = 1; i <= n_pos; ++i) {
                             current_statement_begin__ = 549;
-                            lp_accum__.add(normal_log(get_base1(y, i, "y", 1), (get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1)), get_base1(sigma_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "sigma_vec", 1)));
+                            lp_accum__.add(gamma_log(get_base1(y, i, "y", 1), get_base1(gamma_a_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "gamma_a_vec", 1), (get_base1(gamma_a_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "gamma_a_vec", 1) / stan::math::exp((get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1))))));
                         }
                     }
                     current_statement_begin__ = 550;
-                    if (as_bool(logical_eq(obs_model, 2))) {
+                    if (as_bool(logical_eq(obs_model, 3))) {
 
                         current_statement_begin__ = 550;
                         for (int i = 1; i <= n_pos; ++i) {
                             current_statement_begin__ = 550;
-                            lp_accum__.add(gamma_log(get_base1(y, i, "y", 1), get_base1(gamma_a_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "gamma_a_vec", 1), (get_base1(gamma_a_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "gamma_a_vec", 1) / stan::math::exp((get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1))))));
+                            lp_accum__.add(poisson_log_log(get_base1(y_int, i, "y_int", 1), (get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1))));
                         }
                     }
                     current_statement_begin__ = 551;
-                    if (as_bool(logical_eq(obs_model, 3))) {
+                    if (as_bool(logical_eq(obs_model, 4))) {
 
                         current_statement_begin__ = 551;
                         for (int i = 1; i <= n_pos; ++i) {
                             current_statement_begin__ = 551;
-                            lp_accum__.add(poisson_log_log(get_base1(y_int, i, "y_int", 1), (get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1))));
+                            lp_accum__.add(neg_binomial_2_log_log(get_base1(y_int, i, "y_int", 1), (get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1)), get_base1(nb_phi_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "nb_phi_vec", 1)));
                         }
                     }
                     current_statement_begin__ = 552;
-                    if (as_bool(logical_eq(obs_model, 4))) {
+                    if (as_bool(logical_eq(obs_model, 5))) {
 
                         current_statement_begin__ = 552;
                         for (int i = 1; i <= n_pos; ++i) {
                             current_statement_begin__ = 552;
-                            lp_accum__.add(neg_binomial_2_log_log(get_base1(y_int, i, "y_int", 1), (get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1)), get_base1(nb_phi_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "nb_phi_vec", 1)));
+                            lp_accum__.add(bernoulli_logit_log(get_base1(y_int, i, "y_int", 1), (get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1))));
                         }
                     }
                     current_statement_begin__ = 553;
-                    if (as_bool(logical_eq(obs_model, 5))) {
+                    if (as_bool(logical_eq(obs_model, 6))) {
 
                         current_statement_begin__ = 553;
                         for (int i = 1; i <= n_pos; ++i) {
                             current_statement_begin__ = 553;
-                            lp_accum__.add(bernoulli_logit_log(get_base1(y_int, i, "y_int", 1), (get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1))));
-                        }
-                    }
-                    current_statement_begin__ = 554;
-                    if (as_bool(logical_eq(obs_model, 6))) {
-
-                        current_statement_begin__ = 554;
-                        for (int i = 1; i <= n_pos; ++i) {
-                            current_statement_begin__ = 554;
                             lp_accum__.add(lognormal_log(get_base1(y, i, "y", 1), (get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1)), get_base1(sigma_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "sigma_vec", 1)));
                         }
                     }
                 }
             } else {
 
-                current_statement_begin__ = 558;
+                current_statement_begin__ = 557;
                 if (as_bool(logical_eq(long_format, 0))) {
 
-                    current_statement_begin__ = 559;
+                    current_statement_begin__ = 558;
                     if (as_bool(logical_eq(obs_model, 1))) {
 
-                        current_statement_begin__ = 559;
+                        current_statement_begin__ = 558;
                         for (int i = 1; i <= N; ++i) {
-                            current_statement_begin__ = 559;
+                            current_statement_begin__ = 558;
                             lp_accum__.add(multi_normal_cholesky_log(col(yall, i), col(pred, i), diag_pre_multiply(sigma_vec, Lcorr)));
                         }
                     }
                 } else {
 
-                    current_statement_begin__ = 561;
+                    current_statement_begin__ = 560;
                     if (as_bool(logical_eq(obs_model, 1))) {
 
-                        current_statement_begin__ = 561;
+                        current_statement_begin__ = 560;
                         for (int i = 1; i <= n_pos; ++i) {
-                            current_statement_begin__ = 561;
+                            current_statement_begin__ = 560;
                             lp_accum__.add(normal_log(get_base1(y, i, "y", 1), ((get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1)) + get_base1(cond_mean_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "cond_mean_vec", 1)), get_base1(cond_sigma_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "cond_sigma_vec", 1)));
                         }
                     }
@@ -2968,7 +2945,6 @@ public:
         names__.push_back("sigma_pro");
         names__.push_back("spline_a_trans");
         names__.push_back("SigmaKnots");
-        names__.push_back("SigmaOffDiag");
         names__.push_back("SigmaOffDiagTemp");
         names__.push_back("obs_cov_offset");
         names__.push_back("log_lik");
@@ -3131,10 +3107,6 @@ public:
         dims__.resize(0);
         dims__.push_back(K);
         dims__.push_back(n_knots);
-        dims__.push_back(n_knots);
-        dimss__.push_back(dims__);
-        dims__.resize(0);
-        dims__.push_back(N);
         dims__.push_back(n_knots);
         dimss__.push_back(dims__);
         dims__.resize(0);
@@ -3547,13 +3519,6 @@ public:
             stan::math::initialize(SigmaKnots, DUMMY_VAR__);
             stan::math::fill(SigmaKnots, DUMMY_VAR__);
 
-            current_statement_begin__ = 216;
-            validate_non_negative_index("SigmaOffDiag", "N", N);
-            validate_non_negative_index("SigmaOffDiag", "n_knots", n_knots);
-            Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> SigmaOffDiag(N, n_knots);
-            stan::math::initialize(SigmaOffDiag, DUMMY_VAR__);
-            stan::math::fill(SigmaOffDiag, DUMMY_VAR__);
-
             current_statement_begin__ = 217;
             validate_non_negative_index("SigmaOffDiagTemp", "N", N);
             validate_non_negative_index("SigmaOffDiagTemp", "n_knots", n_knots);
@@ -3812,48 +3777,46 @@ public:
                             current_statement_begin__ = 323;
                             stan::model::assign(SigmaKnots, 
                                         stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(i), stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()))), 
-                                        (get_base1(get_base1(SigmaKnots, k, "SigmaKnots", 1), i, i, "SigmaKnots", 2) + gp_delta), 
+                                        (stan::model::rvalue(SigmaKnots, stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(i), stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()))), "SigmaKnots") + gp_delta), 
                                         "assigning variable SigmaKnots");
                         }
                         current_statement_begin__ = 327;
                         stan::math::assign(SigmaOffDiagTemp, cov_exp_quad(data_locs, knot_locs, get_base1(sigma_pro, k, "sigma_pro", 1), get_base1(gp_theta, k, "gp_theta", 1)));
-                        current_statement_begin__ = 329;
-                        stan::math::assign(SigmaOffDiag, multiply(SigmaOffDiagTemp, inverse_spd(get_base1(SigmaKnots, k, "SigmaKnots", 1))));
-                        current_statement_begin__ = 330;
+                        current_statement_begin__ = 331;
                         stan::model::assign(x, 
                                     stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
-                                    to_row_vector(multiply(SigmaOffDiag, get_base1(effectsKnots, k, "effectsKnots", 1))), 
+                                    to_row_vector(multiply(multiply(multiply(SigmaOffDiagTemp, inverse_spd(get_base1(SigmaKnots, k, "SigmaKnots", 1))), cholesky_decompose(get_base1(SigmaKnots, k, "SigmaKnots", 1))), get_base1(effectsKnots, k, "effectsKnots", 1))), 
                                     "assigning variable x");
                     }
                 }
-                current_statement_begin__ = 335;
+                current_statement_begin__ = 336;
                 for (int k = 1; k <= K; ++k) {
 
-                    current_statement_begin__ = 337;
+                    current_statement_begin__ = 338;
                     stan::model::assign(x, 
                                 stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                 multiply(multiply(get_base1(x, k, "x", 1), get_base1(indicator, k, "indicator", 1)), get_base1(psi_root, k, "psi_root", 1)), 
                                 "assigning variable x");
                 }
             }
-            current_statement_begin__ = 344;
+            current_statement_begin__ = 342;
             if (as_bool(logical_eq(proportional_model, 1))) {
 
-                current_statement_begin__ = 346;
+                current_statement_begin__ = 344;
                 if (as_bool(logical_eq(est_rw, 1))) {
 
-                    current_statement_begin__ = 347;
+                    current_statement_begin__ = 345;
                     for (int k = 1; k <= K; ++k) {
 
-                        current_statement_begin__ = 348;
+                        current_statement_begin__ = 346;
                         stan::model::assign(x, 
                                     stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list())), 
                                     get_base1(x0, k, "x0", 1), 
                                     "assigning variable x");
-                        current_statement_begin__ = 352;
+                        current_statement_begin__ = 350;
                         for (int t = 2; t <= N; ++t) {
 
-                            current_statement_begin__ = 353;
+                            current_statement_begin__ = 351;
                             stan::model::assign(x, 
                                         stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(t), stan::model::nil_index_list())), 
                                         ((get_base1(phi_vec, k, "phi_vec", 1) * get_base1(x, k, (t - 1), "x", 1)) + get_base1(devs, k, (t - 1), "devs", 1)), 
@@ -3861,187 +3824,185 @@ public:
                         }
                     }
                 }
-                current_statement_begin__ = 357;
+                current_statement_begin__ = 355;
                 if (as_bool(logical_eq(est_spline, 1))) {
 
-                    current_statement_begin__ = 358;
+                    current_statement_begin__ = 356;
                     for (int k = 1; k <= K; ++k) {
-                        current_statement_begin__ = 358;
+                        current_statement_begin__ = 356;
                         stan::model::assign(spline_a_trans, 
                                     stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                     multiply(get_base1(spline_a, k, "spline_a", 1), get_base1(sigma_pro, k, "sigma_pro", 1)), 
                                     "assigning variable spline_a_trans");
                     }
-                    current_statement_begin__ = 359;
+                    current_statement_begin__ = 357;
                     stan::math::assign(x, multiply(spline_a_trans, B_spline));
-                    current_statement_begin__ = 360;
+                    current_statement_begin__ = 358;
                     for (int k = 1; k <= K; ++k) {
 
-                        current_statement_begin__ = 360;
+                        current_statement_begin__ = 358;
                         stan::model::assign(x, 
                                     stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                     add(get_base1(x0, k, "x0", 1), get_base1(x, k, "x", 1)), 
                                     "assigning variable x");
                     }
                 }
-                current_statement_begin__ = 362;
+                current_statement_begin__ = 360;
                 if (as_bool(logical_eq(est_gp, 1))) {
 
-                    current_statement_begin__ = 363;
+                    current_statement_begin__ = 361;
                     for (int k = 1; k <= K; ++k) {
 
-                        current_statement_begin__ = 364;
+                        current_statement_begin__ = 362;
                         stan::model::assign(SigmaKnots, 
                                     stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                     cov_exp_quad(knot_locs, get_base1(sigma_pro, k, "sigma_pro", 1), get_base1(gp_theta, k, "gp_theta", 1)), 
                                     "assigning variable SigmaKnots");
-                        current_statement_begin__ = 367;
+                        current_statement_begin__ = 365;
                         for (int i = 1; i <= n_knots; ++i) {
 
-                            current_statement_begin__ = 368;
+                            current_statement_begin__ = 366;
                             stan::model::assign(SigmaKnots, 
                                         stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(i), stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()))), 
-                                        (get_base1(get_base1(SigmaKnots, k, "SigmaKnots", 1), i, i, "SigmaKnots", 2) + gp_delta), 
+                                        (stan::model::rvalue(SigmaKnots, stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(i), stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()))), "SigmaKnots") + gp_delta), 
                                         "assigning variable SigmaKnots");
                         }
-                        current_statement_begin__ = 372;
+                        current_statement_begin__ = 370;
                         stan::math::assign(SigmaOffDiagTemp, cov_exp_quad(data_locs, knot_locs, get_base1(sigma_pro, k, "sigma_pro", 1), get_base1(gp_theta, k, "gp_theta", 1)));
                         current_statement_begin__ = 374;
-                        stan::math::assign(SigmaOffDiag, multiply(SigmaOffDiagTemp, inverse_spd(get_base1(SigmaKnots, k, "SigmaKnots", 1))));
-                        current_statement_begin__ = 375;
                         stan::model::assign(x, 
                                     stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
-                                    to_row_vector(multiply(SigmaOffDiag, get_base1(effectsKnots, k, "effectsKnots", 1))), 
+                                    to_row_vector(multiply(multiply(multiply(SigmaOffDiagTemp, inverse_spd(get_base1(SigmaKnots, k, "SigmaKnots", 1))), cholesky_decompose(get_base1(SigmaKnots, k, "SigmaKnots", 1))), get_base1(effectsKnots, k, "effectsKnots", 1))), 
                                     "assigning variable x");
                     }
                 }
-                current_statement_begin__ = 380;
+                current_statement_begin__ = 379;
                 for (int p = 1; p <= P; ++p) {
 
-                    current_statement_begin__ = 384;
+                    current_statement_begin__ = 383;
                     stan::model::assign(Z, 
                                 stan::model::cons_list(stan::model::index_uni(p), stan::model::nil_index_list()), 
                                 to_row_vector(get_base1(p_z, p, "p_z", 1)), 
                                 "assigning variable Z");
                 }
             }
-            current_statement_begin__ = 389;
+            current_statement_begin__ = 388;
             if (as_bool(logical_gt(num_pro_covar, 0))) {
 
-                current_statement_begin__ = 390;
+                current_statement_begin__ = 389;
                 for (int i = 1; i <= num_pro_covar; ++i) {
 
-                    current_statement_begin__ = 392;
+                    current_statement_begin__ = 391;
                     stan::model::assign(x, 
                                 stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 2, "pro_covar_index", 2)), stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 1, "pro_covar_index", 2)), stan::model::nil_index_list())), 
-                                (get_base1(x, get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 2, "pro_covar_index", 2), get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 1, "pro_covar_index", 2), "x", 1) + (get_base1(b_pro, get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 3, "pro_covar_index", 2), get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 2, "pro_covar_index", 2), "b_pro", 1) * get_base1(pro_covar_value, i, "pro_covar_value", 1))), 
+                                (stan::model::rvalue(x, stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 2, "pro_covar_index", 2)), stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 1, "pro_covar_index", 2)), stan::model::nil_index_list())), "x") + (get_base1(b_pro, get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 3, "pro_covar_index", 2), get_base1(get_base1(pro_covar_index, i, "pro_covar_index", 1), 2, "pro_covar_index", 2), "b_pro", 1) * get_base1(pro_covar_value, i, "pro_covar_value", 1))), 
                                 "assigning variable x");
                 }
             }
-            current_statement_begin__ = 398;
+            current_statement_begin__ = 397;
             stan::math::assign(pred, multiply(Z, x));
-            current_statement_begin__ = 400;
+            current_statement_begin__ = 399;
             for (int i = 1; i <= n_pos; ++i) {
 
-                current_statement_begin__ = 401;
+                current_statement_begin__ = 400;
                 stan::model::assign(obs_cov_offset, 
                             stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                             0, 
                             "assigning variable obs_cov_offset");
             }
-            current_statement_begin__ = 404;
+            current_statement_begin__ = 403;
             if (as_bool(logical_gt(num_obs_covar, 0))) {
 
-                current_statement_begin__ = 405;
+                current_statement_begin__ = 404;
                 if (as_bool(logical_eq(long_format, 0))) {
 
-                    current_statement_begin__ = 406;
+                    current_statement_begin__ = 405;
                     for (int i = 1; i <= num_obs_covar; ++i) {
 
-                        current_statement_begin__ = 409;
+                        current_statement_begin__ = 408;
                         stan::model::assign(pred, 
                                     stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 2, "obs_covar_index", 2)), stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 1, "obs_covar_index", 2)), stan::model::nil_index_list())), 
-                                    (get_base1(pred, get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 2, "obs_covar_index", 2), get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 1, "obs_covar_index", 2), "pred", 1) + (get_base1(b_obs, get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 3, "obs_covar_index", 2), get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 2, "obs_covar_index", 2), "b_obs", 1) * get_base1(obs_covar_value, i, "obs_covar_value", 1))), 
+                                    (stan::model::rvalue(pred, stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 2, "obs_covar_index", 2)), stan::model::cons_list(stan::model::index_uni(get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 1, "obs_covar_index", 2)), stan::model::nil_index_list())), "pred") + (get_base1(b_obs, get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 3, "obs_covar_index", 2), get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 2, "obs_covar_index", 2), "b_obs", 1) * get_base1(obs_covar_value, i, "obs_covar_value", 1))), 
                                     "assigning variable pred");
                     }
                 } else {
 
-                    current_statement_begin__ = 414;
+                    current_statement_begin__ = 413;
                     for (int i = 1; i <= num_obs_covar; ++i) {
 
-                        current_statement_begin__ = 415;
+                        current_statement_begin__ = 414;
                         stan::model::assign(obs_cov_offset, 
                                     stan::model::cons_list(stan::model::index_uni(get_base1(match_obs_covar, i, "match_obs_covar", 1)), stan::model::nil_index_list()), 
-                                    (get_base1(obs_cov_offset, get_base1(match_obs_covar, i, "match_obs_covar", 1), "obs_cov_offset", 1) + (get_base1(b_obs, get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 3, "obs_covar_index", 2), get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 2, "obs_covar_index", 2), "b_obs", 1) * get_base1(obs_covar_value, i, "obs_covar_value", 1))), 
+                                    (stan::model::rvalue(obs_cov_offset, stan::model::cons_list(stan::model::index_uni(get_base1(match_obs_covar, i, "match_obs_covar", 1)), stan::model::nil_index_list()), "obs_cov_offset") + (get_base1(b_obs, get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 3, "obs_covar_index", 2), get_base1(get_base1(obs_covar_index, i, "obs_covar_index", 1), 2, "obs_covar_index", 2), "b_obs", 1) * get_base1(obs_covar_value, i, "obs_covar_value", 1))), 
                                     "assigning variable obs_cov_offset");
                     }
                 }
             }
-            current_statement_begin__ = 420;
+            current_statement_begin__ = 419;
             if (as_bool((primitive_value(logical_eq(long_format, 1)) && primitive_value(logical_eq(est_cor, 1))))) {
 
-                current_statement_begin__ = 422;
+                current_statement_begin__ = 421;
                 for (int n = 1; n <= N; ++n) {
 
-                    current_statement_begin__ = 423;
+                    current_statement_begin__ = 422;
                     for (int p = 1; p <= P; ++p) {
 
-                        current_statement_begin__ = 424;
+                        current_statement_begin__ = 423;
                         stan::model::assign(temp_sums, 
                                     stan::model::cons_list(stan::model::index_uni(p), stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list())), 
                                     0.0, 
                                     "assigning variable temp_sums");
-                        current_statement_begin__ = 425;
+                        current_statement_begin__ = 424;
                         stan::model::assign(temp_counts, 
                                     stan::model::cons_list(stan::model::index_uni(p), stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list())), 
                                     0.0, 
                                     "assigning variable temp_counts");
                     }
                 }
-                current_statement_begin__ = 428;
+                current_statement_begin__ = 427;
                 for (int i = 1; i <= n_pos; ++i) {
 
-                    current_statement_begin__ = 429;
+                    current_statement_begin__ = 428;
                     stan::model::assign(temp_sums, 
                                 stan::model::cons_list(stan::model::index_uni(get_base1(row_indx_pos, i, "row_indx_pos", 1)), stan::model::cons_list(stan::model::index_uni(get_base1(col_indx_pos, i, "col_indx_pos", 1)), stan::model::nil_index_list())), 
-                                (get_base1(temp_sums, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "temp_sums", 1) + (get_base1(y, i, "y", 1) - get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1))), 
+                                (stan::model::rvalue(temp_sums, stan::model::cons_list(stan::model::index_uni(get_base1(row_indx_pos, i, "row_indx_pos", 1)), stan::model::cons_list(stan::model::index_uni(get_base1(col_indx_pos, i, "col_indx_pos", 1)), stan::model::nil_index_list())), "temp_sums") + (get_base1(y, i, "y", 1) - get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1))), 
                                 "assigning variable temp_sums");
-                    current_statement_begin__ = 430;
+                    current_statement_begin__ = 429;
                     stan::model::assign(temp_counts, 
                                 stan::model::cons_list(stan::model::index_uni(get_base1(row_indx_pos, i, "row_indx_pos", 1)), stan::model::cons_list(stan::model::index_uni(get_base1(col_indx_pos, i, "col_indx_pos", 1)), stan::model::nil_index_list())), 
-                                (get_base1(temp_counts, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "temp_counts", 1) + 1), 
+                                (stan::model::rvalue(temp_counts, stan::model::cons_list(stan::model::index_uni(get_base1(row_indx_pos, i, "row_indx_pos", 1)), stan::model::cons_list(stan::model::index_uni(get_base1(col_indx_pos, i, "col_indx_pos", 1)), stan::model::nil_index_list())), "temp_counts") + 1), 
                                 "assigning variable temp_counts");
                 }
-                current_statement_begin__ = 432;
+                current_statement_begin__ = 431;
                 for (int n = 1; n <= N; ++n) {
 
-                    current_statement_begin__ = 433;
+                    current_statement_begin__ = 432;
                     for (int p = 1; p <= P; ++p) {
 
-                        current_statement_begin__ = 435;
+                        current_statement_begin__ = 434;
                         stan::model::assign(temp_sums, 
                                     stan::model::cons_list(stan::model::index_uni(p), stan::model::cons_list(stan::model::index_uni(n), stan::model::nil_index_list())), 
                                     (get_base1(temp_sums, p, n, "temp_sums", 1) / get_base1(temp_counts, p, n, "temp_counts", 1)), 
                                     "assigning variable temp_sums");
                     }
                 }
-                current_statement_begin__ = 439;
+                current_statement_begin__ = 438;
                 stan::math::assign(Sigma_derived, quad_form_diag(multiply_lower_tri_self_transpose(Lcorr), sigma_vec));
-                current_statement_begin__ = 441;
+                current_statement_begin__ = 440;
                 for (int p = 1; p <= P; ++p) {
 
-                    current_statement_begin__ = 442;
+                    current_statement_begin__ = 441;
                     stan::math::assign(sigma11, get_base1(Sigma_derived, p, p, "Sigma_derived", 1));
-                    current_statement_begin__ = 443;
+                    current_statement_begin__ = 442;
                     stan::math::assign(Sigma_temp, inverse(subset(Sigma_derived, p, P, pstream__)));
-                    current_statement_begin__ = 444;
+                    current_statement_begin__ = 443;
                     stan::math::assign(sigma12_vec, subsetvec(Sigma_derived, p, P, pstream__));
-                    current_statement_begin__ = 446;
+                    current_statement_begin__ = 445;
                     stan::model::assign(cond_mean_vec, 
                                 stan::model::cons_list(stan::model::index_uni(p), stan::model::nil_index_list()), 
                                 multiply(multiply(to_row_vector(sigma12_vec), Sigma_temp), to_vector(subsetvec2(col(temp_sums, p), p, P, pstream__))), 
                                 "assigning variable cond_mean_vec");
-                    current_statement_begin__ = 448;
+                    current_statement_begin__ = 447;
                     stan::model::assign(cond_sigma_vec, 
                                 stan::model::cons_list(stan::model::index_uni(p), stan::model::nil_index_list()), 
                                 stan::math::sqrt((sigma11 - multiply(multiply(to_row_vector(sigma12_vec), Sigma_temp), to_vector(sigma12_vec)))), 
@@ -4184,13 +4145,6 @@ public:
                         }
                     }
                 }
-                size_t SigmaOffDiag_j_2_max__ = n_knots;
-                size_t SigmaOffDiag_j_1_max__ = N;
-                for (size_t j_2__ = 0; j_2__ < SigmaOffDiag_j_2_max__; ++j_2__) {
-                    for (size_t j_1__ = 0; j_1__ < SigmaOffDiag_j_1_max__; ++j_1__) {
-                        vars__.push_back(SigmaOffDiag(j_1__, j_2__));
-                    }
-                }
                 size_t SigmaOffDiagTemp_j_2_max__ = n_knots;
                 size_t SigmaOffDiagTemp_j_1_max__ = N;
                 for (size_t j_2__ = 0; j_2__ < SigmaOffDiagTemp_j_2_max__; ++j_2__) {
@@ -4205,85 +4159,85 @@ public:
             }
             if (!include_gqs__) return;
             // declare and define generated quantities
-            current_statement_begin__ = 566;
+            current_statement_begin__ = 565;
             validate_non_negative_index("log_lik", "n_loglik", n_loglik);
             Eigen::Matrix<double, Eigen::Dynamic, 1> log_lik(n_loglik);
             stan::math::initialize(log_lik, DUMMY_VAR__);
             stan::math::fill(log_lik, DUMMY_VAR__);
 
-            current_statement_begin__ = 567;
+            current_statement_begin__ = 566;
             validate_non_negative_index("Omega", "n_pcor", n_pcor);
             validate_non_negative_index("Omega", "n_pcor", n_pcor);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Omega(n_pcor, n_pcor);
             stan::math::initialize(Omega, DUMMY_VAR__);
             stan::math::fill(Omega, DUMMY_VAR__);
 
-            current_statement_begin__ = 568;
+            current_statement_begin__ = 567;
             validate_non_negative_index("Sigma", "n_pcor", n_pcor);
             validate_non_negative_index("Sigma", "n_pcor", n_pcor);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Sigma(n_pcor, n_pcor);
             stan::math::initialize(Sigma, DUMMY_VAR__);
             stan::math::fill(Sigma, DUMMY_VAR__);
 
-            current_statement_begin__ = 569;
+            current_statement_begin__ = 568;
             validate_non_negative_index("xstar", "K", K);
             validate_non_negative_index("xstar", "1", 1);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> xstar(K, 1);
             stan::math::initialize(xstar, DUMMY_VAR__);
             stan::math::fill(xstar, DUMMY_VAR__);
 
-            current_statement_begin__ = 570;
+            current_statement_begin__ = 569;
             validate_non_negative_index("future_devs", "K", K);
             Eigen::Matrix<double, Eigen::Dynamic, 1> future_devs(K);
             stan::math::initialize(future_devs, DUMMY_VAR__);
             stan::math::fill(future_devs, DUMMY_VAR__);
 
-            current_statement_begin__ = 571;
+            current_statement_begin__ = 570;
             validate_non_negative_index("SigmaKnots_pred", "n_knots", n_knots);
             validate_non_negative_index("SigmaKnots_pred", "n_knots", n_knots);
             Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> SigmaKnots_pred(n_knots, n_knots);
             stan::math::initialize(SigmaKnots_pred, DUMMY_VAR__);
             stan::math::fill(SigmaKnots_pred, DUMMY_VAR__);
 
-            current_statement_begin__ = 572;
+            current_statement_begin__ = 571;
             validate_non_negative_index("SigmaOffDiag_pred", "n_knots", n_knots);
             Eigen::Matrix<double, 1, Eigen::Dynamic> SigmaOffDiag_pred(n_knots);
             stan::math::initialize(SigmaOffDiag_pred, DUMMY_VAR__);
             stan::math::fill(SigmaOffDiag_pred, DUMMY_VAR__);
 
-            current_statement_begin__ = 573;
+            current_statement_begin__ = 572;
             int j;
             (void) j;  // dummy to suppress unused var warning
             stan::math::fill(j, std::numeric_limits<int>::min());
 
             // generated quantities statements
-            current_statement_begin__ = 574;
+            current_statement_begin__ = 573;
             stan::math::assign(j, 0);
-            current_statement_begin__ = 576;
+            current_statement_begin__ = 575;
             if (as_bool(logical_eq(est_cor, 1))) {
 
-                current_statement_begin__ = 577;
+                current_statement_begin__ = 576;
                 stan::math::assign(Omega, multiply_lower_tri_self_transpose(Lcorr));
-                current_statement_begin__ = 578;
+                current_statement_begin__ = 577;
                 stan::math::assign(Sigma, quad_form_diag(Omega, sigma_vec));
             }
-            current_statement_begin__ = 582;
+            current_statement_begin__ = 581;
             if (as_bool(logical_eq(est_cor, 0))) {
 
-                current_statement_begin__ = 583;
+                current_statement_begin__ = 582;
                 if (as_bool(logical_eq(long_format, 0))) {
 
-                    current_statement_begin__ = 584;
+                    current_statement_begin__ = 583;
                     stan::math::assign(j, 0);
-                    current_statement_begin__ = 585;
+                    current_statement_begin__ = 584;
                     for (int n = 1; n <= N; ++n) {
 
-                        current_statement_begin__ = 586;
+                        current_statement_begin__ = 585;
                         for (int p = 1; p <= P; ++p) {
 
-                            current_statement_begin__ = 587;
+                            current_statement_begin__ = 586;
                             stan::math::assign(j, (j + 1));
-                            current_statement_begin__ = 588;
+                            current_statement_begin__ = 587;
                             stan::model::assign(log_lik, 
                                         stan::model::cons_list(stan::model::index_uni(j), stan::model::nil_index_list()), 
                                         normal_log(get_base1(yall, p, n, "yall", 1), get_base1(pred, p, n, "pred", 1), get_base1(sigma_vec, p, "sigma_vec", 1)), 
@@ -4292,72 +4246,72 @@ public:
                     }
                 } else {
 
-                    current_statement_begin__ = 592;
+                    current_statement_begin__ = 591;
                     if (as_bool(logical_eq(obs_model, 1))) {
 
-                        current_statement_begin__ = 592;
+                        current_statement_begin__ = 591;
                         for (int i = 1; i <= n_pos; ++i) {
-                            current_statement_begin__ = 592;
+                            current_statement_begin__ = 591;
                             stan::model::assign(log_lik, 
                                         stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                         normal_log(get_base1(y, i, "y", 1), (get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1)), get_base1(sigma_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "sigma_vec", 1)), 
                                         "assigning variable log_lik");
                         }
                     }
-                    current_statement_begin__ = 593;
+                    current_statement_begin__ = 592;
                     if (as_bool(logical_eq(obs_model, 2))) {
 
-                        current_statement_begin__ = 593;
+                        current_statement_begin__ = 592;
                         for (int i = 1; i <= n_pos; ++i) {
-                            current_statement_begin__ = 593;
+                            current_statement_begin__ = 592;
                             stan::model::assign(log_lik, 
                                         stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                         gamma_log(get_base1(y, i, "y", 1), get_base1(gamma_a_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "gamma_a_vec", 1), (get_base1(gamma_a_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "gamma_a_vec", 1) / stan::math::exp((get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1))))), 
                                         "assigning variable log_lik");
                         }
                     }
-                    current_statement_begin__ = 594;
+                    current_statement_begin__ = 593;
                     if (as_bool(logical_eq(obs_model, 3))) {
 
-                        current_statement_begin__ = 594;
+                        current_statement_begin__ = 593;
                         for (int i = 1; i <= n_pos; ++i) {
-                            current_statement_begin__ = 594;
+                            current_statement_begin__ = 593;
                             stan::model::assign(log_lik, 
                                         stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                         poisson_log_log(get_base1(y_int, i, "y_int", 1), (get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1))), 
                                         "assigning variable log_lik");
                         }
                     }
-                    current_statement_begin__ = 595;
+                    current_statement_begin__ = 594;
                     if (as_bool(logical_eq(obs_model, 4))) {
 
-                        current_statement_begin__ = 595;
+                        current_statement_begin__ = 594;
                         for (int i = 1; i <= n_pos; ++i) {
-                            current_statement_begin__ = 595;
+                            current_statement_begin__ = 594;
                             stan::model::assign(log_lik, 
                                         stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                         neg_binomial_2_log_log(get_base1(y_int, i, "y_int", 1), (get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1)), get_base1(nb_phi_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "nb_phi_vec", 1)), 
                                         "assigning variable log_lik");
                         }
                     }
-                    current_statement_begin__ = 596;
+                    current_statement_begin__ = 595;
                     if (as_bool(logical_eq(obs_model, 5))) {
 
-                        current_statement_begin__ = 596;
+                        current_statement_begin__ = 595;
                         for (int i = 1; i <= n_pos; ++i) {
-                            current_statement_begin__ = 596;
+                            current_statement_begin__ = 595;
                             stan::model::assign(log_lik, 
                                         stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                         bernoulli_logit_log(get_base1(y_int, i, "y_int", 1), (get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1))), 
                                         "assigning variable log_lik");
                         }
                     }
-                    current_statement_begin__ = 597;
+                    current_statement_begin__ = 596;
                     if (as_bool(logical_eq(obs_model, 6))) {
 
-                        current_statement_begin__ = 597;
+                        current_statement_begin__ = 596;
                         for (int i = 1; i <= n_pos; ++i) {
-                            current_statement_begin__ = 597;
+                            current_statement_begin__ = 596;
                             stan::model::assign(log_lik, 
                                         stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                         lognormal_log(get_base1(y, i, "y", 1), get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1), (get_base1(sigma_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "sigma_vec", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1))), 
@@ -4367,13 +4321,13 @@ public:
                 }
             } else {
 
-                current_statement_begin__ = 605;
+                current_statement_begin__ = 604;
                 if (as_bool(logical_eq(long_format, 0))) {
 
-                    current_statement_begin__ = 606;
+                    current_statement_begin__ = 605;
                     for (int i = 1; i <= N; ++i) {
 
-                        current_statement_begin__ = 607;
+                        current_statement_begin__ = 606;
                         stan::model::assign(log_lik, 
                                     stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                     multi_normal_cholesky_log(col(yall, i), col(pred, i), diag_pre_multiply(sigma_vec, Lcorr)), 
@@ -4381,10 +4335,10 @@ public:
                     }
                 } else {
 
-                    current_statement_begin__ = 610;
+                    current_statement_begin__ = 609;
                     for (int i = 1; i <= n_pos; ++i) {
 
-                        current_statement_begin__ = 612;
+                        current_statement_begin__ = 611;
                         stan::model::assign(log_lik, 
                                     stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list()), 
                                     normal_log(get_base1(y, i, "y", 1), ((get_base1(pred, get_base1(row_indx_pos, i, "row_indx_pos", 1), get_base1(col_indx_pos, i, "col_indx_pos", 1), "pred", 1) + get_base1(obs_cov_offset, i, "obs_cov_offset", 1)) + get_base1(cond_mean_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "cond_mean_vec", 1)), get_base1(cond_sigma_vec, get_base1(row_indx_pos, i, "row_indx_pos", 1), "cond_sigma_vec", 1)), 
@@ -4392,35 +4346,35 @@ public:
                     }
                 }
             }
-            current_statement_begin__ = 617;
+            current_statement_begin__ = 616;
             for (int k = 1; k <= K; ++k) {
 
-                current_statement_begin__ = 618;
+                current_statement_begin__ = 617;
                 stan::model::assign(future_devs, 
                             stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                             0, 
                             "assigning variable future_devs");
             }
-            current_statement_begin__ = 621;
+            current_statement_begin__ = 620;
             if (as_bool(logical_eq(est_rw, 1))) {
 
-                current_statement_begin__ = 622;
+                current_statement_begin__ = 621;
                 for (int k = 1; k <= K; ++k) {
 
-                    current_statement_begin__ = 623;
+                    current_statement_begin__ = 622;
                     if (as_bool(logical_eq(use_normal, 0))) {
 
-                        current_statement_begin__ = 625;
+                        current_statement_begin__ = 624;
                         if (as_bool(logical_eq(estimate_nu, 1))) {
 
-                            current_statement_begin__ = 626;
+                            current_statement_begin__ = 625;
                             stan::model::assign(future_devs, 
                                         stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                         student_t_rng(get_base1(nu, 1, "nu", 1), (get_base1(theta_vec, k, "theta_vec", 1) * get_base1(devs, k, (N - 1), "devs", 1)), get_base1(sigma_pro, k, "sigma_pro", 1), base_rng__), 
                                         "assigning variable future_devs");
                         } else {
 
-                            current_statement_begin__ = 628;
+                            current_statement_begin__ = 627;
                             stan::model::assign(future_devs, 
                                         stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                         student_t_rng(nu_fixed, (get_base1(theta_vec, k, "theta_vec", 1) * get_base1(devs, k, (N - 1), "devs", 1)), get_base1(sigma_pro, k, "sigma_pro", 1), base_rng__), 
@@ -4428,52 +4382,52 @@ public:
                         }
                     } else {
 
-                        current_statement_begin__ = 632;
+                        current_statement_begin__ = 631;
                         stan::model::assign(future_devs, 
                                     stan::model::cons_list(stan::model::index_uni(k), stan::model::nil_index_list()), 
                                     normal_rng((get_base1(theta_vec, k, "theta_vec", 1) * get_base1(devs, k, (N - 1), "devs", 1)), get_base1(sigma_pro, k, "sigma_pro", 1), base_rng__), 
                                     "assigning variable future_devs");
                     }
-                    current_statement_begin__ = 634;
+                    current_statement_begin__ = 633;
                     stan::model::assign(xstar, 
                                 stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list())), 
                                 (get_base1(x, k, N, "x", 1) + get_base1(future_devs, k, "future_devs", 1)), 
                                 "assigning variable xstar");
                 }
             }
-            current_statement_begin__ = 637;
+            current_statement_begin__ = 636;
             if (as_bool(logical_eq(est_spline, 1))) {
 
-                current_statement_begin__ = 639;
+                current_statement_begin__ = 638;
                 for (int k = 1; k <= K; ++k) {
 
-                    current_statement_begin__ = 640;
+                    current_statement_begin__ = 639;
                     stan::model::assign(xstar, 
                                 stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list())), 
                                 (get_base1(spline_a_trans, k, n_knots, "spline_a_trans", 1) * get_base1(B_spline, n_knots, N, "B_spline", 1)), 
                                 "assigning variable xstar");
                 }
             }
-            current_statement_begin__ = 643;
+            current_statement_begin__ = 642;
             if (as_bool(logical_eq(est_gp, 1))) {
 
-                current_statement_begin__ = 644;
+                current_statement_begin__ = 643;
                 for (int k = 1; k <= K; ++k) {
 
-                    current_statement_begin__ = 645;
+                    current_statement_begin__ = 644;
                     stan::math::assign(SigmaKnots_pred, cov_exp_quad(knot_locs, get_base1(sigma_pro, k, "sigma_pro", 1), get_base1(gp_theta, k, "gp_theta", 1)));
-                    current_statement_begin__ = 646;
+                    current_statement_begin__ = 645;
                     for (int i = 1; i <= n_knots; ++i) {
 
-                        current_statement_begin__ = 647;
+                        current_statement_begin__ = 646;
                         stan::model::assign(SigmaKnots_pred, 
                                     stan::model::cons_list(stan::model::index_uni(i), stan::model::cons_list(stan::model::index_uni(i), stan::model::nil_index_list())), 
                                     (get_base1(SigmaKnots_pred, i, i, "SigmaKnots_pred", 1) + 0.00001), 
                                     "assigning variable SigmaKnots_pred");
                     }
-                    current_statement_begin__ = 650;
+                    current_statement_begin__ = 649;
                     stan::math::assign(SigmaOffDiag_pred, multiply(to_row_vector(multiply(square(get_base1(sigma_pro, k, "sigma_pro", 1)), stan::math::exp(divide(minus(distKnots21_pred), (2.0 * pow(get_base1(gp_theta, k, "gp_theta", 1), 2.0)))))), inverse_spd(SigmaKnots_pred)));
-                    current_statement_begin__ = 651;
+                    current_statement_begin__ = 650;
                     stan::model::assign(xstar, 
                                 stan::model::cons_list(stan::model::index_uni(k), stan::model::cons_list(stan::model::index_uni(1), stan::model::nil_index_list())), 
                                 multiply(SigmaOffDiag_pred, get_base1(effectsKnots, k, "effectsKnots", 1)), 
@@ -4482,13 +4436,13 @@ public:
             }
 
             // validate, write generated quantities
-            current_statement_begin__ = 566;
+            current_statement_begin__ = 565;
             size_t log_lik_j_1_max__ = n_loglik;
             for (size_t j_1__ = 0; j_1__ < log_lik_j_1_max__; ++j_1__) {
                 vars__.push_back(log_lik(j_1__));
             }
 
-            current_statement_begin__ = 567;
+            current_statement_begin__ = 566;
             size_t Omega_j_2_max__ = n_pcor;
             size_t Omega_j_1_max__ = n_pcor;
             for (size_t j_2__ = 0; j_2__ < Omega_j_2_max__; ++j_2__) {
@@ -4497,7 +4451,7 @@ public:
                 }
             }
 
-            current_statement_begin__ = 568;
+            current_statement_begin__ = 567;
             size_t Sigma_j_2_max__ = n_pcor;
             size_t Sigma_j_1_max__ = n_pcor;
             for (size_t j_2__ = 0; j_2__ < Sigma_j_2_max__; ++j_2__) {
@@ -4506,7 +4460,7 @@ public:
                 }
             }
 
-            current_statement_begin__ = 569;
+            current_statement_begin__ = 568;
             size_t xstar_j_2_max__ = 1;
             size_t xstar_j_1_max__ = K;
             for (size_t j_2__ = 0; j_2__ < xstar_j_2_max__; ++j_2__) {
@@ -4515,13 +4469,13 @@ public:
                 }
             }
 
-            current_statement_begin__ = 570;
+            current_statement_begin__ = 569;
             size_t future_devs_j_1_max__ = K;
             for (size_t j_1__ = 0; j_1__ < future_devs_j_1_max__; ++j_1__) {
                 vars__.push_back(future_devs(j_1__));
             }
 
-            current_statement_begin__ = 571;
+            current_statement_begin__ = 570;
             size_t SigmaKnots_pred_j_2_max__ = n_knots;
             size_t SigmaKnots_pred_j_1_max__ = n_knots;
             for (size_t j_2__ = 0; j_2__ < SigmaKnots_pred_j_2_max__; ++j_2__) {
@@ -4530,13 +4484,13 @@ public:
                 }
             }
 
-            current_statement_begin__ = 572;
+            current_statement_begin__ = 571;
             size_t SigmaOffDiag_pred_j_1_max__ = n_knots;
             for (size_t j_1__ = 0; j_1__ < SigmaOffDiag_pred_j_1_max__; ++j_1__) {
                 vars__.push_back(SigmaOffDiag_pred(j_1__));
             }
 
-            current_statement_begin__ = 573;
+            current_statement_begin__ = 572;
             check_greater_or_equal(function__, "j", j, 0);
 
             vars__.push_back(j);
@@ -4892,15 +4846,6 @@ public:
                         param_name_stream__ << "SigmaKnots" << '.' << k_0__ + 1 << '.' << j_1__ + 1 << '.' << j_2__ + 1;
                         param_names__.push_back(param_name_stream__.str());
                     }
-                }
-            }
-            size_t SigmaOffDiag_j_2_max__ = n_knots;
-            size_t SigmaOffDiag_j_1_max__ = N;
-            for (size_t j_2__ = 0; j_2__ < SigmaOffDiag_j_2_max__; ++j_2__) {
-                for (size_t j_1__ = 0; j_1__ < SigmaOffDiag_j_1_max__; ++j_1__) {
-                    param_name_stream__.str(std::string());
-                    param_name_stream__ << "SigmaOffDiag" << '.' << j_1__ + 1 << '.' << j_2__ + 1;
-                    param_names__.push_back(param_name_stream__.str());
                 }
             }
             size_t SigmaOffDiagTemp_j_2_max__ = n_knots;
@@ -5299,15 +5244,6 @@ public:
                         param_name_stream__ << "SigmaKnots" << '.' << k_0__ + 1 << '.' << j_1__ + 1 << '.' << j_2__ + 1;
                         param_names__.push_back(param_name_stream__.str());
                     }
-                }
-            }
-            size_t SigmaOffDiag_j_2_max__ = n_knots;
-            size_t SigmaOffDiag_j_1_max__ = N;
-            for (size_t j_2__ = 0; j_2__ < SigmaOffDiag_j_2_max__; ++j_2__) {
-                for (size_t j_1__ = 0; j_1__ < SigmaOffDiag_j_1_max__; ++j_1__) {
-                    param_name_stream__.str(std::string());
-                    param_name_stream__ << "SigmaOffDiag" << '.' << j_1__ + 1 << '.' << j_2__ + 1;
-                    param_names__.push_back(param_name_stream__.str());
                 }
             }
             size_t SigmaOffDiagTemp_j_2_max__ = n_knots;

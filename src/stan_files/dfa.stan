@@ -213,7 +213,7 @@ transformed parameters {
   vector[K] sigma_pro;
   matrix[K * est_spline, n_knots * est_spline] spline_a_trans; // weights for b-splines
   matrix[n_knots, n_knots] SigmaKnots[K]; // matrix for GP model, unique for each trend K
-  matrix[N, n_knots] SigmaOffDiag;// matrix for GP model
+  //matrix[N, n_knots] SigmaOffDiag;// matrix for GP model
   matrix[N, n_knots] SigmaOffDiagTemp;// matrix for GP model
   vector[n_pos] obs_cov_offset;
 
@@ -320,14 +320,15 @@ transformed parameters {
 
         //SigmaKnots = SigmaKnots+diag_matrix(rep_vector(gp_delta, n_knots));
         for(i in 1:n_knots) {
-          SigmaKnots[k][i,i] = SigmaKnots[k][i,i]+gp_delta; // stabilizing
+          SigmaKnots[k][i,i] += gp_delta; // stabilizing
         }
         // cov matrix between knots and projected locs
         //SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*pow(gp_theta[k],2.0)));
         SigmaOffDiagTemp = cov_exp_quad(data_locs, knot_locs, sigma_pro[k], gp_theta[k]);
         // multiply and invert once, used below:
-        SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots[k]);
-        x[k] = to_row_vector(SigmaOffDiag * effectsKnots[k]);
+        //SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots[k]);
+        # cholesky_decompose(SigmaKnots[k]) * effectsKnots[k] is equivalent to drawn MVN deviations
+        x[k] = to_row_vector(SigmaOffDiagTemp * inverse_spd(SigmaKnots[k]) * cholesky_decompose(SigmaKnots[k]) * effectsKnots[k]);
       }
     }
 
@@ -335,9 +336,6 @@ transformed parameters {
     for(k in 1:K) {
       //x[k,1:N] = x[k,1:N] * indicator[k] * psi_root[k];
       x[k] = x[k] * indicator[k] * psi_root[k];
-      //for(t in 1:N) {
-      //  x[k,t] = x[k,t] * indicator[k] * psi_root[k];
-      //}
     }
 
   }
@@ -365,14 +363,15 @@ transformed parameters {
 
         //SigmaKnots = SigmaKnots+diag_matrix(rep_vector(gp_delta, n_knots));
         for(i in 1:n_knots) {
-          SigmaKnots[k][i,i] = SigmaKnots[k][i,i]+gp_delta; // stabilizing
+          SigmaKnots[k][i,i] += gp_delta; // stabilizing
         }
         // cov matrix between knots and projected locs
         //SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*pow(gp_theta[k],2.0)));
         SigmaOffDiagTemp = cov_exp_quad(data_locs, knot_locs, sigma_pro[k], gp_theta[k]);
         // multiply and invert once, used below:
-        SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots[k]);
-        x[k] = to_row_vector(SigmaOffDiag * effectsKnots[k]);
+        //SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots[k]);
+        # cholesky_decompose(SigmaKnots[k]) * effectsKnots[k] is equivalent to drawn MVN deviations
+        x[k] = to_row_vector(SigmaOffDiagTemp * inverse_spd(SigmaKnots[k]) * cholesky_decompose(SigmaKnots[k]) * effectsKnots[k]);
       }
     }
 
@@ -389,7 +388,7 @@ transformed parameters {
   if(num_pro_covar > 0) {
     for(i in 1:num_pro_covar) {
       // indexed by time, trend, covariate #, covariate value
-      x[pro_covar_index[i,2],pro_covar_index[i,1]] = x[pro_covar_index[i,2],pro_covar_index[i,1]] + b_pro[pro_covar_index[i,3], pro_covar_index[i,2]] * pro_covar_value[i];
+      x[pro_covar_index[i,2],pro_covar_index[i,1]] += b_pro[pro_covar_index[i,3], pro_covar_index[i,2]] * pro_covar_value[i];
     }
   }
 
@@ -406,13 +405,13 @@ transformed parameters {
       for(i in 1:num_obs_covar) {
         // if data are in wide format, only 1 obs exists per prediction + pred matrix can just be adjusted
         // indexed by time, trend, covariate #, covariate value
-        pred[obs_covar_index[i,2],obs_covar_index[i,1]] = pred[obs_covar_index[i,2],obs_covar_index[i,1]] + b_obs[obs_covar_index[i,3], obs_covar_index[i,2]] * obs_covar_value[i];
+        pred[obs_covar_index[i,2],obs_covar_index[i,1]] += b_obs[obs_covar_index[i,3], obs_covar_index[i,2]] * obs_covar_value[i];
       }
     } else {
       // if data are in long format, multiple obs might exist per time point, and need to use ugly loops
       // loop over dataframe of obs error covariates -- may be > observations if multiple covariates exist
       for(i in 1:num_obs_covar) {
-        obs_cov_offset[match_obs_covar[i]] = obs_cov_offset[match_obs_covar[i]] + b_obs[obs_covar_index[i,3], obs_covar_index[i,2]] * obs_covar_value[i];
+        obs_cov_offset[match_obs_covar[i]] += b_obs[obs_covar_index[i,3], obs_covar_index[i,2]] * obs_covar_value[i];
       }
     }
   }
@@ -426,8 +425,8 @@ transformed parameters {
       }
     }
     for(i in 1:n_pos) {
-      temp_sums[row_indx_pos[i],col_indx_pos[i]] = temp_sums[row_indx_pos[i],col_indx_pos[i]] + (y[i] - pred[row_indx_pos[i],col_indx_pos[i]]);//PxN
-      temp_counts[row_indx_pos[i],col_indx_pos[i]] = temp_counts[row_indx_pos[i],col_indx_pos[i]] + 1;
+      temp_sums[row_indx_pos[i],col_indx_pos[i]] += (y[i] - pred[row_indx_pos[i],col_indx_pos[i]]);//PxN
+      temp_counts[row_indx_pos[i],col_indx_pos[i]] += 1;
     }
     for(n in 1:N) {
       for(p in 1:P) {
@@ -490,7 +489,7 @@ model {
     //gp_theta ~ student_t(gp_theta_prior[1], 0, gp_theta_prior[2]);
     // random effects estimated for each trend
     for(k in 1:K) {
-      effectsKnots[k] ~ multi_normal(muZeros, SigmaKnots[k]);
+      effectsKnots[k] ~ std_normal();//multi_normal(muZeros, SigmaKnots[k]);
     }
   }
   // This is deviations - either normal or Student t, and
