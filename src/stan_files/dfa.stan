@@ -212,7 +212,7 @@ transformed parameters {
   matrix[K * est_spline, n_knots * est_spline] spline_a_trans; // weights for b-splines
   matrix[n_knots, n_knots] SigmaKnots[K]; // matrix for GP model, unique for each trend K
   //matrix[N, n_knots] SigmaOffDiag;// matrix for GP model
-  matrix[N, n_knots] SigmaOffDiagTemp;// matrix for GP model
+  //matrix[N, n_knots] SigmaOffDiagTemp;// matrix for GP model
   vector[n_pos] obs_cov_offset;
 
   // block for process errors - can be estimated or not, and shared or not
@@ -322,11 +322,17 @@ transformed parameters {
         }
         // cov matrix between knots and projected locs
         //SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*pow(gp_theta[k],2.0)));
-        SigmaOffDiagTemp = cov_exp_quad(data_locs, knot_locs, sigma_pro[k], gp_theta[k]);
+        //SigmaOffDiagTemp = cov_exp_quad(data_locs, knot_locs, sigma_pro[k], gp_theta[k]);
         // multiply and invert once, used below:
         //SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots[k]);
-        # cholesky_decompose(SigmaKnots[k]) * effectsKnots[k] is equivalent to drawn MVN deviations
-        x[k] = to_row_vector(SigmaOffDiagTemp * inverse_spd(SigmaKnots[k]) * cholesky_decompose(SigmaKnots[k]) * effectsKnots[k]);
+        // cholesky_decompose(SigmaKnots[k]) * effectsKnots[k] is equivalent to drawn MVN deviations
+        //x[k] = to_row_vector(SigmaOffDiagTemp * inverse_spd(SigmaKnots[k]) * cholesky_decompose(SigmaKnots[k]) * effectsKnots[k]);
+        if(n_knots == N) {
+          // full rank
+          x[k] = to_row_vector(cholesky_decompose(SigmaKnots[k]) * effectsKnots[k]);
+        } else {
+          x[k] = to_row_vector(cov_exp_quad(data_locs, knot_locs, sigma_pro[k], gp_theta[k]) * inverse_spd(SigmaKnots[k]) * cholesky_decompose(SigmaKnots[k]) * effectsKnots[k]);
+        }
       }
     }
 
@@ -365,11 +371,17 @@ transformed parameters {
         }
         // cov matrix between knots and projected locs
         //SigmaOffDiagTemp = square(sigma_pro[k]) * exp(-distKnots21 / (2.0*pow(gp_theta[k],2.0)));
-        SigmaOffDiagTemp = cov_exp_quad(data_locs, knot_locs, sigma_pro[k], gp_theta[k]);
+        //SigmaOffDiagTemp = cov_exp_quad(data_locs, knot_locs, sigma_pro[k], gp_theta[k]);
         // multiply and invert once, used below:
         //SigmaOffDiag = SigmaOffDiagTemp * inverse_spd(SigmaKnots[k]);
-        # cholesky_decompose(SigmaKnots[k]) * effectsKnots[k] is equivalent to drawn MVN deviations
-        x[k] = to_row_vector(SigmaOffDiagTemp * inverse_spd(SigmaKnots[k]) * cholesky_decompose(SigmaKnots[k]) * effectsKnots[k]);
+        //cholesky_decompose(SigmaKnots[k]) * effectsKnots[k] is equivalent to drawn MVN deviations
+        //x[k] = to_row_vector(SigmaOffDiagTemp * inverse_spd(SigmaKnots[k]) * cholesky_decompose(SigmaKnots[k]) * effectsKnots[k]);
+        if(n_knots == N) {
+          // full rank
+          x[k] = to_row_vector(cholesky_decompose(SigmaKnots[k]) * effectsKnots[k]);
+        } else {
+          x[k] = to_row_vector(cov_exp_quad(data_locs, knot_locs, sigma_pro[k], gp_theta[k]) * inverse_spd(SigmaKnots[k]) * cholesky_decompose(SigmaKnots[k]) * effectsKnots[k]);
+        }
       }
     }
 
