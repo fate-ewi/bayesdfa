@@ -114,7 +114,7 @@ data {
   //matrix[n_knots, n_knots] distKnots;
   //matrix[N, n_knots] distKnots21;
   matrix[1, n_knots] distKnots21_pred;
-  int obs_model; // 1 = normal, 2 = bernoulli, 3 = poisson, 4 = gamma, 6 = lognormal
+  int obs_model; // 1 = normal, 2 = gamma, 3 = bernoulli, 4 = poisson, 5 = neg bin, 6 = lognormal
   int<lower=0, upper=1> est_sigma_params;
   int<lower=0, upper=1> est_gamma_params;
   int<lower=0, upper=1> est_nb2_params;
@@ -191,9 +191,7 @@ parameters {
 transformed parameters {
   matrix[P,N] pred; //vector[P] pred[N];
   matrix[P,K] Z;
-  //vector[N] yall[P]; // combined vectors of missing and non-missing values
   matrix[P,N] yall;
-  matrix[P,N] yall_int; // int representation
   vector[P*est_sigma_params] sigma_vec;
   vector[P*est_gamma_params] gamma_a_vec;
   vector[P*est_nb2_params] nb_phi_vec;
@@ -486,14 +484,14 @@ model {
     // P[gp_theta > 10] = 0.01
     //gp_theta ~ inv_gamma(8.91924, 34.5805);
     gp_theta ~ inv_gamma(gp_theta_prior[1], gp_theta_prior[2]);
-    //gp_theta ~ student_t(gp_theta_prior[1], 0, gp_theta_prior[2]);
     // random effects estimated for each trend
     for(k in 1:K) {
-      effectsKnots[k] ~ std_normal();//multi_normal(muZeros, SigmaKnots[k]);
+      effectsKnots[k] ~ std_normal();
     }
   }
   // This is deviations - either normal or Student t, and
-  // if Student-t, df parameter nu can be estimated or fixed
+  // if Student-t, df parameter nu can be estimated or fixed.
+  // Tried putting most of this in the transformed param block, with devs ~ std_normal(), but slowed down
   if(est_rw == 1) {
     for(k in 1:K) {
       if(use_normal == 0) {
@@ -525,20 +523,19 @@ model {
   }
   if(est_spline==1) {
     for(k in 1:K) {
-      spline_a[k] ~ normal(0,1);
+      spline_a[k] ~ std_normal();
     }
   }
 
   if(proportional_model == 0) {
     // prior on loadings
-    z ~ normal(0, 1); // off-diagonal
-    zpos ~ normal(0, 1);// diagonal
+    z ~ std_normal(); // off-diagonal
+    zpos ~ std_normal();// diagonal
   } else {
     for(p in 1:P) {
       p_z[p] ~ dirichlet(alpha_vec);
     }
   }
-
 
   // likelihood for independent
   if(est_cor == 0) {
@@ -594,10 +591,7 @@ generated quantities {
       if(obs_model == 4) {for(i in 1:n_pos) log_lik[i] = neg_binomial_2_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], nb_phi_vec[row_indx_pos[i]]);} // negbin
       if(obs_model == 5) {for(i in 1:n_pos) log_lik[i] = bernoulli_logit_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // binomial
       if(obs_model == 6) {for(i in 1:n_pos) log_lik[i] = lognormal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]] + obs_cov_offset[i]);} // lognormal
-      // for(i in 1:n_pos) {
-        //   //row_indx_pos[i] is the time series, col_index_pos is the time
-        //   log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]]);
-        // }
+
     }
 
   } else {
@@ -643,7 +637,7 @@ generated quantities {
     for (k in 1:K) {
       SigmaKnots_pred = cov_exp_quad(knot_locs, sigma_pro[k], gp_theta[k]);
       for(i in 1:n_knots) {
-        SigmaKnots_pred[i,i] = SigmaKnots_pred[i,i]+0.00001; // stabilizing
+        SigmaKnots_pred[i,i] += gp_delta; // stabilizing
       }
       // cov matrix between knots and projected locs
       SigmaOffDiag_pred = to_row_vector(square(sigma_pro[k]) * exp(-distKnots21_pred / (2.0*pow(gp_theta[k],2.0)))) * inverse_spd(SigmaKnots_pred);
