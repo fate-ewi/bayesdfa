@@ -115,7 +115,7 @@ and is turned off by default. Third, the number of knots can be specified (more 
 with > 2 trends, each trend has their own spline coefficients estimated though the knot locations are assumed shared. If knots aren't specified,
 the default is N/3.}
 
-\item{n_knots}{The number of knots for the B-spline of Gaussian predictive process models. Optional}
+\item{n_knots}{The number of knots for the B-spline of Gaussian predictive process models. Optional, defaults to round(N/3)}
 
 \item{knot_locs}{Locations of knots (optional), defaults to uniform spacing between 1 and N}
 

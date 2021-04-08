@@ -56,7 +56,7 @@
 #' and is turned off by default. Third, the number of knots can be specified (more knots = more wiggliness, and n_knots < N). For models
 #' with > 2 trends, each trend has their own spline coefficients estimated though the knot locations are assumed shared. If knots aren't specified,
 #' the default is N/3.
-#' @param n_knots The number of knots for the B-spline of Gaussian predictive process models. Optional
+#' @param n_knots The number of knots for the B-spline of Gaussian predictive process models. Optional, defaults to round(N/3)
 #' @param knot_locs Locations of knots (optional), defaults to uniform spacing between 1 and N
 #' @param family String describing the observation model. Default is "gaussian",
 #'   but included options are "gamma", "lognormal", negative binomial ("nbinom2"),
