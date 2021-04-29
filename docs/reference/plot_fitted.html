@@ -107,7 +107,7 @@
       <a href="../articles/covariates.html">Examples of including covariates with bayesdfa</a>
     </li>
     <li>
-      <a href="../articles/estimate_process_sigma.html">Estimating process trend variability with bayesdfa</a>
+      <a href="../articles/estimate_process_sigma.html">Estimating variability of random walks (process error standard deviations)</a>
     </li>
   </ul>
 </li>
@@ -174,8 +174,8 @@
 </div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'dfa' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 4.2e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.42 seconds.
+#&gt; Chain 1: Gradient evaluation took 4.5e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.45 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -200,9 +200,9 @@
 #&gt; Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 50 / 50 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.007096 seconds (Warm-up)
-#&gt; Chain 1:                0.009614 seconds (Sampling)
-#&gt; Chain 1:                0.01671 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.006951 seconds (Warm-up)
+#&gt; Chain 1:                0.008815 seconds (Sampling)
+#&gt; Chain 1:                0.015766 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bfmi-low</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Examine the pairs() plot to diagnose sampling problems</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is NA, indicating chains have not mixed.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
@@ -262,7 +262,7 @@
 #&gt; Z[3,2]         -59.9    -59.1    -56.8    -58.7    1.2  2.06        3       13
 #&gt; Z[4,2]          15.8     16.9     17.4     16.7    0.6  2.06        3       13
 #&gt; log_lik[1]      -2.1     -2.1     -2.1     -2.1    0.0  2.06        3       13
-#&gt; log_lik[2]    -400.4   -363.3   -284.1   -349.4   42.9  2.06        3       13
+#&gt; log_lik[2]    -400.4   -363.2   -284.0   -349.4   42.9  2.06        3       13
 #&gt; log_lik[3]    -196.9   -177.9   -138.6   -171.3   21.4  2.06        3       13
 #&gt; log_lik[4]      -6.3     -5.8     -5.1     -5.7    0.4  2.06        3       13
 #&gt; log_lik[5]      -1.9     -1.8     -1.8     -1.9    0.0  2.06        3       13
@@ -274,7 +274,7 @@
 #&gt; log_lik[11]    -23.0    -21.3    -17.1    -20.5    2.1  2.06        3       13
 #&gt; log_lik[12]     -6.8     -6.2     -5.0     -6.0    0.7  2.06        3       13
 #&gt; log_lik[13]     -2.3     -2.3     -2.3     -2.3    0.0  1.48        8       13
-#&gt; log_lik[14]    -90.7    -79.8    -57.3    -75.9   12.4  2.06        3       13
+#&gt; log_lik[14]    -90.7    -79.8    -57.3    -75.8   12.4  2.06        3       13
 #&gt; log_lik[15]    -72.0    -65.5    -51.3    -63.1    7.5  2.06        3       13
 #&gt; log_lik[16]    -11.6    -10.3     -7.7     -9.9    1.5  2.06        3       13
 #&gt; log_lik[17]     -3.2     -3.1     -2.9     -3.1    0.1  2.06        3       13
@@ -290,16 +290,16 @@
 #&gt; log_lik[27]    -84.8    -77.1    -61.4    -74.5    8.5  2.06        3       13
 #&gt; log_lik[28]    -14.0    -12.4     -9.4    -11.9    1.8  2.06        3       13
 #&gt; log_lik[29]     -2.3     -2.3     -2.3     -2.3    0.0  2.06        4       13
-#&gt; log_lik[30]   -169.5   -147.6   -104.7   -140.7   24.0  2.06        3       13
+#&gt; log_lik[30]   -169.5   -147.5   -104.7   -140.7   24.0  2.06        3       13
 #&gt; log_lik[31]    -22.8    -20.3    -15.3    -19.5    2.7  2.06        3       13
 #&gt; log_lik[32]     -2.0     -1.9     -1.8     -1.9    0.1  2.06        3       13
 #&gt; log_lik[33]     -3.2     -3.1     -2.9     -3.1    0.1  2.06        3       13
-#&gt; log_lik[34]   -717.6   -640.3   -474.5   -611.2   90.5  2.06        3       13
+#&gt; log_lik[34]   -717.5   -640.3   -474.5   -611.2   90.5  2.06        3       13
 #&gt; log_lik[35]     -2.2     -2.1     -2.1     -2.1    0.0  1.87        4       13
 #&gt; log_lik[36]     -6.2     -5.6     -4.2     -5.4    0.8  2.06        4       13
 #&gt; log_lik[37]     -2.9     -2.9     -2.8     -2.8    0.1  2.06        3       13
 #&gt; log_lik[38]   -945.9   -846.1   -630.6   -808.3  117.2  2.06        3       13
-#&gt; log_lik[39]   -104.9    -94.6    -72.1    -90.9   12.2  2.06        3       13
+#&gt; log_lik[39]   -104.9    -94.6    -72.1    -90.8   12.2  2.06        3       13
 #&gt; log_lik[40]     -2.0     -1.8     -1.8     -1.9    0.1  2.06        3       13
 #&gt; log_lik[41]     -2.1     -2.1     -2.0     -2.1    0.0  2.06        3       13
 #&gt; log_lik[42]   -534.5   -478.3   -353.7   -456.0   67.3  2.06        3       13
@@ -307,14 +307,14 @@
 #&gt; log_lik[44]     -8.1     -7.3     -5.4     -6.9    1.0  2.06        4       13
 #&gt; log_lik[45]     -1.9     -1.8     -1.8     -1.9    0.0  2.06        3       13
 #&gt; log_lik[46]     -6.7     -5.7     -3.8     -5.4    1.1  2.06        3       13
-#&gt; log_lik[47]   -179.8   -162.1   -126.8   -156.1   19.6  2.06        3       13
+#&gt; log_lik[47]   -179.8   -162.1   -126.8   -156.2   19.6  2.06        3       13
 #&gt; log_lik[48]    -19.6    -17.4    -13.1    -16.7    2.4  2.06        3       13
 #&gt; log_lik[49]     -2.1     -2.1     -2.1     -2.1    0.0  2.06        3       13
 #&gt; log_lik[50]   -585.3   -524.3   -399.1   -503.6   68.9  2.06        3       13
 #&gt; log_lik[51]   -192.3   -174.2   -138.7   -168.7   19.7  2.06        3       13
 #&gt; log_lik[52]     -4.8     -4.6     -4.4     -4.6    0.2  1.10        7       13
 #&gt; log_lik[53]     -3.0     -2.9     -2.8     -2.9    0.1  2.06        3       13
-#&gt; log_lik[54]  -1300.5  -1172.4   -903.6  -1126.7  146.9  2.06        3       13
+#&gt; log_lik[54]  -1300.4  -1172.4   -903.6  -1126.7  146.9  2.06        3       13
 #&gt; log_lik[55]    -88.7    -81.3    -67.0    -79.2    8.0  2.06        3       13
 #&gt; log_lik[56]     -2.2     -2.1     -2.0     -2.1    0.1  2.06        4       13
 #&gt; log_lik[57]     -2.2     -2.1     -2.1     -2.2    0.0  2.06        3       13
@@ -326,11 +326,11 @@
 #&gt; log_lik[63]     -5.7     -5.1     -4.7     -5.2    0.4  2.06        4       13
 #&gt; log_lik[64]     -3.8     -3.7     -3.3     -3.6    0.2  2.06        3       13
 #&gt; log_lik[65]     -3.3     -3.2     -3.0     -3.1    0.1  2.06        3       13
-#&gt; log_lik[66]  -1292.4  -1153.3   -861.3  -1099.7  159.7  2.06        3       13
-#&gt; log_lik[67]   -460.6   -406.0   -298.1   -388.0   60.4  2.06        3       13
+#&gt; log_lik[66]  -1292.3  -1153.2   -861.2  -1099.7  159.7  2.06        3       13
+#&gt; log_lik[67]   -460.5   -406.0   -298.1   -388.0   60.4  2.06        3       13
 #&gt; log_lik[68]     -7.8     -6.8     -5.9     -6.8    0.7  2.06        3       13
 #&gt; log_lik[69]     -4.0     -3.9     -3.6     -3.8    0.2  2.06        3       13
-#&gt; log_lik[70]  -1224.7  -1088.2   -805.2  -1036.6  155.1  2.06        3       13
+#&gt; log_lik[70]  -1224.7  -1088.2   -805.2  -1036.5  155.1  2.06        3       13
 #&gt; log_lik[71]   -479.9   -421.3   -306.0   -402.0   64.4  2.06        3       13
 #&gt; log_lik[72]    -11.8    -10.3     -8.5    -10.2    1.2  2.06        3       13
 #&gt; log_lik[73]     -2.3     -2.3     -2.3     -2.3    0.0  2.06        4       13
@@ -343,10 +343,10 @@
 #&gt; log_lik[80]     -6.9     -6.1     -5.1     -6.1    0.6  2.06        3       13
 #&gt; psi[1]           4.5      4.5      4.5      4.5    0.0  2.06        4       13
 #&gt; psi[2]           0.2      0.2      0.2      0.2    0.0  1.07        7       13
-#&gt; xstar[1,1]      -5.2     -4.3     -2.7     -4.2    1.0  1.15        8       13
-#&gt; xstar[2,1]       0.1      1.8      3.6      1.7    1.2  1.10        9       13
+#&gt; xstar[1,1]      -4.1     -3.2     -1.6     -3.1    1.0  1.15        8       13
+#&gt; xstar[2,1]      -1.4      0.3      2.1      0.2    1.2  1.10        9       13
 #&gt; sigma[1]         2.4      2.5      2.8      2.6    0.1  2.06        3       13
-#&gt; lp__        -14519.9 -13173.9 -10342.2 -12679.8 1548.3  2.06        3       13
+#&gt; lp__        -14482.4 -13136.3 -10304.3 -12642.2 1548.4  2.06        3       13
 #&gt; 
 #&gt; For each parameter, Bulk_ESS and Tail_ESS are crude measures of 
 #&gt; effective sample size for bulk and tail quantities respectively (an ESS &gt; 100 
