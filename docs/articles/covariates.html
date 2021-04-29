@@ -66,7 +66,7 @@
       <a href="../articles/covariates.html">Examples of including covariates with bayesdfa</a>
     </li>
     <li>
-      <a href="../articles/estimate_process_sigma.html">Estimating variability of random walks (process error standard deviations)</a>
+      <a href="../articles/estimate_process_sigma.html">Estimating process trend variability with bayesdfa</a>
     </li>
   </ul>
 </li>
@@ -97,7 +97,7 @@
       <h1 data-toc-skip>Examples of including covariates with bayesdfa</h1>
                         <h4 class="author">Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri</h4>
             
-            <h4 class="date">2021-03-14</h4>
+            <h4 class="date">2021-04-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/fate-ewi/bayesdfa/blob/master/vignettes/covariates.Rmd"><code>vignettes/covariates.Rmd</code></a></small>
       <div class="hidden name"><code>covariates.Rmd</code></div>
@@ -109,12 +109,12 @@
 <p>Here we will walk through how to use the bayesdfa package to fit dynamic factor analysis (DFA) models with covariates.</p>
 <p>Let’s load the necessary packages:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/fate-ewi/bayesdfa">bayesdfa</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://fate-ewi.github.io/bayesdfa/">bayesdfa</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/rstan">rstan</a></span><span class="op">)</span>
-<span class="va">chains</span> <span class="op">=</span> <span class="fl">3</span>
-<span class="va">iter</span> <span class="op">=</span> <span class="fl">2000</span></code></pre></div>
+<span class="va">chains</span> <span class="op">=</span> <span class="fl">1</span>
+<span class="va">iter</span> <span class="op">=</span> <span class="fl">10</span></code></pre></div>
 <div id="notation-review-for-dfa-models" class="section level2">
 <h2 class="hasAnchor">
 <a href="#notation-review-for-dfa-models" class="anchor"></a>Notation review for DFA models</h2>

@@ -66,7 +66,7 @@
       <a href="../articles/covariates.html">Examples of including covariates with bayesdfa</a>
     </li>
     <li>
-      <a href="../articles/estimate_process_sigma.html">Estimating variability of random walks (process error standard deviations)</a>
+      <a href="../articles/estimate_process_sigma.html">Estimating process trend variability with bayesdfa</a>
     </li>
   </ul>
 </li>
@@ -97,7 +97,7 @@
       <h1 data-toc-skip>Overview of the bayesdfa package</h1>
                         <h4 class="author">Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri</h4>
             
-            <h4 class="date">2021-03-14</h4>
+            <h4 class="date">2021-04-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/fate-ewi/bayesdfa/blob/master/vignettes/bayesdfa.Rmd"><code>vignettes/bayesdfa.Rmd</code></a></small>
       <div class="hidden name"><code>bayesdfa.Rmd</code></div>
@@ -109,12 +109,12 @@
 <p>Here we will use the bayesdfa package to fit dynamic factor analysis (DFA) model to simulated time series data. In addition to working through an example of DFA for multivariate time series, we’ll apply bayesdfa routines for fitting hidden Markov models (HMMs) to the estimated trends to identify latent regimes. Most of the core functions of the package are included here, including <code><a href="../reference/fit_dfa.html">fit_dfa()</a></code> and <code>find_dfa_trends</code> for fitting DFA models, <code><a href="../reference/plot_trends.html">plot_trends()</a></code>, <code><a href="../reference/plot_fitted.html">plot_fitted()</a></code> and <code><a href="../reference/plot_loadings.html">plot_loadings()</a></code> for plotting estimates, <code><a href="../reference/find_swans.html">find_swans()</a></code> for flagging extremes, <code><a href="../reference/fit_regimes.html">fit_regimes()</a></code> and <code><a href="../reference/find_regimes.html">find_regimes()</a></code> for fitting HMM models, and <code>plot_regimes()</code> for plotting HMM output.</p>
 <p>Let’s load the necessary packages:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/fate-ewi/bayesdfa">bayesdfa</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://fate-ewi.github.io/bayesdfa/">bayesdfa</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/rstan">rstan</a></span><span class="op">)</span>
-<span class="va">chains</span> <span class="op">=</span> <span class="fl">3</span>
-<span class="va">iter</span> <span class="op">=</span> <span class="fl">2000</span></code></pre></div>
+<span class="va">chains</span> <span class="op">=</span> <span class="fl">1</span>
+<span class="va">iter</span> <span class="op">=</span> <span class="fl">10</span></code></pre></div>
 <div id="introduction-to-the-dfa-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction-to-the-dfa-model" class="anchor"></a>Introduction to the DFA model</h2>
@@ -199,11 +199,11 @@ Model predicted values from the 2-trend DFA model applied to simulated data.
 <p>The loadings from the 1-trend model aren’t as interesting because for a 1-trend model the loadings are a 1-dimensional vector. For the 2 trend model, there’s a separate loading of each time series on each trend,</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">r2</span><span class="op">$</span><span class="va">Z_rot_mean</span>, <span class="fl">2</span><span class="op">)</span></code></pre></div>
-<pre><code>##       [,1]  [,2]
-## [1,]  0.84 -0.10
-## [2,] -0.08  0.56
-## [3,]  0.30  0.49
-## [4,] -0.73 -0.22</code></pre>
+<pre><code>##        [,1]   [,2]
+## [1,]   0.80  -0.54
+## [2,]  60.49 -39.24
+## [3,] -77.15 112.91
+## [4,] -51.79  30.35</code></pre>
 <p>These loadings can also be plotted with the <code><a href="../reference/plot_loadings.html">plot_loadings()</a></code> function. This shows the distribution of the densities as violin plots, with color proportional to being different from 0.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_loadings.html">plot_loadings</a></span><span class="op">(</span><span class="va">r2</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
@@ -216,11 +216,11 @@ Estimated loadings from the 2-trend DFA model.
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">loo1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loo.bayesdfa.html">loo</a></span><span class="op">(</span><span class="va">f1</span><span class="op">)</span>
 <span class="va">loo1</span><span class="op">$</span><span class="va">estimates</span></code></pre></div>
-<pre><code>##           Estimate        SE
-## elpd_loo -91.91829  5.556895
-## p_loo     12.61484  1.554913
-## looic    183.83658 11.113790</code></pre>
-<p>where 183.8365772 is the estimate and 11.1137903 is the standard error.</p>
+<pre><code>##               Estimate           SE
+## elpd_loo -2.719359e+04 5.626518e+03
+## p_loo     6.661338e-16 2.176588e-15
+## looic     5.438717e+04 1.125304e+04</code></pre>
+<p>where 5.438717510^{4} is the estimate and 1.125303710^{4} is the standard error.</p>
 <p>As an alternative to fitting each model individually as we did above, we also developed the <code><a href="../reference/find_dfa_trends.html">find_dfa_trends()</a></code> to automate fitting a larger number of models. In addition to evaluating different trends, this function allows the user to optionally evaluate models with normal and Student-t process errors, and alternative variance structures (observation variance of time series being equal, or not). For example, to fit models with 1:5 trends, both Student-t and normal errors, and equal and unequal variances, the call would be</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_dfa_trends.html">find_dfa_trends</a></span><span class="op">(</span>
@@ -290,13 +290,13 @@ Estimated loadings, from a model with 2 latent trends Student-t deviations.
 <p>We can also look at the estimated <code>nu</code> parameter, which shows some support for using the Student-t distribution (values greater than ~ 30 lead to similar behavior as a normal distribution),</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html">extract</a></span><span class="op">(</span><span class="va">t2</span><span class="op">$</span><span class="va">model</span>, <span class="st">"nu"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##        V1        
-##  Min.   : 2.054  
-##  1st Qu.: 9.967  
-##  Median :16.396  
-##  Mean   :19.675  
-##  3rd Qu.:26.137  
-##  Max.   :89.873</code></pre>
+<pre><code>##        V1       
+##  Min.   :2.364  
+##  1st Qu.:2.364  
+##  Median :2.364  
+##  Mean   :2.364  
+##  3rd Qu.:2.364  
+##  Max.   :2.364</code></pre>
 </div>
 <div id="fitting-dfa-models-with-non-gaussian-families" class="section level2">
 <h2 class="hasAnchor">
@@ -423,22 +423,13 @@ Estimated loadings, from a model with 2 latent trends Student-t deviations.
 <p><span class="math display">\[delta_{i,t+1} \sim Normal( \theta_{i}*delta_{i,t}, q_{i})\]</span></p>
 <p>where <span class="math inline">\(\theta_{i}\)</span> is the trend-specific MA parameter, <span class="math inline">\(q\)</span> is the process variance, and usually constrained to be not estimated and fixed at 1.</p>
 </div>
-<div id="estimating-process-variances" class="section level2">
-<h2 class="hasAnchor">
-<a href="#estimating-process-variances" class="anchor"></a>Estimating process variances</h2>
-<p>DFA models generally constrain process errors to be normally distributed with unit variance, e.g. </p>
-<p><span class="math display">\[delta_{i,t=1:T} \sim Normal( 0, q)\]</span> While we generally recommend following this convention, there are some combinations of models and parameters where <span class="math inline">\(q\)</span> is identifiable. For these models, we can estimate the process error variance as</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span><span class="va">...</span>, estimate_process_sigma <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
-<p>This form of the model allows separate process variances to be estimated on each trend, e.g. <span class="math inline">\(q_{1}, q_{2}, q_{3}, ...\)</span></p>
-</div>
 <div id="applying-hidden-markov-models-to-identify-latent-regimes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#applying-hidden-markov-models-to-identify-latent-regimes" class="anchor"></a>Applying Hidden Markov Models to identify latent regimes</h2>
 <p>Finally, we might be interested in evaluating evidence for the estimated trends changing between multiple regimes. We’ve implemented HMMs in the functions <code><a href="../reference/fit_regimes.html">fit_regimes()</a></code> and <code><a href="../reference/find_regimes.html">find_regimes()</a></code>. <code>fit_regimes</code> fits a HMM with a pre-specified number of latent states, while <code><a href="../reference/find_regimes.html">find_regimes()</a></code> loops over a range of models so that support can be evaluated with LOOIC.</p>
 <p>We’ll illustrate an example of the <code><a href="../reference/fit_regimes.html">fit_regimes()</a></code> function. Note that in the current version of the package, this has to be applied to each trend separately. Also, uncertainty estimates from the DFA trends may also be included as data (instead of estimated) – this may be particularly useful for datasets with lots of missing values in portions of the time series (where the uncertainty balloons up).</p>
 <p>Applying the 2-regime model to the first trend,</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">reg_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_regimes.html">fit_regimes</a></span><span class="op">(</span>
   y <span class="op">=</span> <span class="va">r</span><span class="op">$</span><span class="va">trends_mean</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>,
   sds <span class="op">=</span> <span class="op">(</span><span class="va">r</span><span class="op">$</span><span class="va">trends_upper</span> <span class="op">-</span> <span class="va">r</span><span class="op">$</span><span class="va">trends_mean</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span> <span class="op">/</span> <span class="fl">1.96</span>,
@@ -446,10 +437,10 @@ Estimated loadings, from a model with 2 latent trends Student-t deviations.
   iter <span class="op">=</span> <span class="fl">50</span>, chains <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
 <p>In addition to getting diagnostics and quantities like LOOIC out of the <code>reg_mod</code> object, we can plot the estimated states.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_regime_model.html">plot_regime_model</a></span><span class="op">(</span><span class="va">reg_mod</span><span class="op">)</span></code></pre></div>
 <p>In this case, there might be some support for the 2-regime model. Sometimes (but not in this example) label switching makes the plots a little challenging to interpret, and the labels need to be reversed. We’ve included the argument <code>flip_regimes</code> to help with this,</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_regime_model.html">plot_regime_model</a></span><span class="op">(</span><span class="va">reg_mod</span>, flip_regimes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
   </div>
