@@ -28,13 +28,13 @@ Depends:
     R (>= 3.4.0), Rcpp (>= 0.12.18), methods
 Imports:
     rstan (>= 2.18.2),
-    rstantools (>= 1.5.1),
+    rstantools (>= 2.0.0),
     ggplot2,
     viridisLite,
     loo (>= 2.0.0),
-    dplyr (>= 0.8.0),
+    dplyr,
     reshape2,
-    rlang (>= 0.3.1)
+    rlang
 LinkingTo: StanHeaders (>= 2.18.1), rstan (>= 2.18.2), BH (>= 1.66.0),
         Rcpp (>= 0.12.8), RcppEigen (>= 0.3.3.3.0)
 Suggests:
