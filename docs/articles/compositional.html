@@ -66,7 +66,7 @@
       <a href="../articles/covariates.html">Examples of including covariates with bayesdfa</a>
     </li>
     <li>
-      <a href="../articles/estimate_process_sigma.html">Estimating variability of random walks (process error standard deviations)</a>
+      <a href="../articles/estimate_process_sigma.html">Estimating process trend variability with bayesdfa</a>
     </li>
   </ul>
 </li>
@@ -97,7 +97,7 @@
       <h1 data-toc-skip>Fitting compositional dynamic factor models with bayesdfa</h1>
                         <h4 class="author">Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri</h4>
             
-            <h4 class="date">2021-03-14</h4>
+            <h4 class="date">2021-04-29</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/fate-ewi/bayesdfa/blob/master/vignettes/compositional.Rmd"><code>vignettes/compositional.Rmd</code></a></small>
       <div class="hidden name"><code>compositional.Rmd</code></div>
@@ -109,12 +109,12 @@
 <p>An extension of conventional DFA is to change the constraints on the estimated loadings, <span class="math inline">\(Z\)</span>. DFA models generally impose constraints for identifiability, where individual time series are allowed to map onto dynamic factors with loadings ranging from large negative to large positive ones. Instead, if we viewed a collection of multivariate time series as originating from a compositional model - such that the loadings <span class="math inline">\(Z\)</span> were forced to be positive, and each of the time series arises as a mixture of the estimated loadings.</p>
 <p>Let’s load the necessary packages:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/fate-ewi/bayesdfa">bayesdfa</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://fate-ewi.github.io/bayesdfa/">bayesdfa</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mc-stan.org/rstan">rstan</a></span><span class="op">)</span>
-<span class="va">chains</span> <span class="op">=</span> <span class="fl">3</span>
-<span class="va">iter</span> <span class="op">=</span> <span class="fl">2000</span></code></pre></div>
+<span class="va">chains</span> <span class="op">=</span> <span class="fl">1</span>
+<span class="va">iter</span> <span class="op">=</span> <span class="fl">10</span></code></pre></div>
 <div id="trend-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#trend-model" class="anchor"></a>2 - trend model</h2>
@@ -146,11 +146,11 @@
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">rounded_Z</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>##       
 ##        [,1] [,2]
-##   [1,] 0.59 0.41
-##   [2,] 0.64 0.36
-##   [3,] 0.35 0.65
-##   [4,] 0.37 0.63
-##   [5,] 0.57 0.43</code></pre>
+##   [1,] 0.99 0.01
+##   [2,] 0.96 0.04
+##   [3,] 0.02 0.98
+##   [4,] 0.19 0.81
+##   [5,] 0.79 0.21</code></pre>
 <p>Combining the estimated trends and true trends in the simulation shows that the trends are offset by an intercept, but track the overall simulated values very well (time series 1 represents the estimated trend trying to recover the true trend indicated with time series 3, time series 2 represents the estimated trend trying to recover the true trend indicated with time series 4)</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">pars</span><span class="op">$</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span>,<span class="op">]</span>
