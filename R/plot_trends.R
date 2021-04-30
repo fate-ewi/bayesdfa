@@ -9,7 +9,7 @@
 #'   flag trend events as extreme. Defaults to 0.01
 #'
 #' @export
-#' @seealso plot_loadings fit_dfa rotate_trends
+#' @seealso dfa_trends plot_loadings fit_dfa rotate_trends
 #'
 #' @importFrom ggplot2 geom_ribbon facet_wrap geom_point
 #'
@@ -26,28 +26,13 @@ plot_trends <- function(rotated_modelfit,
   highlight_outliers = FALSE,
   threshold = 0.01) {
 
-  # rotate the trends
   rotated <- rotated_modelfit
-
-  n_ts <- dim(rotated$Z_rot)[2]
-  n_trends <- dim(rotated$Z_rot)[3]
-
-  n_years <- dim(rotated$trends_mean)[2]
-  if (is.null(years)) years <- seq_len(n_years)
-
-  # convert to df for ggplot
-  df <- data.frame(
-    x = c(t(rotated$trends_mean)),
-    lo = c(t(rotated$trends_lower)),
-    hi = c(t(rotated$trends_upper)),
-    trend = paste0("Trend ", sort(rep(seq_len(n_trends), n_years))),
-    time = rep(years, n_trends)
-  )
+  df <- dfa_trends(rotated, years = years)
 
   # make faceted ribbon plot of trends
-  p1 <- ggplot(df, aes_string(x = "time", y = "x")) +
-    geom_ribbon(aes_string(ymin = "lo", ymax = "hi"), alpha = 0.4) +
-    geom_line() + facet_wrap("trend") +
+  p1 <- ggplot(df, aes_string(x = "time", y = "estimate")) +
+    geom_ribbon(aes_string(ymin = "lower", ymax = "upper"), alpha = 0.4) +
+    geom_line() + facet_wrap("trend_number") +
     xlab("Time") + ylab("")
 
   if (highlight_outliers) {

@@ -35,5 +35,5 @@ p <- plot_trends(r)
 print(p)
 }
 \seealso{
-plot_loadings fit_dfa rotate_trends
+dfa_trends plot_loadings fit_dfa rotate_trends
 }
