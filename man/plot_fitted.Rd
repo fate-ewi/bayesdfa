@@ -2,19 +2,21 @@
 % Please edit documentation in R/plot_fitted.R
 \name{plot_fitted}
 \alias{plot_fitted}
-\title{Plot the trends from a DFA}
+\title{Plot the fitted values from a DFA}
 \usage{
-plot_fitted(modelfit, names = NULL, spaghetti = FALSE)
+plot_fitted(modelfit, conf_level = 0.95, names = NULL, spaghetti = FALSE)
 }
 \arguments{
 \item{modelfit}{Output from \code{\link{fit_dfa}}, a rstanfit object}
 
-\item{names}{Optional vector of names for plotting labels}
+\item{conf_level}{Probability level for CI.}
 
-\item{spaghetti}{Defaults to FALSE, but if TRUE puts all raw time series (grey) and trends on a single plot}
+\item{names}{Optional vector of names for plotting labels TODO. Should be same length as the number of time series}
+
+\item{spaghetti}{Defaults to FALSE, but if TRUE puts all raw time series (grey) and fitted values on a single plot}
 }
 \description{
-Plot the trends from a DFA
+Plot the fitted values from a DFA
 }
 \examples{
 \donttest{
@@ -28,5 +30,5 @@ print(p)
 }
 }
 \seealso{
-plot_loadings fit_dfa rotate_trends
+plot_loadings fit_dfa rotate_trends dfa_fitted
 }
