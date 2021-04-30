@@ -7,6 +7,7 @@ Authors@R: c(
       email = "eric.ward@noaa.gov"),
     person(c("Sean", "C."), "Anderson", role = "aut"),
     person(c("Luis", "A."), "Damiano", role = "aut"),
+    person(c("Michael", "J."), "Malick", role="aut"),
     person(c("Mary", "E."), "Hunsicker,", role = "ctb"),
     person(c("Mike", "A."), "Litzow", role = "ctb"),
     person(c("Mark", "D."), "Scheuerell", role = "ctb"),
