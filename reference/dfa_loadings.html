@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot the loadings from a DFA — plot_loadings • bayesdfa</title>
+<title>Get the loadings from a DFA as a data frame — dfa_loadings • bayesdfa</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Plot the loadings from a DFA — plot_loadings" />
-<meta property="og:description" content="Plot the loadings from a DFA" />
+<meta property="og:title" content="Get the loadings from a DFA as a data frame — dfa_loadings" />
+<meta property="og:description" content="Get the loadings from a DFA as a data frame" />
 
 
 
@@ -135,61 +135,49 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot the loadings from a DFA</h1>
-    <small class="dont-index">Source: <a href='https://github.com/fate-ewi/bayesdfa/blob/master/R/plot_loadings.R'><code>R/plot_loadings.R</code></a></small>
-    <div class="hidden name"><code>plot_loadings.Rd</code></div>
+    <h1>Get the loadings from a DFA as a data frame</h1>
+    <small class="dont-index">Source: <a href='https://github.com/fate-ewi/bayesdfa/blob/master/R/dfa_loadings.R'><code>R/dfa_loadings.R</code></a></small>
+    <div class="hidden name"><code>dfa_loadings.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plot the loadings from a DFA</p>
+    <p>Get the loadings from a DFA as a data frame</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plot_loadings</span><span class='op'>(</span>
-  <span class='va'>rotated_modelfit</span>,
-  names <span class='op'>=</span> <span class='cn'>NULL</span>,
-  facet <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  violin <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  conf_level <span class='op'>=</span> <span class='fl'>0.95</span>,
-  threshold <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>dfa_loadings</span><span class='op'>(</span><span class='va'>rotated_modelfit</span>, names <span class='op'>=</span> <span class='cn'>NULL</span>, summary <span class='op'>=</span> <span class='cn'>TRUE</span>, conf_level <span class='op'>=</span> <span class='fl'>0.95</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>rotated_modelfit</th>
-      <td><p>Output from <code><a href='rotate_trends.html'>rotate_trends()</a></code>.</p></td>
+      <td><p>Output from <code><a href='rotate_trends.html'>rotate_trends</a></code>.</p></td>
     </tr>
     <tr>
       <th>names</th>
       <td><p>An optional vector of names for plotting the loadings.</p></td>
     </tr>
     <tr>
-      <th>facet</th>
-      <td><p>Logical. Should there be a separate facet for each trend?
-Defaults to <code>TRUE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>violin</th>
-      <td><p>Logical. Should the full posterior densities be shown as a
-violin plot? Defaults to <code>TRUE</code>.</p></td>
+      <th>summary</th>
+      <td><p>Logical. Should the full posterior densities be returned? Defaults to <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>conf_level</th>
       <td><p>Confidence level for credible intervals. Defaults to 0.95.</p></td>
     </tr>
-    <tr>
-      <th>threshold</th>
-      <td><p>Numeric (0-1). Optional for plots, if included, only plot
-loadings who have Pr(&lt;0) or Pr(&gt;0) &gt; threshold. For example <code>threshold = 0.8</code>
-would only display estimates where 80% of posterior density was above/below
-zero. Defaults to <code>NULL</code> (not used).</p></td>
-    </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A data frame with the following columns:
+<code>name</code> is an identifier for each loading, <code>trend</code> is the trend for the
+loading, <code>median</code> is the posterior median loading, <code>lower</code> is the lower CI,
+<code>upper</code> is the upper CI, and <code>prob_diff0</code> is the probability the loading is
+different than 0. When <code>summary = FALSE</code>, there is no <code>lower</code> or <code>upper</code>
+columns and instead there are columns <code>chain</code> and <code>draw</code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>plot_trends fit_dfa rotate_trends</p></div>
+    <div class='dont-index'><p>plot_loadings fit_dfa rotate_trends</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>42</span><span class='op'>)</span>
@@ -199,8 +187,8 @@ zero. Defaults to <code>NULL</code> (not used).</p></td>
 </div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'dfa' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 5e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.5 seconds.
+#&gt; Chain 1: Gradient evaluation took 4.7e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.47 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -225,9 +213,9 @@ zero. Defaults to <code>NULL</code> (not used).</p></td>
 #&gt; Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 50 / 50 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.005631 seconds (Warm-up)
-#&gt; Chain 1:                0.662592 seconds (Sampling)
-#&gt; Chain 1:                0.668223 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.005254 seconds (Warm-up)
+#&gt; Chain 1:                0.660287 seconds (Sampling)
+#&gt; Chain 1:                0.665541 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: There were 2 divergent transitions after warmup. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
 #&gt; <span class='warning'>to find out why this is a problem and how to eliminate them.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
@@ -319,11 +307,9 @@ zero. Defaults to <code>NULL</code> (not used).</p></td>
 #&gt; effective sample size for bulk and tail quantities respectively (an ESS &gt; 100 
 #&gt; per chain is considered good), and Rhat is the potential scale reduction 
 #&gt; factor on rank normalized split chains (at convergence, Rhat &lt;= 1.05).</div><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rotate_trends.html'>rotate_trends</a></span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
-<span class='fu'>plot_loadings</span><span class='op'>(</span><span class='va'>r</span>, violin <span class='op'>=</span> <span class='cn'>FALSE</span>, facet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='img'><img src='plot_loadings-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_loadings</span><span class='op'>(</span><span class='va'>r</span>, violin <span class='op'>=</span> <span class='cn'>FALSE</span>, facet <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='img'><img src='plot_loadings-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_loadings</span><span class='op'>(</span><span class='va'>r</span>, violin <span class='op'>=</span> <span class='cn'>TRUE</span>, facet <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='img'><img src='plot_loadings-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_loadings</span><span class='op'>(</span><span class='va'>r</span>, violin <span class='op'>=</span> <span class='cn'>TRUE</span>, facet <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='img'><img src='plot_loadings-4.png' alt='' width='700' height='433' /></div></pre>
+<span class='va'>loadings</span> <span class='op'>&lt;-</span> <span class='fu'>dfa_loadings</span><span class='op'>(</span><span class='va'>r</span>, summary <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='va'>loadings</span> <span class='op'>&lt;-</span> <span class='fu'>dfa_loadings</span><span class='op'>(</span><span class='va'>r</span>, summary <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
