@@ -24,4 +24,4 @@
 
 # bayesdfa 0.1.7
 
-* Added non-gaussian families (poisson, negative binomial, bernoulli, Gamma, lognormal). Also included a function for doing cross validation and calculating the expected log posterior density. Another new feature included smooth models (Gaussian process, B-splines) as alternative models for trends conventionally modeled as random walks. 
+* Added non-gaussian families (poisson, negative binomial, bernoulli, Gamma, lognormal). Also included a function for doing cross validation and calculating the expected log posterior density. Another new feature included smooth models (Gaussian process, B-splines) as alternative models for trends conventionally modeled as random walks. Added functions dfa_trends(), dfa_loadings() and dfa_fitted() for extracting trends, loadings, and fitted values. 

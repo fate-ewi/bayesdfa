@@ -15,10 +15,11 @@ Pass in \code{rstanfit} model object. Returns array of predictions, dimensioned
 number of MCMC draws x number of MCMC chains x time series length x number of time series
 }
 \examples{
+\dontrun{
 set.seed(42)
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 # only 1 chain and 1000 iterations used so example runs quickly:
 m <- fit_dfa(y = s$y_sim, iter = 2000, chains = 3, num_trends=1)
 pred <- predicted(m)
-
+}
 }

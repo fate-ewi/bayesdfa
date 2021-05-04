@@ -8,7 +8,7 @@
 
 0 errors | 0 warnings | 2 notes
 
-* installed size is  6.7Mb; sub-directories of 1Mb or more: libs 5.7Mb
+* installed size is  7.1Mb; sub-directories of 1Mb or more: libs 5.8Mb
 * GNU make is a SystemRequirements
 
 Explanation: this is from the compiled 'Stan' model and associated libraries, and is necessary https://mc-stan.org/rstantools/articles/minimal-rstan-package.html.

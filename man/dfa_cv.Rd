@@ -40,6 +40,7 @@ e.g. NA}
 Apply cross validation to DFA model
 }
 \examples{
+\dontrun{
 set.seed(42)
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
@@ -64,5 +65,6 @@ obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
 obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
 m <- fit_dfa(y = long, iter = 50, chains = 1, obs_covar=obs_covar,data_shape="long", sample=FALSE)
 fit_cv = dfa_cv(m, cv_method="loocv", n_folds = 5, iter=50, chains=1)
+}
 
 }
