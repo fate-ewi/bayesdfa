@@ -24,7 +24,6 @@ Description: Implements Bayesian dynamic factor analysis with 'Stan'. Dynamic
     support for latent regimes.
 License: GPL (>=3)
 Encoding: UTF-8
-LazyData: true
 Depends:
     R (>= 3.5.0)
 Imports:
