@@ -97,7 +97,7 @@
       <h1 data-toc-skip>Fitting compositional dynamic factor models with bayesdfa</h1>
                         <h4 class="author">Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri</h4>
             
-            <h4 class="date">2021-05-04</h4>
+            <h4 class="date">2021-05-16</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/fate-ewi/bayesdfa/blob/master/vignettes/compositional.Rmd"><code>vignettes/compositional.Rmd</code></a></small>
       <div class="hidden name"><code>compositional.Rmd</code></div>
@@ -138,7 +138,7 @@
 <p>Next, we can pass this data to the fit_dfa() function and try to recover our known loadings. Note: the compositional model has a nasty label-switching issue that our ‘chain flipping’ function doesn’t handle well. Multiple chains may be run, but need to be examined to evaluate whether they need to be flipped. To avoid that situation, we’ll just use a single chain.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span>, iter <span class="op">=</span> <span class="va">iter</span>, chains <span class="op">=</span> <span class="va">chains</span>, num_trends <span class="op">=</span> <span class="fl">2</span>, seed <span class="op">=</span> <span class="fl">42</span>,
-    z_model <span class="op">=</span> <span class="st">"proportion"</span>,zscore<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    z_model <span class="op">=</span> <span class="st">"proportion"</span>,scale<span class="op">=</span><span class="st">"center"</span><span class="op">)</span></code></pre></div>
 <p>We can’t rotate the Z matrix – because the compositional constraint would be destroyed. Other than the loadings on time series 3 and 4, these loadings are close to those in the simualting model,</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pars</span> <span class="op">=</span> <span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html">extract</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">model</span>,permuted<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
@@ -180,7 +180,7 @@
 <p>Next we can fit the compositional DFA model,</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">y</span>, iter <span class="op">=</span> <span class="va">iter</span>, chains <span class="op">=</span> <span class="va">chains</span>, num_trends <span class="op">=</span> <span class="fl">3</span>, seed <span class="op">=</span> <span class="fl">42</span>,
-    z_model <span class="op">=</span> <span class="st">"proportion"</span>,zscore<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    z_model <span class="op">=</span> <span class="st">"proportion"</span>,scale<span class="op">=</span><span class="st">"center"</span><span class="op">)</span></code></pre></div>
 <p>We can look at the true values of the loadings (open triangles) and estimated values (solid circles) to see that for some of the loadings, the model estimates the parameters well.</p>
 <p><img src="compositional_files/figure-html/unnamed-chunk-12-1.png" width="528"></p>
 </div>
