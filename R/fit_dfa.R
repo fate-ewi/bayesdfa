@@ -10,8 +10,8 @@
 #' @param num_trends Number of trends to fit.
 #' @param varIndx Indices indicating which timeseries should have shared
 #'   variances.
-#' @param zscore Logical. Should the data be standardized first? If not it is
-#'   just centered. Centering is necessary because no intercept is included.
+#' @param scale Character string, used to standardized data. Can be "zscore" to center and
+#' standardize data, "center" to just standardize data, or "none". Defaults to "zscore"
 #' @param iter Number of iterations in Stan sampling, defaults to 2000.
 #' @param thin Thinning rate in Stan sampling, defaults to 1.
 #' @param chains Number of chains in Stan sampling, defaults to 4.
@@ -140,7 +140,7 @@
 fit_dfa <- function(y = y,
                     num_trends = 1,
                     varIndx = NULL,
-                    zscore = TRUE,
+                    scale = c("zscore","center","none"),
                     iter = 2000,
                     chains = 4,
                     thin = 1,
@@ -240,26 +240,28 @@ fit_dfa <- function(y = y,
   if(family == "gaussian") {
     if(data_shape[1] == "wide") {
       for (i in seq_len(P)) {
-        if (zscore) {
+        if (scale[1]=="zscore") {
           if (length(unique(na.omit(c(y[i, ])))) == 1L) {
             stop("Can't scale one or more of the time series because all values ",
-              "are the same. Remove this/these time series or set `zscore = FALSE`.",
+              "are the same. Remove this/these time series or set `scale` = `center`.",
               call. = FALSE
             )
           }
           y[i, ] <- scale(y[i, ], center = TRUE, scale = TRUE)
-        } else {
+        }
+        if(scale[1]=="center") {
           y[i, ] <- scale(y[i, ], center = TRUE, scale = FALSE)
         }
       }
     } else {
-      if(zscore) {
+      if(scale[1]=="zscore") {
         # standardize
         for(i in seq_len(P)) {
           indx = which(y[["ts"]] == i)
           y[indx,"obs"] = scale(y[indx,"obs" ], center = TRUE, scale = TRUE)
         }
-      } else {
+      }
+      if(scale[1]=="center") {
         # just center
         for(i in seq_len(P)) {
           indx = which(y[["ts"]] == i)
@@ -526,7 +528,7 @@ fit_dfa <- function(y = y,
   out[["z_bound"]] <- z_bound
   out[["trend_model"]] <- trend_model
   out[["sample"]] <- sample
-  out[["zscore"]] <- zscore
+  out[["scale"]] <- scale[1]
   out[["obs_covar"]] <- obs_covar
   out[["pro_covar"]] <- pro_covar
   out[["family"]] <- family

@@ -63,7 +63,7 @@ Next, we'll fit a 1-trend, 2-trend, and 3-trend DFA model to the simulated time 
 
 ```{r fit-1-trend, message=FALSE, warning=FALSE, results='hide'}
 f1 <- fit_dfa(
-  y = sim_dat$y_sim, num_trends = 1, zscore = TRUE,
+  y = sim_dat$y_sim, num_trends = 1, scale="zscore",
   iter = iter, chains = chains, thin = 1
 )
 ```
@@ -104,13 +104,13 @@ Moving to a more complex model, we'll fit the 2-trend and 3-trend models. All ot
 
 ```{r fit-models, warning=FALSE, results='hide', message=FALSE}
 f2 <- fit_dfa(
-  y = sim_dat$y_sim, num_trends = 2, zscore = TRUE,
+  y = sim_dat$y_sim, num_trends = 2, scale="zscore",
   iter = iter, chains = chains, thin = 1
 )
 r2 <- rotate_trends(f2)
 
 f3 <- fit_dfa(
-  y = sim_dat$y_sim, num_trends = 3, zscore = TRUE,
+  y = sim_dat$y_sim, num_trends = 3, scale="zscore",
   iter = chains, chains = chains, thin = 1
 )
 r3 <- rotate_trends(f3)
@@ -189,7 +189,7 @@ Instead of fitting a model with normal process deviations, we may be interested 
 
 ```{r fit-2-trend-extreme, message=FALSE, warning=FALSE, results='hide'}
 t2 <- fit_dfa(
-  y = sim_dat$y_sim, num_trends = 2, zscore = TRUE,
+  y = sim_dat$y_sim, num_trends = 2, scale="zscore",
   iter = iter, chains = chains, thin = 1, estimate_nu = TRUE
 )
 ```

@@ -59,7 +59,7 @@ Next, we can pass this data to the fit_dfa() function and try to recover our kno
 
 ```{r, message=FALSE, warning=FALSE, results='hide'}
 fit <- fit_dfa(y = y, iter = iter, chains = chains, num_trends = 2, seed = 42,
-    z_model = "proportion",zscore=FALSE)
+    z_model = "proportion",scale="center")
 ```
 
 We can't rotate the Z matrix -- because the compositional constraint would be destroyed. Other than the loadings on time series 3 and 4, these loadings are close to those in the simualting model,
@@ -109,7 +109,7 @@ Next we can fit the compositional DFA model,
 
 ```{r message=FALSE, warning=FALSE, results='hide'}
 fit <- fit_dfa(y = y, iter = iter, chains = chains, num_trends = 3, seed = 42,
-    z_model = "proportion",zscore=FALSE)
+    z_model = "proportion",scale="center")
 ```
 
 We can look at the true values of the loadings (open triangles) and estimated values (solid circles) to see that for some of the loadings, the model estimates the parameters well. 

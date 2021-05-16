@@ -8,7 +8,7 @@ fit_dfa(
   y = y,
   num_trends = 1,
   varIndx = NULL,
-  zscore = TRUE,
+  scale = c("zscore", "center", "none"),
   iter = 2000,
   chains = 4,
   thin = 1,
@@ -50,8 +50,8 @@ not estimated if data shape is long.}
 \item{varIndx}{Indices indicating which timeseries should have shared
 variances.}
 
-\item{zscore}{Logical. Should the data be standardized first? If not it is
-just centered. Centering is necessary because no intercept is included.}
+\item{scale}{Character string, used to standardized data. Can be "zscore" to center and
+standardize data, "center" to just standardize data, or "none". Defaults to "zscore"}
 
 \item{iter}{Number of iterations in Stan sampling, defaults to 2000.}
 

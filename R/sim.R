@@ -65,7 +65,7 @@ sim_dfa <- function(num_trends = 1,
   y_ignore <- matrix(rnorm(num_ts * num_years), nrow = num_ts, ncol = num_years)
 
   d <- fit_dfa(y_ignore,
-    num_trends = num_trends, sample = FALSE, zscore = FALSE,
+    num_trends = num_trends, sample = FALSE, scale="center",
     varIndx = varIndx, nu_fixed = nu_fixed, trend_model = "rw"
   )
 

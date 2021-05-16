@@ -103,7 +103,7 @@ for(i in 1:nrow(l)) {
   Y = t(scale(t(Y)))
   Y[1,1:(idx-1)] = NA
   Y[2:3,1:50] = NA
-  fit_2 = fit_dfa(y = Y, num_trends = 1, chains=1, iter=10, zscore = FALSE)
+  fit_2 = fit_dfa(y = Y, num_trends = 1, chains=1, iter=10, scale="center")
   r = rotate_trends(fit_2)
   l[i,] = c(r$Z_rot_mean)
   output$estimated_trend[which(output$ts_start==(idx-1))] = scale((r$Z_rot_mean %*% r$trends_mean)[2,])

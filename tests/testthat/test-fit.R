@@ -24,7 +24,8 @@ test_that("est_correlation = TRUE works", {
   skip_on_cran()
   set.seed(42)
   s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
-  m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, num_trends = 2, est_correlation = TRUE)
+  m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1,
+               num_trends = 2, est_correlation = TRUE)
   expect_equal(class(m$model)[[1]], "stanfit")
 })
 
@@ -32,7 +33,7 @@ test_that("NA indexing works", {
   yy <- matrix(nrow = 3, ncol = 3, data = 1)
   yy[1, 1] <- NA
   yy[2, 3] <- NA
-  m <- fit_dfa(yy, num_trends = 1, sample = FALSE, zscore = FALSE)
+  m <- fit_dfa(yy, num_trends = 1, sample = FALSE, scale="center")
   expect_equal(m$sampling_args$data$n_na, 2L)
   expect_equal(m$sampling_args$data$row_indx_na, c(1L, 2L))
   expect_equal(m$sampling_args$data$col_indx_na, c(1L, 3L))
@@ -40,7 +41,7 @@ test_that("NA indexing works", {
 
 test_that("if time series all same value then zscore stops with error", {
   yy <- matrix(nrow = 3, ncol = 3, data = 1)
-  expect_error(fit_dfa(y = yy, num_trends = 1, sample = FALSE, zscore = TRUE))
+  expect_error(fit_dfa(y = yy, num_trends = 1, sample = FALSE, scale = "zscore"))
 })
 
 test_that("find_dfa_trends works", {
