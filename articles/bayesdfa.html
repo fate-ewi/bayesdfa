@@ -97,7 +97,7 @@
       <h1 data-toc-skip>Overview of the bayesdfa package</h1>
                         <h4 class="author">Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri</h4>
             
-            <h4 class="date">2021-05-04</h4>
+            <h4 class="date">2021-05-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/fate-ewi/bayesdfa/blob/master/vignettes/bayesdfa.Rmd"><code>vignettes/bayesdfa.Rmd</code></a></small>
       <div class="hidden name"><code>bayesdfa.Rmd</code></div>
@@ -142,7 +142,7 @@ Simulated data, from a model with 2 latent trends and no extremes.
 <p>Next, we’ll fit a 1-trend, 2-trend, and 3-trend DFA model to the simulated time series using the <code><a href="../reference/fit_dfa.html">fit_dfa()</a></code> function. Starting with the 1-trend model, we’ll estimate the posterior distributions of the trends and loadings. Note that this example uses 1 MCMC chain and 50 iterations — for real examples, you’ll want to use more (say 4 chains, 5000 iterations).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">f1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span>
-  y <span class="op">=</span> <span class="va">sim_dat</span><span class="op">$</span><span class="va">y_sim</span>, num_trends <span class="op">=</span> <span class="fl">1</span>, zscore <span class="op">=</span> <span class="cn">TRUE</span>,
+  y <span class="op">=</span> <span class="va">sim_dat</span><span class="op">$</span><span class="va">y_sim</span>, num_trends <span class="op">=</span> <span class="fl">1</span>, scale<span class="op">=</span><span class="st">"zscore"</span>,
   iter <span class="op">=</span> <span class="va">iter</span>, chains <span class="op">=</span> <span class="va">chains</span>, thin <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span></code></pre></div>
 <p>Convergence of DFA models can be evaluated with our <code><a href="../reference/is_converged.html">is_converged()</a></code> function. This function takes a fitted object, and specified <code>threshold</code> argument representing the maximum allowed Rhat value (default = 1.05). The convergence test isn’t that useful for a model with such a short number of iterations, but is called with</p>
@@ -178,13 +178,13 @@ Model predicted values from the 1-trend DFA model applied to simulated data.
 <p>Moving to a more complex model, we’ll fit the 2-trend and 3-trend models. All other arguments stay the same as before,</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">f2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span>
-  y <span class="op">=</span> <span class="va">sim_dat</span><span class="op">$</span><span class="va">y_sim</span>, num_trends <span class="op">=</span> <span class="fl">2</span>, zscore <span class="op">=</span> <span class="cn">TRUE</span>,
+  y <span class="op">=</span> <span class="va">sim_dat</span><span class="op">$</span><span class="va">y_sim</span>, num_trends <span class="op">=</span> <span class="fl">2</span>, scale<span class="op">=</span><span class="st">"zscore"</span>,
   iter <span class="op">=</span> <span class="va">iter</span>, chains <span class="op">=</span> <span class="va">chains</span>, thin <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span>
 <span class="va">r2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rotate_trends.html">rotate_trends</a></span><span class="op">(</span><span class="va">f2</span><span class="op">)</span>
 
 <span class="va">f3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span>
-  y <span class="op">=</span> <span class="va">sim_dat</span><span class="op">$</span><span class="va">y_sim</span>, num_trends <span class="op">=</span> <span class="fl">3</span>, zscore <span class="op">=</span> <span class="cn">TRUE</span>,
+  y <span class="op">=</span> <span class="va">sim_dat</span><span class="op">$</span><span class="va">y_sim</span>, num_trends <span class="op">=</span> <span class="fl">3</span>, scale<span class="op">=</span><span class="st">"zscore"</span>,
   iter <span class="op">=</span> <span class="va">chains</span>, chains <span class="op">=</span> <span class="va">chains</span>, thin <span class="op">=</span> <span class="fl">1</span>
 <span class="op">)</span>
 <span class="va">r3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rotate_trends.html">rotate_trends</a></span><span class="op">(</span><span class="va">f3</span><span class="op">)</span></code></pre></div>
@@ -199,11 +199,11 @@ Model predicted values from the 2-trend DFA model applied to simulated data.
 <p>The loadings from the 1-trend model aren’t as interesting because for a 1-trend model the loadings are a 1-dimensional vector. For the 2 trend model, there’s a separate loading of each time series on each trend,</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">r2</span><span class="op">$</span><span class="va">Z_rot_mean</span>, <span class="fl">2</span><span class="op">)</span></code></pre></div>
-<pre><code>##        [,1]   [,2]
-## [1,]   0.80  -0.54
-## [2,]  60.49 -39.24
-## [3,] -77.15 112.91
-## [4,] -51.79  30.35</code></pre>
+<pre><code>##        [,1]    [,2]
+## [1,]   1.25   -0.84
+## [2,] -60.06   40.73
+## [3,]  77.03 -112.99
+## [4,]  51.76  -30.41</code></pre>
 <p>These loadings can also be plotted with the <code><a href="../reference/plot_loadings.html">plot_loadings()</a></code> function. This shows the distribution of the densities as violin plots, with color proportional to being different from 0.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_loadings.html">plot_loadings</a></span><span class="op">(</span><span class="va">r2</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
@@ -217,10 +217,10 @@ Estimated loadings from the 2-trend DFA model.
 <code class="sourceCode R"><span class="va">loo1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loo.bayesdfa.html">loo</a></span><span class="op">(</span><span class="va">f1</span><span class="op">)</span>
 <span class="va">loo1</span><span class="op">$</span><span class="va">estimates</span></code></pre></div>
 <pre><code>##               Estimate           SE
-## elpd_loo -2.719359e+04 5.626518e+03
-## p_loo     6.661338e-16 2.176588e-15
-## looic     5.438717e+04 1.125304e+04</code></pre>
-<p>where 5.438717510^{4} is the estimate and 1.125303710^{4} is the standard error.</p>
+## elpd_loo -2.719423e+04 5.625610e+03
+## p_loo    -1.998401e-15 1.094370e-15
+## looic     5.438846e+04 1.125122e+04</code></pre>
+<p>where 5.438846210^{4} is the estimate and 1.12512210^{4} is the standard error.</p>
 <p>As an alternative to fitting each model individually as we did above, we also developed the <code><a href="../reference/find_dfa_trends.html">find_dfa_trends()</a></code> to automate fitting a larger number of models. In addition to evaluating different trends, this function allows the user to optionally evaluate models with normal and Student-t process errors, and alternative variance structures (observation variance of time series being equal, or not). For example, to fit models with 1:5 trends, both Student-t and normal errors, and equal and unequal variances, the call would be</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_dfa_trends.html">find_dfa_trends</a></span><span class="op">(</span>
@@ -263,7 +263,7 @@ Simulated data (z-scored), from a model with 2 latent trends and an extreme in t
 <p>Instead of fitting a model with normal process deviations, we may be interested in fitting the model with Student-t deviations. We can turn on the estimation of <code>nu</code> with the <code>estimate_nu</code> argument. [Alternatively, nu can also be fixed a priori by setting the argument <code>nu_fixed</code>]. Here’s the code for a 2-trend model with Student-t deviations,</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span>
-  y <span class="op">=</span> <span class="va">sim_dat</span><span class="op">$</span><span class="va">y_sim</span>, num_trends <span class="op">=</span> <span class="fl">2</span>, zscore <span class="op">=</span> <span class="cn">TRUE</span>,
+  y <span class="op">=</span> <span class="va">sim_dat</span><span class="op">$</span><span class="va">y_sim</span>, num_trends <span class="op">=</span> <span class="fl">2</span>, scale<span class="op">=</span><span class="st">"zscore"</span>,
   iter <span class="op">=</span> <span class="va">iter</span>, chains <span class="op">=</span> <span class="va">chains</span>, thin <span class="op">=</span> <span class="fl">1</span>, estimate_nu <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
 <p>Again we have to rotate the trends before plotting,</p>

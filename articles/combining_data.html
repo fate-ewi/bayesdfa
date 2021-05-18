@@ -97,7 +97,7 @@
       <h1 data-toc-skip>Combining data with bayesdfa</h1>
                         <h4 class="author">Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri</h4>
             
-            <h4 class="date">2021-05-04</h4>
+            <h4 class="date">2021-05-18</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/fate-ewi/bayesdfa/blob/master/vignettes/combining_data.Rmd"><code>vignettes/combining_data.Rmd</code></a></small>
       <div class="hidden name"><code>combining_data.Rmd</code></div>
@@ -152,7 +152,7 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">r</span><span class="op">$</span><span class="va">Z_rot_mean</span>,<span class="fl">3</span><span class="op">)</span></code></pre></div>
 <pre><code>##       1
-## 1 0.881
+## 1 2.535
 ## 2 4.551
 ## 3 1.412</code></pre>
 <p>Now, we’ll pretend that in time steps 1:50 we have observations from time series 1 (but not the others). We’ll fit several additional models, adding in back data points in steps of 10, and going backwards in time. All these runs would use time points 51:100 for time series 2 and 3, but they would include time steps 51:100, then 41:100, 31:100, etc. for time series 1.</p>
@@ -169,7 +169,7 @@
   <span class="va">Y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">Y</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
   <span class="va">Y</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">idx</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">]</span> <span class="op">=</span> <span class="cn">NA</span>
   <span class="va">Y</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span> <span class="op">=</span> <span class="cn">NA</span>
-  <span class="va">fit_2</span> <span class="op">=</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">Y</span>, num_trends <span class="op">=</span> <span class="fl">1</span>, chains<span class="op">=</span><span class="fl">1</span>, iter<span class="op">=</span><span class="fl">10</span>, zscore <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+  <span class="va">fit_2</span> <span class="op">=</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">Y</span>, num_trends <span class="op">=</span> <span class="fl">1</span>, chains<span class="op">=</span><span class="fl">1</span>, iter<span class="op">=</span><span class="fl">10</span>, scale<span class="op">=</span><span class="st">"center"</span><span class="op">)</span>
   <span class="va">r</span> <span class="op">=</span> <span class="fu"><a href="../reference/rotate_trends.html">rotate_trends</a></span><span class="op">(</span><span class="va">fit_2</span><span class="op">)</span>
   <span class="va">l</span><span class="op">[</span><span class="va">i</span>,<span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">r</span><span class="op">$</span><span class="va">Z_rot_mean</span><span class="op">)</span>
   <span class="va">output</span><span class="op">$</span><span class="va">estimated_trend</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">output</span><span class="op">$</span><span class="va">ts_start</span><span class="op">==</span><span class="op">(</span><span class="va">idx</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="op">(</span><span class="va">r</span><span class="op">$</span><span class="va">Z_rot_mean</span> <span class="op">%*%</span> <span class="va">r</span><span class="op">$</span><span class="va">trends_mean</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span>,<span class="op">]</span><span class="op">)</span>
