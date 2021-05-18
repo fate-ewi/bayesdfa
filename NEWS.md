@@ -25,3 +25,7 @@
 # bayesdfa 0.1.7
 
 * Added non-gaussian families (poisson, negative binomial, bernoulli, Gamma, lognormal). Also included a function for doing cross validation and calculating the expected log posterior density. Another new feature included smooth models (Gaussian process, B-splines) as alternative models for trends conventionally modeled as random walks. Added functions dfa_trends(), dfa_loadings() and dfa_fitted() for extracting trends, loadings, and fitted values. 
+
+# bayesdfa 1.0.0
+
+* Added constraint on diagonal of Z matrix to keep parameter estimates from 'flipping' within MCMC chains. Ensures convergence for problematic cases. This was present in 0.1.1, but later removed. 
