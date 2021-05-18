@@ -47,8 +47,20 @@ rotate_trends <- function(fitted_model, conf_level = 0.95, invert = FALSE) {
     }
   }
   if (n_trends == 1) {
-    mcmc_trends_rot <- x
     mcmc_Z_rot <- Z
+    mcmc_trends_rot <- x
+    # for (i in seq_len(n_mcmc)) {
+    #   # sometimes sampling may get stuck and oscillate within a
+    #   # chain -- catch those cases with post-hoc flipping
+    #   mcmc_Z_rot[i, , ] <- Z[i, , ]
+    #   mcmc_trends_rot[i, , ] <- x[i, , ]
+    #   # use first draw as arbitrary reference
+    #   if(sum((-mcmc_trends_rot[i, , ] - mcmc_trends_rot[1, , ])^2) < sum((mcmc_trends_rot[i, , ] - mcmc_trends_rot[1, , ])^2)) {
+    #     # then flip
+    #     mcmc_Z_rot[i, , ] <- -mcmc_Z_rot[i, , ]
+    #     mcmc_trends_rot[i, , ] <- -mcmc_trends_rot[i, , ]
+    #   }
+    # }
   }
 
   list(

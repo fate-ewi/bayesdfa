@@ -171,7 +171,7 @@ parameters {
   vector[K] x0; // initial state
   vector<lower=0>[K*(1-proportional_model)] psi; // expansion parameters
   vector<lower=z_bound[1],upper=z_bound[2]>[nZ*(1-proportional_model)] z; // estimated loadings in vec form
-  vector[K*(1-proportional_model)] zpos; // constrained positive values
+  vector<lower=0>[K*(1-proportional_model)] zpos; // constrained positive values
   simplex[K] p_z[P*proportional_model]; // alternative for proportional Z
   matrix[K * est_spline, n_knots * est_spline] spline_a; // weights for b-splines
   matrix[n_obs_covar, P] b_obs; // coefficients on observation model

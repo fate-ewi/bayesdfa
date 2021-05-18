@@ -1048,7 +1048,7 @@ public:
             zpos(j_1__) = vals_r__[pos__++];
         }
         try {
-            writer__.vector_unconstrain(zpos);
+            writer__.vector_lb_unconstrain(0, zpos);
         } catch (const std::exception& e) {
             stan::lang::rethrow_located(std::runtime_error(std::string("Error transforming variable zpos: ") + e.what()), current_statement_begin__, prog_reader__());
         }
@@ -1421,9 +1421,9 @@ public:
             Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> zpos;
             (void) zpos;  // dummy to suppress unused var warning
             if (jacobian__)
-                zpos = in__.vector_constrain((K * (1 - proportional_model)), lp__);
+                zpos = in__.vector_lb_constrain(0, (K * (1 - proportional_model)), lp__);
             else
-                zpos = in__.vector_constrain((K * (1 - proportional_model)));
+                zpos = in__.vector_lb_constrain(0, (K * (1 - proportional_model)));
             current_statement_begin__ = 175;
             std::vector<Eigen::Matrix<local_scalar_t__, Eigen::Dynamic, 1> > p_z;
             size_t p_z_d_0_max__ = (P * proportional_model);
@@ -2849,7 +2849,7 @@ public:
         for (size_t j_1__ = 0; j_1__ < z_j_1_max__; ++j_1__) {
             vars__.push_back(z(j_1__));
         }
-        Eigen::Matrix<double, Eigen::Dynamic, 1> zpos = in__.vector_constrain((K * (1 - proportional_model)));
+        Eigen::Matrix<double, Eigen::Dynamic, 1> zpos = in__.vector_lb_constrain(0, (K * (1 - proportional_model)));
         size_t zpos_j_1_max__ = (K * (1 - proportional_model));
         for (size_t j_1__ = 0; j_1__ < zpos_j_1_max__; ++j_1__) {
             vars__.push_back(zpos(j_1__));
