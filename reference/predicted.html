@@ -73,7 +73,7 @@ number of MCMC draws x number of MCMC chains x time series length x number of ti
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">bayesdfa</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -164,7 +164,7 @@ model. E.g. output from <code><a href='invert_chains.html'>invert_chains()</a></
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>42</span><span class='op'>)</span>
 <span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sim_dfa.html'>sim_dfa</a></span><span class='op'>(</span>num_trends <span class='op'>=</span> <span class='fl'>1</span>, num_years <span class='op'>=</span> <span class='fl'>20</span>, num_ts <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
 <span class='co'># only 1 chain and 1000 iterations used so example runs quickly:</span>
-<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fit_dfa.html'>fit_dfa</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, iter <span class='op'>=</span> <span class='fl'>2000</span>, chains <span class='op'>=</span> <span class='fl'>3</span>, num_trends<span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fit_dfa.html'>fit_dfa</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, iter <span class='op'>=</span> <span class='fl'>2000</span>, chains <span class='op'>=</span> <span class='fl'>3</span>, num_trends <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>pred</span> <span class='op'>&lt;-</span> <span class='fu'>predicted</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>

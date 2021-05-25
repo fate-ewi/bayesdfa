@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">bayesdfa</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -173,6 +173,7 @@
   family <span class='op'>=</span> <span class='st'>"gaussian"</span>,
   verbose <span class='op'>=</span> <span class='cn'>FALSE</span>,
   gp_theta_prior <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>1</span><span class='op'>)</span>,
+  expansion_prior <span class='op'>=</span> <span class='cn'>FALSE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -336,6 +337,10 @@ This prior is a half-Student t prior, with the first argument of gp_theta_prior 
 and the second element being the standard deviation</p></td>
     </tr>
     <tr>
+      <th>expansion_prior</th>
+      <td><p>Defaults to FALSE, if TRUE uses the parameter expansion prior of Ghosh &amp; Dunson 2009</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Any other arguments to pass to <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>rstan::sampling()</a></code>.</p></td>
     </tr>
@@ -359,8 +364,8 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 </div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'dfa' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 5e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.5 seconds.
+#&gt; Chain 1: Gradient evaluation took 4.9e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.49 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -385,11 +390,13 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 #&gt; Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 50 / 50 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004529 seconds (Warm-up)
-#&gt; Chain 1:                0.008761 seconds (Sampling)
-#&gt; Chain 1:                0.01329 seconds (Total)
-#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bfmi-low</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Examine the pairs() plot to diagnose sampling problems</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is 2.1, indicating chains have not mixed.</span>
+#&gt; Chain 1:  Elapsed Time: 0.007732 seconds (Warm-up)
+#&gt; Chain 1:                0.12434 seconds (Sampling)
+#&gt; Chain 1:                0.132072 seconds (Total)
+#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: There were 16 divergent transitions after warmup. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
+#&gt; <span class='warning'>to find out why this is a problem and how to eliminate them.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bfmi-low</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Examine the pairs() plot to diagnose sampling problems</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is 2.11, indicating chains have not mixed.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#r-hat</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
@@ -397,94 +404,93 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; Inference for the input samples (1 chains: each with iter = 25; warmup = 12):
 #&gt; 
-#&gt;                   Q5     Q50     Q95    Mean     SD  Rhat Bulk_ESS Tail_ESS
-#&gt; x[1,1]           1.0     1.0     1.0     1.0    0.0  1.13        6       13
-#&gt; x[1,2]          -0.2    -0.2    -0.2    -0.2    0.0  1.48        5       13
-#&gt; x[1,3]           1.1     1.1     1.1     1.1    0.0  1.87        4       13
-#&gt; x[1,4]           1.3     1.3     1.3     1.3    0.0  1.87        4       13
-#&gt; x[1,5]          -0.1    -0.1    -0.1    -0.1    0.0  2.06        4       13
-#&gt; x[1,6]           1.0     1.0     1.0     1.0    0.0  2.06        4       13
-#&gt; x[1,7]           0.1     0.1     0.1     0.1    0.0  2.06        4       13
-#&gt; x[1,8]           1.4     1.5     1.5     1.5    0.0  2.06        4       13
-#&gt; x[1,9]           0.7     0.7     0.7     0.7    0.0  2.06        4       13
-#&gt; x[1,10]          1.9     1.9     1.9     1.9    0.0  2.06        4       13
-#&gt; x[1,11]          2.5     2.5     2.5     2.5    0.0  2.06        4       13
-#&gt; x[1,12]          2.0     2.0     2.0     2.0    0.0  2.06        4       13
-#&gt; x[1,13]          1.1     1.1     1.1     1.1    0.0  2.06        4       13
-#&gt; x[1,14]          0.5     0.5     0.5     0.5    0.0  1.48        4       13
-#&gt; x[1,15]         -0.1    -0.1    -0.1    -0.1    0.0  1.13        7       13
-#&gt; x[1,16]         -0.9    -0.9    -0.9    -0.9    0.0  1.58        8       13
-#&gt; x[1,17]         -1.9    -1.9    -1.9    -1.9    0.0  1.06        9       13
-#&gt; x[1,18]         -2.0    -2.0    -2.0    -2.0    0.0  1.45        5       13
-#&gt; x[1,19]         -1.7    -1.7    -1.6    -1.7    0.0  1.45        4       13
-#&gt; x[1,20]         -2.3    -2.3    -2.3    -2.3    0.0  1.58        4       13
-#&gt; Z[1,1]           0.5     0.5     0.5     0.5    0.0  1.07        7       13
-#&gt; Z[2,1]         -32.6   -28.6   -23.8   -28.4    3.0  2.06        3       13
-#&gt; Z[3,1]           1.4     1.6     1.9     1.6    0.2  2.06        4       13
-#&gt; log_lik[1]      -1.5    -1.5    -1.4    -1.5    0.0  2.06        3       13
-#&gt; log_lik[2]    -274.4  -202.4  -136.1  -203.2   47.0  2.06        3       13
-#&gt; log_lik[3]      -2.0    -1.8    -1.6    -1.8    0.1  2.06        4       13
-#&gt; log_lik[4]      -1.3    -1.3    -1.3    -1.3    0.0  2.06        3       13
-#&gt; log_lik[5]     -13.9   -10.9    -7.7   -10.9    2.1  2.06        3       13
-#&gt; log_lik[6]      -1.3    -1.3    -1.3    -1.3    0.0  2.06        3       13
-#&gt; log_lik[7]      -1.6    -1.5    -1.5    -1.5    0.0  2.06        3       13
-#&gt; log_lik[8]    -321.0  -234.7  -156.7  -235.8   55.9  2.06        3       13
-#&gt; log_lik[9]      -1.8    -1.6    -1.5    -1.6    0.1  2.06        4       13
-#&gt; log_lik[10]     -1.6    -1.6    -1.6    -1.6    0.0  2.06        3       13
-#&gt; log_lik[11]   -441.1  -320.6  -211.6  -322.1   78.0  2.06        3       13
-#&gt; log_lik[12]     -3.8    -3.1    -2.7    -3.1    0.3  2.06        3       13
-#&gt; log_lik[13]     -1.3    -1.3    -1.3    -1.3    0.0  2.06        3       13
-#&gt; log_lik[14]     -3.7    -3.3    -2.8    -3.3    0.3  2.06        3       13
-#&gt; log_lik[15]     -1.4    -1.4    -1.4    -1.4    0.0  2.06        3       13
-#&gt; log_lik[16]     -1.7    -1.7    -1.7    -1.7    0.0  2.06        3       13
-#&gt; log_lik[17]   -261.8  -189.8  -124.5  -190.7   46.8  2.06        3       13
-#&gt; log_lik[18]     -2.6    -2.3    -2.1    -2.3    0.2  2.06        3       13
-#&gt; log_lik[19]     -1.3    -1.3    -1.3    -1.3    0.0  2.06        3       13
-#&gt; log_lik[20]     -2.5    -2.0    -1.7    -2.0    0.3  2.06        3       13
-#&gt; log_lik[21]     -1.4    -1.4    -1.4    -1.4    0.0  2.06        4       13
-#&gt; log_lik[22]     -1.3    -1.3    -1.3    -1.3    0.0  2.06        3       13
-#&gt; log_lik[23]   -553.1  -399.1  -261.3  -401.5   99.3  2.06        3       13
-#&gt; log_lik[24]     -3.5    -2.9    -2.4    -2.9    0.4  2.06        3       13
-#&gt; log_lik[25]     -1.4    -1.3    -1.3    -1.3    0.0  2.06        3       13
-#&gt; log_lik[26]   -139.0   -99.4   -65.6  -100.4   25.0  2.06        3       13
-#&gt; log_lik[27]     -2.6    -2.3    -2.1    -2.3    0.1  2.06        3       13
-#&gt; log_lik[28]     -2.5    -2.5    -2.5    -2.5    0.0  2.06        3       13
-#&gt; log_lik[29]   -971.7  -699.8  -458.4  -704.6  174.7  2.06        3       13
-#&gt; log_lik[30]     -8.1    -6.4    -5.3    -6.5    0.9  2.06        3       13
-#&gt; log_lik[31]     -3.7    -3.6    -3.5    -3.6    0.1  2.06        3       13
-#&gt; log_lik[32]  -1645.8 -1195.9  -789.6 -1202.3  291.4  2.06        3       13
-#&gt; log_lik[33]    -12.0    -9.4    -7.6    -9.4    1.5  2.06        3       13
-#&gt; log_lik[34]     -3.3    -3.2    -3.1    -3.2    0.1  2.06        3       13
-#&gt; log_lik[35]   -982.2  -706.3  -459.4  -710.7  178.1  2.06        3       13
-#&gt; log_lik[36]     -7.6    -6.0    -4.9    -6.0    0.9  2.06        3       13
-#&gt; log_lik[37]     -1.6    -1.6    -1.6    -1.6    0.0  2.06        3       13
-#&gt; log_lik[38]   -289.1  -207.0  -135.5  -208.7   52.4  2.06        3       13
-#&gt; log_lik[39]     -3.0    -2.5    -2.3    -2.5    0.2  2.06        3       13
-#&gt; log_lik[40]     -1.4    -1.4    -1.3    -1.4    0.0  2.06        3       13
-#&gt; log_lik[41]    -82.3   -59.7   -40.6   -60.3   14.3  2.06        3       13
-#&gt; log_lik[42]     -1.4    -1.4    -1.4    -1.4    0.0  1.45        5       13
-#&gt; log_lik[43]     -1.8    -1.8    -1.8    -1.8    0.0  1.10        6       13
-#&gt; log_lik[44]     -6.0    -4.8    -3.4    -4.7    0.9  2.06        3       13
-#&gt; log_lik[45]     -1.6    -1.6    -1.6    -1.6    0.0  1.19        5       13
-#&gt; log_lik[46]     -2.4    -2.4    -2.4    -2.4    0.0  2.06        3       13
-#&gt; log_lik[47]   -236.0  -173.1  -113.4  -173.2   41.5  2.06        3       13
-#&gt; log_lik[48]     -3.9    -3.4    -3.0    -3.4    0.3  2.06        3       13
-#&gt; log_lik[49]     -3.1    -3.0    -3.0    -3.0    0.0  2.06        3       13
-#&gt; log_lik[50]   -861.3  -620.7  -398.0  -622.6  157.1  2.06        3       13
-#&gt; log_lik[51]     -8.4    -6.8    -5.6    -6.8    0.9  2.06        3       13
-#&gt; log_lik[52]     -2.2    -2.2    -2.2    -2.2    0.0  2.06        3       13
-#&gt; log_lik[53]  -1012.3  -732.1  -472.7  -734.3  183.2  2.06        3       13
-#&gt; log_lik[54]     -8.4    -6.6    -5.4    -6.7    0.9  2.06        3       13
-#&gt; log_lik[55]     -2.1    -2.1    -2.1    -2.1    0.0  2.06        3       13
-#&gt; log_lik[56]   -758.7  -554.8  -364.5  -555.7  133.8  2.06        3       13
-#&gt; log_lik[57]     -5.0    -4.0    -3.3    -4.0    0.5  2.06        3       13
-#&gt; log_lik[58]     -2.0    -1.9    -1.9    -1.9    0.0  2.06        3       13
-#&gt; log_lik[59]  -1381.6 -1005.5  -655.9 -1007.9  246.6  2.06        3       13
-#&gt; log_lik[60]     -6.8    -5.1    -4.0    -5.2    0.9  2.06        3       13
-#&gt; psi[1]           0.5     0.5     0.5     0.5    0.0  1.19        8       13
-#&gt; xstar[1,1]      -4.3    -2.7    -1.5    -2.9    1.1  1.14       10       13
-#&gt; sigma[1]         1.4     1.5     1.5     1.5    0.0  2.06        3       13
-#&gt; lp__        -10661.4 -7770.3 -5136.2 -7803.2 1877.9  2.06        3       13
+#&gt;                Q5   Q50   Q95  Mean  SD  Rhat Bulk_ESS Tail_ESS
+#&gt; x[1,1]        0.3   0.3   0.7   0.4 0.2  2.19       13       13
+#&gt; x[1,2]       -0.2   0.0   0.0   0.0 0.1  1.72        4       13
+#&gt; x[1,3]        0.2   0.2   0.9   0.5 0.3  2.19        4       13
+#&gt; x[1,4]        0.5   0.6   1.0   0.7 0.2  2.19        6       13
+#&gt; x[1,5]       -0.2   0.5   1.0   0.4 0.4  2.19       13       13
+#&gt; x[1,6]        0.4   1.3   1.4   1.1 0.4  2.19        8       13
+#&gt; x[1,7]        0.3   1.0   1.0   0.8 0.3  2.10        6       13
+#&gt; x[1,8]        0.5   0.7   1.1   0.7 0.3  2.19       13       13
+#&gt; x[1,9]        0.4   0.5   1.4   0.7 0.6  1.62       12       13
+#&gt; x[1,10]       1.5   1.6   2.5   1.8 0.5  2.19       12       13
+#&gt; x[1,11]       2.0   2.7   2.9   2.6 0.4  2.08        6       13
+#&gt; x[1,12]       0.8   2.2   2.3   1.8 0.6  2.10        4       13
+#&gt; x[1,13]       0.0   1.2   1.3   0.8 0.6  2.10        7       13
+#&gt; x[1,14]      -0.9  -0.2   0.1  -0.3 0.4  2.08        6       13
+#&gt; x[1,15]      -1.0  -1.0  -0.3  -0.7 0.3  2.08        4       13
+#&gt; x[1,16]      -2.2  -2.0  -1.3  -1.8 0.4  2.10        4       13
+#&gt; x[1,17]      -2.6  -2.4  -2.0  -2.3 0.2  2.08        9       13
+#&gt; x[1,18]      -2.4  -2.0  -1.3  -1.9 0.5  1.18        8       13
+#&gt; x[1,19]      -1.9  -1.7  -0.7  -1.4 0.5  2.08        7       13
+#&gt; x[1,20]      -1.4  -1.2   0.0  -0.8 0.5  2.10        8       13
+#&gt; Z[1,1]       -0.9  -0.7  -0.6  -0.7 0.1  1.20       13       13
+#&gt; Z[2,1]       -0.7  -0.4  -0.2  -0.4 0.2  1.46       13       13
+#&gt; Z[3,1]       -0.8  -0.5  -0.4  -0.6 0.1  1.72        4       13
+#&gt; log_lik[1]   -0.7  -0.4  -0.4  -0.5 0.1  2.19       13       13
+#&gt; log_lik[2]   -2.4  -2.1  -1.8  -2.1 0.2  1.95       13       13
+#&gt; log_lik[3]   -1.0  -0.6  -0.6  -0.7 0.2  1.18        8       13
+#&gt; log_lik[4]   -0.8  -0.5  -0.4  -0.5 0.1  2.08       12       13
+#&gt; log_lik[5]   -0.8  -0.5  -0.5  -0.6 0.1  2.08       13       13
+#&gt; log_lik[6]   -0.7  -0.5  -0.4  -0.5 0.1  2.08       12       13
+#&gt; log_lik[7]   -0.7  -0.6  -0.4  -0.6 0.1  2.19       13       13
+#&gt; log_lik[8]   -2.2  -1.3  -1.2  -1.5 0.4  1.95        6       13
+#&gt; log_lik[9]   -2.4  -1.1  -1.0  -1.4 0.5  2.10        4       13
+#&gt; log_lik[10]  -0.7  -0.4  -0.4  -0.5 0.1  2.19        4       13
+#&gt; log_lik[11]  -0.7  -0.4  -0.4  -0.5 0.1  2.10        9       13
+#&gt; log_lik[12]  -0.8  -0.7  -0.3  -0.6 0.2  1.62       13       13
+#&gt; log_lik[13]  -1.3  -0.7  -0.7  -0.8 0.3  1.33        5       13
+#&gt; log_lik[14]  -0.9  -0.6  -0.4  -0.6 0.2  2.08       12       13
+#&gt; log_lik[15]  -2.5  -1.1  -0.8  -1.3 0.6  2.19       13       13
+#&gt; log_lik[16]  -0.9  -0.5  -0.4  -0.5 0.2  1.18        9       13
+#&gt; log_lik[17]  -0.7  -0.5  -0.4  -0.5 0.1  1.77        8       13
+#&gt; log_lik[18]  -0.8  -0.6  -0.4  -0.6 0.1  1.88        4       13
+#&gt; log_lik[19]  -0.9  -0.8  -0.4  -0.7 0.2  1.63        7       13
+#&gt; log_lik[20]  -0.7  -0.6  -0.5  -0.6 0.1  2.08       13       13
+#&gt; log_lik[21]  -0.8  -0.5  -0.4  -0.6 0.1  1.88       11       13
+#&gt; log_lik[22]  -2.5  -2.0  -1.6  -2.0 0.3  1.51        8       13
+#&gt; log_lik[23]  -0.8  -0.6  -0.5  -0.6 0.1  2.08       13       13
+#&gt; log_lik[24]  -0.8  -0.5  -0.4  -0.5 0.2  1.77       10       13
+#&gt; log_lik[25]  -1.6  -0.6  -0.6  -0.8 0.6  1.33        5       13
+#&gt; log_lik[26]  -0.8  -0.5  -0.5  -0.6 0.1  1.95       13       13
+#&gt; log_lik[27]  -1.1  -1.0  -0.7  -1.0 0.1  1.30        5       13
+#&gt; log_lik[28]  -1.0  -0.5  -0.4  -0.6 0.3  2.19        7       13
+#&gt; log_lik[29]  -0.9  -0.7  -0.4  -0.7 0.2  1.03       13       13
+#&gt; log_lik[30]  -1.4  -1.0  -0.4  -0.9 0.4  1.72        4       13
+#&gt; log_lik[31]  -0.8  -0.5  -0.4  -0.6 0.2  1.00        9       13
+#&gt; log_lik[32]  -3.7  -2.3  -1.1  -2.3 0.9  1.03       13       13
+#&gt; log_lik[33]  -1.2  -0.7  -0.4  -0.8 0.3  1.05        8       13
+#&gt; log_lik[34]  -2.0  -0.9  -0.5  -1.0 0.6  2.08        4       13
+#&gt; log_lik[35]  -3.9  -2.2  -1.8  -2.4 0.7  1.50        5       13
+#&gt; log_lik[36]  -1.1  -0.5  -0.4  -0.6 0.3  1.18        7       13
+#&gt; log_lik[37]  -1.0  -0.6  -0.5  -0.7 0.2  1.51        5       13
+#&gt; log_lik[38]  -2.1  -1.1  -1.0  -1.3 0.4  2.19        4       13
+#&gt; log_lik[39]  -1.0  -0.5  -0.4  -0.6 0.2  2.19        4       13
+#&gt; log_lik[40]  -1.7  -0.6  -0.6  -0.9 0.4  2.19        4       13
+#&gt; log_lik[41]  -0.8  -0.5  -0.3  -0.5 0.1  1.46       13       13
+#&gt; log_lik[42]  -0.9  -0.5  -0.3  -0.6 0.2  2.08       13       13
+#&gt; log_lik[43]  -2.5  -1.2  -1.0  -1.5 0.6  1.77       13       13
+#&gt; log_lik[44]  -0.7  -0.5  -0.3  -0.5 0.1  1.18       12       13
+#&gt; log_lik[45]  -1.1  -0.8  -0.5  -0.8 0.2  1.58        7       13
+#&gt; log_lik[46]  -1.3  -0.5  -0.4  -0.8 0.3  2.08        4       13
+#&gt; log_lik[47]  -1.5  -1.2  -0.7  -1.1 0.3  1.46       10       13
+#&gt; log_lik[48]  -1.0  -0.7  -0.5  -0.8 0.2  1.12        8       13
+#&gt; log_lik[49]  -1.1  -0.5  -0.4  -0.6 0.3  1.77        7       13
+#&gt; log_lik[50]  -5.1  -4.3  -1.7  -4.0 1.2  1.19       13       13
+#&gt; log_lik[51]  -1.3  -0.9  -0.4  -0.9 0.3  1.09        8       13
+#&gt; log_lik[52]  -1.5  -0.7  -0.4  -0.8 0.4  1.41       13       13
+#&gt; log_lik[53]  -2.4  -1.7  -1.3  -1.8 0.4  1.18       11       13
+#&gt; log_lik[54]  -1.1  -0.8  -0.5  -0.8 0.2  0.99       13       13
+#&gt; log_lik[55]  -0.9  -0.6  -0.5  -0.6 0.1  1.33       13       13
+#&gt; log_lik[56]  -4.2  -3.4  -2.3  -3.3 0.7  2.19        4        5
+#&gt; log_lik[57]  -0.8  -0.5  -0.4  -0.5 0.1  1.62       13       13
+#&gt; log_lik[58]  -0.8  -0.7  -0.5  -0.7 0.1  0.97       13       13
+#&gt; log_lik[59]  -0.7  -0.6  -0.4  -0.6 0.1  2.08       13       13
+#&gt; log_lik[60]  -0.8  -0.5  -0.5  -0.6 0.1  1.30        6       13
+#&gt; xstar[1,1]   -2.7  -0.7   1.1  -0.7 1.2  1.09       13       13
+#&gt; sigma[1]      0.6   0.6   0.8   0.7 0.1  2.08       13       13
+#&gt; lp__        -59.5 -49.2 -46.5 -51.7 5.4  2.10        4       13
 #&gt; 
 #&gt; For each parameter, Bulk_ESS and Tail_ESS are crude measures of 
 #&gt; effective sample size for bulk and tail quantities respectively (an ESS &gt; 100 
@@ -492,46 +498,46 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 #&gt; factor on rank normalized split chains (at convergence, Rhat &lt;= 1.05).</div><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='co'># example of observation error covariates</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>42</span><span class='op'>)</span>
-<span class='va'>obs_covar</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span><span class='op'>(</span><span class='st'>"time"</span><span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>,<span class='st'>"timeseries"</span><span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>,<span class='st'>"covariate"</span><span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>obs_covar</span><span class='op'>$</span><span class='va'>value</span><span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>obs_covar</span><span class='op'>)</span>,<span class='fl'>0</span>,<span class='fl'>0.1</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span>, obs_covar<span class='op'>=</span><span class='va'>obs_covar</span><span class='op'>)</span>
+<span class='va'>obs_covar</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span><span class='op'>(</span><span class='st'>"time"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>, <span class='st'>"timeseries"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, <span class='st'>"covariate"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>obs_covar</span><span class='op'>$</span><span class='va'>value</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>obs_covar</span><span class='op'>)</span>, <span class='fl'>0</span>, <span class='fl'>0.1</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span>, obs_covar <span class='op'>=</span> <span class='va'>obs_covar</span><span class='op'>)</span>
 
 <span class='co'># example of process error covariates</span>
-<span class='va'>pro_covar</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span><span class='op'>(</span><span class='st'>"time"</span><span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>,<span class='st'>"trend"</span><span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>,<span class='st'>"covariate"</span><span class='op'>=</span><span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>pro_covar</span><span class='op'>$</span><span class='va'>value</span><span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>pro_covar</span><span class='op'>)</span>,<span class='fl'>0</span>,<span class='fl'>0.1</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span>, num_trends <span class='op'>=</span> <span class='fl'>2</span>, pro_covar<span class='op'>=</span><span class='va'>pro_covar</span><span class='op'>)</span>
+<span class='va'>pro_covar</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span><span class='op'>(</span><span class='st'>"time"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>, <span class='st'>"trend"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, <span class='st'>"covariate"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>pro_covar</span><span class='op'>$</span><span class='va'>value</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>pro_covar</span><span class='op'>)</span>, <span class='fl'>0</span>, <span class='fl'>0.1</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span>, num_trends <span class='op'>=</span> <span class='fl'>2</span>, pro_covar <span class='op'>=</span> <span class='va'>pro_covar</span><span class='op'>)</span>
 
 <span class='co'># example of long format data</span>
 <span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sim_dfa.html'>sim_dfa</a></span><span class='op'>(</span>num_trends <span class='op'>=</span> <span class='fl'>1</span>, num_years <span class='op'>=</span> <span class='fl'>20</span>, num_ts <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>obs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>1</span>,<span class='op'>]</span>, <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>2</span>,<span class='op'>]</span>, <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>3</span>,<span class='op'>]</span><span class='op'>)</span>
-<span class='va'>long</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='st'>"obs"</span> <span class='op'>=</span> <span class='va'>obs</span>, <span class='st'>"ts"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>,<span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span>, <span class='st'>"time"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>,<span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>=</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>long</span>, data_shape <span class='op'>=</span> <span class='st'>"long"</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>obs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>1</span>, <span class='op'>]</span>, <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>2</span>, <span class='op'>]</span>, <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>3</span>, <span class='op'>]</span><span class='op'>)</span>
+<span class='va'>long</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='st'>"obs"</span> <span class='op'>=</span> <span class='va'>obs</span>, <span class='st'>"ts"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, <span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span>, <span class='st'>"time"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>long</span>, data_shape <span class='op'>=</span> <span class='st'>"long"</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
 
 <span class='co'># example of long format data with obs covariates</span>
 <span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sim_dfa.html'>sim_dfa</a></span><span class='op'>(</span>num_trends <span class='op'>=</span> <span class='fl'>1</span>, num_years <span class='op'>=</span> <span class='fl'>20</span>, num_ts <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>obs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>1</span>,<span class='op'>]</span>, <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>2</span>,<span class='op'>]</span>, <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>3</span>,<span class='op'>]</span><span class='op'>)</span>
-<span class='va'>long</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='st'>"obs"</span> <span class='op'>=</span> <span class='va'>obs</span>, <span class='st'>"ts"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>,<span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span>, <span class='st'>"time"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>,<span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>obs_covar</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span><span class='op'>(</span><span class='st'>"time"</span><span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>,<span class='st'>"timeseries"</span><span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>,<span class='st'>"covariate"</span><span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>)</span>
-<span class='va'>obs_covar</span><span class='op'>$</span><span class='va'>value</span><span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>obs_covar</span><span class='op'>)</span>,<span class='fl'>0</span>,<span class='fl'>0.1</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>=</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>long</span>, data_shape <span class='op'>=</span> <span class='st'>"long"</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span>,obs_covar<span class='op'>=</span><span class='va'>obs_covar</span><span class='op'>)</span>
+<span class='va'>obs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>1</span>, <span class='op'>]</span>, <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>2</span>, <span class='op'>]</span>, <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>3</span>, <span class='op'>]</span><span class='op'>)</span>
+<span class='va'>long</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='st'>"obs"</span> <span class='op'>=</span> <span class='va'>obs</span>, <span class='st'>"ts"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, <span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span>, <span class='st'>"time"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>obs_covar</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span><span class='op'>(</span><span class='st'>"time"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>, <span class='st'>"timeseries"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, <span class='st'>"covariate"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>obs_covar</span><span class='op'>$</span><span class='va'>value</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>obs_covar</span><span class='op'>)</span>, <span class='fl'>0</span>, <span class='fl'>0.1</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>long</span>, data_shape <span class='op'>=</span> <span class='st'>"long"</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span>, obs_covar <span class='op'>=</span> <span class='va'>obs_covar</span><span class='op'>)</span>
 
 <span class='co'># example of model with Z constrained to be proportions and wide format data</span>
 <span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sim_dfa.html'>sim_dfa</a></span><span class='op'>(</span>num_trends <span class='op'>=</span> <span class='fl'>1</span>, num_years <span class='op'>=</span> <span class='fl'>20</span>, num_ts <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>=</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, z_model <span class='op'>=</span> <span class='st'>"proportion"</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, z_model <span class='op'>=</span> <span class='st'>"proportion"</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
 
 <span class='co'># example of model with Z constrained to be proportions and long format data</span>
 <span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sim_dfa.html'>sim_dfa</a></span><span class='op'>(</span>num_trends <span class='op'>=</span> <span class='fl'>1</span>, num_years <span class='op'>=</span> <span class='fl'>20</span>, num_ts <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>obs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>1</span>,<span class='op'>]</span>, <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>2</span>,<span class='op'>]</span>, <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>3</span>,<span class='op'>]</span><span class='op'>)</span>
-<span class='va'>long</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='st'>"obs"</span> <span class='op'>=</span> <span class='va'>obs</span>, <span class='st'>"ts"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>,<span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span>, <span class='st'>"time"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>,<span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>=</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>long</span>, data_shape <span class='op'>=</span> <span class='st'>"long"</span>, z_model <span class='op'>=</span> <span class='st'>"proportion"</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>obs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>1</span>, <span class='op'>]</span>, <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>2</span>, <span class='op'>]</span>, <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span><span class='op'>[</span><span class='fl'>3</span>, <span class='op'>]</span><span class='op'>)</span>
+<span class='va'>long</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='st'>"obs"</span> <span class='op'>=</span> <span class='va'>obs</span>, <span class='st'>"ts"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sort.html'>sort</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, <span class='fl'>20</span><span class='op'>)</span><span class='op'>)</span>, <span class='st'>"time"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>long</span>, data_shape <span class='op'>=</span> <span class='st'>"long"</span>, z_model <span class='op'>=</span> <span class='st'>"proportion"</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
 
 <span class='co'>#' # example of B-spline model with wide format data</span>
 <span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sim_dfa.html'>sim_dfa</a></span><span class='op'>(</span>num_trends <span class='op'>=</span> <span class='fl'>1</span>, num_years <span class='op'>=</span> <span class='fl'>20</span>, num_ts <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>=</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span>, trend_model <span class='op'>=</span> <span class='st'>"spline"</span>, n_knots <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span>, trend_model <span class='op'>=</span> <span class='st'>"spline"</span>, n_knots <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
 
 <span class='co'># example of B-spline model with wide format data</span>
 <span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sim_dfa.html'>sim_dfa</a></span><span class='op'>(</span>num_trends <span class='op'>=</span> <span class='fl'>1</span>, num_years <span class='op'>=</span> <span class='fl'>20</span>, num_ts <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>=</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span>, trend_model <span class='op'>=</span> <span class='st'>"gp"</span>, n_knots <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span>, trend_model <span class='op'>=</span> <span class='st'>"gp"</span>, n_knots <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

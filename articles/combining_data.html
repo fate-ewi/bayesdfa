@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">bayesdfa</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -97,7 +97,7 @@
       <h1 data-toc-skip>Combining data with bayesdfa</h1>
                         <h4 class="author">Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri</h4>
             
-            <h4 class="date">2021-05-18</h4>
+            <h4 class="date">2021-05-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/fate-ewi/bayesdfa/blob/master/vignettes/combining_data.Rmd"><code>vignettes/combining_data.Rmd</code></a></small>
       <div class="hidden name"><code>combining_data.Rmd</code></div>
@@ -151,10 +151,10 @@
 <code class="sourceCode R"><span class="va">r</span> <span class="op">=</span> <span class="fu"><a href="../reference/rotate_trends.html">rotate_trends</a></span><span class="op">(</span><span class="va">fit_1</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">r</span><span class="op">$</span><span class="va">Z_rot_mean</span>,<span class="fl">3</span><span class="op">)</span></code></pre></div>
-<pre><code>##       1
-## 1 2.535
-## 2 4.551
-## 3 1.412</code></pre>
+<pre><code>##         1
+## 1 -98.567
+## 2 -15.488
+## 3  19.395</code></pre>
 <p>Now, we’ll pretend that in time steps 1:50 we have observations from time series 1 (but not the others). We’ll fit several additional models, adding in back data points in steps of 10, and going backwards in time. All these runs would use time points 51:100 for time series 2 and 3, but they would include time steps 51:100, then 41:100, 31:100, etc. for time series 1.</p>
 <p><em>Note for comparison purposes, we’ll also standardize all time series 1 time before passing them in as an argument. Time series # 1 won’t be re-scaled, but will be re-centered for each iteration. This is important because the time-series are non-stationary.</em></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
