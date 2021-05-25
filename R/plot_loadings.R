@@ -30,22 +30,22 @@
 #' plot_loadings(r, violin = FALSE, facet = FALSE)
 #' plot_loadings(r, violin = TRUE, facet = FALSE)
 #' plot_loadings(r, violin = TRUE, facet = TRUE)
-
 plot_loadings <- function(rotated_modelfit,
                           names = NULL,
                           facet = TRUE,
                           violin = TRUE,
                           conf_level = 0.95,
-                          threshold=NULL) {
-
+                          threshold = NULL) {
   v <- dfa_loadings(rotated_modelfit,
-                    summary = FALSE,
-                    names = names,
-                    conf_level = conf_level)
+    summary = FALSE,
+    names = names,
+    conf_level = conf_level
+  )
   df <- dfa_loadings(rotated_modelfit,
-                     summary = TRUE,
-                     names = names,
-                     conf_level = conf_level)
+    summary = TRUE,
+    names = names,
+    conf_level = conf_level
+  )
 
   # filter values below threshold
   if (!is.null(threshold)) {
@@ -63,7 +63,9 @@ plot_loadings <- function(rotated_modelfit,
         position = position_dodge(0.3), width = 0
       ) +
       geom_hline(yintercept = 0, lty = 2) +
-      coord_flip() + xlab("Time Series") + ylab("Loading")
+      coord_flip() +
+      xlab("Time Series") +
+      ylab("Loading")
   }
 
   if (violin) {
@@ -73,11 +75,13 @@ plot_loadings <- function(rotated_modelfit,
     )) +
       geom_violin(color = NA) +
       geom_hline(yintercept = 0, lty = 2) +
-      coord_flip() + xlab("Time Series") + ylab("Loading")
+      coord_flip() +
+      xlab("Time Series") +
+      ylab("Loading")
   }
 
   if (facet) {
-    p1 <- p1 + facet_wrap(~ trend, scales = "free_x")
+    p1 <- p1 + facet_wrap(~trend, scales = "free_x")
   }
 
   p1

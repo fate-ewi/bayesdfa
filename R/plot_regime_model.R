@@ -19,10 +19,10 @@
 #' data(Nile)
 #' m <- fit_regimes(log(Nile), n_regimes = 2, chains = 1, iter = 50)
 #' plot_regime_model(m)
-#' plot_regime_model(m, plot_prob_indices=c(2))
+#' plot_regime_model(m, plot_prob_indices = c(2))
 #' plot_regime_model(m, type = "means")
 #' }
-
+#'
 plot_regime_model <- function(model, probs = c(0.05, 0.95),
                               type = c("probability", "means"),
                               regime_prob_threshold = 0.9,
@@ -39,8 +39,9 @@ plot_regime_model <- function(model, probs = c(0.05, 0.95),
   mu_k_low <- apply(mu_k, 2, quantile, probs = probs[[1]])
   mu_k_high <- apply(mu_k, 2, quantile, probs = probs[[2]])
   mu_k <- apply(mu_k, 2, median)
-  confident_regimes <- apply(gamma_tk, 2:3, function(x)
-    mean(x > 0.5) > regime_prob_threshold)
+  confident_regimes <- apply(gamma_tk, 2:3, function(x) {
+    mean(x > 0.5) > regime_prob_threshold
+  })
   regime_indexes <- apply(confident_regimes, 1, function(x) {
     w <- which(x)
     if (length(w) == 0) NA else w

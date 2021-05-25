@@ -10,9 +10,8 @@
 #' @export
 #'
 is_converged <- function(fitted_model,
-  threshold = 1.05,
-  parameters = c("sigma", "x", "Z")) {
-
+                         threshold = 1.05,
+                         parameters = c("sigma", "x", "Z")) {
   Rhats <-
     fitted_model$monitor[which(grepl(
       paste(parameters, collapse = "|"),

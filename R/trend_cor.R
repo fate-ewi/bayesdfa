@@ -35,23 +35,25 @@
 #' s <- sim_dfa(num_trends = 1, num_years = 15)
 #' m <- fit_dfa(y = s$y_sim, num_trends = 1, iter = 50, chains = 1)
 #' r <- rotate_trends(m)
-#' n_years <- ncol(r$trends[,1,])
+#' n_years <- ncol(r$trends[, 1, ])
 #' fake_dat <- rnorm(n_years, 0, 1)
 #' correlation <- trend_cor(r, fake_dat, trend_samples = 25)
 #' hist(correlation)
-#' correlation <- trend_cor(r, y = fake_dat, time_window = 5:15,
-#'   trend_samples = 25)
+#' correlation <- trend_cor(r,
+#'   y = fake_dat, time_window = 5:15,
+#'   trend_samples = 25
+#' )
 #' hist(correlation)
 #' @export
 
 trend_cor <- function(rotated_modelfit,
-  y,
-  trend = 1,
-  time_window = seq_len(length(y)),
-  trend_samples = 100,
-  stan_iter = 300,
-  stan_chains = 1,
-  ...) {
+                      y,
+                      trend = 1,
+                      time_window = seq_len(length(y)),
+                      trend_samples = 100,
+                      stan_iter = 300,
+                      stan_chains = 1,
+                      ...) {
 
 
   # must be even to cleanly divide by 2 later:
@@ -67,7 +69,8 @@ trend_cor <- function(rotated_modelfit,
 
   out <- vapply(seq_len(length(samples)), FUN = function(i) {
     xi <- as.numeric(scale(as.numeric(x[samples[i], ])))
-    m <- rstan::sampling(object=stanmodels$corr,
+    m <- rstan::sampling(
+      object = stanmodels$corr,
       data = list(x = xi, y = y, N = length(y)),
       iter = stan_iter, chains = stan_chains, warmup = stan_iter / 2, ...
     )

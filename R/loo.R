@@ -30,7 +30,8 @@ loo.bayesdfa <- function(x, ...) {
   loo::loo.array(log_lik,
     r_eff = rel_eff,
     save_psis = FALSE,
-    ...)
+    ...
+  )
 }
 
 #' @name loo

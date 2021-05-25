@@ -23,15 +23,13 @@
 #' @examples
 #' data(Nile)
 #' fit_regimes(log(Nile), iter = 50, n_regimes = 1)
-
 fit_regimes <- function(y,
-  sds = NULL,
-  n_regimes = 2,
-  iter = 2000,
-  thin = 1,
-  chains = 1,
-  ...) {
-
+                        sds = NULL,
+                        n_regimes = 2,
+                        iter = 2000,
+                        thin = 1,
+                        chains = 1,
+                        ...) {
   est_sigma <- 0
   if (is.null(sds)) {
     # estimate sigma, instead of using fixed values
@@ -51,7 +49,8 @@ fit_regimes <- function(y,
       pars = c("mu_k", "sigma_k", "log_lik")
     )
 
-    m <- rstan::sampling(object=stanmodels$regime_1,
+    m <- rstan::sampling(
+      object = stanmodels$regime_1,
       data = stan_data,
       iter = iter,
       chains = chains,
@@ -76,7 +75,8 @@ fit_regimes <- function(y,
       )
     )
 
-    m <- rstan::sampling(object=stanmodels$hmm_gaussian,
+    m <- rstan::sampling(
+      object = stanmodels$hmm_gaussian,
       data = stan_data,
       iter = iter,
       thin = thin,
@@ -88,11 +88,11 @@ fit_regimes <- function(y,
     )
   }
 
-  log_lik <- loo::extract_log_lik(m, merge_chains=FALSE)
-  #n_chains = dim(rstan::extract(m, "log_lik", permuted=FALSE))[2]
+  log_lik <- loo::extract_log_lik(m, merge_chains = FALSE)
+  # n_chains = dim(rstan::extract(m, "log_lik", permuted=FALSE))[2]
   rel_eff <- loo::relative_eff(exp(log_lik))
   # calculate looic
-  looic <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic",1]
+  looic <- loo::loo(log_lik, r_eff = rel_eff)$estimates["looic", 1]
 
   list(model = m, y = y, looic = looic)
 }

@@ -41,7 +41,8 @@ between 0 and 1.
 data(Nile)
 m <- fit_regimes(log(Nile), n_regimes = 2, chains = 1, iter = 50)
 plot_regime_model(m)
-plot_regime_model(m, plot_prob_indices=c(2))
+plot_regime_model(m, plot_prob_indices = c(2))
 plot_regime_model(m, type = "means")
 }
+
 }

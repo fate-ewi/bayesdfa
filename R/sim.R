@@ -39,14 +39,17 @@
 #'
 #' set.seed(42)
 #' x <- sim_dfa(extreme_value = -4, extreme_loc = 10)
-#' matplot(t(x$x), type = "l");abline(v = 10)
-#' matplot(t(x$pred), type = "l");abline(v = 10)
+#' matplot(t(x$x), type = "l")
+#' abline(v = 10)
+#' matplot(t(x$pred), type = "l")
+#' abline(v = 10)
 #'
 #' set.seed(42)
 #' x <- sim_dfa()
-#' matplot(t(x$x), type = "l");abline(v = 10)
-#' matplot(t(x$pred), type = "l");abline(v = 10)
-#'
+#' matplot(t(x$x), type = "l")
+#' abline(v = 10)
+#' matplot(t(x$pred), type = "l")
+#' abline(v = 10)
 #' @export
 
 sim_dfa <- function(num_trends = 1,
@@ -65,7 +68,7 @@ sim_dfa <- function(num_trends = 1,
   y_ignore <- matrix(rnorm(num_ts * num_years), nrow = num_ts, ncol = num_years)
 
   d <- fit_dfa(y_ignore,
-    num_trends = num_trends, sample = FALSE, scale="center",
+    num_trends = num_trends, sample = FALSE, scale = "center",
     varIndx = varIndx, nu_fixed = nu_fixed, trend_model = "rw"
   )
 
@@ -86,9 +89,8 @@ sim_dfa <- function(num_trends = 1,
 
   # initial state for each trend
   for (k in seq_len(d$sampling_args$data$K)) {
-
     if (!is.null(user_supplied_deviations)) {
-      devs <- user_supplied_deviations[,k]
+      devs <- user_supplied_deviations[, k]
     } else {
       devs <- rt(d$sampling_args$data$N, df = d$sampling_args$data$nu_fixed)
     }

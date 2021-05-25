@@ -29,3 +29,7 @@
 # bayesdfa 1.0.0
 
 * Added constraint on diagonal of Z matrix to keep parameter estimates from 'flipping' within MCMC chains. Ensures convergence for problematic cases. This was present in 0.1.1, but later removed. 
+
+# bayesdfa 1.1.0
+
+* Following 1.0.0, included a new argument to fit_dfa() function 'expansion_prior' that allows user to toggle on / off the constraint. If not included (default=FALSE), there is no constraint on the Z diagonal, and post-hoc MCMC chain inverting resolves identifiability. If 'expansion_prior' = TRUE, then the positive constraint is applied, in combination with the expansion prior for trends and loadings. 

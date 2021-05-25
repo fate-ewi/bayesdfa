@@ -22,33 +22,33 @@
 #' print(p)
 #' }
 plot_fitted <- function(modelfit, conf_level = 0.95, names = NULL, spaghetti = FALSE) {
-
   df <- dfa_fitted(modelfit, conf_level = conf_level, names = names)
   df$ID <- as.factor(df$ID)
 
-  if(spaghetti == TRUE) {
-
+  if (spaghetti == TRUE) {
     cols <- viridis(length(unique((df$ID))), end = 0.8)
     p1 <- ggplot(df) +
-        geom_line(aes_string(x = "time", y = "y", group = "ID"),
-                  color = "grey50", size = 0.5) +
-        geom_line(aes_string(x = "time", y = "estimate", group = "ID", color = "ID"),
-                  size = 1.2) +
-        scale_color_manual(values = cols) +
-        xlab("Time") +
-        theme(legend.position = "none")
-
+      geom_line(aes_string(x = "time", y = "y", group = "ID"),
+        color = "grey50", size = 0.5
+      ) +
+      geom_line(aes_string(x = "time", y = "estimate", group = "ID", color = "ID"),
+        size = 1.2
+      ) +
+      scale_color_manual(values = cols) +
+      xlab("Time") +
+      theme(legend.position = "none")
   } else {
-
     p1 <- ggplot(df) +
       geom_ribbon(aes_string(x = "time", ymin = "lower", ymax = "upper"), alpha = 0.4) +
       geom_line(aes_string(x = "time", y = "estimate")) +
       geom_point(aes_string(x = "time", y = "y"),
         col = "red",
         size = 0.5,
-        alpha = 0.4) +
+        alpha = 0.4
+      ) +
       facet_wrap("ID", scales = "free_y") +
-      xlab("Time") + ylab("")
+      xlab("Time") +
+      ylab("")
   }
   p1
 }

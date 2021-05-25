@@ -23,18 +23,17 @@
 #' r <- rotate_trends(m)
 #' loadings <- dfa_loadings(r, summary = TRUE)
 #' loadings <- dfa_loadings(r, summary = FALSE)
-
 dfa_loadings <- function(rotated_modelfit,
                          names = NULL,
                          summary = TRUE,
                          conf_level = 0.95) {
-
   v <- reshape2::melt(rotated_modelfit$Z_rot,
-    varnames = c("iter", "name", "trend"), value.name = "loading")
+    varnames = c("iter", "name", "trend"), value.name = "loading"
+  )
   v$draw <- as.numeric(gsub("_chain.*$", "", v$iter))
   v$chain <- as.numeric(gsub("^[0-9]+_chain:", "", v$iter))
   v$iter <- NULL
-  v <- v[ , c("chain", "draw", "name", "trend", "loading")]
+  v <- v[, c("chain", "draw", "name", "trend", "loading")]
 
   v$trend <- paste0("Trend ", v$trend)
   v$trend <- as.factor(v$trend)
@@ -52,7 +51,7 @@ dfa_loadings <- function(rotated_modelfit,
   v <- as.data.frame(dplyr::ungroup(v))
   out <- v
 
-  if(summary) {
+  if (summary) {
     vsum <- dplyr::group_by(v, .data$name, .data$trend)
     vsum <- dplyr::summarize(vsum,
       median = median(.data$loading),

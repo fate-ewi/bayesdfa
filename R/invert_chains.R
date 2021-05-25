@@ -20,21 +20,19 @@
 #' m <- fit_dfa(y = s$y_sim, num_trends = 1, iter = 30, chains = 2)
 #' # chains were already inverted, but we can redo that, as an example, with:
 #' find_inverted_chains(m$model, plot = TRUE)
-
 find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
-
-  chains = NULL # required for dplyr 0.8 update
-  parameters = NULL
-  value = NULL
+  chains <- NULL # required for dplyr 0.8 update
+  parameters <- NULL
+  value <- NULL
 
   e <- rstan::extract(model, permuted = FALSE)
   v <- reshape2::melt(e)
   vv <- v[grepl(paste0("x\\[", trend), v$parameters), ]
-  vv$parameters = as.factor(as.character(vv$parameters)) # needed with dplyr 0.8, all levels returned otherwise
+  vv$parameters <- as.factor(as.character(vv$parameters)) # needed with dplyr 0.8, all levels returned otherwise
   vv <- dplyr::group_by(vv, chains, parameters)
   vv <- dplyr::summarise(vv, estimate = stats::median(value))
   zz <- v[grepl(paste0("Z\\["), v$parameters), ]
-  zz$parameters = as.factor(as.character(zz$parameters)) # needed with dplyr 0.8, all levels returned otherwise
+  zz$parameters <- as.factor(as.character(zz$parameters)) # needed with dplyr 0.8, all levels returned otherwise
   zz <- zz[grepl(paste0(trend, "]"), zz$parameters), ]
   zz <- dplyr::group_by(zz, chains, parameters)
   zz <- dplyr::summarise(zz, estimate = stats::median(value))
@@ -71,11 +69,11 @@ find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
         (sum((pred1_loadings - pred0_loadings)^2) +
           sum((pred1_trend - pred0_trend)^2))) {
         # flip this chain -- seems to be something not right with commented out line
-        #flipped_chains <- ifelse(flipped_chains == 0, i, c(flipped_chains, i))
-        if(flipped_chains==0) {
-          flipped_chains = i
+        # flipped_chains <- ifelse(flipped_chains == 0, i, c(flipped_chains, i))
+        if (flipped_chains == 0) {
+          flipped_chains <- i
         } else {
-          flipped_chains = c(flipped_chains, i)
+          flipped_chains <- c(flipped_chains, i)
         }
       }
     }
@@ -106,10 +104,10 @@ invert_chains <- function(model, trends = 1, print = FALSE, ...) {
 
     for (f_ in f) {
       for (i in grep(paste0("x\\[", k), pars)) {
-        e[, f_, i] <- -1*e[, f_, i]
+        e[, f_, i] <- -1 * e[, f_, i]
       }
       for (i in grep(paste0("Z\\[[0-9]+,", k, "\\]"), pars)) {
-        e[, f_, i] <- -1*e[, f_, i]
+        e[, f_, i] <- -1 * e[, f_, i]
       }
     }
   }

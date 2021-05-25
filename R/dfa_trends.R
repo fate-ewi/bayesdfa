@@ -15,7 +15,6 @@
 #' r <- rotate_trends(m)
 #' trends <- dfa_trends(r)
 dfa_trends <- function(rotated_modelfit, years = NULL) {
-
   rotated <- rotated_modelfit
   n_ts <- dim(rotated$Z_rot)[2]
   n_trends <- dim(rotated$Z_rot)[3]
@@ -28,7 +27,8 @@ dfa_trends <- function(rotated_modelfit, years = NULL) {
     trend_number = paste0("Trend ", sort(rep(seq_len(n_trends), n_years))),
     estimate = c(t(rotated$trends_mean)),
     lower = c(t(rotated$trends_lower)),
-    upper = c(t(rotated$trends_upper)))
+    upper = c(t(rotated$trends_upper))
+  )
 
   return(df)
 }

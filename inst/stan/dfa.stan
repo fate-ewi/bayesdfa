@@ -118,6 +118,7 @@ data {
   int<lower=0, upper=1> est_sigma_params;
   int<lower=0, upper=1> est_gamma_params;
   int<lower=0, upper=1> est_nb2_params;
+  int<lower=0, upper=1> use_expansion_prior;
   real gp_theta_prior[2];
 }
 transformed data {
@@ -128,6 +129,7 @@ transformed data {
   vector[K*proportional_model] alpha_vec;
   vector[n_knots] muZeros;
   real gp_delta = 1e-9; // stabilizing value for GP model
+  real lower_bound_z;
 
   for(i in 1:N) {
     data_locs[i] = i;
@@ -165,13 +167,17 @@ transformed data {
   if(proportional_model==1) {
     for(k in 1:K) alpha_vec[k] = 1;
   }
+
+  // for zpos
+  lower_bound_z = -100;
+  if(use_expansion_prior==1) lower_bound_z = 0;
 }
 parameters {
   matrix[K * est_rw,(N-1) * est_rw] devs; // random deviations of trends
   vector[K] x0; // initial state
-  vector<lower=0>[K*(1-proportional_model)] psi; // expansion parameters
+  vector<lower=0>[K*(1-proportional_model)*use_expansion_prior] psi; // expansion parameters
   vector<lower=z_bound[1],upper=z_bound[2]>[nZ*(1-proportional_model)] z; // estimated loadings in vec form
-  vector<lower=0>[K*(1-proportional_model)] zpos; // constrained positive values
+  vector<lower=lower_bound_z>[K*(1-proportional_model)] zpos; // constrained positive values
   simplex[K] p_z[P*proportional_model]; // alternative for proportional Z
   matrix[K * est_spline, n_knots * est_spline] spline_a; // weights for b-splines
   matrix[n_obs_covar, P] b_obs; // coefficients on observation model
@@ -192,14 +198,14 @@ transformed parameters {
   matrix[P,N] pred; //vector[P] pred[N];
   matrix[P,K] Z;
   matrix[P,N] yall;
-  vector[P*est_sigma_params] sigma_vec;
-  vector[P*est_gamma_params] gamma_a_vec;
-  vector[P*est_nb2_params] nb_phi_vec;
+  vector<lower=0>[P*est_sigma_params] sigma_vec;
+  vector<lower=0>[P*est_gamma_params] gamma_a_vec;
+  vector<lower=0>[P*est_nb2_params] nb_phi_vec;
   vector[K] phi_vec; // for AR(1) part
   vector[K] theta_vec; // for MA(1) part
   matrix[K,N] x; //vector[N] x[P]; // random walk-trends
   vector[K] indicator; // indicates whether diagonal is neg or pos
-  vector[K] psi_root; // derived sqrt(expansion parameter psi)
+  vector<lower=0>[K*use_expansion_prior] psi_root; // derived sqrt(expansion parameter psi)
   matrix[n_pcor*long_format*est_cor, n_pcor*long_format*est_cor] Sigma_derived;// temporary for calculations for MVN model
   matrix[(n_pcor-1)*long_format*est_cor, (n_pcor-1)*long_format*est_cor] Sigma_temp;// temporary for calculations for MVN model
   matrix[n_pcor-1,1] sigma12_vec;// temporary for calculations for MVN model
@@ -229,20 +235,20 @@ transformed parameters {
 
   // phi is the ar(1) parameter, fixed or estimated
   if(est_phi == 1) {
-    //for(k in 1:K) {phi_vec[k] = phi[k];}
-    phi_vec = to_vector(phi);
+    for(k in 1:K) {phi_vec[k] = phi[k];}
+    //phi_vec = to_vector(phi);
   } else {
-    //for(k in 1:K) {phi_vec[k] = 1;}
-    phi_vec = rep_vector(1.0, K);
+    for(k in 1:K) {phi_vec[k] = 1;}
+    //phi_vec = rep_vector(1.0, K);
   }
 
   // theta is the ma(1) parameter, fixed or estimated
   if(est_theta == 1) {
-    //for(k in 1:K) {theta_vec[k] = theta[k];}
-    theta_vec = to_vector(theta);
+    for(k in 1:K) {theta_vec[k] = theta[k];}
+    //theta_vec = to_vector(theta);
   } else {
-    //for(k in 1:K) {theta_vec[k] = 0;}
-    theta_vec = rep_vector(1.0, K);
+    for(k in 1:K) {theta_vec[k] = 0;}
+    //theta_vec = rep_vector(1.0, K);
   }
 
   if(est_sigma_params == 1) {
@@ -282,17 +288,22 @@ transformed parameters {
       Z[k,k] = zpos[k];// add constraint for Z diagonal
     }
     // this block is for the expansion prior
-    for(k in 1:K) {
-      if(zpos[k] < 0) {
-        indicator[k] = -1;
-      } else {
-        indicator[k] = 1;
-      }
-      psi_root[k] = sqrt(psi[k]);
-      for(p in 1:P) {
-        Z[p,k] = Z[p,k] * indicator[k] * (1/psi_root[k]);
+    if(use_expansion_prior==1) {
+      for(k in 1:K) {
+        if(zpos[k] < 0) {
+          indicator[k] = -1;
+        } else {
+          indicator[k] = 1;
+        }
+        // psi_root here should really be named inv_psi_root, because it's the inv
+        psi_root[k] = sqrt(psi[k]);
+        for(p in 1:P) {
+          // see Ghosh & Dunson 2009 eq 3
+          Z[p,k] = Z[p,k] * indicator[k] * (1/psi_root[k]);
+        }
       }
     }
+
     // initial state for each trend
     if(est_rw == 1) {
       for(k in 1:K) {
@@ -337,9 +348,12 @@ transformed parameters {
     }
 
     // this block also for the expansion prior, used to convert trends
-    for(k in 1:K) {
-      //x[k,1:N] = x[k,1:N] * indicator[k] * psi_root[k];
-      x[k] = x[k] * indicator[k] * psi_root[k];
+    if(use_expansion_prior==1) {
+      for(k in 1:K) {
+        //x[k,1:N] = x[k,1:N] * indicator[k] * psi_root[k];
+        // see Ghosh and Dunson 2009 eq 3. psi_root[k] here is really psi^(-1/2)
+        x[k] = x[k] * indicator[k] * psi_root[k];
+      }
     }
 
   }
@@ -406,6 +420,7 @@ transformed parameters {
   // [PxN] = [PxK] * [KxN]
   pred = Z * x;
 
+  // obs_cov_offset is specific to each non-NA observation
   for(i in 1:n_pos) {
     obs_cov_offset[i] = 0;
   }
@@ -463,7 +478,9 @@ model {
 
   // initial state for each trend
   x0 ~ normal(0, 1); // initial state estimate at t=1
-  psi ~ gamma(2, 1); // expansion parameter for par-expanded priors
+  if(use_expansion_prior==1) {
+    psi ~ gamma(2, 1); // expansion parameter for par-expanded priors
+  }
 
   // prior for df parameter for t-distribution
   if (estimate_nu == 1) {

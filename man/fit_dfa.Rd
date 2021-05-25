@@ -33,6 +33,7 @@ fit_dfa(
   family = "gaussian",
   verbose = FALSE,
   gp_theta_prior = c(3, 1),
+  expansion_prior = FALSE,
   ...
 )
 }
@@ -137,6 +138,8 @@ gaussian family is assumed to be identity, and the rest are log-link.}
 This prior is a half-Student t prior, with the first argument of gp_theta_prior being the degrees of freedom (nu),
 and the second element being the standard deviation}
 
+\item{expansion_prior}{Defaults to FALSE, if TRUE uses the parameter expansion prior of Ghosh & Dunson 2009}
+
 \item{...}{Any other arguments to pass to \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}}.}
 }
 \description{
@@ -156,46 +159,46 @@ m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1)
 \dontrun{
 # example of observation error covariates
 set.seed(42)
-obs_covar = expand.grid("time"=1:20,"timeseries"=1:3,"covariate"=1)
-obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
-m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, obs_covar=obs_covar)
+obs_covar <- expand.grid("time" = 1:20, "timeseries" = 1:3, "covariate" = 1)
+obs_covar$value <- rnorm(nrow(obs_covar), 0, 0.1)
+m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, obs_covar = obs_covar)
 
 # example of process error covariates
-pro_covar = expand.grid("time"=1:20,"trend"=1:2,"covariate"=1)
-pro_covar$value=rnorm(nrow(pro_covar),0,0.1)
-m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, num_trends = 2, pro_covar=pro_covar)
+pro_covar <- expand.grid("time" = 1:20, "trend" = 1:2, "covariate" = 1)
+pro_covar$value <- rnorm(nrow(pro_covar), 0, 0.1)
+m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, num_trends = 2, pro_covar = pro_covar)
 
 # example of long format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
-long = data.frame("obs" = obs, "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
-m = fit_dfa(y = long, data_shape = "long", iter = 50, chains = 1)
+obs <- c(s$y_sim[1, ], s$y_sim[2, ], s$y_sim[3, ])
+long <- data.frame("obs" = obs, "ts" = sort(rep(1:3, 20)), "time" = rep(1:20, 3))
+m <- fit_dfa(y = long, data_shape = "long", iter = 50, chains = 1)
 
 # example of long format data with obs covariates
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
-long = data.frame("obs" = obs, "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
-obs_covar = expand.grid("time"=1:20,"timeseries"=1:3,"covariate"=1:2)
-obs_covar$value=rnorm(nrow(obs_covar),0,0.1)
-m = fit_dfa(y = long, data_shape = "long", iter = 50, chains = 1,obs_covar=obs_covar)
+obs <- c(s$y_sim[1, ], s$y_sim[2, ], s$y_sim[3, ])
+long <- data.frame("obs" = obs, "ts" = sort(rep(1:3, 20)), "time" = rep(1:20, 3))
+obs_covar <- expand.grid("time" = 1:20, "timeseries" = 1:3, "covariate" = 1:2)
+obs_covar$value <- rnorm(nrow(obs_covar), 0, 0.1)
+m <- fit_dfa(y = long, data_shape = "long", iter = 50, chains = 1, obs_covar = obs_covar)
 
 # example of model with Z constrained to be proportions and wide format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-m = fit_dfa(y = s$y_sim, z_model = "proportion", iter = 50, chains = 1)
+m <- fit_dfa(y = s$y_sim, z_model = "proportion", iter = 50, chains = 1)
 
 # example of model with Z constrained to be proportions and long format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-obs <- c(s$y_sim[1,], s$y_sim[2,], s$y_sim[3,])
-long = data.frame("obs" = obs, "ts" = sort(rep(1:3,20)), "time" = rep(1:20,3))
-m = fit_dfa(y = long, data_shape = "long", z_model = "proportion", iter = 50, chains = 1)
+obs <- c(s$y_sim[1, ], s$y_sim[2, ], s$y_sim[3, ])
+long <- data.frame("obs" = obs, "ts" = sort(rep(1:3, 20)), "time" = rep(1:20, 3))
+m <- fit_dfa(y = long, data_shape = "long", z_model = "proportion", iter = 50, chains = 1)
 
 #' # example of B-spline model with wide format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-m = fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "spline", n_knots = 10)
+m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "spline", n_knots = 10)
 
 # example of B-spline model with wide format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-m = fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "gp", n_knots = 5)
+m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "gp", n_knots = 5)
 }
 }
 \seealso{

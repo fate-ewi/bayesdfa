@@ -20,20 +20,20 @@
 #' r <- rotate_trends(m)
 #' p <- plot_trends(r)
 #' print(p)
-
 plot_trends <- function(rotated_modelfit,
-  years = NULL,
-  highlight_outliers = FALSE,
-  threshold = 0.01) {
-
+                        years = NULL,
+                        highlight_outliers = FALSE,
+                        threshold = 0.01) {
   rotated <- rotated_modelfit
   df <- dfa_trends(rotated, years = years)
 
   # make faceted ribbon plot of trends
   p1 <- ggplot(df, aes_string(x = "time", y = "estimate")) +
     geom_ribbon(aes_string(ymin = "lower", ymax = "upper"), alpha = 0.4) +
-    geom_line() + facet_wrap("trend_number") +
-    xlab("Time") + ylab("")
+    geom_line() +
+    facet_wrap("trend_number") +
+    xlab("Time") +
+    ylab("")
 
   if (highlight_outliers) {
     swans <- find_swans(rotated, threshold = threshold)
