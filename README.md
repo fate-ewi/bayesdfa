@@ -6,6 +6,8 @@ bayesdfa
 [![R build
 status](https://github.com/fate-ewi/bayesdfa/workflows/R-CMD-check/badge.svg)](https://github.com/fate-ewi/bayesdfa/actions)
 
+[![DOI](https://zenodo.org/badge/80677345.svg)](https://zenodo.org/badge/latestdoi/80677345)
+
 bayesdfa implements Bayesian Dynamic Factor Analysis (DFA) with Stan.
 
 You can install the development version of the package with:
