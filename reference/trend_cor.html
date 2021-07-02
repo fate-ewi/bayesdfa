@@ -220,11 +220,11 @@ posterior of the correlation.</p>
     <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sim_dfa.html'>sim_dfa</a></span><span class='op'>(</span>num_trends <span class='op'>=</span> <span class='fl'>1</span>, num_years <span class='op'>=</span> <span class='fl'>15</span><span class='op'>)</span>
 <span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fit_dfa.html'>fit_dfa</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, num_trends <span class='op'>=</span> <span class='fl'>1</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 
+</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'dfa' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 4.7e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.47 seconds.
+#&gt; Chain 1: Gradient evaluation took 4.6e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.46 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -249,9 +249,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 50 / 50 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.013997 seconds (Warm-up)
-#&gt; Chain 1:                0.330073 seconds (Sampling)
-#&gt; Chain 1:                0.34407 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.014937 seconds (Warm-up)
+#&gt; Chain 1:                0.347958 seconds (Sampling)
+#&gt; Chain 1:                0.362895 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bfmi-low</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Examine the pairs() plot to diagnose sampling problems</span></div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is 2.1, indicating chains have not mixed.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
@@ -348,7 +348,7 @@ posterior of the correlation.</p>
 #&gt; For each parameter, Bulk_ESS and Tail_ESS are crude measures of 
 #&gt; effective sample size for bulk and tail quantities respectively (an ESS &gt; 100 
 #&gt; per chain is considered good), and Rhat is the potential scale reduction 
-#&gt; factor on rank normalized split chains (at convergence, Rhat &lt;= 1.05).</div><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rotate_trends.html'>rotate_trends</a></span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
+#&gt; factor on rank normalized split chains (at convergence, Rhat &lt;= 1.05).</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='input'><span class='va'>r</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rotate_trends.html'>rotate_trends</a></span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
 <span class='va'>n_years</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span><span class='op'>(</span><span class='va'>r</span><span class='op'>$</span><span class='va'>trends</span><span class='op'>[</span>, <span class='fl'>1</span>, <span class='op'>]</span><span class='op'>)</span>
 <span class='va'>fake_dat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n_years</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>correlation</span> <span class='op'>&lt;-</span> <span class='fu'>trend_cor</span><span class='op'>(</span><span class='va'>r</span>, <span class='va'>fake_dat</span>, trend_samples <span class='op'>=</span> <span class='fl'>25</span><span class='op'>)</span>
@@ -373,9 +373,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004605 seconds (Warm-up)
-#&gt; Chain 1:                0.00355 seconds (Sampling)
-#&gt; Chain 1:                0.008155 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004757 seconds (Warm-up)
+#&gt; Chain 1:                0.003729 seconds (Sampling)
+#&gt; Chain 1:                0.008486 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is 1.09, indicating chains have not mixed.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#r-hat</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -385,8 +385,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1.3e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.13 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -403,9 +403,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004225 seconds (Warm-up)
-#&gt; Chain 1:                0.003234 seconds (Sampling)
-#&gt; Chain 1:                0.007459 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004238 seconds (Warm-up)
+#&gt; Chain 1:                0.003255 seconds (Sampling)
+#&gt; Chain 1:                0.007493 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -431,9 +431,37 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004319 seconds (Warm-up)
-#&gt; Chain 1:                0.002977 seconds (Sampling)
-#&gt; Chain 1:                0.007296 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004473 seconds (Warm-up)
+#&gt; Chain 1:                0.003025 seconds (Sampling)
+#&gt; Chain 1:                0.007498 seconds (Total)
+#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
+#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
+#&gt; Chain 1: 
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
+#&gt; Chain 1: Adjust your expectations accordingly!
+#&gt; Chain 1: 
+#&gt; Chain 1: 
+#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
+#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
+#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
+#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
+#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
+#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
+#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
+#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
+#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
+#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
+#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
+#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
+#&gt; Chain 1: 
+#&gt; Chain 1:  Elapsed Time: 0.004871 seconds (Warm-up)
+#&gt; Chain 1:                0.003623 seconds (Sampling)
+#&gt; Chain 1:                0.008494 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -459,9 +487,65 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004488 seconds (Warm-up)
-#&gt; Chain 1:                0.003475 seconds (Sampling)
-#&gt; Chain 1:                0.007963 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004519 seconds (Warm-up)
+#&gt; Chain 1:                0.003108 seconds (Sampling)
+#&gt; Chain 1:                0.007627 seconds (Total)
+#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
+#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
+#&gt; Chain 1: 
+#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
+#&gt; Chain 1: Adjust your expectations accordingly!
+#&gt; Chain 1: 
+#&gt; Chain 1: 
+#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
+#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
+#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
+#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
+#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
+#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
+#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
+#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
+#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
+#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
+#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
+#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
+#&gt; Chain 1: 
+#&gt; Chain 1:  Elapsed Time: 0.005082 seconds (Warm-up)
+#&gt; Chain 1:                0.003469 seconds (Sampling)
+#&gt; Chain 1:                0.008551 seconds (Total)
+#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
+#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
+#&gt; Chain 1: 
+#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
+#&gt; Chain 1: Adjust your expectations accordingly!
+#&gt; Chain 1: 
+#&gt; Chain 1: 
+#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
+#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
+#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
+#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
+#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
+#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
+#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
+#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
+#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
+#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
+#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
+#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
+#&gt; Chain 1: 
+#&gt; Chain 1:  Elapsed Time: 0.004501 seconds (Warm-up)
+#&gt; Chain 1:                0.003754 seconds (Sampling)
+#&gt; Chain 1:                0.008255 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -487,9 +571,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004217 seconds (Warm-up)
-#&gt; Chain 1:                0.002914 seconds (Sampling)
-#&gt; Chain 1:                0.007131 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004489 seconds (Warm-up)
+#&gt; Chain 1:                0.00258 seconds (Sampling)
+#&gt; Chain 1:                0.007069 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -497,8 +581,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1.3e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.13 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -515,9 +599,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004726 seconds (Warm-up)
-#&gt; Chain 1:                0.0032 seconds (Sampling)
-#&gt; Chain 1:                0.007926 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.00493 seconds (Warm-up)
+#&gt; Chain 1:                0.003196 seconds (Sampling)
+#&gt; Chain 1:                0.008126 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -525,8 +609,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 9e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -543,9 +627,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004383 seconds (Warm-up)
-#&gt; Chain 1:                0.003669 seconds (Sampling)
-#&gt; Chain 1:                0.008052 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004304 seconds (Warm-up)
+#&gt; Chain 1:                0.003047 seconds (Sampling)
+#&gt; Chain 1:                0.007351 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -553,8 +637,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 9e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -571,9 +655,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004771 seconds (Warm-up)
-#&gt; Chain 1:                0.00252 seconds (Sampling)
-#&gt; Chain 1:                0.007291 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004377 seconds (Warm-up)
+#&gt; Chain 1:                0.003273 seconds (Sampling)
+#&gt; Chain 1:                0.00765 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -581,8 +665,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -599,93 +683,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004851 seconds (Warm-up)
-#&gt; Chain 1:                0.003123 seconds (Sampling)
-#&gt; Chain 1:                0.007974 seconds (Total)
-#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
-#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
-#&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 9e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
-#&gt; Chain 1: Adjust your expectations accordingly!
-#&gt; Chain 1: 
-#&gt; Chain 1: 
-#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
-#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
-#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
-#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
-#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
-#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
-#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
-#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
-#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
-#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
-#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
-#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
-#&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004257 seconds (Warm-up)
-#&gt; Chain 1:                0.003004 seconds (Sampling)
-#&gt; Chain 1:                0.007261 seconds (Total)
-#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
-#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
-#&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
-#&gt; Chain 1: Adjust your expectations accordingly!
-#&gt; Chain 1: 
-#&gt; Chain 1: 
-#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
-#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
-#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
-#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
-#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
-#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
-#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
-#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
-#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
-#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
-#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
-#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
-#&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004255 seconds (Warm-up)
-#&gt; Chain 1:                0.003226 seconds (Sampling)
-#&gt; Chain 1:                0.007481 seconds (Total)
-#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
-#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
-#&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
-#&gt; Chain 1: Adjust your expectations accordingly!
-#&gt; Chain 1: 
-#&gt; Chain 1: 
-#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
-#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
-#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
-#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
-#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
-#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
-#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
-#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
-#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
-#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
-#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
-#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
-#&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.003874 seconds (Warm-up)
-#&gt; Chain 1:                0.003139 seconds (Sampling)
-#&gt; Chain 1:                0.007013 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004022 seconds (Warm-up)
+#&gt; Chain 1:                0.003182 seconds (Sampling)
+#&gt; Chain 1:                0.007204 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is 1.12, indicating chains have not mixed.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#r-hat</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -695,8 +695,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -713,93 +713,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004428 seconds (Warm-up)
-#&gt; Chain 1:                0.003292 seconds (Sampling)
-#&gt; Chain 1:                0.00772 seconds (Total)
-#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
-#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
-#&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 9e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
-#&gt; Chain 1: Adjust your expectations accordingly!
-#&gt; Chain 1: 
-#&gt; Chain 1: 
-#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
-#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
-#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
-#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
-#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
-#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
-#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
-#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
-#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
-#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
-#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
-#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
-#&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004107 seconds (Warm-up)
-#&gt; Chain 1:                0.002697 seconds (Sampling)
-#&gt; Chain 1:                0.006804 seconds (Total)
-#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
-#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
-#&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 8e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.08 seconds.
-#&gt; Chain 1: Adjust your expectations accordingly!
-#&gt; Chain 1: 
-#&gt; Chain 1: 
-#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
-#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
-#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
-#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
-#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
-#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
-#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
-#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
-#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
-#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
-#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
-#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
-#&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004538 seconds (Warm-up)
-#&gt; Chain 1:                0.003377 seconds (Sampling)
-#&gt; Chain 1:                0.007915 seconds (Total)
-#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
-#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
-#&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 8e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.08 seconds.
-#&gt; Chain 1: Adjust your expectations accordingly!
-#&gt; Chain 1: 
-#&gt; Chain 1: 
-#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
-#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
-#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
-#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
-#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
-#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
-#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
-#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
-#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
-#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
-#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
-#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
-#&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004273 seconds (Warm-up)
-#&gt; Chain 1:                0.003342 seconds (Sampling)
-#&gt; Chain 1:                0.007615 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004576 seconds (Warm-up)
+#&gt; Chain 1:                0.003379 seconds (Sampling)
+#&gt; Chain 1:                0.007955 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -825,9 +741,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004704 seconds (Warm-up)
-#&gt; Chain 1:                0.002631 seconds (Sampling)
-#&gt; Chain 1:                0.007335 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004252 seconds (Warm-up)
+#&gt; Chain 1:                0.002782 seconds (Sampling)
+#&gt; Chain 1:                0.007034 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -835,8 +751,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -853,9 +769,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.003793 seconds (Warm-up)
-#&gt; Chain 1:                0.003162 seconds (Sampling)
-#&gt; Chain 1:                0.006955 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004727 seconds (Warm-up)
+#&gt; Chain 1:                0.003461 seconds (Sampling)
+#&gt; Chain 1:                0.008188 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -863,8 +779,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 8e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.08 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -881,9 +797,37 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004168 seconds (Warm-up)
-#&gt; Chain 1:                0.002877 seconds (Sampling)
-#&gt; Chain 1:                0.007045 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004378 seconds (Warm-up)
+#&gt; Chain 1:                0.003432 seconds (Sampling)
+#&gt; Chain 1:                0.00781 seconds (Total)
+#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
+#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
+#&gt; Chain 1: 
+#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
+#&gt; Chain 1: Adjust your expectations accordingly!
+#&gt; Chain 1: 
+#&gt; Chain 1: 
+#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
+#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
+#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
+#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
+#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
+#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
+#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
+#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
+#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
+#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
+#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
+#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
+#&gt; Chain 1: 
+#&gt; Chain 1:  Elapsed Time: 0.004866 seconds (Warm-up)
+#&gt; Chain 1:                0.002754 seconds (Sampling)
+#&gt; Chain 1:                0.00762 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -909,37 +853,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.003985 seconds (Warm-up)
-#&gt; Chain 1:                0.003322 seconds (Sampling)
-#&gt; Chain 1:                0.007307 seconds (Total)
-#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
-#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
-#&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 9e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
-#&gt; Chain 1: Adjust your expectations accordingly!
-#&gt; Chain 1: 
-#&gt; Chain 1: 
-#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
-#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
-#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
-#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
-#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
-#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
-#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
-#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
-#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
-#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
-#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
-#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
-#&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004181 seconds (Warm-up)
-#&gt; Chain 1:                0.003316 seconds (Sampling)
-#&gt; Chain 1:                0.007497 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.003951 seconds (Warm-up)
+#&gt; Chain 1:                0.003285 seconds (Sampling)
+#&gt; Chain 1:                0.007236 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -965,9 +881,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004216 seconds (Warm-up)
-#&gt; Chain 1:                0.003269 seconds (Sampling)
-#&gt; Chain 1:                0.007485 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004281 seconds (Warm-up)
+#&gt; Chain 1:                0.002964 seconds (Sampling)
+#&gt; Chain 1:                0.007245 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -993,9 +909,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004729 seconds (Warm-up)
-#&gt; Chain 1:                0.002871 seconds (Sampling)
-#&gt; Chain 1:                0.0076 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004146 seconds (Warm-up)
+#&gt; Chain 1:                0.003438 seconds (Sampling)
+#&gt; Chain 1:                0.007584 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1021,16 +937,100 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.00508 seconds (Warm-up)
-#&gt; Chain 1:                0.00304 seconds (Sampling)
-#&gt; Chain 1:                0.00812 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004343 seconds (Warm-up)
+#&gt; Chain 1:                0.003425 seconds (Sampling)
+#&gt; Chain 1:                0.007768 seconds (Total)
+#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
+#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
+#&gt; Chain 1: 
+#&gt; Chain 1: Gradient evaluation took 1.3e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.13 seconds.
+#&gt; Chain 1: Adjust your expectations accordingly!
+#&gt; Chain 1: 
+#&gt; Chain 1: 
+#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
+#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
+#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
+#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
+#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
+#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
+#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
+#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
+#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
+#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
+#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
+#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
+#&gt; Chain 1: 
+#&gt; Chain 1:  Elapsed Time: 0.00439 seconds (Warm-up)
+#&gt; Chain 1:                0.003398 seconds (Sampling)
+#&gt; Chain 1:                0.007788 seconds (Total)
+#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
+#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
+#&gt; Chain 1: 
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
+#&gt; Chain 1: Adjust your expectations accordingly!
+#&gt; Chain 1: 
+#&gt; Chain 1: 
+#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
+#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
+#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
+#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
+#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
+#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
+#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
+#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
+#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
+#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
+#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
+#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
+#&gt; Chain 1: 
+#&gt; Chain 1:  Elapsed Time: 0.004951 seconds (Warm-up)
+#&gt; Chain 1:                0.002941 seconds (Sampling)
+#&gt; Chain 1:                0.007892 seconds (Total)
+#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
+#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
+#&gt; Chain 1: 
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
+#&gt; Chain 1: Adjust your expectations accordingly!
+#&gt; Chain 1: 
+#&gt; Chain 1: 
+#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
+#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
+#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
+#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
+#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
+#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
+#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
+#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
+#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
+#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
+#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
+#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
+#&gt; Chain 1: 
+#&gt; Chain 1:  Elapsed Time: 0.005191 seconds (Warm-up)
+#&gt; Chain 1:                0.003033 seconds (Sampling)
+#&gt; Chain 1:                0.008224 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1047,9 +1047,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004246 seconds (Warm-up)
-#&gt; Chain 1:                0.002847 seconds (Sampling)
-#&gt; Chain 1:                0.007093 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004406 seconds (Warm-up)
+#&gt; Chain 1:                0.002898 seconds (Sampling)
+#&gt; Chain 1:                0.007304 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1062,6 +1062,34 @@ posterior of the correlation.</p>
 </div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
+#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
+#&gt; Chain 1: Adjust your expectations accordingly!
+#&gt; Chain 1: 
+#&gt; Chain 1: 
+#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
+#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
+#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
+#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
+#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
+#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
+#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
+#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
+#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
+#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
+#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
+#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
+#&gt; Chain 1: 
+#&gt; Chain 1:  Elapsed Time: 0.005035 seconds (Warm-up)
+#&gt; Chain 1:                0.003846 seconds (Sampling)
+#&gt; Chain 1:                0.008881 seconds (Total)
+#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
+#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
+#&gt; Chain 1: 
 #&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
 #&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
@@ -1080,9 +1108,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004901 seconds (Warm-up)
-#&gt; Chain 1:                0.003764 seconds (Sampling)
-#&gt; Chain 1:                0.008665 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004063 seconds (Warm-up)
+#&gt; Chain 1:                0.003969 seconds (Sampling)
+#&gt; Chain 1:                0.008032 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1090,8 +1118,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1.4e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.14 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.3e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.13 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1108,9 +1136,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.003997 seconds (Warm-up)
-#&gt; Chain 1:                0.003927 seconds (Sampling)
-#&gt; Chain 1:                0.007924 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.005023 seconds (Warm-up)
+#&gt; Chain 1:                0.003591 seconds (Sampling)
+#&gt; Chain 1:                0.008614 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1118,8 +1146,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 9e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.3e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.13 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1136,37 +1164,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004582 seconds (Warm-up)
-#&gt; Chain 1:                0.003396 seconds (Sampling)
-#&gt; Chain 1:                0.007978 seconds (Total)
-#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
-#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
-#&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
-#&gt; Chain 1: Adjust your expectations accordingly!
-#&gt; Chain 1: 
-#&gt; Chain 1: 
-#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
-#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
-#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
-#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
-#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
-#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
-#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
-#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
-#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
-#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
-#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
-#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
-#&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004065 seconds (Warm-up)
-#&gt; Chain 1:                0.003187 seconds (Sampling)
-#&gt; Chain 1:                0.007252 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004206 seconds (Warm-up)
+#&gt; Chain 1:                0.003217 seconds (Sampling)
+#&gt; Chain 1:                0.007423 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is 1.07, indicating chains have not mixed.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#r-hat</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -1176,8 +1176,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 9e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1194,9 +1194,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004505 seconds (Warm-up)
-#&gt; Chain 1:                0.003043 seconds (Sampling)
-#&gt; Chain 1:                0.007548 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004667 seconds (Warm-up)
+#&gt; Chain 1:                0.003125 seconds (Sampling)
+#&gt; Chain 1:                0.007792 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1204,8 +1204,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 9e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1222,9 +1222,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004511 seconds (Warm-up)
-#&gt; Chain 1:                0.00282 seconds (Sampling)
-#&gt; Chain 1:                0.007331 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004595 seconds (Warm-up)
+#&gt; Chain 1:                0.002867 seconds (Sampling)
+#&gt; Chain 1:                0.007462 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1232,8 +1232,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 9e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1250,9 +1250,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004945 seconds (Warm-up)
-#&gt; Chain 1:                0.003776 seconds (Sampling)
-#&gt; Chain 1:                0.008721 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.005348 seconds (Warm-up)
+#&gt; Chain 1:                0.003964 seconds (Sampling)
+#&gt; Chain 1:                0.009312 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is 1.14, indicating chains have not mixed.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#r-hat</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -1262,8 +1262,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.3e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.13 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1280,9 +1280,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004256 seconds (Warm-up)
-#&gt; Chain 1:                0.003375 seconds (Sampling)
-#&gt; Chain 1:                0.007631 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004444 seconds (Warm-up)
+#&gt; Chain 1:                0.003477 seconds (Sampling)
+#&gt; Chain 1:                0.007921 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1290,8 +1290,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1308,9 +1308,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.00464 seconds (Warm-up)
-#&gt; Chain 1:                0.004337 seconds (Sampling)
-#&gt; Chain 1:                0.008977 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.00506 seconds (Warm-up)
+#&gt; Chain 1:                0.004634 seconds (Sampling)
+#&gt; Chain 1:                0.009694 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1318,8 +1318,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 9e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1336,9 +1336,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.003756 seconds (Warm-up)
-#&gt; Chain 1:                0.003078 seconds (Sampling)
-#&gt; Chain 1:                0.006834 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.003886 seconds (Warm-up)
+#&gt; Chain 1:                0.003113 seconds (Sampling)
+#&gt; Chain 1:                0.006999 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1346,8 +1346,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 8e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.08 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1364,37 +1364,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004018 seconds (Warm-up)
-#&gt; Chain 1:                0.00314 seconds (Sampling)
-#&gt; Chain 1:                0.007158 seconds (Total)
-#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
-#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
-#&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 9e-06 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
-#&gt; Chain 1: Adjust your expectations accordingly!
-#&gt; Chain 1: 
-#&gt; Chain 1: 
-#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
-#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
-#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
-#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
-#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
-#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
-#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
-#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
-#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
-#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
-#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
-#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
-#&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004817 seconds (Warm-up)
-#&gt; Chain 1:                0.003339 seconds (Sampling)
-#&gt; Chain 1:                0.008156 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004175 seconds (Warm-up)
+#&gt; Chain 1:                0.003219 seconds (Sampling)
+#&gt; Chain 1:                0.007394 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1420,9 +1392,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004532 seconds (Warm-up)
-#&gt; Chain 1:                0.003206 seconds (Sampling)
-#&gt; Chain 1:                0.007738 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.005376 seconds (Warm-up)
+#&gt; Chain 1:                0.003645 seconds (Sampling)
+#&gt; Chain 1:                0.009021 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1430,8 +1402,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1448,9 +1420,37 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004512 seconds (Warm-up)
-#&gt; Chain 1:                0.003106 seconds (Sampling)
-#&gt; Chain 1:                0.007618 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.005244 seconds (Warm-up)
+#&gt; Chain 1:                0.003514 seconds (Sampling)
+#&gt; Chain 1:                0.008758 seconds (Total)
+#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
+#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
+#&gt; Chain 1: 
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
+#&gt; Chain 1: Adjust your expectations accordingly!
+#&gt; Chain 1: 
+#&gt; Chain 1: 
+#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
+#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
+#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
+#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
+#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
+#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
+#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
+#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
+#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
+#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
+#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
+#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
+#&gt; Chain 1: 
+#&gt; Chain 1:  Elapsed Time: 0.004591 seconds (Warm-up)
+#&gt; Chain 1:                0.003119 seconds (Sampling)
+#&gt; Chain 1:                0.00771 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is 1.08, indicating chains have not mixed.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#r-hat</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -1460,8 +1460,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.3e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.13 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1478,9 +1478,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004622 seconds (Warm-up)
-#&gt; Chain 1:                0.003115 seconds (Sampling)
-#&gt; Chain 1:                0.007737 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.005274 seconds (Warm-up)
+#&gt; Chain 1:                0.003192 seconds (Sampling)
+#&gt; Chain 1:                0.008466 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1488,8 +1488,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1506,9 +1506,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.003755 seconds (Warm-up)
-#&gt; Chain 1:                0.002934 seconds (Sampling)
-#&gt; Chain 1:                0.006689 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004267 seconds (Warm-up)
+#&gt; Chain 1:                0.003061 seconds (Sampling)
+#&gt; Chain 1:                0.007328 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1516,8 +1516,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
+#&gt; Chain 1: Gradient evaluation took 5e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.5 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1534,9 +1534,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.003977 seconds (Warm-up)
-#&gt; Chain 1:                0.003207 seconds (Sampling)
-#&gt; Chain 1:                0.007184 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004924 seconds (Warm-up)
+#&gt; Chain 1:                0.003692 seconds (Sampling)
+#&gt; Chain 1:                0.008616 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1544,8 +1544,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
+#&gt; Chain 1: Gradient evaluation took 9e-06 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1562,9 +1562,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.00481 seconds (Warm-up)
-#&gt; Chain 1:                0.00342 seconds (Sampling)
-#&gt; Chain 1:                0.00823 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.00623 seconds (Warm-up)
+#&gt; Chain 1:                0.003892 seconds (Sampling)
+#&gt; Chain 1:                0.010122 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is 1.05, indicating chains have not mixed.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#r-hat</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -1574,6 +1574,36 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
+#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
+#&gt; Chain 1: Adjust your expectations accordingly!
+#&gt; Chain 1: 
+#&gt; Chain 1: 
+#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
+#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
+#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
+#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
+#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
+#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
+#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
+#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
+#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
+#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
+#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
+#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
+#&gt; Chain 1: 
+#&gt; Chain 1:  Elapsed Time: 0.004709 seconds (Warm-up)
+#&gt; Chain 1:                0.003176 seconds (Sampling)
+#&gt; Chain 1:                0.007885 seconds (Total)
+#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is 1.08, indicating chains have not mixed.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#r-hat</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
+#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
+#&gt; Chain 1: 
 #&gt; Chain 1: Gradient evaluation took 9e-06 seconds
 #&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.09 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
@@ -1592,67 +1622,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004479 seconds (Warm-up)
-#&gt; Chain 1:                0.003047 seconds (Sampling)
-#&gt; Chain 1:                0.007526 seconds (Total)
-#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is 1.08, indicating chains have not mixed.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#r-hat</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
-#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
-#&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
-#&gt; Chain 1: Adjust your expectations accordingly!
-#&gt; Chain 1: 
-#&gt; Chain 1: 
-#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
-#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
-#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
-#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
-#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
-#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
-#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
-#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
-#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
-#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
-#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
-#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
-#&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.0042 seconds (Warm-up)
-#&gt; Chain 1:                0.002996 seconds (Sampling)
-#&gt; Chain 1:                0.007196 seconds (Total)
-#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
-#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
-#&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
-#&gt; Chain 1: Adjust your expectations accordingly!
-#&gt; Chain 1: 
-#&gt; Chain 1: 
-#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
-#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
-#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
-#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
-#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
-#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
-#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
-#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
-#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
-#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
-#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
-#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
-#&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004156 seconds (Warm-up)
-#&gt; Chain 1:                0.003356 seconds (Sampling)
-#&gt; Chain 1:                0.007512 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.00435 seconds (Warm-up)
+#&gt; Chain 1:                0.00311 seconds (Sampling)
+#&gt; Chain 1:                0.00746 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1678,9 +1650,37 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004431 seconds (Warm-up)
-#&gt; Chain 1:                0.004015 seconds (Sampling)
-#&gt; Chain 1:                0.008446 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004577 seconds (Warm-up)
+#&gt; Chain 1:                0.003545 seconds (Sampling)
+#&gt; Chain 1:                0.008122 seconds (Total)
+#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
+#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
+#&gt; Chain 1: 
+#&gt; Chain 1: Gradient evaluation took 1e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
+#&gt; Chain 1: Adjust your expectations accordingly!
+#&gt; Chain 1: 
+#&gt; Chain 1: 
+#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
+#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
+#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
+#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
+#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
+#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
+#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
+#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
+#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
+#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
+#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
+#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
+#&gt; Chain 1: 
+#&gt; Chain 1:  Elapsed Time: 0.004584 seconds (Warm-up)
+#&gt; Chain 1:                0.004176 seconds (Sampling)
+#&gt; Chain 1:                0.00876 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is 1.06, indicating chains have not mixed.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#r-hat</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -1690,6 +1690,34 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
+#&gt; Chain 1: Adjust your expectations accordingly!
+#&gt; Chain 1: 
+#&gt; Chain 1: 
+#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
+#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
+#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
+#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
+#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
+#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
+#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
+#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
+#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
+#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
+#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
+#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
+#&gt; Chain 1: 
+#&gt; Chain 1:  Elapsed Time: 0.004887 seconds (Warm-up)
+#&gt; Chain 1:                0.003348 seconds (Sampling)
+#&gt; Chain 1:                0.008235 seconds (Total)
+#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
+#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
+#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
+#&gt; Chain 1: 
 #&gt; Chain 1: Gradient evaluation took 1.1e-05 seconds
 #&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
@@ -1708,9 +1736,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.00466 seconds (Warm-up)
-#&gt; Chain 1:                0.003238 seconds (Sampling)
-#&gt; Chain 1:                0.007898 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004215 seconds (Warm-up)
+#&gt; Chain 1:                0.003435 seconds (Sampling)
+#&gt; Chain 1:                0.00765 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
@@ -1718,8 +1746,8 @@ posterior of the correlation.</p>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
+#&gt; Chain 1: Gradient evaluation took 1.2e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.12 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -1736,37 +1764,9 @@ posterior of the correlation.</p>
 #&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004081 seconds (Warm-up)
-#&gt; Chain 1:                0.00331 seconds (Sampling)
-#&gt; Chain 1:                0.007391 seconds (Total)
-#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; 
-#&gt; SAMPLING FOR MODEL 'corr' NOW (CHAIN 1).
-#&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 1e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.1 seconds.
-#&gt; Chain 1: Adjust your expectations accordingly!
-#&gt; Chain 1: 
-#&gt; Chain 1: 
-#&gt; Chain 1: Iteration:   1 / 300 [  0%]  (Warmup)
-#&gt; Chain 1: Iteration:  30 / 300 [ 10%]  (Warmup)
-#&gt; Chain 1: Iteration:  60 / 300 [ 20%]  (Warmup)
-#&gt; Chain 1: Iteration:  90 / 300 [ 30%]  (Warmup)
-#&gt; Chain 1: Iteration: 120 / 300 [ 40%]  (Warmup)
-#&gt; Chain 1: Iteration: 150 / 300 [ 50%]  (Warmup)
-#&gt; Chain 1: Iteration: 151 / 300 [ 50%]  (Sampling)
-#&gt; Chain 1: Iteration: 180 / 300 [ 60%]  (Sampling)
-#&gt; Chain 1: Iteration: 210 / 300 [ 70%]  (Sampling)
-#&gt; Chain 1: Iteration: 240 / 300 [ 80%]  (Sampling)
-#&gt; Chain 1: Iteration: 270 / 300 [ 90%]  (Sampling)
-#&gt; Chain 1: Iteration: 300 / 300 [100%]  (Sampling)
-#&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004792 seconds (Warm-up)
-#&gt; Chain 1:                0.003169 seconds (Sampling)
-#&gt; Chain 1:                0.007961 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004964 seconds (Warm-up)
+#&gt; Chain 1:                0.003194 seconds (Sampling)
+#&gt; Chain 1:                0.008158 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
