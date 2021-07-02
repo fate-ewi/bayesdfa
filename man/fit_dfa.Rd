@@ -20,7 +20,7 @@ fit_dfa(
   estimate_trend_ma = FALSE,
   estimate_process_sigma = FALSE,
   equal_process_sigma = TRUE,
-  sample = TRUE,
+  estimation = c("sampling", "optimizing", "none"),
   data_shape = c("wide", "long"),
   obs_covar = NULL,
   pro_covar = NULL,
@@ -85,8 +85,8 @@ sigma is fixed at 1, like conventional DFAs.}
 \item{equal_process_sigma}{Logical. If process sigma is estimated, whether or not to estimate a single shared value across trends (default)
 or estimate equal values for each trend}
 
-\item{sample}{Logical. Should the model be sampled from? If \code{FALSE}, then the
-data list object that would have been passed to Stan is returned instead.
+\item{estimation}{Character string. Should the model be sampled using \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}} ("sampling",default),
+\href{"optimizing"}{rstan::optimizing()}, or no estimation done ("none")
 This is useful for debugging and simulation. Defaults to \code{TRUE}.}
 
 \item{data_shape}{If \code{wide} (the current default) then the input data should

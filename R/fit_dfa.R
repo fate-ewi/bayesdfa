@@ -32,8 +32,8 @@
 #'   sigma is fixed at 1, like conventional DFAs.
 #' @param equal_process_sigma Logical. If process sigma is estimated, whether or not to estimate a single shared value across trends (default)
 #'   or estimate equal values for each trend
-#' @param sample Logical. Should the model be sampled from? If `FALSE`, then the
-#'   data list object that would have been passed to Stan is returned instead.
+#' @param estimation Character string. Should the model be sampled using [rstan::sampling()] ("sampling",default),
+#' [rstan::optimizing()]("optimizing"), or no estimation done ("none")
 #'   This is useful for debugging and simulation. Defaults to `TRUE`.
 #' @param data_shape If `wide` (the current default) then the input data should
 #'   have rows representing the various timeseries and columns representing the
@@ -82,7 +82,7 @@
 #'
 #' @export
 #'
-#' @importFrom rstan sampling
+#' @importFrom rstan sampling optimizing
 #' @importFrom splines bs
 #' @importFrom stats dist gaussian
 #' @import Rcpp
@@ -153,7 +153,7 @@ fit_dfa <- function(y = y,
                     estimate_trend_ma = FALSE,
                     estimate_process_sigma = FALSE,
                     equal_process_sigma = TRUE,
-                    sample = TRUE,
+                    estimation = c("sampling", "optimizing", "none"),
                     data_shape = c("wide", "long"),
                     obs_covar = NULL,
                     pro_covar = NULL,
@@ -522,7 +522,7 @@ fit_dfa <- function(y = y,
   )
 
   out <- list()
-  if (sample) {
+  if (estimation=="sampling") {
     mod <- do.call(sampling, sampling_args)
     if (chains > 1) {
       out <- invert_chains(mod, trends = num_trends, print = FALSE)
@@ -535,6 +535,16 @@ fit_dfa <- function(y = y,
       )
     }
   }
+  if(estimation=="optimizing") {
+    sampling_args <- list(
+      object = stanmodels$dfa,
+      data = data_list,
+      verbose = verbose,
+      ...
+    )
+    mod <- do.call(optimizing, sampling_args)
+    out <- list(model = mod)
+  }
 
   out[["sampling_args"]] <- sampling_args
   out[["orig_data"]] <- orig_data
@@ -542,7 +552,7 @@ fit_dfa <- function(y = y,
   out[["z_model"]] <- z_model
   out[["z_bound"]] <- z_bound
   out[["trend_model"]] <- trend_model
-  out[["sample"]] <- sample
+  out[["estimation"]] <- estimation
   out[["scale"]] <- scale[1]
   out[["obs_covar"]] <- obs_covar
   out[["pro_covar"]] <- pro_covar
