@@ -35,6 +35,7 @@ We've put together several vignettes for using the `bayesdfa` package.
 [Compositional models](https://fate-ewi.github.io/bayesdfa/articles/compositional.html)  
 [Including covariates](https://fate-ewi.github.io/bayesdfa/articles/covariates.html)  
 [Estimating process variance](https://fate-ewi.github.io/bayesdfa/articles/estimate_process_sigma.html)  
+[DFA for big data](https://fate-ewi.github.io/bayesdfa/articles/optimizing.html)
 
 Additional examples can be found in the course that Eli Holmes, Mark Scheuerell, and Eric Ward teach at the University of Washington:  
 [Course webpage](https://nwfsc-timeseries.github.io/atsa/)  

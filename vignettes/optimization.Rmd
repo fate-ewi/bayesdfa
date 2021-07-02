@@ -1,0 +1,107 @@
+---
+title: "Examples of fitting DFA models to big data"
+author: "Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Examples of fitting DFA models to big data}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+Here we will walk through how to use the bayesdfa package to fit dynamic factor analysis (DFA) to very large datasets. 
+
+```{r set-knitr-options, cache=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+library("knitr")
+opts_chunk$set(message = FALSE, fig.width = 5.5)
+```
+
+Let's load the necessary packages:
+
+```{r, message=FALSE, warning=FALSE}
+library(bayesdfa)
+library(ggplot2)
+library(dplyr)
+library(rstan)
+chains = 1
+iter = 10
+```
+
+## Data simulation
+
+Ordinarily, DFA estimation can be very slow. This is especially true using Bayesian methods, but also with packages like MARSS that implement maximum likelihood / EM algorithm. Long time series, with 100s or 1000s of data points are common, and have made application of DFA difficult. 
+
+As an example, we'll simulate 4 time series of 1000 time steps, generated from 2 underlying trend models
+
+```{r}
+set.seed(1)
+s = sim_dfa(num_trends = 2, num_years = 1000, num_ts = 4)
+```
+
+```{r}
+matplot(t(s$y_sim), type="l")
+```
+
+## Estimation with bayesdfa
+
+An alternative to estimation via MCMC is taking advantage of Stan's Maximum a posteriori estimation (MAP) via `rstan::optimizing()`.
+
+The function `fit_dfa()` has an argument `estimation` that defaults to "sampling" (equivalent to performing MCMC). This argument can also be "none" if a model is just to be constructed -- and not fit. A third option is to set this argument to "optimizing", which allows for fast MAP estimation.  
+
+For our example dataset, this becomes
+```{r}
+set.seed(1)
+fit = fit_dfa(y = s$y_sim, num_trends = 2, 
+              estimation="optimizing")
+```
+
+Elements of `fit$model` contain the returned object
+
+```{r}
+names(fit$model)
+```
+
+These include the maximized log posterior, 
+```{r}
+fit$model$value
+```
+
+And a flag indicating convergence (0 = converged)
+
+```{r}
+fit$model$return_code
+```
+
+## Extracting parameters
+
+By default, parameters are returned in a giant vector, which may be difficult to work with. These are stored in `fit$model$par`. As an alternative, we can add the 'as_vector' argument to `rstan::optimizing()`,
+
+```{r eval=FALSE}
+fit = fit_dfa(y = s$y_sim, num_trends = 2, 
+              estimation="optimizing",
+              as_vector = FALSE)
+```
+
+With this new approach, `fit$model$par` is a list object -- and elements can be accessed as
+
+```{r eval=FALSE}
+Z = fit$model$par$Z
+x = fit$model$par$x
+```
+ 
+etc.
+
+## Returning the Hessian
+
+By default, the Hessian is not returned from the MAP estimation -- but this may be desired for expressing uncertainty around estimates. This can be returned by modifying the `hessian` argument,
+
+```{r eval=FALSE}
+fit = fit_dfa(y = s$y_sim, num_trends = 2, 
+              estimation="optimizing",
+              hessian = TRUE)
+```
+
+## Sensitivity of initial seeds
+
+By default, `rstan::optimizing()` uses random initialization. This may cause the algorithm (by default "LBFGS") to occasionally be stuck, and the optimization to not converge. In these cases, we recommend re-fitting a model a number of times to ensure that models are converging.
+

@@ -111,6 +111,9 @@
     <li>
       <a href="../articles/estimate_process_sigma.html">Estimating process trend variability with bayesdfa</a>
     </li>
+    <li>
+      <a href="../articles/optimization.html">Examples of fitting DFA models to big data</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -162,7 +165,7 @@
   estimate_trend_ma <span class='op'>=</span> <span class='cn'>FALSE</span>,
   estimate_process_sigma <span class='op'>=</span> <span class='cn'>FALSE</span>,
   equal_process_sigma <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  sample <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  estimation <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"sampling"</span>, <span class='st'>"optimizing"</span>, <span class='st'>"none"</span><span class='op'>)</span>,
   data_shape <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"wide"</span>, <span class='st'>"long"</span><span class='op'>)</span>,
   obs_covar <span class='op'>=</span> <span class='cn'>NULL</span>,
   pro_covar <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -260,9 +263,9 @@ sigma is fixed at 1, like conventional DFAs.</p></td>
 or estimate equal values for each trend</p></td>
     </tr>
     <tr>
-      <th>sample</th>
-      <td><p>Logical. Should the model be sampled from? If <code>FALSE</code>, then the
-data list object that would have been passed to Stan is returned instead.
+      <th>estimation</th>
+      <td><p>Character string. Should the model be sampled using <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>rstan::sampling()</a></code> ("sampling",default),
+<a href='"optimizing"'>rstan::optimizing()</a>, or no estimation done ("none")
 This is useful for debugging and simulation. Defaults to <code>TRUE</code>.</p></td>
     </tr>
     <tr>
@@ -366,8 +369,8 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 </div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'dfa' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 3.6e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.36 seconds.
+#&gt; Chain 1: Gradient evaluation took 3.5e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.35 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -392,9 +395,9 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 #&gt; Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 50 / 50 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004652 seconds (Warm-up)
-#&gt; Chain 1:                0.064017 seconds (Sampling)
-#&gt; Chain 1:                0.068669 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004716 seconds (Warm-up)
+#&gt; Chain 1:                0.063832 seconds (Sampling)
+#&gt; Chain 1:                0.068548 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: There were 16 divergent transitions after warmup. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
 #&gt; <span class='warning'>to find out why this is a problem and how to eliminate them.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>

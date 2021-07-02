@@ -6,8 +6,6 @@ bayesdfa
 [![R build
 status](https://github.com/fate-ewi/bayesdfa/workflows/R-CMD-check/badge.svg)](https://github.com/fate-ewi/bayesdfa/actions)
 
-[![DOI](https://zenodo.org/badge/80677345.svg)](https://zenodo.org/badge/latestdoi/80677345)
-
 bayesdfa implements Bayesian Dynamic Factor Analysis (DFA) with Stan.
 
 You can install the development version of the package with:
@@ -29,7 +27,9 @@ models](https://fate-ewi.github.io/bayesdfa/articles/compositional.html)
 [Including
 covariates](https://fate-ewi.github.io/bayesdfa/articles/covariates.html)  
 [Estimating process
-variance](https://fate-ewi.github.io/bayesdfa/articles/estimate_process_sigma.html)
+variance](https://fate-ewi.github.io/bayesdfa/articles/estimate_process_sigma.html)  
+[DFA for big
+data](https://fate-ewi.github.io/bayesdfa/articles/optimizing.html)
 
 Additional examples can be found in the course that Eli Holmes, Mark
 Scheuerell, and Eric Ward teach at the University of Washington:  
@@ -105,3 +105,9 @@ endorsement, recommendation or favoring by the Department of Commerce.
 The Department of Commerce seal and logo, or the seal and logo of a DOC
 bureau, shall not be used in any manner to imply endorsement of any
 commercial product or activity by DOC or the United States Government.
+
+<img src="https://raw.githubusercontent.com/nmfs-general-modeling-tools/nmfspalette/main/man/figures/noaa-fisheries-rgb-2line-horizontal-small.png" height="75" alt="NOAA Fisheries">
+
+[U.S. Department of Commerce](https://www.commerce.gov/) \| [National
+Oceanographic and Atmospheric Administration](https://www.noaa.gov) \|
+[NOAA Fisheries](https://www.fisheries.noaa.gov/)
