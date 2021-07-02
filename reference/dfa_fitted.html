@@ -176,11 +176,11 @@
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sim_dfa.html'>sim_dfa</a></span><span class='op'>(</span>num_trends <span class='op'>=</span> <span class='fl'>2</span>, num_years <span class='op'>=</span> <span class='fl'>20</span>, num_ts <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
 <span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fit_dfa.html'>fit_dfa</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y</span><span class='op'>$</span><span class='va'>y_sim</span>, num_trends <span class='op'>=</span> <span class='fl'>2</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='output co'>#&gt; 
+</div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'dfa' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 0.000147 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.47 seconds.
+#&gt; Chain 1: Gradient evaluation took 0.000141 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.41 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -205,9 +205,9 @@
 #&gt; Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 50 / 50 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.018734 seconds (Warm-up)
-#&gt; Chain 1:                0.194505 seconds (Sampling)
-#&gt; Chain 1:                0.213239 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.018179 seconds (Warm-up)
+#&gt; Chain 1:                0.183333 seconds (Sampling)
+#&gt; Chain 1:                0.201512 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: There were 11 divergent transitions after warmup. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
 #&gt; <span class='warning'>to find out why this is a problem and how to eliminate them.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
@@ -356,7 +356,7 @@
 #&gt; For each parameter, Bulk_ESS and Tail_ESS are crude measures of 
 #&gt; effective sample size for bulk and tail quantities respectively (an ESS &gt; 100 
 #&gt; per chain is considered good), and Rhat is the potential scale reduction 
-#&gt; factor on rank normalized split chains (at convergence, Rhat &lt;= 1.05).</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='input'><span class='va'>fitted</span> <span class='op'>&lt;-</span> <span class='fu'>dfa_fitted</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
+#&gt; factor on rank normalized split chains (at convergence, Rhat &lt;= 1.05).</div><div class='input'><span class='va'>fitted</span> <span class='op'>&lt;-</span> <span class='fu'>dfa_fitted</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
 <span class='co'># }</span>
 </div></pre>
   </div>

@@ -363,7 +363,7 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 <span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sim_dfa.html'>sim_dfa</a></span><span class='op'>(</span>num_trends <span class='op'>=</span> <span class='fl'>1</span>, num_years <span class='op'>=</span> <span class='fl'>20</span>, num_ts <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
 <span class='co'># only 1 chain and 250 iterations used so example runs quickly:</span>
 <span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='output co'>#&gt; 
+</div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'dfa' NOW (CHAIN 1).
 #&gt; Chain 1: 
 #&gt; Chain 1: Gradient evaluation took 4.8e-05 seconds
@@ -392,9 +392,9 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 #&gt; Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 50 / 50 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.009232 seconds (Warm-up)
-#&gt; Chain 1:                0.133317 seconds (Sampling)
-#&gt; Chain 1:                0.142549 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.007351 seconds (Warm-up)
+#&gt; Chain 1:                0.121425 seconds (Sampling)
+#&gt; Chain 1:                0.128776 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: There were 16 divergent transitions after warmup. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
 #&gt; <span class='warning'>to find out why this is a problem and how to eliminate them.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
@@ -497,7 +497,7 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 #&gt; For each parameter, Bulk_ESS and Tail_ESS are crude measures of 
 #&gt; effective sample size for bulk and tail quantities respectively (an ESS &gt; 100 
 #&gt; per chain is considered good), and Rhat is the potential scale reduction 
-#&gt; factor on rank normalized split chains (at convergence, Rhat &lt;= 1.05).</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+#&gt; factor on rank normalized split chains (at convergence, Rhat &lt;= 1.05).</div><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='co'># example of observation error covariates</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>42</span><span class='op'>)</span>
 <span class='va'>obs_covar</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span><span class='op'>(</span><span class='st'>"time"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span>, <span class='st'>"timeseries"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>, <span class='st'>"covariate"</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>

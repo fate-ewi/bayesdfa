@@ -141,8 +141,6 @@
 <p>Let’s initially treat the first ~ 50 time points as a burn in, and fit a DFA model to the latter half of the time series, using all data. We don’t really have to rotate trends (because there’s just 1). The loadings are estimated ok for trend 1, but underestimated for the others.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fit_1</span> <span class="op">=</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="va">y_sim</span><span class="op">[</span>,<span class="fl">51</span><span class="op">:</span><span class="fl">100</span><span class="op">]</span>, num_trends <span class="op">=</span> <span class="fl">1</span>, chains<span class="op">=</span><span class="va">chains</span>, iter<span class="op">=</span><span class="va">iter</span><span class="op">)</span></code></pre></div>
-<pre><code>## Warning in if (estimation == "sampling") {: the condition has length &gt; 1 and
-## only the first element will be used</code></pre>
 <pre><code>## Warning: There were 5 divergent transitions after warmup. See
 ## http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup
 ## to find out why this is a problem and how to eliminate them.</code></pre>
@@ -150,11 +148,9 @@
 <pre><code>## Warning: The largest R-hat is NA, indicating chains have not mixed.
 ## Running the chains for more iterations may help. See
 ## http://mc-stan.org/misc/warnings.html#r-hat</code></pre>
-<pre><code>## Warning in if (estimation == "optimizing") {: the condition has length &gt; 1 and
-## only the first element will be used</code></pre>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">r</span> <span class="op">=</span> <span class="fu"><a href="../reference/rotate_trends.html">rotate_trends</a></span><span class="op">(</span><span class="va">fit_1</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">r</span><span class="op">$</span><span class="va">Z_rot_mean</span>,<span class="fl">3</span><span class="op">)</span></code></pre></div>
 <pre><code>##         1
 ## 1 -98.567
@@ -162,7 +158,7 @@
 ## 3  19.395</code></pre>
 <p>Now, we’ll pretend that in time steps 1:50 we have observations from time series 1 (but not the others). We’ll fit several additional models, adding in back data points in steps of 10, and going backwards in time. All these runs would use time points 51:100 for time series 2 and 3, but they would include time steps 51:100, then 41:100, 31:100, etc. for time series 1.</p>
 <p><em>Note for comparison purposes, we’ll also standardize all time series 1 time before passing them in as an argument. Time series # 1 won’t be re-scaled, but will be re-centered for each iteration. This is important because the time-series are non-stationary.</em></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">output</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html">expand.grid</a></span><span class="op">(</span><span class="st">"ts_start"</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">25</span>,<span class="fl">50</span><span class="op">)</span>, 
   <span class="st">"x"</span><span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="st">"estimated_trend"</span><span class="op">=</span><span class="cn">NA</span>, <span class="st">"obs"</span><span class="op">=</span><span class="cn">NA</span><span class="op">)</span>
 
