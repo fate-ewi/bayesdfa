@@ -522,7 +522,7 @@ fit_dfa <- function(y = y,
   )
 
   out <- list()
-  if (estimation=="sampling") {
+  if (estimation[1]=="sampling") {
     mod <- do.call(sampling, sampling_args)
     if (chains > 1) {
       out <- invert_chains(mod, trends = num_trends, print = FALSE)
@@ -535,7 +535,7 @@ fit_dfa <- function(y = y,
       )
     }
   }
-  if(estimation=="optimizing") {
+  if(estimation[1]=="optimizing") {
     sampling_args <- list(
       object = stanmodels$dfa,
       data = data_list,
