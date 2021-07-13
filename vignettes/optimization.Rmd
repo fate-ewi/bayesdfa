@@ -46,7 +46,7 @@ matplot(t(s$y_sim), type="l")
 
 An alternative to estimation via MCMC is taking advantage of Stan's Maximum a posteriori estimation (MAP) via `rstan::optimizing()`.
 
-The function `fit_dfa()` has an argument `estimation` that defaults to "sampling" (equivalent to performing MCMC). This argument can also be "none" if a model is just to be constructed -- and not fit. A third option is to set this argument to "optimizing", which allows for fast MAP estimation.  
+The function `fit_dfa()` has an argument `estimation` that defaults to "sampling" (equivalent to performing MCMC). This argument can also be "none" if a model is just to be constructed -- and not fit. We also allow this option to be set to "optimizing", which allows for fast MAP estimation.  
 
 For our example dataset, this becomes
 ```{r}
@@ -105,3 +105,11 @@ fit = fit_dfa(y = s$y_sim, num_trends = 2,
 
 By default, `rstan::optimizing()` uses random initialization. This may cause the algorithm (by default "LBFGS") to occasionally be stuck, and the optimization to not converge. In these cases, we recommend re-fitting a model a number of times to ensure that models are converging.
 
+## Variational inference
+
+In addition to the `rstan::optimizing()` method, the `rstan` package allows for variational inference, with the specification of `rstan::vb()`. We allow this to be an argument into `fit_dfa()` as well. As a note of caution, the Stan developers note that this method is still in development, and calls to `rstan` or `rstan::sampling()` are recommended. Link here: https://mc-stan.org/rstan/reference/stanmodel-method-vb.html
+
+```{r eval=FALSE}
+fit = fit_dfa(y = s$y_sim, num_trends = 2, 
+              estimation="vb")
+```

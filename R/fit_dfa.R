@@ -33,8 +33,8 @@
 #' @param equal_process_sigma Logical. If process sigma is estimated, whether or not to estimate a single shared value across trends (default)
 #'   or estimate equal values for each trend
 #' @param estimation Character string. Should the model be sampled using [rstan::sampling()] ("sampling",default),
-#' [rstan::optimizing()]("optimizing"), or no estimation done ("none")
-#'   This is useful for debugging and simulation. Defaults to `TRUE`.
+#' [rstan::optimizing()]("optimizing"), variational inference [rstan::vb()]("vb"),
+#' or no estimation done ("none"). No estimation may be useful for debugging and simulation.
 #' @param data_shape If `wide` (the current default) then the input data should
 #'   have rows representing the various timeseries and columns representing the
 #'   values through time. This matches the MARSS input data format. If `long`
@@ -82,7 +82,7 @@
 #'
 #' @export
 #'
-#' @importFrom rstan sampling optimizing
+#' @importFrom rstan sampling optimizing vb
 #' @importFrom splines bs
 #' @importFrom stats dist gaussian
 #' @import Rcpp
@@ -153,7 +153,7 @@ fit_dfa <- function(y = y,
                     estimate_trend_ma = FALSE,
                     estimate_process_sigma = FALSE,
                     equal_process_sigma = TRUE,
-                    estimation = c("sampling", "optimizing", "none"),
+                    estimation = c("sampling", "optimizing", "vb", "none"),
                     data_shape = c("wide", "long"),
                     obs_covar = NULL,
                     pro_covar = NULL,
@@ -543,6 +543,16 @@ fit_dfa <- function(y = y,
       ...
     )
     mod <- do.call(optimizing, sampling_args)
+    out <- list(model = mod)
+  }
+  if(estimation[1]=="vb") {
+    sampling_args <- list(
+      object = stanmodels$dfa,
+      data = data_list,
+      pars = pars,
+      ...
+    )
+    mod <- do.call(vb, sampling_args)
     out <- list(model = mod)
   }
 

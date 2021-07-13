@@ -20,7 +20,7 @@ fit_dfa(
   estimate_trend_ma = FALSE,
   estimate_process_sigma = FALSE,
   equal_process_sigma = TRUE,
-  estimation = c("sampling", "optimizing", "none"),
+  estimation = c("sampling", "optimizing", "vb", "none"),
   data_shape = c("wide", "long"),
   obs_covar = NULL,
   pro_covar = NULL,
@@ -86,8 +86,8 @@ sigma is fixed at 1, like conventional DFAs.}
 or estimate equal values for each trend}
 
 \item{estimation}{Character string. Should the model be sampled using \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}} ("sampling",default),
-\href{"optimizing"}{rstan::optimizing()}, or no estimation done ("none")
-This is useful for debugging and simulation. Defaults to \code{TRUE}.}
+\href{"optimizing"}{rstan::optimizing()}, variational inference \href{"vb"}{rstan::vb()},
+or no estimation done ("none"). No estimation may be useful for debugging and simulation.}
 
 \item{data_shape}{If \code{wide} (the current default) then the input data should
 have rows representing the various timeseries and columns representing the
