@@ -17,6 +17,13 @@ reference:
   - predicted
   - rotate_trends
   - trend_cor
+- title: "Extracting DFA output"
+  desc:  >
+    Functions for extracting common outputs
+- contents:
+  - dfa_fitted
+  - dfa_loadings
+  - dfa_trends
 - title: "Univariate Hidden Markov Models"
   desc:  >
     Functions for evaluating regimes with univariate HMMs
