@@ -3,10 +3,10 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   bayesdfa: bayesdfa.html
+  bigdata: bigdata.html
   combining_data: combining_data.html
   compositional: compositional.html
   covariates: covariates.html
   estimate_process_sigma: estimate_process_sigma.html
-  optimization: optimization.html
-last_built: 2021-07-17T20:35Z
+last_built: 2021-07-17T21:04Z
 
