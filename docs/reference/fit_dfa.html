@@ -211,7 +211,8 @@ standardize data, "center" to just standardize data, or "none". Defaults to "zsc
     </tr>
     <tr>
       <th>iter</th>
-      <td><p>Number of iterations in Stan sampling, defaults to 2000.</p></td>
+      <td><p>Number of iterations in Stan sampling, defaults to 2000. Used for both
+<code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>rstan::sampling()</a></code> and <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-vb.html'>rstan::vb()</a></code></p></td>
     </tr>
     <tr>
       <th>chains</th>
@@ -369,8 +370,8 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 </div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'dfa' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 3.4e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.34 seconds.
+#&gt; Chain 1: Gradient evaluation took 3.5e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.35 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -395,9 +396,9 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 #&gt; Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 50 / 50 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004717 seconds (Warm-up)
-#&gt; Chain 1:                0.064546 seconds (Sampling)
-#&gt; Chain 1:                0.069263 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004652 seconds (Warm-up)
+#&gt; Chain 1:                0.063374 seconds (Sampling)
+#&gt; Chain 1:                0.068026 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: There were 16 divergent transitions after warmup. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
 #&gt; <span class='warning'>to find out why this is a problem and how to eliminate them.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>

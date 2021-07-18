@@ -54,7 +54,8 @@ variances.}
 \item{scale}{Character string, used to standardized data. Can be "zscore" to center and
 standardize data, "center" to just standardize data, or "none". Defaults to "zscore"}
 
-\item{iter}{Number of iterations in Stan sampling, defaults to 2000.}
+\item{iter}{Number of iterations in Stan sampling, defaults to 2000. Used for both
+\code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}} and \code{\link[rstan:stanmodel-method-vb]{rstan::vb()}}}
 
 \item{chains}{Number of chains in Stan sampling, defaults to 4.}
 

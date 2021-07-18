@@ -12,7 +12,8 @@
 #'   variances.
 #' @param scale Character string, used to standardized data. Can be "zscore" to center and
 #' standardize data, "center" to just standardize data, or "none". Defaults to "zscore"
-#' @param iter Number of iterations in Stan sampling, defaults to 2000.
+#' @param iter Number of iterations in Stan sampling, defaults to 2000. Used for both
+#' [rstan::sampling()] and [rstan::vb()]
 #' @param thin Thinning rate in Stan sampling, defaults to 1.
 #' @param chains Number of chains in Stan sampling, defaults to 4.
 #' @param control A list of options to pass to Stan sampling. Defaults to
@@ -485,29 +486,31 @@ fit_dfa <- function(y = y,
   if (is.null(par_list)) {
     pars <- c("x", "Z", "log_lik", "xstar")
     if (expansion_prior) pars <- c(pars, "psi")
+
+    # family
+    if (family %in% c("gaussian", "lognormal")) pars <- c(pars, "sigma")
+    if (family %in% c("gamma")) pars <- c(pars, "gamma_a")
+    if (family %in% c("nbinom2")) pars <- c(pars, "nb2_phi")
+
+    if (est_correlation) pars <- c(pars, "Omega", "Sigma") # add correlation matrix
+    if (estimate_nu) pars <- c(pars, "nu")
+    if (estimate_trend_ar) pars <- c(pars, "phi")
+    if (estimate_trend_ma) pars <- c(pars, "theta")
+    if (!is.null(obs_covar)) pars <- c(pars, "b_obs")
+    if (!is.null(pro_covar)) pars <- c(pars, "b_pro")
+    if (est_sigma_process) pars <- c(pars, "sigma_process")
+    if (trend_model == "gp") pars <- c(pars, "gp_theta")
+    # if par list = "all", monitor everything --
+    if (!is.null(par_list)) {
+      if (par_list[1] == "all") {
+        pars <- NA # removed pred
+      }
+    }
   } else {
     pars <- par_list
   }
 
-  # family
-  if (family %in% c("gaussian", "lognormal")) pars <- c(pars, "sigma")
-  if (family %in% c("gamma")) pars <- c(pars, "gamma_a")
-  if (family %in% c("nbinom2")) pars <- c(pars, "nb2_phi")
 
-  if (est_correlation) pars <- c(pars, "Omega", "Sigma") # add correlation matrix
-  if (estimate_nu) pars <- c(pars, "nu")
-  if (estimate_trend_ar) pars <- c(pars, "phi")
-  if (estimate_trend_ma) pars <- c(pars, "theta")
-  if (!is.null(obs_covar)) pars <- c(pars, "b_obs")
-  if (!is.null(pro_covar)) pars <- c(pars, "b_pro")
-  if (est_sigma_process) pars <- c(pars, "sigma_process")
-  if (trend_model == "gp") pars <- c(pars, "gp_theta")
-
-  if (!is.null(par_list)) {
-    if (par_list[1] == "all") {
-      pars <- NA # removed pred
-    }
-  }
 
   sampling_args <- list(
     object = stanmodels$dfa,
@@ -549,6 +552,7 @@ fit_dfa <- function(y = y,
     sampling_args <- list(
       object = stanmodels$dfa,
       data = data_list,
+      iter = iter,
       pars = pars,
       ...
     )
