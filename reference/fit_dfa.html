@@ -211,7 +211,8 @@ standardize data, "center" to just standardize data, or "none". Defaults to "zsc
     </tr>
     <tr>
       <th>iter</th>
-      <td><p>Number of iterations in Stan sampling, defaults to 2000.</p></td>
+      <td><p>Number of iterations in Stan sampling, defaults to 2000. Used for both
+<code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>rstan::sampling()</a></code> and <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-vb.html'>rstan::vb()</a></code></p></td>
     </tr>
     <tr>
       <th>chains</th>
@@ -395,9 +396,9 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 #&gt; Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 50 / 50 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.007307 seconds (Warm-up)
-#&gt; Chain 1:                0.122854 seconds (Sampling)
-#&gt; Chain 1:                0.130161 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.008088 seconds (Warm-up)
+#&gt; Chain 1:                0.121306 seconds (Sampling)
+#&gt; Chain 1:                0.129394 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: There were 16 divergent transitions after warmup. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
 #&gt; <span class='warning'>to find out why this is a problem and how to eliminate them.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
