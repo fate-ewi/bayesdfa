@@ -101,7 +101,7 @@
       <h1 data-toc-skip>Examples of fitting DFA models to big data</h1>
                         <h4 class="author">Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri</h4>
             
-            <h4 class="date">2021-07-17</h4>
+            <h4 class="date">2021-08-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/fate-ewi/bayesdfa/blob/master/vignettes/bigdata.Rmd"><code>vignettes/bigdata.Rmd</code></a></small>
       <div class="hidden name"><code>bigdata.Rmd</code></div>
@@ -141,29 +141,30 @@
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
 <span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">y_sim</span>, num_trends <span class="op">=</span> <span class="fl">2</span>, 
               estimation<span class="op">=</span><span class="st">"optimizing"</span><span class="op">)</span></code></pre></div>
+<pre><code>## Warning in .local(object, ...): non-zero return code in optimizing</code></pre>
 <p>Elements of <code>fit$model</code> contain the returned object</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "par"         "value"       "return_code" "theta_tilde"</code></pre>
 <p>These include the maximized log posterior,</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">value</span></code></pre></div>
-<pre><code>## [1] -30707.4</code></pre>
+<pre><code>## [1] -506633402</code></pre>
 <p>And a flag indicating convergence (0 = converged)</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">return_code</span></code></pre></div>
-<pre><code>## [1] 0</code></pre>
+<pre><code>## [1] 70</code></pre>
 </div>
 <div id="extracting-parameters" class="section level2">
 <h2 class="hasAnchor">
 <a href="#extracting-parameters" class="anchor"></a>Extracting parameters</h2>
 <p>By default, parameters are returned in a giant vector, which may be difficult to work with. These are stored in <code>fit$model$par</code>. As an alternative, we can add the ‘as_vector’ argument to <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-optimizing.html">rstan::optimizing()</a></code>,</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">y_sim</span>, num_trends <span class="op">=</span> <span class="fl">2</span>, 
               estimation<span class="op">=</span><span class="st">"optimizing"</span>,
               as_vector <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p>With this new approach, <code>fit$model$par</code> is a list object – and elements can be accessed as</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">Z</span> <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">par</span><span class="op">$</span><span class="va">Z</span>
 <span class="va">x</span> <span class="op">=</span> <span class="va">fit</span><span class="op">$</span><span class="va">model</span><span class="op">$</span><span class="va">par</span><span class="op">$</span><span class="va">x</span></code></pre></div>
 <p>etc.</p>
@@ -172,7 +173,7 @@
 <h2 class="hasAnchor">
 <a href="#returning-the-hessian" class="anchor"></a>Returning the Hessian</h2>
 <p>By default, the Hessian is not returned from the MAP estimation – but this may be desired for expressing uncertainty around estimates. This can be returned by modifying the <code>hessian</code> argument,</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">y_sim</span>, num_trends <span class="op">=</span> <span class="fl">2</span>, 
               estimation<span class="op">=</span><span class="st">"optimizing"</span>,
               hessian <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
@@ -186,7 +187,7 @@
 <h2 class="hasAnchor">
 <a href="#variational-inference" class="anchor"></a>Variational inference</h2>
 <p>In addition to the <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-optimizing.html">rstan::optimizing()</a></code> method, the <code>rstan</code> package allows for variational inference, with the specification of <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-vb.html">rstan::vb()</a></code>. We allow this to be an argument into <code><a href="../reference/fit_dfa.html">fit_dfa()</a></code> as well. As a note of caution, the Stan developers note that this method is still in development, and calls to <code>rstan</code> or <code><a href="https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html">rstan::sampling()</a></code> are recommended. Link here: <a href="https://mc-stan.org/rstan/reference/stanmodel-method-vb.html" class="uri">https://mc-stan.org/rstan/reference/stanmodel-method-vb.html</a></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fit</span> <span class="op">=</span> <span class="fu"><a href="../reference/fit_dfa.html">fit_dfa</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">s</span><span class="op">$</span><span class="va">y_sim</span>, num_trends <span class="op">=</span> <span class="fl">2</span>, 
               estimation<span class="op">=</span><span class="st">"vb"</span><span class="op">)</span></code></pre></div>
 </div>
