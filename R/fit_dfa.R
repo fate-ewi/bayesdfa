@@ -557,7 +557,12 @@ fit_dfa <- function(y = y,
       ...
     )
     mod <- do.call(vb, sampling_args)
-    out <- list(model = mod)
+    e <- rstan::extract(mod, permuted = FALSE)
+    ep <- rstan::extract(mod, permuted = TRUE)
+    out <- list(
+      model = mod, samples_permuted = ep, samples = e,
+      monitor = rstan::monitor(e)
+    )
   }
 
   out[["sampling_args"]] <- sampling_args
