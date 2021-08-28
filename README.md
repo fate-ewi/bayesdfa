@@ -15,6 +15,16 @@ You can install the development version of the package with:
 devtools::install_github("fate-ewi/bayesdfa")
 ```
 
+Overview
+--------
+
+A brief video overview of the package is here,
+
+<figure class="video_container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/yTX7D8_Ad8g" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</figure>
+
 Vignettes
 ---------
 
@@ -29,7 +39,7 @@ covariates](https://fate-ewi.github.io/bayesdfa/articles/covariates.html)
 [Estimating process
 variance](https://fate-ewi.github.io/bayesdfa/articles/estimate_process_sigma.html)  
 [DFA for big
-data](https://fate-ewi.github.io/bayesdfa/articles/optimizing.html)
+data](https://fate-ewi.github.io/bayesdfa/articles/bigdata.html)
 
 Additional examples can be found in the course that Eli Holmes, Mark
 Scheuerell, and Eric Ward teach at the University of Washington:  

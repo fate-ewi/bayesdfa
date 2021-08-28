@@ -101,7 +101,7 @@
       <h1 data-toc-skip>Estimating process trend variability with bayesdfa</h1>
                         <h4 class="author">Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri</h4>
             
-            <h4 class="date">2021-07-17</h4>
+            <h4 class="date">2021-08-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/fate-ewi/bayesdfa/blob/master/vignettes/estimate_process_sigma.Rmd"><code>vignettes/estimate_process_sigma.Rmd</code></a></small>
       <div class="hidden name"><code>estimate_process_sigma.Rmd</code></div>
@@ -210,43 +210,43 @@ Simulated data, from a model with 2 latent trends and no extremes.
 <p>The estimated loadings from the DFA where the trends are forced to have the same fixed variance are good</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">r1</span><span class="op">$</span><span class="va">Z_rot_mean</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##        [,1]    [,2]
-## [1,] -91.70  -32.20
-## [2,] -10.27 -109.07
-## [3,]  42.34  -12.66
-## [4,] -28.00   -7.90</code></pre>
+<pre><code>##        [,1]   [,2]
+## [1,]   1.94  -0.41
+## [2,] -47.80  10.63
+## [3,] -52.81  36.85
+## [4,]   4.40 -19.26</code></pre>
 <p>but some of the loadings are far off. These loadings are also not well estimated for either of the models that estimate the process variances,</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">r2</span><span class="op">$</span><span class="va">Z_rot_mean</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##        [,1]    [,2]
-## [1,] -70.20   68.36
-## [2,] -14.61 -118.64
-## [3,] -66.64    9.32
-## [4,] -47.34  -10.62</code></pre>
+<pre><code>##       [,1]  [,2]
+## [1,]  0.60  0.01
+## [2,]  0.23  3.12
+## [3,]  0.28  1.73
+## [4,] -0.71 11.14</code></pre>
 <p>or</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">r3</span><span class="op">$</span><span class="va">Z_rot_mean</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##         [,1]   [,2]
-## [1,]  -92.62  37.23
-## [2,] -100.07 -64.45
-## [3,]   -3.13 -44.88
-## [4,]  -83.12 -29.19</code></pre>
+<pre><code>##        [,1]   [,2]
+## [1,]   0.85  -0.60
+## [2,] 123.69 -85.64
+## [3,]  48.48 -98.56
+## [4,] 129.45 -52.35</code></pre>
 <p>The loadings for Model 4 are given by</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">r4</span><span class="op">$</span><span class="va">Z_rot_mean</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##        [,1]   [,2]
-## [1,] -99.51   5.65
-## [2,]  -7.46 -98.49
-## [3,]   8.32   2.71
-## [4,]   1.16   0.06</code></pre>
+<pre><code>##       [,1]  [,2]
+## [1,]  1.19  0.07
+## [2,]  8.68  1.38
+## [3,] -2.45 30.62
+## [4,]  1.93  3.35</code></pre>
 <p>and Model 5 by</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">r5</span><span class="op">$</span><span class="va">Z_rot_mean</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##        [,1]    [,2]
-## [1,] -89.54  -26.98
-## [2,] -19.58 -107.16
-## [3,]  44.17   66.35
-## [4,] -47.99  -90.43</code></pre>
+<pre><code>##         [,1]   [,2]
+## [1,]    2.11   1.66
+## [2,] -103.35 -81.45
+## [3,]   49.81  82.37
+## [4,] -119.48 -63.72</code></pre>
 <p>If we calculate the RMSE of the different models, model # 3 (estimated process trends, raw data not standardized) performs the best</p>
 <table class="table">
 <thead><tr class="header">
@@ -256,23 +256,23 @@ Simulated data, from a model with 2 latent trends and no extremes.
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="right">24263.24</td>
+<td align="right">6969.0996</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="right">30917.61</td>
+<td align="right">140.8403</td>
 </tr>
 <tr class="odd">
 <td align="right">3</td>
-<td align="right">33873.93</td>
+<td align="right">54750.0591</td>
 </tr>
 <tr class="even">
 <td align="right">4</td>
-<td align="right">19927.94</td>
+<td align="right">991.3941</td>
 </tr>
 <tr class="odd">
 <td align="right">5</td>
-<td align="right">37172.58</td>
+<td align="right">44259.1656</td>
 </tr>
 </tbody>
 </table>
@@ -289,23 +289,23 @@ Simulated data, from a model with 2 latent trends and no extremes.
 <tbody>
 <tr class="odd">
 <td align="right">1</td>
-<td align="right">321.8506</td>
+<td align="right">1425.8448</td>
 </tr>
 <tr class="even">
 <td align="right">2</td>
-<td align="right">199.0063</td>
+<td align="right">422.3512</td>
 </tr>
 <tr class="odd">
 <td align="right">3</td>
-<td align="right">311.6231</td>
+<td align="right">195.7987</td>
 </tr>
 <tr class="even">
 <td align="right">4</td>
-<td align="right">128.4473</td>
+<td align="right">401.0584</td>
 </tr>
 <tr class="odd">
 <td align="right">5</td>
-<td align="right">320.6021</td>
+<td align="right">1168.7753</td>
 </tr>
 </tbody>
 </table>

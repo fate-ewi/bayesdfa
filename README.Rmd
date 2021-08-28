@@ -28,6 +28,14 @@ You can install the development version of the package with:
 devtools::install_github("fate-ewi/bayesdfa")
 ```
 
+## Overview 
+
+A brief video overview of the package is here, 
+
+<figure class="video_container">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/yTX7D8_Ad8g" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</figure>
+
 ## Vignettes
 We've put together several vignettes for using the `bayesdfa` package.  
 [Overview](https://fate-ewi.github.io/bayesdfa/articles/bayesdfa.html)  
