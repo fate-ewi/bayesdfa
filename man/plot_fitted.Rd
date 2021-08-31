@@ -4,7 +4,13 @@
 \alias{plot_fitted}
 \title{Plot the fitted values from a DFA}
 \usage{
-plot_fitted(modelfit, conf_level = 0.95, names = NULL, spaghetti = FALSE)
+plot_fitted(
+  modelfit,
+  conf_level = 0.95,
+  names = NULL,
+  spaghetti = FALSE,
+  time_labels = NULL
+)
 }
 \arguments{
 \item{modelfit}{Output from \code{\link{fit_dfa}}, a rstanfit object}
@@ -14,6 +20,8 @@ plot_fitted(modelfit, conf_level = 0.95, names = NULL, spaghetti = FALSE)
 \item{names}{Optional vector of names for plotting labels TODO. Should be same length as the number of time series}
 
 \item{spaghetti}{Defaults to FALSE, but if TRUE puts all raw time series (grey) and fitted values on a single plot}
+
+\item{time_labels}{Optional vector of time labels for plotting, same length as number of time steps}
 }
 \description{
 Plot the fitted values from a DFA
