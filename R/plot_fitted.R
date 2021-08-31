@@ -4,7 +4,7 @@
 #' @param conf_level Probability level for CI.
 #' @param names Optional vector of names for plotting labels TODO. Should be same length as the number of time series
 #' @param spaghetti Defaults to FALSE, but if TRUE puts all raw time series (grey) and fitted values on a single plot
-#'
+#' @param time_labels Optional vector of time labels for plotting, same length as number of time steps
 #' @export
 #' @seealso plot_loadings fit_dfa rotate_trends dfa_fitted
 #'
@@ -21,9 +21,15 @@
 #' p <- plot_fitted(m, spaghetti = TRUE)
 #' print(p)
 #' }
-plot_fitted <- function(modelfit, conf_level = 0.95, names = NULL, spaghetti = FALSE) {
+plot_fitted <- function(modelfit, conf_level = 0.95, names = NULL, spaghetti = FALSE, time_labels = NULL) {
   df <- dfa_fitted(modelfit, conf_level = conf_level, names = names)
   df$ID <- as.factor(df$ID)
+
+  # relabel time if entered
+  if(!is.null(time_labels)) {
+    df$new_time = time_labels[df$time]
+    df$time = df$new_time
+  }
 
   if (spaghetti == TRUE) {
     cols <- viridis(length(unique((df$ID))), end = 0.8)
