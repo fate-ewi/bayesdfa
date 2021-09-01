@@ -171,7 +171,7 @@
   pro_covar <span class='op'>=</span> <span class='cn'>NULL</span>,
   z_bound <span class='op'>=</span> <span class='cn'>NULL</span>,
   z_model <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"dfa"</span>, <span class='st'>"proportion"</span><span class='op'>)</span>,
-  trend_model <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"rw"</span>, <span class='st'>"spline"</span>, <span class='st'>"gp"</span><span class='op'>)</span>,
+  trend_model <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"rw"</span>, <span class='st'>"bs"</span>, <span class='st'>"ps"</span>, <span class='st'>"gp"</span><span class='op'>)</span>,
   n_knots <span class='op'>=</span> <span class='cn'>NULL</span>,
   knot_locs <span class='op'>=</span> <span class='cn'>NULL</span>,
   par_list <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -301,16 +301,17 @@ trend, and (4) the value of the covariate</p></td>
     <tr>
       <th>trend_model</th>
       <td><p>Optional argument to change the model of the underlying latent trend. By default this is set to 'rw', where the trend
-is modeled as a random walk - as in conentional DFA. Alternative options are 'spline', where B-splines are used to model the trends
+is modeled as a random walk - as in conentional DFA. Alternative options are 'bs', where B-splines are used to model the trends,
+"ps" where P-splines are used to model the trends,
 or 'gp', where gaussian predictive processes are used. If models other than 'rw' are used, there are some key points. First, the MA and AR
-parameters on these models will be turned off. Second, for B-splines the process_sigma becomes an optional scalar on the spline coefficients,
+parameters on these models will be turned off. Second, for B-splines and P-splines, the process_sigma becomes an optional scalar on the spline coefficients,
 and is turned off by default. Third, the number of knots can be specified (more knots = more wiggliness, and n_knots &lt; N). For models
 with &gt; 2 trends, each trend has their own spline coefficients estimated though the knot locations are assumed shared. If knots aren't specified,
 the default is N/3.</p></td>
     </tr>
     <tr>
       <th>n_knots</th>
-      <td><p>The number of knots for the B-spline of Gaussian predictive process models. Optional, defaults to round(N/3)</p></td>
+      <td><p>The number of knots for the B-spline, P-spline, or Gaussian predictive process models. Optional, defaults to round(N/3)</p></td>
     </tr>
     <tr>
       <th>knot_locs</th>
@@ -396,9 +397,9 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 #&gt; Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 50 / 50 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.007197 seconds (Warm-up)
-#&gt; Chain 1:                0.120616 seconds (Sampling)
-#&gt; Chain 1:                0.127813 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.007365 seconds (Warm-up)
+#&gt; Chain 1:                0.122805 seconds (Sampling)
+#&gt; Chain 1:                0.13017 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: There were 16 divergent transitions after warmup. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
 #&gt; <span class='warning'>to find out why this is a problem and how to eliminate them.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
@@ -539,9 +540,9 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 
 <span class='co'>#' # example of B-spline model with wide format data</span>
 <span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sim_dfa.html'>sim_dfa</a></span><span class='op'>(</span>num_trends <span class='op'>=</span> <span class='fl'>1</span>, num_years <span class='op'>=</span> <span class='fl'>20</span>, num_ts <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span>, trend_model <span class='op'>=</span> <span class='st'>"spline"</span>, n_knots <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span>, trend_model <span class='op'>=</span> <span class='st'>"bs"</span>, n_knots <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
 
-<span class='co'># example of B-spline model with wide format data</span>
+<span class='co'># example of Gaussian process model with wide format data</span>
 <span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sim_dfa.html'>sim_dfa</a></span><span class='op'>(</span>num_trends <span class='op'>=</span> <span class='fl'>1</span>, num_years <span class='op'>=</span> <span class='fl'>20</span>, num_ts <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
 <span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>fit_dfa</span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>s</span><span class='op'>$</span><span class='va'>y_sim</span>, iter <span class='op'>=</span> <span class='fl'>50</span>, chains <span class='op'>=</span> <span class='fl'>1</span>, trend_model <span class='op'>=</span> <span class='st'>"gp"</span>, n_knots <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
 <span class='op'>}</span>
