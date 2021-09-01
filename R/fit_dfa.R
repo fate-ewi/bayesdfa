@@ -512,16 +512,15 @@ fit_dfa <- function(y = y,
     if (!is.null(pro_covar)) pars <- c(pars, "b_pro")
     if (est_sigma_process) pars <- c(pars, "sigma_process")
     if (trend_model == "gp") pars <- c(pars, "gp_theta")
-    # if par list = "all", monitor everything --
-    if (!is.null(par_list)) {
-      if (par_list[1] == "all") {
-        pars <- NA # removed pred
-      }
-    }
   } else {
     pars <- par_list
   }
-
+  # if par list = "all", monitor everything --
+  if (!is.null(par_list)) {
+    if (par_list[1] == "all") {
+      pars <- NA # removed pred
+    }
+  }
 
 
   sampling_args <- list(
