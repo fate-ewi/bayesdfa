@@ -108,7 +108,7 @@ data {
   int<lower=0> est_spline; // single value, 0 if false 1 if true to model trends with b-splines
   int<lower=0> est_gp; // single value, 0 if false 1 if true to model trends with predictive gaussian process
   int<lower=0> n_knots; // single value representing knots for b-spline or gp process
-  matrix[n_knots, N] B_spline;
+  matrix[n_knots, N] X_spline;
   real knot_locs[n_knots]; // inputs of knot locations for GP model
   //real data_locs[N]; // locations of data
   //matrix[n_knots, n_knots] distKnots;
@@ -317,9 +317,10 @@ transformed parameters {
       }
     }
     if(est_spline==1) {
-      // modified from Milad Kharratzadeh's example on B-splines/stan
+      // P-spline adapted from Crainiceanu et al. 2005
+      // B-spline modified from Milad Kharratzadeh's example on B-splines/stan
       for(k in 1:K) spline_a_trans[k] = spline_a[k] * sigma_pro[k];
-      x = spline_a_trans * B_spline;
+      x = spline_a_trans * X_spline;
       for(k in 1:K) {x[k] = x0[k] + x[k];}
     }
     if(est_gp == 1) {
@@ -372,7 +373,7 @@ transformed parameters {
     }
     if(est_spline==1) {
       for(k in 1:K) spline_a_trans[k] = spline_a[k] * sigma_pro[k];
-      x = spline_a_trans * B_spline;
+      x = spline_a_trans * X_spline;
       for(k in 1:K) {x[k] = x0[k] + x[k];}
     }
     if(est_gp == 1) {
@@ -659,7 +660,7 @@ generated quantities {
   if(est_spline == 1) {
     // b-spline, only affected by endpoint where weight -> 1
     for(k in 1:K) {
-      xstar[k,1] = spline_a_trans[k,n_knots] * B_spline[n_knots,N];
+      xstar[k,1] = spline_a_trans[k,n_knots] * X_spline[n_knots,N];
     }
   }
   if(est_gp == 1) {

@@ -51,13 +51,14 @@
 #' @param z_bound Optional hard constraints for estimated factor loadings -- really only applies to model with 1 trend. Passed in as a 2-element vector representing the lower and upper bound, e.g. (0, 100) to constrain positive
 #' @param z_model Optional argument allowing for elements of Z to be constrained to be proportions (each time series modeled as a mixture of trends). Arguments can be "dfa" (default) or "proportion"
 #' @param trend_model Optional argument to change the model of the underlying latent trend. By default this is set to 'rw', where the trend
-#' is modeled as a random walk - as in conentional DFA. Alternative options are 'spline', where B-splines are used to model the trends
+#' is modeled as a random walk - as in conentional DFA. Alternative options are 'bs', where B-splines are used to model the trends,
+#' "ps" where P-splines are used to model the trends,
 #' or 'gp', where gaussian predictive processes are used. If models other than 'rw' are used, there are some key points. First, the MA and AR
-#' parameters on these models will be turned off. Second, for B-splines the process_sigma becomes an optional scalar on the spline coefficients,
+#' parameters on these models will be turned off. Second, for B-splines and P-splines, the process_sigma becomes an optional scalar on the spline coefficients,
 #' and is turned off by default. Third, the number of knots can be specified (more knots = more wiggliness, and n_knots < N). For models
 #' with > 2 trends, each trend has their own spline coefficients estimated though the knot locations are assumed shared. If knots aren't specified,
 #' the default is N/3.
-#' @param n_knots The number of knots for the B-spline of Gaussian predictive process models. Optional, defaults to round(N/3)
+#' @param n_knots The number of knots for the B-spline, P-spline, or Gaussian predictive process models. Optional, defaults to round(N/3)
 #' @param knot_locs Locations of knots (optional), defaults to uniform spacing between 1 and N
 #' @param family String describing the observation model. Default is "gaussian",
 #'   but included options are "gamma", "lognormal", negative binomial ("nbinom2"),
@@ -133,9 +134,9 @@
 #'
 #' #' # example of B-spline model with wide format data
 #' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-#' m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "spline", n_knots = 10)
+#' m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "bs", n_knots = 10)
 #'
-#' # example of B-spline model with wide format data
+#' # example of Gaussian process model with wide format data
 #' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 #' m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "gp", n_knots = 5)
 #' }
@@ -160,7 +161,7 @@ fit_dfa <- function(y = y,
                     pro_covar = NULL,
                     z_bound = NULL,
                     z_model = c("dfa", "proportion"),
-                    trend_model = c("rw", "spline", "gp"),
+                    trend_model = c("rw", "bs","ps", "gp"),
                     n_knots = NULL,
                     knot_locs = NULL,
                     par_list = NULL,
@@ -172,7 +173,7 @@ fit_dfa <- function(y = y,
   # check arguments
   data_shape <- match.arg(data_shape, c("wide", "long"))
   z_model <- match.arg(z_model, c("dfa", "proportion"))
-  trend_model <- match.arg(trend_model, c("rw", "spline", "gp"))
+  trend_model <- match.arg(trend_model, c("rw", "bs","ps", "gp"))
 
   obs_model <- match(family, c(
     "gaussian", "gamma", "poisson", "nbinom2",
@@ -389,16 +390,27 @@ fit_dfa <- function(y = y,
   # distKnots21 <- matrix(0, N, n_knots)
   distKnots21_pred <- rep(0, n_knots)
   # set up cubic b-splines design matrix
-  B_spline <- matrix(0, n_knots, N)
+  X_spline <- matrix(0, n_knots, N)
 
-  if (trend_model == "spline") {
+  if (trend_model %in% c("bs","ps")) {
     est_spline <- 1
     est_rw <- 0
     # turn of things conventionally estimated when trend is a random walk
     estimate_trend_ar <- FALSE
     estimate_trend_ma <- FALSE
     estimate_nu <- FALSE
-    B_spline <- t(splines::bs(1:N, df = n_knots, degree = 3, intercept = TRUE))
+    if(trend_model == "bs") {
+      X_spline <- t(splines::bs(1:N, df = n_knots, degree = 3, intercept = TRUE))
+    } else {
+      # from Crainiceanu et al. 2005, Bayesian Analysis for Penalized Spline Regression Using WinBUGS
+      knots <- quantile(1:N, seq(0,1,length=(n_knots+2))[-c(1,(n_knots+2))])
+      Z_K<-(abs(outer(1:N, knots,"-")))^3
+      OMEGA_all<-(abs(outer(knots,knots,"-")))^3
+      svd.OMEGA_all<-svd(OMEGA_all)
+      sqrt.OMEGA_all<-t(svd.OMEGA_all$v %*% (t(svd.OMEGA_all$u)*sqrt(svd.OMEGA_all$d)))
+      Z<-t(solve(sqrt.OMEGA_all,t(Z_K)))
+      X_spline <- t(Z)
+    }
   }
   if (trend_model == "gp") {
     # Gaussian kernel
@@ -468,7 +480,7 @@ fit_dfa <- function(y = y,
     n_sigma_process = n_sigma_process,
     est_rw = est_rw,
     est_spline = est_spline,
-    B_spline = B_spline,
+    X_spline = X_spline,
     n_knots = n_knots,
     knot_locs = knot_locs,
     est_gp = est_gp,

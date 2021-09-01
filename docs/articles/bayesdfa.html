@@ -95,13 +95,13 @@
 
       
 
-      </header><script src="bayesdfa_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="bayesdfa_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Overview of the bayesdfa package</h1>
                         <h4 class="author">Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri</h4>
             
-            <h4 class="date">2021-08-25</h4>
+            <h4 class="date">2021-08-31</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/fate-ewi/bayesdfa/blob/master/vignettes/bayesdfa.Rmd"><code>vignettes/bayesdfa.Rmd</code></a></small>
       <div class="hidden name"><code>bayesdfa.Rmd</code></div>
@@ -203,11 +203,11 @@ Model predicted values from the 2-trend DFA model applied to simulated data.
 <p>The loadings from the 1-trend model aren’t as interesting because for a 1-trend model the loadings are a 1-dimensional vector. For the 2 trend model, there’s a separate loading of each time series on each trend,</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="va">r2</span><span class="op">$</span><span class="va">Z_rot_mean</span>, <span class="fl">2</span><span class="op">)</span></code></pre></div>
-<pre><code>##        [,1]   [,2]
-## [1,]   0.80  -0.54
-## [2,]  60.49 -39.24
-## [3,] -77.15 112.91
-## [4,] -51.79  30.35</code></pre>
+<pre><code>##        [,1]    [,2]
+## [1,] -90.54  -41.89
+## [2,] -19.10 -117.64
+## [3,]  -7.55   58.95
+## [4,] -49.06   15.14</code></pre>
 <p>These loadings can also be plotted with the <code><a href="../reference/plot_loadings.html">plot_loadings()</a></code> function. This shows the distribution of the densities as violin plots, with color proportional to being different from 0.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_loadings.html">plot_loadings</a></span><span class="op">(</span><span class="va">r2</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
@@ -221,10 +221,10 @@ Estimated loadings from the 2-trend DFA model.
 <code class="sourceCode R"><span class="va">loo1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/loo.bayesdfa.html">loo</a></span><span class="op">(</span><span class="va">f1</span><span class="op">)</span>
 <span class="va">loo1</span><span class="op">$</span><span class="va">estimates</span></code></pre></div>
 <pre><code>##               Estimate           SE
-## elpd_loo -2.719359e+04 5.626518e+03
-## p_loo     6.661338e-16 2.176588e-15
-## looic     5.438717e+04 1.125304e+04</code></pre>
-<p>where 5.438717510^{4} is the estimate and 1.125303710^{4} is the standard error.</p>
+## elpd_loo -2.973137e+04 6.859515e+03
+## p_loo    -2.220446e-16 2.107833e-15
+## looic     5.946275e+04 1.371903e+04</code></pre>
+<p>where 5.9462745^{4} is the estimate and 1.371903^{4} is the standard error.</p>
 <p>As an alternative to fitting each model individually as we did above, we also developed the <code><a href="../reference/find_dfa_trends.html">find_dfa_trends()</a></code> to automate fitting a larger number of models. In addition to evaluating different trends, this function allows the user to optionally evaluate models with normal and Student-t process errors, and alternative variance structures (observation variance of time series being equal, or not). For example, to fit models with 1:5 trends, both Student-t and normal errors, and equal and unequal variances, the call would be</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_dfa_trends.html">find_dfa_trends</a></span><span class="op">(</span>
@@ -294,13 +294,13 @@ Estimated loadings, from a model with 2 latent trends Student-t deviations.
 <p>We can also look at the estimated <code>nu</code> parameter, which shows some support for using the Student-t distribution (values greater than ~ 30 lead to similar behavior as a normal distribution),</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="fu">rstan</span><span class="fu">::</span><span class="fu"><a href="https://mc-stan.org/rstan/reference/stanfit-method-extract.html">extract</a></span><span class="op">(</span><span class="va">t2</span><span class="op">$</span><span class="va">model</span>, <span class="st">"nu"</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##        V1       
-##  Min.   :2.364  
-##  1st Qu.:2.364  
-##  Median :2.364  
-##  Mean   :2.364  
-##  3rd Qu.:2.364  
-##  Max.   :2.364</code></pre>
+<pre><code>##        V1      
+##  Min.   :2.82  
+##  1st Qu.:2.82  
+##  Median :2.82  
+##  Mean   :2.82  
+##  3rd Qu.:2.82  
+##  Max.   :2.82</code></pre>
 </div>
 <div id="fitting-dfa-models-with-non-gaussian-families" class="section level2">
 <h2 class="hasAnchor">
