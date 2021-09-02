@@ -57,7 +57,8 @@
 #' parameters on these models will be turned off. Second, for B-splines and P-splines, the process_sigma becomes an optional scalar on the spline coefficients,
 #' and is turned off by default. Third, the number of knots can be specified (more knots = more wiggliness, and n_knots < N). For models
 #' with > 2 trends, each trend has their own spline coefficients estimated though the knot locations are assumed shared. If knots aren't specified,
-#' the default is N/3.
+#' the default is N/3. By default both the B-spline and P-spline models use 3rd degree functions for smoothing, and include an intercept term. The P-spline
+#' model uses a difference penalty of 2.
 #' @param n_knots The number of knots for the B-spline, P-spline, or Gaussian predictive process models. Optional, defaults to round(N/3)
 #' @param knot_locs Locations of knots (optional), defaults to uniform spacing between 1 and N
 #' @param family String describing the observation model. Default is "gaussian",
@@ -85,7 +86,7 @@
 #' @export
 #'
 #' @importFrom rstan sampling optimizing vb
-#' @importFrom splines bs
+#' @importFrom splines splineDesign
 #' @importFrom stats dist gaussian
 #' @import Rcpp
 #' @importFrom graphics lines par plot points polygon segments
@@ -399,17 +400,33 @@ fit_dfa <- function(y = y,
     estimate_trend_ar <- FALSE
     estimate_trend_ma <- FALSE
     estimate_nu <- FALSE
+
+    df <- n_knots
+    degree <- 3
+    intercept=TRUE
     if(trend_model == "bs") {
-      X_spline <- t(splines::bs(1:N, df = n_knots, degree = 3, intercept = TRUE))
+      # adapted from splines::bs
+      ord <- 1 + degree
+      Boundary.knots = range(1:N)
+      nIknots <- df - ord + (1L - intercept)
+      knots <- seq(from=0,to=1, length.out = nIknots +
+                         2L)[-c(1L, nIknots + 2L)]
+      knots <- quantile(1:N, knots)
+      Aknots <- sort(c(rep(Boundary.knots, ord), knots))
+      X_spline <- t(splineDesign(Aknots, x=1:N, ord))
+
+      #X_spline <- t(splines::bs(1:N, df = n_knots, degree = 3, intercept = TRUE))
     } else {
-      # from Crainiceanu et al. 2005, Bayesian Analysis for Penalized Spline Regression Using WinBUGS
-      knots <- quantile(1:N, seq(0,1,length=(n_knots+2))[-c(1,(n_knots+2))])
-      Z_K<-(abs(outer(1:N, knots,"-")))^3
-      OMEGA_all<-(abs(outer(knots,knots,"-")))^3
-      svd.OMEGA_all<-svd(OMEGA_all)
-      sqrt.OMEGA_all<-t(svd.OMEGA_all$v %*% (t(svd.OMEGA_all$u)*sqrt(svd.OMEGA_all$d)))
-      Z<-t(solve(sqrt.OMEGA_all,t(Z_K)))
-      X_spline <- t(Z)
+      # adapted from dlnm::ps()
+      diff <- 2
+      nik <- df - degree + 2 - intercept
+      range <- range(1:N, na.rm = TRUE)
+      xl <- 1 - diff(range) * 0.001
+      xu <- N + diff(range) * 0.001
+      dx <- (xu - xl)/(nik - 1)
+      knots <- seq(xl - dx * degree, xu + dx * degree,
+                   length = nik + 2 * degree)
+      X_spline <- t(splineDesign(knots, x=1:N, degree + 1, 1:N * 0, TRUE))
     }
   }
   if (trend_model == "gp") {

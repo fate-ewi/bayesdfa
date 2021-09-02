@@ -116,7 +116,8 @@ or 'gp', where gaussian predictive processes are used. If models other than 'rw'
 parameters on these models will be turned off. Second, for B-splines and P-splines, the process_sigma becomes an optional scalar on the spline coefficients,
 and is turned off by default. Third, the number of knots can be specified (more knots = more wiggliness, and n_knots < N). For models
 with > 2 trends, each trend has their own spline coefficients estimated though the knot locations are assumed shared. If knots aren't specified,
-the default is N/3.}
+the default is N/3. By default both the B-spline and P-spline models use 3rd degree functions for smoothing, and include an intercept term. The P-spline
+model uses a difference penalty of 2.}
 
 \item{n_knots}{The number of knots for the B-spline, P-spline, or Gaussian predictive process models. Optional, defaults to round(N/3)}
 

@@ -307,7 +307,8 @@ or 'gp', where gaussian predictive processes are used. If models other than 'rw'
 parameters on these models will be turned off. Second, for B-splines and P-splines, the process_sigma becomes an optional scalar on the spline coefficients,
 and is turned off by default. Third, the number of knots can be specified (more knots = more wiggliness, and n_knots &lt; N). For models
 with &gt; 2 trends, each trend has their own spline coefficients estimated though the knot locations are assumed shared. If knots aren't specified,
-the default is N/3.</p></td>
+the default is N/3. By default both the B-spline and P-spline models use 3rd degree functions for smoothing, and include an intercept term. The P-spline
+model uses a difference penalty of 2.</p></td>
     </tr>
     <tr>
       <th>n_knots</th>
@@ -397,9 +398,9 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 #&gt; Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 50 / 50 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.004655 seconds (Warm-up)
-#&gt; Chain 1:                0.06301 seconds (Sampling)
-#&gt; Chain 1:                0.067665 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.004646 seconds (Warm-up)
+#&gt; Chain 1:                0.064167 seconds (Sampling)
+#&gt; Chain 1:                0.068813 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: There were 16 divergent transitions after warmup. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
 #&gt; <span class='warning'>to find out why this is a problem and how to eliminate them.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
