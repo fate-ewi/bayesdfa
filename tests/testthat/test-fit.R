@@ -1,5 +1,3 @@
-context("Fitting")
-
 if (interactive()) options(mc.cores = parallel::detectCores())
 
 set.seed(1)
@@ -24,10 +22,12 @@ test_that("est_correlation = TRUE works", {
   skip_on_cran()
   set.seed(42)
   s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
-  m <- fit_dfa(
-    y = s$y_sim, iter = 50, chains = 1,
-    num_trends = 2, est_correlation = TRUE
-  )
+  expect_warning({
+    m <- fit_dfa(
+      y = s$y_sim, iter = 50, chains = 1,
+      num_trends = 2, est_correlation = TRUE
+    )
+  })
   expect_equal(class(m$model)[[1]], "stanfit")
 })
 
@@ -59,7 +59,6 @@ test_that("find_dfa_trends works", {
       control = list(adapt_delta = 0.95, max_treedepth = 20)
     )
   })
-
   expect_equal(x$summary$model, c(2L, 1L))
   expect_lt(x$summary$looic[[1]], x$summary$looic[[2]])
 })
@@ -68,14 +67,18 @@ test_that("long format data works", {
   skip_on_cran()
   set.seed(42)
   s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-  m <- fit_dfa(y = s$y_sim, iter = 100, chains = 1, num_trends = 1, seed = 42)
+  expect_warning({
+    m <- fit_dfa(y = s$y_sim, iter = 100, chains = 1, num_trends = 1, seed = 42)
+  })
   wide_means <- apply(extract(m$model, "x")$x[, 1, ], 2, mean)
   # fit long format data
   long <- data.frame(
     "obs" = c(s$y_sim[1, ], s$y_sim[2, ], s$y_sim[3, ]),
     "ts" = sort(rep(1:3, 20)), "time" = rep(1:20, 3)
   )
-  m2 <- fit_dfa(y = long, data_shape = "long", iter = 100, chains = 1, num_trends = 1, seed = 42)
+  expect_warning({
+    m2 <- fit_dfa(y = long, data_shape = "long", iter = 100, chains = 1, num_trends = 1, seed = 42)
+  })
   long_means <- apply(extract(m2$model, "x")$x[, 1, ], 2, mean)
   expect_equal(cor(wide_means, long_means), 1, tolerance = 0.01)
 })
@@ -84,11 +87,12 @@ test_that("compositional model works", {
   skip_on_cran()
   set.seed(42)
   s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-  m <- fit_dfa(
-    y = s$y_sim, iter = 50, chains = 1, num_trends = 2, seed = 42,
-    z_model = "proportion"
-  )
-
+  expect_warning({
+    m <- fit_dfa(
+      y = s$y_sim, iter = 50, chains = 1, num_trends = 2, seed = 42,
+      z_model = "proportion"
+    )
+  })
   expect_equal(class(m$model)[[1]], "stanfit")
 })
 
@@ -96,11 +100,12 @@ test_that("compositional model works_2", {
   skip_on_cran()
   set.seed(42)
   s <- sim_dfa(num_trends = 2, num_years = 20, num_ts = 3)
-  m <- fit_dfa(
-    y = s$y_sim, iter = 50, chains = 1, num_trends = 2, seed = 42,
-    z_model = "proportion"
-  )
-
+  expect_warning({
+    m <- fit_dfa(
+      y = s$y_sim, iter = 50, chains = 1, num_trends = 2, seed = 42,
+      z_model = "proportion"
+    )
+  })
   expect_equal(class(m$model)[[1]], "stanfit")
 })
 
@@ -108,11 +113,37 @@ test_that("estimate_sigma_process_1", {
   skip_on_cran()
   set.seed(42)
   s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-  m <- fit_dfa(
-    y = s$y_sim, iter = 50, chains = 1, num_trends = 2, seed = 42,
-    estimate_process_sigma = TRUE, equal_process_sigma = TRUE
-  )
+  expect_warning({
+    m <- fit_dfa(
+      y = s$y_sim, iter = 50, chains = 1, num_trends = 2, seed = 42,
+      estimate_process_sigma = TRUE, equal_process_sigma = TRUE
+    )
+  })
+  expect_equal(class(m$model)[[1]], "stanfit")
+})
 
+test_that("basis spline sim and fit works", {
+  skip_on_cran()
+  set.seed(19293)
+  s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3, trend_model = "bs",
+    spline_weights = matrix(ncol = 6, nrow = 1, data = rnorm(6)),
+    loadings_matrix = matrix(nrow = 3, ncol = 1, rnorm(3 * 1, 1, 0.5)),
+    sigma = 0.2)
+  matplot(t(s$x), type = "l")
+  expect_warning({
+    m <- fit_dfa(
+      y = s$y_sim, iter = 200, chains = 1, num_trends = 1, seed = 42,
+      trend_model = "bs", n_knots = 6
+    )
+  })
+  p <- predicted(m)
+  p_hat <- apply(p[,1,,], c(2, 3), mean)
+  matplot(p_hat, type = "l")
+  matplot(t(s$pred), type = "l")
+  matplot(t(s$y_sim), type = "l")
+  expect_gt(abs(cor(s$pred[1,], p_hat[,1])), 0.95)
+  expect_gt(abs(cor(s$pred[2,], p_hat[,2])), 0.95)
+  expect_gt(abs(cor(s$pred[3,], p_hat[,3])), 0.95)
   expect_equal(class(m$model)[[1]], "stanfit")
 })
 
@@ -120,11 +151,12 @@ test_that("estimate_sigma_process_k", {
   skip_on_cran()
   set.seed(42)
   s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-  m <- fit_dfa(
-    y = s$y_sim, iter = 50, chains = 1, num_trends = 2, seed = 42,
-    estimate_process_sigma = TRUE, equal_process_sigma = FALSE
-  )
-
+  expect_warning({
+    m <- fit_dfa(
+      y = s$y_sim, iter = 50, chains = 1, num_trends = 2, seed = 42,
+      estimate_process_sigma = TRUE, equal_process_sigma = FALSE
+    )
+  })
   expect_equal(class(m$model)[[1]], "stanfit")
 })
 #
