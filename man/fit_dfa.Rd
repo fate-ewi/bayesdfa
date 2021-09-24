@@ -197,7 +197,7 @@ m <- fit_dfa(y = long, data_shape = "long", z_model = "proportion", iter = 50, c
 
 #' # example of B-spline model with wide format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "bs", n_knots = 10)
+m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "ps", n_knots = 10)
 
 # example of Gaussian process model with wide format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)

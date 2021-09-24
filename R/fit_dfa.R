@@ -135,7 +135,7 @@
 #'
 #' #' # example of B-spline model with wide format data
 #' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
-#' m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "bs", n_knots = 10)
+#' m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "ps", n_knots = 10)
 #'
 #' # example of Gaussian process model with wide format data
 #' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
@@ -391,7 +391,8 @@ fit_dfa <- function(y = y,
   # distKnots21 <- matrix(0, N, n_knots)
   distKnots21_pred <- rep(0, n_knots)
   # set up cubic b-splines design matrix
-  X_spline <- matrix(0, n_knots, N)
+  X_spline <- matrix(0, N, n_knots) # this is basis matrix
+  penalty_matrix <- matrix(0, n_knots, n_knots) # penalty, only for P-splines
 
   if (trend_model %in% c("bs","ps")) {
     est_spline <- 1
@@ -413,7 +414,7 @@ fit_dfa <- function(y = y,
                          2L)[-c(1L, nIknots + 2L)]
       knots <- quantile(1:N, knots)
       Aknots <- sort(c(rep(Boundary.knots, ord), knots))
-      X_spline <- t(splineDesign(Aknots, x=1:N, ord))
+      X_spline <- splineDesign(Aknots, x=1:N, ord)
 
       #X_spline <- t(splines::bs(1:N, df = n_knots, degree = 3, intercept = TRUE))
     } else {
@@ -426,7 +427,12 @@ fit_dfa <- function(y = y,
       dx <- (xu - xl)/(nik - 1)
       knots <- seq(xl - dx * degree, xu + dx * degree,
                    length = nik + 2 * degree)
-      X_spline <- t(splineDesign(knots, x=1:N, degree + 1, 1:N * 0, TRUE))
+      X_spline <- splineDesign(knots, x=1:N, degree + 1, 1:N * 0, TRUE)
+
+      # calculate penalty matrix S in dlnm::ps()
+      penalty_matrix <- crossprod(diff(diag(ncol(X_spline) + !intercept), diff = diff))
+      penalty_matrix <- (penalty_matrix + t(penalty_matrix))/2
+      if (!intercept) penalty_matrix <- penalty_matrix[-1L, -1L, drop = FALSE]
     }
   }
   if (trend_model == "gp") {
@@ -498,6 +504,7 @@ fit_dfa <- function(y = y,
     est_rw = est_rw,
     est_spline = est_spline,
     X_spline = X_spline,
+    penalty_matrix = penalty_matrix,
     n_knots = n_knots,
     knot_locs = knot_locs,
     est_gp = est_gp,
