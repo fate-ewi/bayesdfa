@@ -404,7 +404,7 @@ fit_dfa <- function(y = y,
 
     df <- n_knots
     degree <- 3
-    intercept=TRUE
+    intercept=FALSE # set intercept FALSE because intercept x0 is estimated for each trend
     if(trend_model == "bs") {
       # adapted from splines::bs
       ord <- 1 + degree
@@ -536,6 +536,7 @@ fit_dfa <- function(y = y,
     if (!is.null(pro_covar)) pars <- c(pars, "b_pro")
     if (est_sigma_process) pars <- c(pars, "sigma_process")
     if (trend_model == "gp") pars <- c(pars, "gp_theta")
+    if (trend_model %in% c("ps")) pars <- c(pars, "log_lambda")
   } else {
     pars <- par_list
   }
