@@ -136,6 +136,10 @@
 #'
 #' #' # example of B-spline model with wide format data
 #' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+#' m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "bs", n_knots = 10)
+#'
+#'#' #' # example of P-spline model with wide format data
+#' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 #' m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "ps", n_knots = 10)
 #'
 #' # example of Gaussian process model with wide format data
@@ -407,7 +411,7 @@ fit_dfa <- function(y = y,
     degree <- 3
     intercept=FALSE # set intercept FALSE because intercept x0 is estimated for each trend
     if(trend_model=="bs") {
-      B <-bs(seq_len(N), df=n_knots, degree=3, intercept = FALSE)
+      B <-splines::bs(seq_len(N), df=n_knots, degree=3, intercept = FALSE)
     } else {
       tempX = seq_len(N)
       sspec <- mgcv::s(tempX,k=n_knots+2)
