@@ -86,7 +86,8 @@
 #' @export
 #'
 #' @importFrom rstan sampling optimizing vb
-#' @importFrom splines splineDesign
+#' @importFrom splines bs
+#' @importFrom mgcv s smoothCon smooth2random
 #' @importFrom stats dist gaussian
 #' @import Rcpp
 #' @importFrom graphics lines par plot points polygon segments
@@ -405,34 +406,15 @@ fit_dfa <- function(y = y,
     df <- n_knots
     degree <- 3
     intercept=FALSE # set intercept FALSE because intercept x0 is estimated for each trend
-    if(trend_model == "bs") {
-      # adapted from splines::bs
-      ord <- 1 + degree
-      Boundary.knots = range(1:N)
-      nIknots <- df - ord + (1L - intercept)
-      knots <- seq(from=0,to=1, length.out = nIknots +
-                         2L)[-c(1L, nIknots + 2L)]
-      knots <- quantile(1:N, knots)
-      Aknots <- sort(c(rep(Boundary.knots, ord), knots))
-      X_spline <- splineDesign(Aknots, x=1:N, ord)
-
-      #X_spline <- t(splines::bs(1:N, df = n_knots, degree = 3, intercept = TRUE))
+    if(trend_model=="bs") {
+      B <-bs(seq_len(N), df=n_knots, degree=3, intercept = FALSE)
     } else {
-      # adapted from dlnm::ps()
-      diff <- 2
-      nik <- df - degree + 2 - intercept
-      range <- range(1:N, na.rm = TRUE)
-      xl <- 1 - diff(range) * 0.001
-      xu <- N + diff(range) * 0.001
-      dx <- (xu - xl)/(nik - 1)
-      knots <- seq(xl - dx * degree, xu + dx * degree,
-                   length = nik + 2 * degree)
-      X_spline <- splineDesign(knots, x=1:N, degree + 1, 1:N * 0, TRUE)
-
-      # calculate penalty matrix S in dlnm::ps()
-      penalty_matrix <- crossprod(diff(diag(ncol(X_spline) + !intercept), diff = diff))
-      penalty_matrix <- (penalty_matrix + t(penalty_matrix))/2
-      if (!intercept) penalty_matrix <- penalty_matrix[-1L, -1L, drop = FALSE]
+      tempX = seq_len(N)
+      sspec <- mgcv::s(tempX,k=n_knots+2)
+      temp_dat <- data.frame(tempX=tempX, tempY = runif(N))
+      smoothcon <- mgcv::smoothCon(sspec,temp_dat)[[1]]
+      rasm <- mgcv::smooth2random(smoothcon, names(temp_dat), type = 2)
+      X_spline <- rasm$rand$Xr
     }
   }
   if (trend_model == "gp") {
@@ -504,7 +486,6 @@ fit_dfa <- function(y = y,
     est_rw = est_rw,
     est_spline = est_spline,
     X_spline = X_spline,
-    penalty_matrix = penalty_matrix,
     n_knots = n_knots,
     knot_locs = knot_locs,
     est_gp = est_gp,
@@ -536,7 +517,6 @@ fit_dfa <- function(y = y,
     if (!is.null(pro_covar)) pars <- c(pars, "b_pro")
     if (est_sigma_process) pars <- c(pars, "sigma_process")
     if (trend_model == "gp") pars <- c(pars, "gp_theta")
-    if (trend_model %in% c("ps")) pars <- c(pars, "log_lambda")
   } else {
     pars <- par_list
   }

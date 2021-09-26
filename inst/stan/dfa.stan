@@ -109,7 +109,6 @@ data {
   int<lower=0> est_gp; // single value, 0 if false 1 if true to model trends with predictive gaussian process
   int<lower=0> n_knots; // single value representing knots for b-spline or gp process
   matrix[N, n_knots] X_spline;
-  matrix[n_knots, n_knots] penalty_matrix; // this is S matrix from dlnm::ps() or mgcv
   real knot_locs[n_knots]; // inputs of knot locations for GP model
   //real data_locs[N]; // locations of data
   //matrix[n_knots, n_knots] distKnots;
@@ -125,7 +124,6 @@ data {
 transformed data {
   int n_pcor; // dimension for cov matrix
   int n_loglik; // dimension for loglik calculation
-  int use_penalty;
   vector[K] zeros;
   real data_locs[N]; // for gp model
   vector[K*proportional_model] alpha_vec;
@@ -174,12 +172,6 @@ transformed data {
   lower_bound_z = -100;
   if(use_expansion_prior==1) lower_bound_z = 0;
 
-  use_penalty = 0;
-  for(i in 1:n_knots) {
-    for(j in 1:n_knots) {
-      if(penalty_matrix[i,j]!=0) use_penalty=1;
-    }
-  }
 }
 parameters {
   matrix[K * est_rw,(N-1) * est_rw] devs; // random deviations of trends
@@ -189,7 +181,6 @@ parameters {
   vector<lower=lower_bound_z>[K*(1-proportional_model)] zpos; // constrained positive values
   simplex[K] p_z[P*proportional_model]; // alternative for proportional Z
   matrix[K * est_spline, n_knots * est_spline] spline_a; // weights for b-splines
-  vector[K * est_spline * use_penalty] log_lambda; // penalties for p-splines
   matrix[n_obs_covar, P] b_obs; // coefficients on observation model
   matrix[n_pro_covar, K] b_pro; // coefficients on process model
   real<lower=0> sigma[nVariances*est_sigma_params];
@@ -565,14 +556,7 @@ model {
     for(k in 1:K) {
       spline_a[k] ~ std_normal();
     }
-    if(use_penalty == 1) {
-      log_lambda ~ normal(0,1);
-      // then compute penalty for p-splines
-      for(k in 1:K) {
-      // quad_form(matrix A, vector B) = B' * A * B
-       target += -0.5 * n_knots * log_lambda[k] -0.5 * exp(log_lambda[k]) * quad_form(penalty_matrix, to_vector(spline_a[k]));
-       }
-    }
+
   }
 
   if(proportional_model == 0) {
