@@ -411,7 +411,7 @@ fit_dfa <- function(y = y,
     degree <- 3
     intercept=FALSE # set intercept FALSE because intercept x0 is estimated for each trend
     if(trend_model=="bs") {
-      B <-splines::bs(seq_len(N), df=n_knots, degree=3, intercept = FALSE)
+      X_spline <-splines::bs(seq_len(N), df=n_knots, degree=3, intercept = intercept)
     } else {
       tempX = seq_len(N)
       sspec <- mgcv::s(tempX,k=n_knots+2)
