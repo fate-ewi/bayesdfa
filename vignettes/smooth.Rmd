@@ -1,10 +1,10 @@
 ---
-title: "Examples of fitting DFA models with lots of data"
+title: "Examples of fitting smooth trend DFA models"
 author: "Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Examples of fitting DFA models with lots of data}
+  %\VignetteIndexEntry{Examples of fitting smooth trend DFA models}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -84,4 +84,4 @@ fit = fit_dfa(y = s$y_sim, num_trends = 1,
 
 ## Comparing approaches
 
-All of the smooth trend methods are flexible and able to capture the wiggliness of latent trends. Based on our experience, the B-spline and P-spline models will generally fit faster than the Gaussian predicitve process models (because they omit a critical matrix inversion step). The full rank Gaussian process models tend to be faster than the predictive process models. 
+All of the smooth trend methods are flexible and able to capture the wiggliness of latent trends. Based on our experience, the B-spline and P-spline models will generally fit faster than the Gaussian predicitve process models (because they omit a critical matrix inversion step). The full rank Gaussian process models tend to be faster than the predictive process models. All of these approaches can be compared using cross validation, or similar predictive performance criterion. 

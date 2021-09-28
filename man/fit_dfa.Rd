@@ -87,7 +87,7 @@ sigma is fixed at 1, like conventional DFAs.}
 or estimate equal values for each trend}
 
 \item{estimation}{Character string. Should the model be sampled using \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}} ("sampling",default),
-\href{"optimizing"}{rstan::optimizing()}, variational inference \href{"vb"}{rstan::vb()},
+\code{\link[rstan:stanmodel-method-optimizing]{rstan::optimizing()}} ("optimizing"), variational inference \code{\link[rstan:stanmodel-method-vb]{rstan::vb()}} ("vb"),
 or no estimation done ("none"). No estimation may be useful for debugging and simulation.}
 
 \item{data_shape}{If \code{wide} (the current default) then the input data should
