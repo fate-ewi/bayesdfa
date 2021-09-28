@@ -1,4 +1,4 @@
-pandoc: 2.11.4
+pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
@@ -8,5 +8,6 @@ articles:
   compositional: compositional.html
   covariates: covariates.html
   estimate_process_sigma: estimate_process_sigma.html
-last_built: 2021-09-02T15:45Z
+  smooth: smooth.html
+last_built: 2021-09-28T17:43Z
 

@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">bayesdfa</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -58,7 +58,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/bigdata.html">Examples of fitting DFA models to big data</a>
+      <a href="../articles/bigdata.html">Examples of fitting DFA models with lots of data</a>
     </li>
     <li>
       <a href="../articles/combining_data.html">Combining data with bayesdfa</a>
@@ -71,6 +71,9 @@
     </li>
     <li>
       <a href="../articles/estimate_process_sigma.html">Estimating process trend variability with bayesdfa</a>
+    </li>
+    <li>
+      <a href="../articles/smooth.html">Examples of fitting smooth trend DFA models</a>
     </li>
   </ul>
 </li>
@@ -95,13 +98,13 @@
 
       
 
-      </header><script src="bayesdfa_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><script src="bayesdfa_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Overview of the bayesdfa package</h1>
                         <h4 class="author">Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri</h4>
             
-            <h4 class="date">2021-09-02</h4>
+            <h4 class="date">2021-09-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/fate-ewi/bayesdfa/blob/master/vignettes/bayesdfa.Rmd"><code>vignettes/bayesdfa.Rmd</code></a></small>
       <div class="hidden name"><code>bayesdfa.Rmd</code></div>
@@ -224,7 +227,7 @@ Estimated loadings from the 2-trend DFA model.
 ## elpd_loo -2.973137e+04 6.859515e+03
 ## p_loo    -2.220446e-16 2.107833e-15
 ## looic     5.946275e+04 1.371903e+04</code></pre>
-<p>where 5.9462745^{4} is the estimate and 1.371903^{4} is the standard error.</p>
+<p>where 5.946274510^{4} is the estimate and 1.37190310^{4} is the standard error.</p>
 <p>As an alternative to fitting each model individually as we did above, we also developed the <code><a href="../reference/find_dfa_trends.html">find_dfa_trends()</a></code> to automate fitting a larger number of models. In addition to evaluating different trends, this function allows the user to optionally evaluate models with normal and Student-t process errors, and alternative variance structures (observation variance of time series being equal, or not). For example, to fit models with 1:5 trends, both Student-t and normal errors, and equal and unequal variances, the call would be</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_dfa_trends.html">find_dfa_trends</a></span><span class="op">(</span>
