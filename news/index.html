@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">bayesdfa</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -99,7 +99,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/bigdata.html">Examples of fitting DFA models to big data</a>
+      <a href="../articles/bigdata.html">Examples of fitting DFA models with lots of data</a>
     </li>
     <li>
       <a href="../articles/combining_data.html">Combining data with bayesdfa</a>
@@ -112,6 +112,9 @@
     </li>
     <li>
       <a href="../articles/estimate_process_sigma.html">Estimating process trend variability with bayesdfa</a>
+    </li>
+    <li>
+      <a href="../articles/smooth.html">Examples of fitting smooth trend DFA models</a>
     </li>
   </ul>
 </li>
@@ -214,6 +217,12 @@
 <ul>
 <li>Following 1.0.0, included a new argument to fit_dfa() function ‘expansion_prior’ that allows user to toggle on / off the constraint. If not included (default=FALSE), there is no constraint on the Z diagonal, and post-hoc MCMC chain inverting resolves identifiability. If ‘expansion_prior’ = TRUE, then the positive constraint is applied, in combination with the expansion prior for trends and loadings.</li>
 </ul>
+</div>
+    <div id="bayesdfa-120" class="section level1">
+<h1 class="page-header" data-toc-text="1.2.0">
+<a href="#bayesdfa-120" class="anchor"></a>bayesdfa 1.2.0<small> Unreleased </small>
+</h1>
+<p>Add penalized spline models, so that the ‘trend_model’ argument may take on “rw” for conventional random walks, “bs” for B-splines, “ps” for “P-splines”, or “gp” for Gaussian processes</p>
 </div>
   </div>
 

@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">bayesdfa</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -100,7 +100,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/bigdata.html">Examples of fitting DFA models to big data</a>
+      <a href="../articles/bigdata.html">Examples of fitting DFA models with lots of data</a>
     </li>
     <li>
       <a href="../articles/combining_data.html">Combining data with bayesdfa</a>
@@ -113,6 +113,9 @@
     </li>
     <li>
       <a href="../articles/estimate_process_sigma.html">Estimating process trend variability with bayesdfa</a>
+    </li>
+    <li>
+      <a href="../articles/smooth.html">Examples of fitting smooth trend DFA models</a>
     </li>
   </ul>
 </li>
@@ -266,7 +269,7 @@ or estimate equal values for each trend</p></td>
     <tr>
       <th>estimation</th>
       <td><p>Character string. Should the model be sampled using <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-sampling.html'>rstan::sampling()</a></code> ("sampling",default),
-<a href='"optimizing"'>rstan::optimizing()</a>, variational inference <a href='"vb"'>rstan::vb()</a>,
+<code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-optimizing.html'>rstan::optimizing()</a></code> ("optimizing"), variational inference <code><a href='https://mc-stan.org/rstan/reference/stanmodel-method-vb.html'>rstan::vb()</a></code> ("vb"),
 or no estimation done ("none"). No estimation may be useful for debugging and simulation.</p></td>
     </tr>
     <tr>
@@ -372,8 +375,8 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 </div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'dfa' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 4.6e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.46 seconds.
+#&gt; Chain 1: Gradient evaluation took 5.6e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.56 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -398,9 +401,9 @@ need to be inverted using the function <code><a href='find_inverted_chains.html'
 #&gt; Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 50 / 50 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.007488 seconds (Warm-up)
-#&gt; Chain 1:                0.122742 seconds (Sampling)
-#&gt; Chain 1:                0.13023 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.007522 seconds (Warm-up)
+#&gt; Chain 1:                0.130459 seconds (Sampling)
+#&gt; Chain 1:                0.137981 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: There were 16 divergent transitions after warmup. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
 #&gt; <span class='warning'>to find out why this is a problem and how to eliminate them.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>

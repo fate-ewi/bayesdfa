@@ -74,7 +74,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">bayesdfa</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -100,7 +100,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/bigdata.html">Examples of fitting DFA models to big data</a>
+      <a href="../articles/bigdata.html">Examples of fitting DFA models with lots of data</a>
     </li>
     <li>
       <a href="../articles/combining_data.html">Combining data with bayesdfa</a>
@@ -113,6 +113,9 @@
     </li>
     <li>
       <a href="../articles/estimate_process_sigma.html">Estimating process trend variability with bayesdfa</a>
+    </li>
+    <li>
+      <a href="../articles/smooth.html">Examples of fitting smooth trend DFA models</a>
     </li>
   </ul>
 </li>
@@ -202,8 +205,8 @@ between 0 and 1.</p>
 </div><div class='output co'>#&gt; 
 #&gt; SAMPLING FOR MODEL 'hmm_gaussian' NOW (CHAIN 1).
 #&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 9.5e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.95 seconds.
+#&gt; Chain 1: Gradient evaluation took 9.6e-05 seconds
+#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.96 seconds.
 #&gt; Chain 1: Adjust your expectations accordingly!
 #&gt; Chain 1: 
 #&gt; Chain 1: 
@@ -228,9 +231,9 @@ between 0 and 1.</p>
 #&gt; Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)
 #&gt; Chain 1: Iteration: 50 / 50 [100%]  (Sampling)
 #&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.255181 seconds (Warm-up)
-#&gt; Chain 1:                0.307313 seconds (Sampling)
-#&gt; Chain 1:                0.562494 seconds (Total)
+#&gt; Chain 1:  Elapsed Time: 0.281958 seconds (Warm-up)
+#&gt; Chain 1:                0.33309 seconds (Sampling)
+#&gt; Chain 1:                0.615048 seconds (Total)
 #&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is NA, indicating chains have not mixed.</span>
 #&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
 #&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#r-hat</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
