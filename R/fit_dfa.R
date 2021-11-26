@@ -34,7 +34,7 @@
 #' @param equal_process_sigma Logical. If process sigma is estimated, whether or not to estimate a single shared value across trends (default)
 #'   or estimate equal values for each trend
 #' @param estimation Character string. Should the model be sampled using [rstan::sampling()] ("sampling",default),
-#' [rstan::optimizing()]("optimizing"), variational inference [rstan::vb()]("vb"),
+#' [rstan::optimizing()] ("optimizing"), variational inference [rstan::vb()] ("vb"),
 #' or no estimation done ("none"). No estimation may be useful for debugging and simulation.
 #' @param data_shape If `wide` (the current default) then the input data should
 #'   have rows representing the various timeseries and columns representing the
@@ -48,6 +48,9 @@
 #' @param pro_covar Optional dataframe of data with 4 named columns ("time","trend","covariate","value"), representing: (1) time, (2) the trend
 #'   affected, (3) the covariate number for models with more than one covariate affecting each
 #'   trend, and (4) the value of the covariate
+#' @param offset a string argument representing the name of the offset variable to be included. The variable name is in
+#' the data frame passed in, e.g. "offset". This only works when the data shape is "long". All transformations (such as log transformed effort)
+#' to the offset must be done before passing in the data.
 #' @param z_bound Optional hard constraints for estimated factor loadings -- really only applies to model with 1 trend. Passed in as a 2-element vector representing the lower and upper bound, e.g. (0, 100) to constrain positive
 #' @param z_model Optional argument allowing for elements of Z to be constrained to be proportions (each time series modeled as a mixture of trends). Arguments can be "dfa" (default) or "proportion"
 #' @param trend_model Optional argument to change the model of the underlying latent trend. By default this is set to 'rw', where the trend
@@ -145,6 +148,13 @@
 #' # example of Gaussian process model with wide format data
 #' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 #' m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "gp", n_knots = 5)
+#'
+#' # example of long format data
+#' s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+#' obs <- c(s$y_sim[1, ], s$y_sim[2, ], s$y_sim[3, ])
+#' long <- data.frame("obs" = obs, "ts" = sort(rep(1:3, 20)),
+#' "time" = rep(1:20, 3), "offset" = rep(0.1,length(obs)))
+#' m <- fit_dfa(y = long, data_shape = "long", offset = "offset", iter = 50, chains = 1)
 #' }
 fit_dfa <- function(y = y,
                     num_trends = 1,
@@ -165,6 +175,7 @@ fit_dfa <- function(y = y,
                     data_shape = c("wide", "long"),
                     obs_covar = NULL,
                     pro_covar = NULL,
+                    offset = NULL,
                     z_bound = NULL,
                     z_model = c("dfa", "proportion"),
                     trend_model = c("rw", "bs","ps", "gp"),
@@ -322,6 +333,10 @@ fit_dfa <- function(y = y,
     col_indx_na <- matrix(sort(rep(seq_len(N), P)), P, N)[is.na(y)]
     n_na <- length(row_indx_na)
     y <- y[!is.na(y)]
+    if(!is.null(offset)) {
+      stop("Error: if offset is included, data shape must be long")
+    }
+    offset_vec <- rep(0, n_pos) # this is a dummy vec, not used
   } else {
     y <- y[which(!is.na(y[["obs"]])), ]
     row_indx_pos <- y[["ts"]]
@@ -331,6 +346,14 @@ fit_dfa <- function(y = y,
     row_indx_na <- matrix(1, 1, 1)[is.na(runif(1))]
     col_indx_na <- matrix(1, 1, 1)[is.na(runif(1))]
     n_na <- length(row_indx_na)
+
+    offset_vec <- rep(0, nrow(y))
+    if(!is.null(offset)) {
+      if(offset %in% names(y) == FALSE) {
+        stop("Error: offset not found in data frame. Please check spelling")
+      }
+      offset_vec = y[[offset]]
+    }
     y <- y[["obs"]]
   }
 
@@ -501,7 +524,8 @@ fit_dfa <- function(y = y,
     est_gamma_params = est_gamma_params,
     est_nb2_params = est_nb2_params,
     gp_theta_prior = gp_theta_prior,
-    use_expansion_prior = as.integer(expansion_prior)
+    use_expansion_prior = as.integer(expansion_prior),
+    offset = offset_vec
   )
 
   if (is.null(par_list)) {

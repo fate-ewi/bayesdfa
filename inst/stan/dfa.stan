@@ -81,6 +81,7 @@ data {
   int<lower=0> col_indx_pos[n_pos]; // col indices of non-missing obs
   real y[n_pos]; // vectorized matrix of observations
   int<lower=0> y_int[n_pos]; // vectorized matrix of observations
+  real offset[n_pos]; // vector of offset (no estimated coefficient)
   int<lower=0> n_na; // number of missing observations
   int<lower=0> row_indx_na[n_na]; // row indices of missing obs
   int<lower=0> col_indx_na[n_na]; // col indices of missing obs
@@ -574,19 +575,19 @@ model {
     if(long_format==0) {
       if(obs_model == 1) {for(i in 1:P) target += normal_lpdf(yall[i] | pred[i], sigma_vec[i]);} // gaussian
     } else {
-        if(obs_model == 1) {for(i in 1:n_pos) target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], sigma_vec[row_indx_pos[i]]);}
-        if(obs_model == 2) {for(i in 1:n_pos) target += gamma_lpdf(y[i] | gamma_a_vec[row_indx_pos[i]], gamma_a_vec[row_indx_pos[i]] / exp(pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]));} // gamma
-        if(obs_model == 3) {for(i in 1:n_pos) target += poisson_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // poisson
-        if(obs_model == 4) {for(i in 1:n_pos) target += neg_binomial_2_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], nb_phi_vec[row_indx_pos[i]]);} // negbin
-        if(obs_model == 5) {for(i in 1:n_pos) target += bernoulli_logit_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // binomial
-        if(obs_model == 6) {for(i in 1:n_pos) target += lognormal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], sigma_vec[row_indx_pos[i]]);} // lognormal
+        if(obs_model == 1) {for(i in 1:n_pos) target += normal_lpdf(y[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], sigma_vec[row_indx_pos[i]]);}
+        if(obs_model == 2) {for(i in 1:n_pos) target += gamma_lpdf(y[i] | gamma_a_vec[row_indx_pos[i]], gamma_a_vec[row_indx_pos[i]] / exp(offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]));} // gamma
+        if(obs_model == 3) {for(i in 1:n_pos) target += poisson_log_lpmf(y_int[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // poisson
+        if(obs_model == 4) {for(i in 1:n_pos) target += neg_binomial_2_log_lpmf(y_int[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], nb_phi_vec[row_indx_pos[i]]);} // negbin
+        if(obs_model == 5) {for(i in 1:n_pos) target += bernoulli_logit_lpmf(y_int[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // binomial
+        if(obs_model == 6) {for(i in 1:n_pos) target += lognormal_lpdf(y[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], sigma_vec[row_indx_pos[i]]);} // lognormal
     }
   } else {
     // need to loop over time slices / columns - each ~ MVN
     if(long_format==0) {
       if(obs_model == 1) {for(i in 1:N) target += multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));}
     } else {
-      if(obs_model == 1) {for(i in 1:n_pos) target += normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);}
+      if(obs_model == 1) {for(i in 1:n_pos) target += normal_lpdf(y[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);}
     }
   }
 }
@@ -617,12 +618,12 @@ generated quantities {
         }
       }
     } else {
-      if(obs_model == 1) {for(i in 1:n_pos) log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], sigma_vec[row_indx_pos[i]]);}
-      if(obs_model == 2) {for(i in 1:n_pos) log_lik[i] = gamma_lpdf(y[i] | gamma_a_vec[row_indx_pos[i]], gamma_a_vec[row_indx_pos[i]] / exp(pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]));} // gamma
-      if(obs_model == 3) {for(i in 1:n_pos) log_lik[i] = poisson_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // poisson
-      if(obs_model == 4) {for(i in 1:n_pos) log_lik[i] = neg_binomial_2_log_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], nb_phi_vec[row_indx_pos[i]]);} // negbin
-      if(obs_model == 5) {for(i in 1:n_pos) log_lik[i] = bernoulli_logit_lpmf(y_int[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // binomial
-      if(obs_model == 6) {for(i in 1:n_pos) log_lik[i] = lognormal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]] + obs_cov_offset[i]);} // lognormal
+      if(obs_model == 1) {for(i in 1:n_pos) log_lik[i] = normal_lpdf(y[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], sigma_vec[row_indx_pos[i]]);}
+      if(obs_model == 2) {for(i in 1:n_pos) log_lik[i] = gamma_lpdf(y[i] | gamma_a_vec[row_indx_pos[i]], gamma_a_vec[row_indx_pos[i]] / exp(offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]));} // gamma
+      if(obs_model == 3) {for(i in 1:n_pos) log_lik[i] = poisson_log_lpmf(y_int[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // poisson
+      if(obs_model == 4) {for(i in 1:n_pos) log_lik[i] = neg_binomial_2_log_lpmf(y_int[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], nb_phi_vec[row_indx_pos[i]]);} // negbin
+      if(obs_model == 5) {for(i in 1:n_pos) log_lik[i] = bernoulli_logit_lpmf(y_int[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // binomial
+      if(obs_model == 6) {for(i in 1:n_pos) log_lik[i] = lognormal_lpdf(y[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]], sigma_vec[row_indx_pos[i]] + obs_cov_offset[i]);} // lognormal
 
     }
 
@@ -634,7 +635,7 @@ generated quantities {
     } else {
       for(i in 1:n_pos) {
         //  //row_indx_pos[i] is the time series, col_index_pos is the time
-        log_lik[i] = normal_lpdf(y[i] | pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);
+        log_lik[i] = normal_lpdf(y[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);
       }
     }
   }

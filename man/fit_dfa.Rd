@@ -24,6 +24,7 @@ fit_dfa(
   data_shape = c("wide", "long"),
   obs_covar = NULL,
   pro_covar = NULL,
+  offset = NULL,
   z_bound = NULL,
   z_model = c("dfa", "proportion"),
   trend_model = c("rw", "bs", "ps", "gp"),
@@ -87,7 +88,7 @@ sigma is fixed at 1, like conventional DFAs.}
 or estimate equal values for each trend}
 
 \item{estimation}{Character string. Should the model be sampled using \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}} ("sampling",default),
-\href{"optimizing"}{rstan::optimizing()}, variational inference \href{"vb"}{rstan::vb()},
+\code{\link[rstan:stanmodel-method-optimizing]{rstan::optimizing()}} ("optimizing"), variational inference \code{\link[rstan:stanmodel-method-vb]{rstan::vb()}} ("vb"),
 or no estimation done ("none"). No estimation may be useful for debugging and simulation.}
 
 \item{data_shape}{If \code{wide} (the current default) then the input data should
@@ -104,6 +105,10 @@ trend, and (4) the value of the covariate}
 \item{pro_covar}{Optional dataframe of data with 4 named columns ("time","trend","covariate","value"), representing: (1) time, (2) the trend
 affected, (3) the covariate number for models with more than one covariate affecting each
 trend, and (4) the value of the covariate}
+
+\item{offset}{a string argument representing the name of the offset variable to be included. The variable name is in
+the data frame passed in, e.g. "offset". This only works when the data shape is "long". All transformations (such as log transformed effort)
+to the offset must be done before passing in the data.}
 
 \item{z_bound}{Optional hard constraints for estimated factor loadings -- really only applies to model with 1 trend. Passed in as a 2-element vector representing the lower and upper bound, e.g. (0, 100) to constrain positive}
 

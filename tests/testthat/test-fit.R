@@ -127,6 +127,7 @@ test_that("estimate_sigma_process_k", {
 
   expect_equal(class(m$model)[[1]], "stanfit")
 })
+
 #
 # test_that("estimate_spline_model", {
 #   skip_on_cran()
