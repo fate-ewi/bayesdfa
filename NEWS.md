@@ -33,3 +33,9 @@
 # bayesdfa 1.1.0
 
 * Following 1.0.0, included a new argument to fit_dfa() function 'expansion_prior' that allows user to toggle on / off the constraint. If not included (default=FALSE), there is no constraint on the Z diagonal, and post-hoc MCMC chain inverting resolves identifiability. If 'expansion_prior' = TRUE, then the positive constraint is applied, in combination with the expansion prior for trends and loadings. 
+
+# bayesdfa 1.2.0
+
+Add penalized spline models, so that the 'trend_model' argument may take on
+"rw" for conventional random walks, "bs" for B-splines, "ps" for "P-splines",
+or "gp" for Gaussian processes

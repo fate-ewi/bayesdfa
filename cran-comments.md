@@ -6,10 +6,11 @@
 
 ## R CMD check results
 
-0 errors | 0 warnings | 2 notes
+0 errors | 1 warnings | 2 notes
 
-* installed size is  7.1Mb; sub-directories of 1Mb or more: libs 5.8Mb
+* installed size is  7.3Mb; sub-directories of 1Mb or more: libs 5.8Mb
 * GNU make is a SystemRequirements
+* Warning A complete check needs the 'checkbashisms' script
 
 Explanation: this is from the compiled 'Stan' model and associated libraries, and is necessary https://mc-stan.org/rstantools/articles/minimal-rstan-package.html.
 
