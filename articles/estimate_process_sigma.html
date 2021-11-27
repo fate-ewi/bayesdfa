@@ -104,7 +104,7 @@
       <h1 data-toc-skip>Estimating process trend variability with bayesdfa</h1>
                         <h4 class="author">Eric J. Ward, Sean C. Anderson, Mary E. Hunsicker, Mike A. Litzow, Luis A. Damiano, Mark D. Scheuerell, Elizabeth E. Holmes, Nick Tolimieri</h4>
             
-            <h4 class="date">2021-09-28</h4>
+            <h4 class="date">2021-11-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/fate-ewi/bayesdfa/blob/master/vignettes/estimate_process_sigma.Rmd"><code>vignettes/estimate_process_sigma.Rmd</code></a></small>
       <div class="hidden name"><code>estimate_process_sigma.Rmd</code></div>
@@ -151,7 +151,7 @@ Simulated data, from a model with 2 latent trends and no extremes.
 </div>
 <p>Next, we’ll calculate the predicted values of each time series and add observation error</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sim_dat</span><span class="op">$</span><span class="va">pred</span> <span class="op">=</span> <span class="va">sim_dat</span><span class="op">$</span><span class="va">Z</span> <span class="op">%*%</span> <span class="va">sim_dat</span><span class="op">$</span><span class="va">x</span>
+<code class="sourceCode R"><span class="va">sim_dat</span><span class="op">$</span><span class="va">pred</span> <span class="op">=</span> <span class="va">sim_dat</span><span class="op">$</span><span class="va">Z</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">sim_dat</span><span class="op">$</span><span class="va">x</span>
 <span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">sim_dat</span><span class="op">$</span><span class="va">pred</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="kw">for</span><span class="op">(</span><span class="va">j</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">sim_dat</span><span class="op">$</span><span class="va">pred</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
     <span class="va">sim_dat</span><span class="op">$</span><span class="va">y_sim</span><span class="op">[</span><span class="va">i</span>,<span class="va">j</span><span class="op">]</span> <span class="op">=</span> <span class="va">sim_dat</span><span class="op">$</span><span class="va">pred</span><span class="op">[</span><span class="va">i</span>,<span class="va">j</span><span class="op">]</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0.1</span><span class="op">)</span>

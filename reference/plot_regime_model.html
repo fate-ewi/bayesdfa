@@ -171,7 +171,7 @@
     <tr>
       <th>probs</th>
       <td><p>A numeric vector of quantiles to plot the credible intervals at.
-Defaults to <code><a href='https://rdrr.io/r/base/c.html'>c(0.05, 0.95)</a></code>.</p></td>
+Defaults to <code>c(0.05, 0.95)</code>.</p></td>
     </tr>
     <tr>
       <th>type</th>
@@ -199,53 +199,61 @@ Defaults to showing all.</p></td>
 between 0 and 1.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Nile</span><span class='op'>)</span>
-<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fit_regimes.html'>fit_regimes</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>Nile</span><span class='op'>)</span>, n_regimes <span class='op'>=</span> <span class='fl'>2</span>, chains <span class='op'>=</span> <span class='fl'>1</span>, iter <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; 
-#&gt; SAMPLING FOR MODEL 'hmm_gaussian' NOW (CHAIN 1).
-#&gt; Chain 1: 
-#&gt; Chain 1: Gradient evaluation took 9.3e-05 seconds
-#&gt; Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.93 seconds.
-#&gt; Chain 1: Adjust your expectations accordingly!
-#&gt; Chain 1: 
-#&gt; Chain 1: 
-#&gt; Chain 1: WARNING: There aren't enough warmup iterations to fit the
-#&gt; Chain 1:          three stages of adaptation as currently configured.
-#&gt; Chain 1:          Reducing each adaptation stage to 15%/75%/10% of
-#&gt; Chain 1:          the given number of warmup iterations:
-#&gt; Chain 1:            init_buffer = 3
-#&gt; Chain 1:            adapt_window = 20
-#&gt; Chain 1:            term_buffer = 2
-#&gt; Chain 1: 
-#&gt; Chain 1: Iteration:  1 / 50 [  2%]  (Warmup)
-#&gt; Chain 1: Iteration:  5 / 50 [ 10%]  (Warmup)
-#&gt; Chain 1: Iteration: 10 / 50 [ 20%]  (Warmup)
-#&gt; Chain 1: Iteration: 15 / 50 [ 30%]  (Warmup)
-#&gt; Chain 1: Iteration: 20 / 50 [ 40%]  (Warmup)
-#&gt; Chain 1: Iteration: 25 / 50 [ 50%]  (Warmup)
-#&gt; Chain 1: Iteration: 26 / 50 [ 52%]  (Sampling)
-#&gt; Chain 1: Iteration: 30 / 50 [ 60%]  (Sampling)
-#&gt; Chain 1: Iteration: 35 / 50 [ 70%]  (Sampling)
-#&gt; Chain 1: Iteration: 40 / 50 [ 80%]  (Sampling)
-#&gt; Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)
-#&gt; Chain 1: Iteration: 50 / 50 [100%]  (Sampling)
-#&gt; Chain 1: 
-#&gt; Chain 1:  Elapsed Time: 0.261308 seconds (Warm-up)
-#&gt; Chain 1:                0.345824 seconds (Sampling)
-#&gt; Chain 1:                0.607132 seconds (Total)
-#&gt; Chain 1: </div><div class='output co'>#&gt; <span class='warning'>Warning: The largest R-hat is NA, indicating chains have not mixed.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#r-hat</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#bulk-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
-#&gt; <span class='warning'>Running the chains for more iterations may help. See</span>
-#&gt; <span class='warning'>http://mc-stan.org/misc/warnings.html#tail-ess</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span></div><div class='input'><span class='fu'>plot_regime_model</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
-</div><div class='img'><img src='plot_regime_model-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_regime_model</span><span class='op'>(</span><span class='va'>m</span>, plot_prob_indices <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='img'><img src='plot_regime_model-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plot_regime_model</span><span class='op'>(</span><span class='va'>m</span>, type <span class='op'>=</span> <span class='st'>"means"</span><span class='op'>)</span>
-</div><div class='img'><img src='plot_regime_model-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'># }</span>
-
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'># \donttest{</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Nile</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='fit_regimes.html'>fit_regimes</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>Nile</span><span class='op'>)</span>, n_regimes <span class='op'>=</span> <span class='fl'>2</span>, chains <span class='op'>=</span> <span class='fl'>1</span>, iter <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> SAMPLING FOR MODEL 'hmm_gaussian' NOW (CHAIN 1).</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: Gradient evaluation took 8.9e-05 seconds</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.89 seconds.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: WARNING: There aren't enough warmup iterations to fit the</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1:          three stages of adaptation as currently configured.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1:          Reducing each adaptation stage to 15%/75%/10% of</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1:          the given number of warmup iterations:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1:            init_buffer = 3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1:            adapt_window = 20</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1:            term_buffer = 2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: Iteration:  1 / 50 [  2%]  (Warmup)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: Iteration:  5 / 50 [ 10%]  (Warmup)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: Iteration: 10 / 50 [ 20%]  (Warmup)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: Iteration: 15 / 50 [ 30%]  (Warmup)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: Iteration: 20 / 50 [ 40%]  (Warmup)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: Iteration: 25 / 50 [ 50%]  (Warmup)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: Iteration: 26 / 50 [ 52%]  (Sampling)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: Iteration: 30 / 50 [ 60%]  (Sampling)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: Iteration: 35 / 50 [ 70%]  (Sampling)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: Iteration: 40 / 50 [ 80%]  (Sampling)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: Iteration: 50 / 50 [100%]  (Sampling)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1:  Elapsed Time: 0.257509 seconds (Warm-up)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1:                0.305483 seconds (Sampling)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1:                0.562992 seconds (Total)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Chain 1: </span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>The largest R-hat is NA, indicating chains have not mixed.</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> http://mc-stan.org/misc/warnings.html#r-hat</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> http://mc-stan.org/misc/warnings.html#bulk-ess</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> Running the chains for more iterations may help. See</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> http://mc-stan.org/misc/warnings.html#tail-ess</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span>
+<span class='r-in'><span class='fu'>plot_regime_model</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='plot_regime_model-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'><span class='fu'>plot_regime_model</span><span class='op'>(</span><span class='va'>m</span>, plot_prob_indices <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='plot_regime_model-2.png' alt='' width='700' height='433' /></span>
+<span class='r-in'><span class='fu'>plot_regime_model</span><span class='op'>(</span><span class='va'>m</span>, type <span class='op'>=</span> <span class='st'>"means"</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='plot_regime_model-3.png' alt='' width='700' height='433' /></span>
+<span class='r-in'><span class='co'># }</span></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
