@@ -9,6 +9,7 @@ dfa_cv(
   cv_method = c("loocv", "lfocv"),
   fold_ids = NULL,
   n_folds = 10,
+  estimation = c("sampling", "optimizing", "vb"),
   iter = 2000,
   chains = 4,
   thin = 1,
@@ -28,6 +29,9 @@ e.g. NA}
 
 \item{n_folds}{Number of folds, defaults to 10}
 
+\item{estimation}{Character string. Should the model be sampled using \code{\link[rstan:stanmodel-method-sampling]{rstan::sampling()}} ("sampling",default),
+\code{\link[rstan:stanmodel-method-optimizing]{rstan::optimizing()}} ("optimizing"), variational inference \code{\link[rstan:stanmodel-method-vb]{rstan::vb()}} ("vb").}
+
 \item{iter}{Number of iterations in Stan sampling, defaults to 2000.}
 
 \item{chains}{Number of chains in Stan sampling, defaults to 4.}
@@ -46,22 +50,19 @@ s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 obs <- c(s$y_sim[1, ], s$y_sim[2, ], s$y_sim[3, ])
 long <- data.frame("obs" = obs, "ts" = sort(rep(1:3, 20)),
 "time" = rep(1:20, 3))
-m <- fit_dfa(y = long, iter = 50, chains = 1, data_shape = "long",
-sample = FALSE)
+m <- fit_dfa(y = long, data_shape = "long", estimation="none")
 # random folds
 fit_cv <- dfa_cv(m, cv_method = "loocv", n_folds = 5, iter = 50, chains = 1)
 
 # folds can also be passed in
 fold_ids <- sample(1:5, size = nrow(long), replace = TRUE)
-m <- fit_dfa(y = long, iter = 50, chains = 1, data_shape = "long",
-sample = FALSE)
+m <- fit_dfa(y = long, data_shape = "long", estimation="none")
 fit_cv <- dfa_cv(m, cv_method = "loocv", n_folds = 5, iter = 50, chains = 1,
 fold_ids = fold_ids)
 
 # do an example of leave-time-out cross validation where years are dropped
 fold_ids <- long$time
-m <- fit_dfa(y = long, iter = 50, chains = 1, data_shape = "long",
-sample = FALSE)
+m <- fit_dfa(y = long, data_shape = "long", estimation="none")
 fit_cv <- dfa_cv(m, cv_method = "loocv", iter = 100, chains = 1,
 fold_ids = fold_ids)
 
@@ -70,8 +71,8 @@ obs_covar <- expand.grid("time" = 1:20, "timeseries" = 1:3,
 "covariate" = 1:2)
 obs_covar$value <- rnorm(nrow(obs_covar), 0, 0.1)
 obs <- c(s$y_sim[1, ], s$y_sim[2, ], s$y_sim[3, ])
-m <- fit_dfa(y = long, iter = 50, chains = 1, obs_covar = obs_covar,
-data_shape = "long", sample = FALSE)
+m <- fit_dfa(y = long, obs_covar = obs_covar,
+data_shape = "long", estimation="none")
 fit_cv <- dfa_cv(m, cv_method = "loocv", n_folds = 5, iter = 50, chains = 1)
 }
 

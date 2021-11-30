@@ -7,6 +7,8 @@
 #' @param fold_ids A vector whose length is the same as the number of total data points. Elements are the fold id of each data point. If not all data points are
 #' used (e.g. the lfocv or ltocv approach might only use 10 time steps) the value can be something other than a numbber,
 #' e.g. NA
+#' @param estimation Character string. Should the model be sampled using [rstan::sampling()] ("sampling",default),
+#' [rstan::optimizing()] ("optimizing"), variational inference [rstan::vb()] ("vb").
 #' @param n_folds Number of folds, defaults to 10
 #' @param iter Number of iterations in Stan sampling, defaults to 2000.
 #' @param thin Thinning rate in Stan sampling, defaults to 1.
@@ -23,22 +25,20 @@
 #' obs <- c(s$y_sim[1, ], s$y_sim[2, ], s$y_sim[3, ])
 #' long <- data.frame("obs" = obs, "ts" = sort(rep(1:3, 20)),
 #' "time" = rep(1:20, 3))
-#' m <- fit_dfa(y = long, iter = 50, chains = 1, data_shape = "long",
-#' sample = FALSE)
+#' m <- fit_dfa(y = long, data_shape = "long", estimation="none")
 #' # random folds
-#' fit_cv <- dfa_cv(m, cv_method = "loocv", n_folds = 5, iter = 50, chains = 1)
+#' fit_cv <- dfa_cv(m, cv_method = "loocv", n_folds = 5, iter = 50,
+#' chains = 1, estimation="sampling")
 #'
 #' # folds can also be passed in
 #' fold_ids <- sample(1:5, size = nrow(long), replace = TRUE)
-#' m <- fit_dfa(y = long, iter = 50, chains = 1, data_shape = "long",
-#' sample = FALSE)
+#' m <- fit_dfa(y = long, data_shape = "long", estimation="none")
 #' fit_cv <- dfa_cv(m, cv_method = "loocv", n_folds = 5, iter = 50, chains = 1,
-#' fold_ids = fold_ids)
+#' fold_ids = fold_ids, estimation="sampling")
 #'
 #' # do an example of leave-time-out cross validation where years are dropped
 #' fold_ids <- long$time
-#' m <- fit_dfa(y = long, iter = 50, chains = 1, data_shape = "long",
-#' sample = FALSE)
+#' m <- fit_dfa(y = long, data_shape = "long", estimation="none")
 #' fit_cv <- dfa_cv(m, cv_method = "loocv", iter = 100, chains = 1,
 #' fold_ids = fold_ids)
 #'
@@ -47,15 +47,17 @@
 #' "covariate" = 1:2)
 #' obs_covar$value <- rnorm(nrow(obs_covar), 0, 0.1)
 #' obs <- c(s$y_sim[1, ], s$y_sim[2, ], s$y_sim[3, ])
-#' m <- fit_dfa(y = long, iter = 50, chains = 1, obs_covar = obs_covar,
-#' data_shape = "long", sample = FALSE)
-#' fit_cv <- dfa_cv(m, cv_method = "loocv", n_folds = 5, iter = 50, chains = 1)
+#' m <- fit_dfa(y = long, obs_covar = obs_covar,
+#' data_shape = "long", estimation="none")
+#' fit_cv <- dfa_cv(m, cv_method = "loocv", n_folds = 5,
+#' iter = 50, chains = 1, estimation="sampling")
 #' }
 #'
 dfa_cv <- function(stanfit,
                    cv_method = c("loocv", "lfocv"),
                    fold_ids = NULL,
                    n_folds = 10,
+                   estimation = c("sampling", "optimizing", "vb"),
                    iter = 2000,
                    chains = 4,
                    thin = 1,
@@ -103,7 +105,7 @@ dfa_cv <- function(stanfit,
       y = y_train,
       num_trends = stanfit$sampling_args$data$K,
       varIndx = stanfit$sampling_args$data$varIndx,
-      zscore = stanfit$zscore,
+      data_shape = stanfit$shape,
       iter = iter,
       chains = chains,
       thin = thin,
@@ -115,8 +117,7 @@ dfa_cv <- function(stanfit,
       estimate_trend_ma = ifelse(stanfit$sampling_args$data$est_theta == 1, TRUE, FALSE),
       estimate_process_sigma = ifelse(stanfit$sampling_args$data$est_sigma_process == 1, TRUE, FALSE),
       equal_process_sigma = ifelse(stanfit$sampling_args$data$n_sigma_process == 1, TRUE, FALSE),
-      sample = TRUE,
-      data_shape = stanfit$shape,
+      estimation = estimation,
       obs_covar = obs_covar_train,
       pro_covar = pro_covar_train,
       z_bound = stanfit$z_bound,

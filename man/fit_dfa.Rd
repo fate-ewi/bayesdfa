@@ -211,6 +211,13 @@ m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "ps", n_knots = 1
 # example of Gaussian process model with wide format data
 s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
 m <- fit_dfa(y = s$y_sim, iter = 50, chains = 1, trend_model = "gp", n_knots = 5)
+
+# example of long format data
+s <- sim_dfa(num_trends = 1, num_years = 20, num_ts = 3)
+obs <- c(s$y_sim[1, ], s$y_sim[2, ], s$y_sim[3, ])
+long <- data.frame("obs" = obs, "ts" = sort(rep(1:3, 20)),
+"time" = rep(1:20, 3), "offset" = rep(0.1,length(obs)))
+m <- fit_dfa(y = long, data_shape = "long", offset = "offset", iter = 50, chains = 1)
 }
 }
 \seealso{
