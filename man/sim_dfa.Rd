@@ -12,6 +12,8 @@ sim_dfa(
     0, 1)),
   sigma = rlnorm(1, meanlog = log(0.2), 0.1),
   varIndx = rep(1, num_ts),
+  trend_model = c("rw", "bs"),
+  spline_weights = matrix(ncol = 6, nrow = num_trends, data = rnorm(6 * num_trends)),
   extreme_value = NULL,
   extreme_loc = NULL,
   nu_fixed = 100,
@@ -38,6 +40,14 @@ be of the same length as the number of trends. If not specified, random
 numbers are used \code{rlnorm(1, meanlog = log(0.2), 0.1)}.}
 
 \item{varIndx}{Indices of unique observation variances. Defaults to \code{c(1, 1, 1, 1)}. Unique observation error variances would be specified as \code{c(1, 2, 3, 4)} in the case of 4 time series.}
+
+\item{trend_model}{The type of trend model. Random walk (\code{"rw"}) or basis
+spline (\code{"bs"})}
+
+\item{spline_weights}{A matrix of basis function weights that is used
+if \code{trend_model = "bs"}. The number of columns should correspond to
+the number of knots and the number of rows should correspond to the
+number of trends.}
 
 \item{extreme_value}{Value added to the random walk in the extreme time step.
 Defaults to not included.}
