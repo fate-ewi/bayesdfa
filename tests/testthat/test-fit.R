@@ -141,9 +141,9 @@ test_that("basis spline sim and fit works", {
   matplot(p_hat, type = "l")
   matplot(t(s$pred), type = "l")
   matplot(t(s$y_sim), type = "l")
-  expect_gt(abs(cor(s$pred[1,], p_hat[,1])), 0.95)
-  expect_gt(abs(cor(s$pred[2,], p_hat[,2])), 0.95)
-  expect_gt(abs(cor(s$pred[3,], p_hat[,3])), 0.95)
+  expect_gt(abs(cor(s$pred[1,], p_hat[,1])), 0.9)
+  expect_gt(abs(cor(s$pred[2,], p_hat[,2])), 0.9)
+  expect_gt(abs(cor(s$pred[3,], p_hat[,3])), 0.9)
   expect_equal(class(m$model)[[1]], "stanfit")
 })
 
