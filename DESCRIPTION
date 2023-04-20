@@ -33,11 +33,10 @@ Imports:
     methods,
     mgcv (>= 1.8.13),
     Rcpp (>= 0.12.0),
-    RcppParallel (>= 5.0.1),
     reshape2,
     rlang,
     rstan (>= 2.18.1),
-    rstantools (>= 2.1.1),
+    splines,
     viridisLite
 LinkingTo: 
     BH (>= 1.66.0),
@@ -53,7 +52,7 @@ Suggests:
     rmarkdown
 URL: https://fate-ewi.github.io/bayesdfa/
 BugReports: https://github.com/fate-ewi/bayesdfa/issues
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 SystemRequirements: GNU make

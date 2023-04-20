@@ -1,13 +1,13 @@
-pandoc: 2.7.3
-pkgdown: 1.6.1
+pandoc: 2.19.2
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  bayesdfa: bayesdfa.html
-  bigdata: bigdata.html
-  combining_data: combining_data.html
-  compositional: compositional.html
-  covariates: covariates.html
-  estimate_process_sigma: estimate_process_sigma.html
-  smooth: smooth.html
-last_built: 2021-09-28T17:43Z
+  a1_bayesdfa: a1_bayesdfa.html
+  a2_combining_data: a2_combining_data.html
+  a3_covariates: a3_covariates.html
+  a4_smooth: a4_smooth.html
+  a5_estimate_process_sigma: a5_estimate_process_sigma.html
+  a6_compositional: a6_compositional.html
+  a7_bigdata: a7_bigdata.html
+last_built: 2023-04-20T06:59Z
 

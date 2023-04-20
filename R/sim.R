@@ -37,6 +37,7 @@
 #'   the underlying trends, `Z` is the manipulated loadings matrix that is fed
 #'   to the model.
 #' @importFrom stats rlnorm rnorm rt
+#' @importFrom splines splineDesign
 #' @examples
 #' x <- sim_dfa(num_trends = 2)
 #' names(x)

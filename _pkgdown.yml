@@ -39,3 +39,8 @@ reference:
   - plot_loadings
   - plot_regime_model
   - plot_trends
+- title: internal
+  contents:
+    - bayesdfa-package
+    - find_inverted_chains
+    - invert_chains
