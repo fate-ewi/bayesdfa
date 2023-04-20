@@ -34,6 +34,7 @@ Imports:
     mgcv (>= 1.8.13),
     Rcpp (>= 0.12.0),
     reshape2,
+    rstantools (>= 2.1.1),
     rlang,
     rstan (>= 2.18.1),
     splines,
