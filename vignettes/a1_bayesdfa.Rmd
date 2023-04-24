@@ -320,3 +320,39 @@ In this case, there might be some support for the 2-regime model. Sometimes (but
 plot_regime_model(reg_mod, flip_regimes = TRUE)
 ```
 
+## DFA model with weights
+
+Just as the `weights` argument can be ueed with `glm`, `lmer` or `glmmTMB`, we allow weights to be used in DFA models. Weights are currently only used for Gaussian reponses and when data is in long format. Specifically, the weights are included by modifying each variance to be $$(sigma^2) / w_i$$. As a concrete example, we'll simulate a dataset, add some examples of standard errors on the survey indices, and then perform the DFA.
+
+Our simulated standard errors are the same for all surveys -- except time series 2, which is much more precise.  
+
+```{r}
+set.seed(1)
+sim_dat <- sim_dfa(
+  num_trends = 2,
+  num_years = 20,
+  num_ts = 4
+)
+
+df <- data.frame(obs = c(sim_dat$y_sim), time = sort(rep(1:20,4)),
+                 ts = rep(1:4,20))
+df$se <- runif(nrow(df), 0.3, 0.5)
+df$se[which(df$ts == 2)] = 0.04
+```
+
+Next we can generate the weights (this is redundant, and "se" could be used instead in the function call below)
+
+```{r}
+df$weights <- df$se
+```
+
+And fit the model with the weights argument
+
+```{r}
+f2 <- fit_dfa(
+  y = df, num_trends = 2, scale="zscore",
+  iter = 500, chains = 1, thin = 1,
+  weights = "weights", data_shape = "long"
+)
+```
+

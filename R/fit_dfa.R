@@ -72,7 +72,6 @@
 #'   This prior is a half-Student t prior, with the first argument of gp_theta_prior being the degrees of freedom (nu),
 #'   and the second element being the standard deviation
 #' @param expansion_prior Defaults to FALSE, if TRUE uses the parameter expansion prior of Ghosh & Dunson 2009
-#' @param ... Any other arguments to pass to [rstan::sampling()].
 #' @param par_list A vector of parameter names of variables to be estimated by Stan. If NULL, this will default to
 #'   c("x", "Z", "sigma", "log_lik", "psi","xstar") for most models -- though if AR / MA, or Student-t models are used
 #'   additional parameters will be monitored. If you want to use diagnostic tools in rstan, including moment_matching,
@@ -80,6 +79,10 @@
 #'   of diagnostic functions -- but making the models a lot larger for storage. Finally, this argument may be a custom string
 #'   of parameters to monitor, e.g. c("x","sigma")
 #' @param verbose Whether to print iterations and information from Stan, defaults to FALSE.
+#' @param weights Optional name of "weights" argument in data frame. This is only implemented when data
+#'   are in long format. If not entered, defaults to weights = 1 for all observations. The implementation of weights
+#'   varies slightly by family: Gaussian family models use -log(w_i) in the dispersion formula
+#' @param ... Any other arguments to pass to [rstan::sampling()].
 #' @details Note that there is nothing restricting the loadings and trends from
 #'   being inverted (i.e. multiplied by `-1`) for a given chain. Therefore, if
 #'   you fit multiple chains, the package will attempt to determine which chains
@@ -184,6 +187,7 @@ fit_dfa <- function(y = y,
                     par_list = NULL,
                     family = "gaussian",
                     verbose = FALSE,
+                    weights = NULL,
                     gp_theta_prior = c(3, 1),
                     expansion_prior = FALSE,
                     ...) {
@@ -230,6 +234,11 @@ fit_dfa <- function(y = y,
     y$ts <- as.numeric(as.factor(y[["ts"]]))
     N <- max(y[["time"]])
     P <- max(y[["ts"]])
+    if (!is.null(weights)) {
+      if(weights %in% names(y) == FALSE) {
+        stop("Error: weight name is not found in long data frame")
+      }
+    }
   }
 
   if (data_shape[1] == "wide") {
@@ -324,6 +333,7 @@ fit_dfa <- function(y = y,
   }
   nVariances <- length(unique(varIndx))
 
+  weights_vec <- NULL
   # indices of positive values - Stan can't handle NAs
   if (data_shape[1] == "wide") {
     row_indx_pos <- matrix(rep(seq_len(P), N), P, N)[!is.na(y)]
@@ -333,6 +343,7 @@ fit_dfa <- function(y = y,
     col_indx_na <- matrix(sort(rep(seq_len(N), P)), P, N)[is.na(y)]
     n_na <- length(row_indx_na)
     y <- y[!is.na(y)]
+    weights_vec <- rep(1, length(y))
     if(!is.null(offset)) {
       stop("Error: if offset is included, data shape must be long")
     }
@@ -346,6 +357,12 @@ fit_dfa <- function(y = y,
     row_indx_na <- matrix(1, 1, 1)[is.na(runif(1))]
     col_indx_na <- matrix(1, 1, 1)[is.na(runif(1))]
     n_na <- length(row_indx_na)
+
+    if(!is.null(weights)) {
+      weights_vec <- y[[weights]]
+    } else {
+      weights_vec <- rep(1, nrow(y))
+    }
 
     offset_vec <- rep(0, nrow(y))
     if(!is.null(offset)) {
@@ -525,7 +542,8 @@ fit_dfa <- function(y = y,
     est_nb2_params = est_nb2_params,
     gp_theta_prior = gp_theta_prior,
     use_expansion_prior = as.integer(expansion_prior),
-    offset = offset_vec
+    offset = offset_vec,
+    weights_vec = weights_vec
   )
 
   if (is.null(par_list)) {

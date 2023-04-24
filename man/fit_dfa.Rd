@@ -33,6 +33,7 @@ fit_dfa(
   par_list = NULL,
   family = "gaussian",
   verbose = FALSE,
+  weights = NULL,
   gp_theta_prior = c(3, 1),
   expansion_prior = FALSE,
   ...
@@ -141,6 +142,10 @@ but included options are "gamma", "lognormal", negative binomial ("nbinom2"),
 gaussian family is assumed to be identity, and the rest are log-link.}
 
 \item{verbose}{Whether to print iterations and information from Stan, defaults to FALSE.}
+
+\item{weights}{Optional name of "weights" argument in data frame. This is only implemented when data
+are in long format. If not entered, defaults to weights = 1 for all observations. The implementation of weights
+varies slightly by family: Gaussian family models use -log(w\link{i}) in the dispersion formula}
 
 \item{gp_theta_prior}{A 2-element vector controlling the prior on the Gaussian process parameter in cov_exp_quad.
 This prior is a half-Student t prior, with the first argument of gp_theta_prior being the degrees of freedom (nu),

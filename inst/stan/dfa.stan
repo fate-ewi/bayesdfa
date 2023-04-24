@@ -121,17 +121,22 @@ data {
   int<lower=0, upper=1> est_nb2_params;
   int<lower=0, upper=1> use_expansion_prior;
   real gp_theta_prior[2];
+  real weights_vec[n_pos];
 }
 transformed data {
   int n_pcor; // dimension for cov matrix
   int n_loglik; // dimension for loglik calculation
   vector[K] zeros;
   real data_locs[N]; // for gp model
+  real log_weights_vec[n_pos]; // weights
   vector[K*proportional_model] alpha_vec;
   vector[n_knots] muZeros;
   real gp_delta = 1e-9; // stabilizing value for GP model
   real lower_bound_z;
 
+  for(i in 1:n_pos) {
+    log_weights_vec[i] = log(weights_vec[i]);
+  }
   for(i in 1:N) {
     data_locs[i] = i;
   }
@@ -557,7 +562,6 @@ model {
     for(k in 1:K) {
       spline_a[k] ~ std_normal();
     }
-
   }
 
   if(proportional_model == 0) {
@@ -575,7 +579,7 @@ model {
     if(long_format==0) {
       if(obs_model == 1) {for(i in 1:P) target += normal_lpdf(yall[i] | pred[i], sigma_vec[i]);} // gaussian
     } else {
-        if(obs_model == 1) {for(i in 1:n_pos) target += normal_lpdf(y[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], sigma_vec[row_indx_pos[i]]);}
+        if(obs_model == 1) {for(i in 1:n_pos) target += normal_lpdf(y[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], exp(log(sigma_vec[row_indx_pos[i]]) - log_weights_vec[i]));}
         if(obs_model == 2) {for(i in 1:n_pos) target += gamma_lpdf(y[i] | gamma_a_vec[row_indx_pos[i]], gamma_a_vec[row_indx_pos[i]] / exp(offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]));} // gamma
         if(obs_model == 3) {for(i in 1:n_pos) target += poisson_log_lpmf(y_int[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // poisson
         if(obs_model == 4) {for(i in 1:n_pos) target += neg_binomial_2_log_lpmf(y_int[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], nb_phi_vec[row_indx_pos[i]]);} // negbin
@@ -587,7 +591,7 @@ model {
     if(long_format==0) {
       if(obs_model == 1) {for(i in 1:N) target += multi_normal_cholesky_lpdf(col(yall,i) | col(pred,i), diag_pre_multiply(sigma_vec, Lcorr));}
     } else {
-      if(obs_model == 1) {for(i in 1:n_pos) target += normal_lpdf(y[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);}
+      if(obs_model == 1) {for(i in 1:n_pos) target += normal_lpdf(y[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i] + cond_mean_vec[row_indx_pos[i]], exp(log(cond_sigma_vec[row_indx_pos[i]]) - log_weights_vec[i]));}
     }
   }
 }
@@ -618,7 +622,7 @@ generated quantities {
         }
       }
     } else {
-      if(obs_model == 1) {for(i in 1:n_pos) log_lik[i] = normal_lpdf(y[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], sigma_vec[row_indx_pos[i]]);}
+      if(obs_model == 1) {for(i in 1:n_pos) log_lik[i] = normal_lpdf(y[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], exp(log(sigma_vec[row_indx_pos[i]]) - log_weights_vec[i]));}
       if(obs_model == 2) {for(i in 1:n_pos) log_lik[i] = gamma_lpdf(y[i] | gamma_a_vec[row_indx_pos[i]], gamma_a_vec[row_indx_pos[i]] / exp(offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]));} // gamma
       if(obs_model == 3) {for(i in 1:n_pos) log_lik[i] = poisson_log_lpmf(y_int[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i]);} // poisson
       if(obs_model == 4) {for(i in 1:n_pos) log_lik[i] = neg_binomial_2_log_lpmf(y_int[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i], nb_phi_vec[row_indx_pos[i]]);} // negbin
@@ -635,7 +639,7 @@ generated quantities {
     } else {
       for(i in 1:n_pos) {
         //  //row_indx_pos[i] is the time series, col_index_pos is the time
-        log_lik[i] = normal_lpdf(y[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i] + cond_mean_vec[row_indx_pos[i]], cond_sigma_vec[row_indx_pos[i]]);
+        log_lik[i] = normal_lpdf(y[i] | offset[i] + pred[row_indx_pos[i],col_indx_pos[i]] + obs_cov_offset[i] + cond_mean_vec[row_indx_pos[i]], exp(log(cond_sigma_vec[row_indx_pos[i]]) - log_weights_vec[i]));
       }
     }
   }
