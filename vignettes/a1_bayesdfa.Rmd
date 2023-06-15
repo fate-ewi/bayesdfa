@@ -336,11 +336,11 @@ sim_dat <- sim_dfa(
 
 df <- data.frame(obs = c(sim_dat$y_sim), time = sort(rep(1:20,4)),
                  ts = rep(1:4,20))
-df$se <- runif(nrow(df), 0.3, 0.5)
-df$se[which(df$ts == 2)] = 0.04
+df$se <- runif(nrow(df), 0.6, 0.8)
+df$se[which(df$ts == 2)] = 0.2
 ```
 
-Next we can generate the weights (this is redundant, and "se" could be used instead in the function call below). Because the weights are used as an offset, $$\sigma^2 / w_i$$, we don't want to use the SE alone as a weight but make them inversely related to the SE.
+Next we can generate the weights (this is redundant, and "se" could be used instead in the function call below). Because the weights are used as an offset, $$\sigma^2 / w_i$$, we don't want to use the SE alone as a weight but make them inversely related to the SE. As a quick note, the scale of these may affect estimation and some additional normalization may be needed (rather than standard errors, it may be more helpful to think about the sample size each data point represents).
 
 ```{r}
 df$weights <- (1 / df$se)^2
