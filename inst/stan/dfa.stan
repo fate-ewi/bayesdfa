@@ -69,22 +69,22 @@ data {
   int<lower=0> P; // number of time series of data
   int<lower=0> K; // number of trends
   int<lower=0> nZ; // number of unique z elements
-  int<lower=0> row_indx[nZ];
-  int<lower=0> col_indx[nZ];
+  array[nZ] int<lower=0> row_indx;
+  array[nZ] int<lower=0> col_indx;
   int<lower=0> nVariances;
-  int<lower=0> varIndx[P];
+  array[P] int<lower=0> varIndx;
   int<lower=0> nZero;
-  int<lower=0> row_indx_z[nZero];
-  int<lower=0> col_indx_z[nZero];
+  array[nZero] int<lower=0> row_indx_z;
+  array[nZero] int<lower=0> col_indx_z;
   int<lower=0> n_pos; // number of non-missing observations
-  int<lower=0> row_indx_pos[n_pos]; // row indices of non-missing obs
-  int<lower=0> col_indx_pos[n_pos]; // col indices of non-missing obs
-  real y[n_pos]; // vectorized matrix of observations
-  int<lower=0> y_int[n_pos]; // vectorized matrix of observations
-  real offset[n_pos]; // vector of offset (no estimated coefficient)
+  array[n_pos] int<lower=0> row_indx_pos; // row indices of non-missing obs
+  array[n_pos] int<lower=0> col_indx_pos; // col indices of non-missing obs
+  array[n_pos] real y; // vectorized matrix of observations
+  array[n_pos] int<lower=0> y_int; // vectorized matrix of observations
+  array[n_pos] real offset; // vector of offset (no estimated coefficient)
   int<lower=0> n_na; // number of missing observations
-  int<lower=0> row_indx_na[n_na]; // row indices of missing obs
-  int<lower=0> col_indx_na[n_na]; // col indices of missing obs
+  array[n_na] int<lower=0> row_indx_na; // row indices of missing obs
+  array[n_na] int<lower=0> col_indx_na; // col indices of missing obs
   real<lower=1> nu_fixed; // df on student-t
   int estimate_nu; // Estimate degrees of freedom?
   int use_normal; // flag, for large values of nu > 100, use normal instead
@@ -93,14 +93,14 @@ data {
   int est_theta; // whether to estimate moving-average in trends (=1) or not (= 0
   int<lower=0> num_obs_covar; // number of unique observation covariates, dimension of matrix
   int<lower=0> n_obs_covar; // number of unique covariates included
-  int obs_covar_index[num_obs_covar,3];// indexed by time, trend, covariate #, covariate value. +1 because of indexing issues
-  real obs_covar_value[num_obs_covar];
-  int match_obs_covar[num_obs_covar];
+  array[num_obs_covar,3] int obs_covar_index;// indexed by time, trend, covariate #, covariate value. +1 because of indexing issues
+  array[num_obs_covar] real obs_covar_value;
+  array[num_obs_covar] int match_obs_covar;
   int<lower=0> num_pro_covar; // number of unique process covariates, dimension of matrix
   int<lower=0> n_pro_covar; // number of unique process covariates included
-  int pro_covar_index[num_pro_covar,3];// indexed by time, trend, covariate #, covariate value. +1 because of indexing issues
-  real pro_covar_value[num_pro_covar];
-  real z_bound[2];
+  array[num_pro_covar,3] int pro_covar_index;// indexed by time, trend, covariate #, covariate value. +1 because of indexing issues
+  array[num_pro_covar] real pro_covar_value;
+  array[2] real z_bound;
   int<lower=0> long_format; // data shape, 0 == wide (default), 1 = long with potential for multiple observations
   int<lower=0> proportional_model;
   int<lower=0> est_sigma_process; // optional, 0 == not estimate sigma_pro (default), 1 == estimate
@@ -110,7 +110,7 @@ data {
   int<lower=0> est_gp; // single value, 0 if false 1 if true to model trends with predictive gaussian process
   int<lower=0> n_knots; // single value representing knots for b-spline or gp process
   matrix[N, n_knots] X_spline;
-  real knot_locs[n_knots]; // inputs of knot locations for GP model
+  array[n_knots] real knot_locs; // inputs of knot locations for GP model
   //real data_locs[N]; // locations of data
   //matrix[n_knots, n_knots] distKnots;
   //matrix[N, n_knots] distKnots21;
@@ -120,15 +120,15 @@ data {
   int<lower=0, upper=1> est_gamma_params;
   int<lower=0, upper=1> est_nb2_params;
   int<lower=0, upper=1> use_expansion_prior;
-  real gp_theta_prior[2];
-  real weights_vec[n_pos];
+  array[2] real gp_theta_prior;
+  array[n_pos] real weights_vec;
 }
 transformed data {
   int n_pcor; // dimension for cov matrix
   int n_loglik; // dimension for loglik calculation
   vector[K] zeros;
-  real data_locs[N]; // for gp model
-  real log_weights_vec[n_pos]; // weights
+  array[N] real data_locs; // for gp model
+  array[n_pos] real log_weights_vec; // weights
   vector[K*proportional_model] alpha_vec;
   vector[n_knots] muZeros;
   real gp_delta = 1e-9; // stabilizing value for GP model
@@ -185,21 +185,21 @@ parameters {
   vector<lower=0>[K*(1-proportional_model)*use_expansion_prior] psi; // expansion parameters
   vector<lower=z_bound[1],upper=z_bound[2]>[nZ*(1-proportional_model)] z; // estimated loadings in vec form
   vector<lower=lower_bound_z>[K*(1-proportional_model)] zpos; // constrained positive values
-  simplex[K] p_z[P*proportional_model]; // alternative for proportional Z
+  array[P*proportional_model] simplex[K] p_z; // alternative for proportional Z
   matrix[K * est_spline, n_knots * est_spline] spline_a; // weights for b-splines
   matrix[n_obs_covar, P] b_obs; // coefficients on observation model
   matrix[n_pro_covar, K] b_pro; // coefficients on process model
-  real<lower=0> sigma[nVariances*est_sigma_params];
-  real<lower=0> gamma_a[nVariances*est_gamma_params];
-  real<lower=0> nb2_phi[nVariances*est_nb2_params];
-  real<lower=2> nu[estimate_nu]; // df on student-t
+  array[nVariances*est_sigma_params] real<lower=0> sigma;
+  array[nVariances*est_gamma_params] real<lower=0> gamma_a;
+  array[nVariances*est_nb2_params] real<lower=0> nb2_phi;
+  array[estimate_nu] real<lower=2> nu; // df on student-t
   real ymiss[n_na];
-  real<lower=-1,upper=1> phi[est_phi*K]; // AR(1) coefficients specific to each trend
-  real<lower=-1,upper=1> theta[est_theta*K];// MA(1) coefficients specific to each trend
-  real<lower=0> gp_theta[est_gp*K];// gp_theta coefficients specific to each trend
+  array[est_phi*K] real<lower=-1,upper=1> phi; // AR(1) coefficients specific to each trend
+  array[est_theta*K] real<lower=-1,upper=1> theta;// MA(1) coefficients specific to each trend
+  array[est_gp*K] real<lower=0> gp_theta;// gp_theta coefficients specific to each trend
   cholesky_factor_corr[n_pcor] Lcorr; // matrix for correlated errros
-  real<lower=0> sigma_process[est_sigma_process * n_sigma_process]; // process variances, potentially unique
-  vector[n_knots* est_gp] effectsKnots[K * est_gp]; // gaussian predictive process
+  array[est_sigma_process * n_sigma_process] real<lower=0> sigma_process; // process variances, potentially unique
+  array[K * est_gp] vector[n_knots* est_gp] effectsKnots; // gaussian predictive process
 }
 transformed parameters {
   matrix[P,N] pred; //vector[P] pred[N];
@@ -223,7 +223,7 @@ transformed parameters {
   real sigma11;// temporary for calculations for MVN model
   vector[K] sigma_pro;
   matrix[K * est_spline, n_knots * est_spline] spline_a_trans; // weights for b-splines
-  matrix[n_knots, n_knots] SigmaKnots[K]; // matrix for GP model, unique for each trend K
+  array[K] matrix[n_knots, n_knots] SigmaKnots; // matrix for GP model, unique for each trend K
   //matrix[N, n_knots] SigmaOffDiag;// matrix for GP model
   //matrix[N, n_knots] SigmaOffDiagTemp;// matrix for GP model
   vector[n_pos] obs_cov_offset;
