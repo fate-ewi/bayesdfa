@@ -18,7 +18,7 @@ data {
 parameters {
   // Discrete state model
   simplex[K] p_1k;                  // initial state probabilities
-  simplex[K] A_ij[K];               // transition probabilities
+  array[K] simplex[K] A_ij;               // transition probabilities
                                     // A_ij[i][j] = p(z_t = j | z_{t-1} = i)
   // Continuous observation model
   ordered[K] mu_k;                  // observation means
@@ -81,7 +81,7 @@ generated quantities {
   } // Forward
 
   { // Backward algorithm log p(x_{t+1:T} | z_t = j)
-    real accumulator[K];
+    array[K] real accumulator;
 
     for (j in 1:K)
       unbeta_tk[T, j] = 1;
