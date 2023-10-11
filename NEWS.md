@@ -39,3 +39,11 @@
 Add penalized spline models, so that the 'trend_model' argument may take on
 "rw" for conventional random walks, "bs" for B-splines, "ps" for "P-splines",
 or "gp" for Gaussian processes
+
+# bayesdfa 1.3.0
+
+Change to new Stan syntax
+
+# bayesdfa 1.3.1
+
+Versioning
