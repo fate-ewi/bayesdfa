@@ -75,478 +75,478 @@ using stan::math::pow;
 stan::math::profile_map profiles__;
 static int current_statement__= 0;
 static const std::vector<string> locations_array__ = {" (found before start of program)",
-                                                      " (in 'dfa', line 167, column 2 to column 41)",
-                                                      " (in 'dfa', line 168, column 2 to column 15)",
-                                                      " (in 'dfa', line 169, column 2 to column 68)",
-                                                      " (in 'dfa', line 170, column 2 to column 73)",
-                                                      " (in 'dfa', line 171, column 2 to column 61)",
-                                                      " (in 'dfa', line 172, column 2 to column 39)",
-                                                      " (in 'dfa', line 173, column 2 to column 56)",
-                                                      " (in 'dfa', line 174, column 2 to column 31)",
-                                                      " (in 'dfa', line 175, column 2 to column 31)",
-                                                      " (in 'dfa', line 176, column 2 to column 51)",
-                                                      " (in 'dfa', line 177, column 2 to column 53)",
-                                                      " (in 'dfa', line 178, column 2 to column 51)",
-                                                      " (in 'dfa', line 179, column 2 to column 32)",
-                                                      " (in 'dfa', line 180, column 2 to column 19)",
-                                                      " (in 'dfa', line 181, column 2 to column 40)",
-                                                      " (in 'dfa', line 182, column 2 to column 44)",
-                                                      " (in 'dfa', line 183, column 2 to column 35)",
-                                                      " (in 'dfa', line 184, column 2 to column 37)",
-                                                      " (in 'dfa', line 185, column 2 to column 67)",
-                                                      " (in 'dfa', line 186, column 2 to column 51)",
-                                                      " (in 'dfa', line 189, column 2 to column 19)",
-                                                      " (in 'dfa', line 190, column 2 to column 16)",
-                                                      " (in 'dfa', line 191, column 2 to column 19)",
-                                                      " (in 'dfa', line 192, column 2 to column 48)",
-                                                      " (in 'dfa', line 193, column 2 to column 50)",
-                                                      " (in 'dfa', line 194, column 2 to column 47)",
-                                                      " (in 'dfa', line 195, column 2 to column 20)",
-                                                      " (in 'dfa', line 196, column 2 to column 22)",
-                                                      " (in 'dfa', line 197, column 2 to column 16)",
-                                                      " (in 'dfa', line 198, column 2 to column 22)",
-                                                      " (in 'dfa', line 199, column 2 to column 50)",
-                                                      " (in 'dfa', line 200, column 2 to column 79)",
-                                                      " (in 'dfa', line 201, column 2 to column 84)",
-                                                      " (in 'dfa', line 202, column 2 to column 33)",
-                                                      " (in 'dfa', line 203, column 2 to column 65)",
-                                                      " (in 'dfa', line 204, column 2 to column 67)",
-                                                      " (in 'dfa', line 205, column 2 to column 47)",
-                                                      " (in 'dfa', line 206, column 2 to column 46)",
-                                                      " (in 'dfa', line 207, column 2 to column 15)",
-                                                      " (in 'dfa', line 208, column 2 to column 22)",
-                                                      " (in 'dfa', line 209, column 2 to column 62)",
-                                                      " (in 'dfa', line 210, column 2 to column 41)",
-                                                      " (in 'dfa', line 213, column 2 to column 31)",
-                                                      " (in 'dfa', line 216, column 4 to column 21)",
-                                                      " (in 'dfa', line 221, column 8 to column 40)",
-                                                      " (in 'dfa', line 220, column 13 to line 222, column 7)",
-                                                      " (in 'dfa', line 219, column 8 to column 40)",
-                                                      " (in 'dfa', line 218, column 29 to line 220, column 7)",
-                                                      " (in 'dfa', line 218, column 6 to line 222, column 7)",
-                                                      " (in 'dfa', line 217, column 29 to line 223, column 5)",
-                                                      " (in 'dfa', line 217, column 4 to line 223, column 5)",
-                                                      " (in 'dfa', line 215, column 16 to line 224, column 3)",
-                                                      " (in 'dfa', line 215, column 2 to line 224, column 3)",
-                                                      " (in 'dfa', line 230, column 19 to column 34)",
-                                                      " (in 'dfa', line 230, column 18 to column 35)",
-                                                      " (in 'dfa', line 230, column 4 to column 35)",
-                                                      " (in 'dfa', line 229, column 9 to line 232, column 3)",
-                                                      " (in 'dfa', line 227, column 19 to column 39)",
-                                                      " (in 'dfa', line 227, column 18 to column 40)",
-                                                      " (in 'dfa', line 227, column 4 to column 40)",
-                                                      " (in 'dfa', line 226, column 19 to line 229, column 3)",
-                                                      " (in 'dfa', line 226, column 2 to line 232, column 3)",
-                                                      " (in 'dfa', line 238, column 19 to column 36)",
-                                                      " (in 'dfa', line 238, column 18 to column 37)",
-                                                      " (in 'dfa', line 238, column 4 to column 37)",
-                                                      " (in 'dfa', line 237, column 9 to line 240, column 3)",
-                                                      " (in 'dfa', line 235, column 19 to column 43)",
-                                                      " (in 'dfa', line 235, column 18 to column 44)",
-                                                      " (in 'dfa', line 235, column 4 to column 44)",
-                                                      " (in 'dfa', line 234, column 21 to line 237, column 3)",
-                                                      " (in 'dfa', line 234, column 2 to line 240, column 3)",
-                                                      " (in 'dfa', line 242, column 19 to column 52)",
-                                                      " (in 'dfa', line 242, column 18 to column 53)",
-                                                      " (in 'dfa', line 242, column 4 to column 53)",
+                                                      " (in 'dfa', line 164, column 2 to column 41)",
+                                                      " (in 'dfa', line 165, column 2 to column 15)",
+                                                      " (in 'dfa', line 166, column 2 to column 68)",
+                                                      " (in 'dfa', line 167, column 2 to column 73)",
+                                                      " (in 'dfa', line 168, column 2 to column 61)",
+                                                      " (in 'dfa', line 169, column 2 to column 45)",
+                                                      " (in 'dfa', line 170, column 2 to column 56)",
+                                                      " (in 'dfa', line 171, column 2 to column 31)",
+                                                      " (in 'dfa', line 172, column 2 to column 31)",
+                                                      " (in 'dfa', line 173, column 2 to column 57)",
+                                                      " (in 'dfa', line 174, column 2 to column 59)",
+                                                      " (in 'dfa', line 175, column 2 to column 57)",
+                                                      " (in 'dfa', line 176, column 2 to column 38)",
+                                                      " (in 'dfa', line 177, column 2 to column 25)",
+                                                      " (in 'dfa', line 178, column 2 to column 46)",
+                                                      " (in 'dfa', line 179, column 2 to column 50)",
+                                                      " (in 'dfa', line 180, column 2 to column 41)",
+                                                      " (in 'dfa', line 181, column 2 to column 37)",
+                                                      " (in 'dfa', line 182, column 2 to column 73)",
+                                                      " (in 'dfa', line 183, column 2 to column 57)",
+                                                      " (in 'dfa', line 186, column 2 to column 19)",
+                                                      " (in 'dfa', line 187, column 2 to column 16)",
+                                                      " (in 'dfa', line 188, column 2 to column 19)",
+                                                      " (in 'dfa', line 189, column 2 to column 48)",
+                                                      " (in 'dfa', line 190, column 2 to column 50)",
+                                                      " (in 'dfa', line 191, column 2 to column 47)",
+                                                      " (in 'dfa', line 192, column 2 to column 20)",
+                                                      " (in 'dfa', line 193, column 2 to column 22)",
+                                                      " (in 'dfa', line 194, column 2 to column 16)",
+                                                      " (in 'dfa', line 195, column 2 to column 22)",
+                                                      " (in 'dfa', line 196, column 2 to column 50)",
+                                                      " (in 'dfa', line 197, column 2 to column 79)",
+                                                      " (in 'dfa', line 198, column 2 to column 84)",
+                                                      " (in 'dfa', line 199, column 2 to column 33)",
+                                                      " (in 'dfa', line 200, column 2 to column 65)",
+                                                      " (in 'dfa', line 201, column 2 to column 67)",
+                                                      " (in 'dfa', line 202, column 2 to column 47)",
+                                                      " (in 'dfa', line 203, column 2 to column 46)",
+                                                      " (in 'dfa', line 204, column 2 to column 15)",
+                                                      " (in 'dfa', line 205, column 2 to column 22)",
+                                                      " (in 'dfa', line 206, column 2 to column 62)",
+                                                      " (in 'dfa', line 207, column 2 to column 47)",
+                                                      " (in 'dfa', line 210, column 2 to column 31)",
+                                                      " (in 'dfa', line 213, column 4 to column 21)",
+                                                      " (in 'dfa', line 218, column 8 to column 40)",
+                                                      " (in 'dfa', line 217, column 13 to line 219, column 7)",
+                                                      " (in 'dfa', line 216, column 8 to column 40)",
+                                                      " (in 'dfa', line 215, column 29 to line 217, column 7)",
+                                                      " (in 'dfa', line 215, column 6 to line 219, column 7)",
+                                                      " (in 'dfa', line 214, column 29 to line 220, column 5)",
+                                                      " (in 'dfa', line 214, column 4 to line 220, column 5)",
+                                                      " (in 'dfa', line 212, column 16 to line 221, column 3)",
+                                                      " (in 'dfa', line 212, column 2 to line 221, column 3)",
+                                                      " (in 'dfa', line 227, column 19 to column 34)",
+                                                      " (in 'dfa', line 227, column 18 to column 35)",
+                                                      " (in 'dfa', line 227, column 4 to column 35)",
+                                                      " (in 'dfa', line 226, column 9 to line 229, column 3)",
+                                                      " (in 'dfa', line 224, column 19 to column 39)",
+                                                      " (in 'dfa', line 224, column 18 to column 40)",
+                                                      " (in 'dfa', line 224, column 4 to column 40)",
+                                                      " (in 'dfa', line 223, column 19 to line 226, column 3)",
+                                                      " (in 'dfa', line 223, column 2 to line 229, column 3)",
+                                                      " (in 'dfa', line 235, column 19 to column 36)",
+                                                      " (in 'dfa', line 235, column 18 to column 37)",
+                                                      " (in 'dfa', line 235, column 4 to column 37)",
+                                                      " (in 'dfa', line 234, column 9 to line 237, column 3)",
+                                                      " (in 'dfa', line 232, column 19 to column 43)",
+                                                      " (in 'dfa', line 232, column 18 to column 44)",
+                                                      " (in 'dfa', line 232, column 4 to column 44)",
+                                                      " (in 'dfa', line 231, column 21 to line 234, column 3)",
+                                                      " (in 'dfa', line 231, column 2 to line 237, column 3)",
+                                                      " (in 'dfa', line 239, column 19 to column 52)",
+                                                      " (in 'dfa', line 239, column 18 to column 53)",
+                                                      " (in 'dfa', line 239, column 4 to column 53)",
+                                                      " (in 'dfa', line 238, column 28 to line 240, column 3)",
+                                                      " (in 'dfa', line 238, column 2 to line 240, column 3)",
+                                                      " (in 'dfa', line 242, column 19 to column 56)",
+                                                      " (in 'dfa', line 242, column 18 to column 57)",
+                                                      " (in 'dfa', line 242, column 4 to column 57)",
                                                       " (in 'dfa', line 241, column 28 to line 243, column 3)",
                                                       " (in 'dfa', line 241, column 2 to line 243, column 3)",
-                                                      " (in 'dfa', line 245, column 19 to column 56)",
-                                                      " (in 'dfa', line 245, column 18 to column 57)",
-                                                      " (in 'dfa', line 245, column 4 to column 57)",
-                                                      " (in 'dfa', line 244, column 28 to line 246, column 3)",
+                                                      " (in 'dfa', line 245, column 19 to column 55)",
+                                                      " (in 'dfa', line 245, column 18 to column 56)",
+                                                      " (in 'dfa', line 245, column 4 to column 56)",
+                                                      " (in 'dfa', line 244, column 26 to line 246, column 3)",
                                                       " (in 'dfa', line 244, column 2 to line 246, column 3)",
-                                                      " (in 'dfa', line 248, column 19 to column 55)",
-                                                      " (in 'dfa', line 248, column 18 to column 56)",
-                                                      " (in 'dfa', line 248, column 4 to column 56)",
-                                                      " (in 'dfa', line 247, column 26 to line 249, column 3)",
-                                                      " (in 'dfa', line 247, column 2 to line 249, column 3)",
-                                                      " (in 'dfa', line 253, column 6 to column 52)",
-                                                      " (in 'dfa', line 252, column 22 to line 254, column 5)",
-                                                      " (in 'dfa', line 252, column 4 to line 254, column 5)",
-                                                      " (in 'dfa', line 258, column 8 to column 56)",
-                                                      " (in 'dfa', line 257, column 23 to line 259, column 7)",
-                                                      " (in 'dfa', line 257, column 6 to line 259, column 7)",
-                                                      " (in 'dfa', line 256, column 17 to line 260, column 5)",
-                                                      " (in 'dfa', line 256, column 4 to line 260, column 5)",
-                                                      " (in 'dfa', line 250, column 21 to line 261, column 3)",
-                                                      " (in 'dfa', line 250, column 2 to line 261, column 3)",
-                                                      " (in 'dfa', line 264, column 6 to column 40)",
-                                                      " (in 'dfa', line 263, column 19 to line 265, column 5)",
-                                                      " (in 'dfa', line 263, column 4 to line 265, column 5)",
-                                                      " (in 'dfa', line 269, column 8 to column 43)",
-                                                      " (in 'dfa', line 268, column 28 to line 270, column 7)",
-                                                      " (in 'dfa', line 268, column 6 to line 270, column 7)",
-                                                      " (in 'dfa', line 267, column 18 to line 271, column 5)",
-                                                      " (in 'dfa', line 267, column 4 to line 271, column 5)",
-                                                      " (in 'dfa', line 273, column 6 to column 23)",
-                                                      " (in 'dfa', line 272, column 18 to line 274, column 5)",
-                                                      " (in 'dfa', line 272, column 4 to line 274, column 5)",
-                                                      " (in 'dfa', line 281, column 10 to column 27)",
-                                                      " (in 'dfa', line 280, column 15 to line 282, column 9)",
-                                                      " (in 'dfa', line 279, column 10 to column 28)",
-                                                      " (in 'dfa', line 278, column 24 to line 280, column 9)",
-                                                      " (in 'dfa', line 278, column 8 to line 282, column 9)",
-                                                      " (in 'dfa', line 284, column 8 to column 35)",
-                                                      " (in 'dfa', line 287, column 10 to column 59)",
-                                                      " (in 'dfa', line 285, column 22 to line 288, column 9)",
-                                                      " (in 'dfa', line 285, column 8 to line 288, column 9)",
-                                                      " (in 'dfa', line 277, column 20 to line 289, column 7)",
-                                                      " (in 'dfa', line 277, column 6 to line 289, column 7)",
-                                                      " (in 'dfa', line 276, column 31 to line 290, column 5)",
-                                                      " (in 'dfa', line 276, column 4 to line 290, column 5)",
-                                                      " (in 'dfa', line 294, column 8 to column 23)",
-                                                      " (in 'dfa', line 299, column 10 to column 53)",
-                                                      " (in 'dfa', line 298, column 22 to line 300, column 9)",
-                                                      " (in 'dfa', line 298, column 8 to line 300, column 9)",
-                                                      " (in 'dfa', line 293, column 20 to line 301, column 7)",
-                                                      " (in 'dfa', line 293, column 6 to line 301, column 7)",
-                                                      " (in 'dfa', line 292, column 20 to line 302, column 5)",
-                                                      " (in 'dfa', line 292, column 4 to line 302, column 5)",
-                                                      " (in 'dfa', line 306, column 20 to column 67)",
-                                                      " (in 'dfa', line 306, column 6 to column 67)",
-                                                      " (in 'dfa', line 307, column 6 to column 37)",
-                                                      " (in 'dfa', line 308, column 21 to column 41)",
-                                                      " (in 'dfa', line 308, column 20 to column 42)",
-                                                      " (in 'dfa', line 308, column 6 to column 42)",
-                                                      " (in 'dfa', line 303, column 22 to line 309, column 5)",
-                                                      " (in 'dfa', line 303, column 4 to line 309, column 5)",
-                                                      " (in 'dfa', line 313, column 8 to column 75)",
-                                                      " (in 'dfa', line 316, column 10 to column 41)",
-                                                      " (in 'dfa', line 315, column 28 to line 317, column 9)",
-                                                      " (in 'dfa', line 315, column 8 to line 317, column 9)",
-                                                      " (in 'dfa', line 329, column 10 to column 177)",
-                                                      " (in 'dfa', line 328, column 15 to line 330, column 9)",
-                                                      " (in 'dfa', line 327, column 10 to column 84)",
-                                                      " (in 'dfa', line 325, column 25 to line 328, column 9)",
-                                                      " (in 'dfa', line 325, column 8 to line 330, column 9)",
-                                                      " (in 'dfa', line 312, column 21 to line 331, column 7)",
-                                                      " (in 'dfa', line 312, column 6 to line 331, column 7)",
-                                                      " (in 'dfa', line 310, column 20 to line 332, column 5)",
-                                                      " (in 'dfa', line 310, column 4 to line 332, column 5)",
-                                                      " (in 'dfa', line 338, column 8 to column 49)",
-                                                      " (in 'dfa', line 335, column 20 to line 339, column 7)",
-                                                      " (in 'dfa', line 335, column 6 to line 339, column 7)",
-                                                      " (in 'dfa', line 334, column 31 to line 340, column 5)",
-                                                      " (in 'dfa', line 334, column 4 to line 340, column 5)",
-                                                      " (in 'dfa', line 262, column 30 to line 341, column 3)",
-                                                      " (in 'dfa', line 262, column 2 to line 341, column 3)",
-                                                      " (in 'dfa', line 346, column 8 to column 23)",
-                                                      " (in 'dfa', line 351, column 10 to column 53)",
-                                                      " (in 'dfa', line 350, column 22 to line 352, column 9)",
-                                                      " (in 'dfa', line 350, column 8 to line 352, column 9)",
-                                                      " (in 'dfa', line 345, column 20 to line 353, column 7)",
-                                                      " (in 'dfa', line 345, column 6 to line 353, column 7)",
-                                                      " (in 'dfa', line 344, column 20 to line 354, column 5)",
-                                                      " (in 'dfa', line 344, column 4 to line 354, column 5)",
-                                                      " (in 'dfa', line 356, column 20 to column 67)",
-                                                      " (in 'dfa', line 356, column 6 to column 67)",
-                                                      " (in 'dfa', line 357, column 6 to column 37)",
-                                                      " (in 'dfa', line 358, column 21 to column 41)",
-                                                      " (in 'dfa', line 358, column 20 to column 42)",
-                                                      " (in 'dfa', line 358, column 6 to column 42)",
-                                                      " (in 'dfa', line 355, column 22 to line 359, column 5)",
-                                                      " (in 'dfa', line 355, column 4 to line 359, column 5)",
-                                                      " (in 'dfa', line 362, column 8 to column 75)",
-                                                      " (in 'dfa', line 365, column 10 to column 41)",
-                                                      " (in 'dfa', line 364, column 28 to line 366, column 9)",
-                                                      " (in 'dfa', line 364, column 8 to line 366, column 9)",
-                                                      " (in 'dfa', line 378, column 10 to column 177)",
-                                                      " (in 'dfa', line 377, column 15 to line 379, column 9)",
-                                                      " (in 'dfa', line 376, column 10 to column 84)",
-                                                      " (in 'dfa', line 374, column 25 to line 377, column 9)",
-                                                      " (in 'dfa', line 374, column 8 to line 379, column 9)",
-                                                      " (in 'dfa', line 361, column 21 to line 380, column 7)",
-                                                      " (in 'dfa', line 361, column 6 to line 380, column 7)",
-                                                      " (in 'dfa', line 360, column 20 to line 381, column 5)",
-                                                      " (in 'dfa', line 360, column 4 to line 381, column 5)",
-                                                      " (in 'dfa', line 387, column 6 to column 35)",
-                                                      " (in 'dfa', line 383, column 18 to line 388, column 5)",
-                                                      " (in 'dfa', line 383, column 4 to line 388, column 5)",
-                                                      " (in 'dfa', line 342, column 30 to line 389, column 3)",
-                                                      " (in 'dfa', line 342, column 2 to line 389, column 3)",
-                                                      " (in 'dfa', line 394, column 6 to column 125)",
-                                                      " (in 'dfa', line 392, column 30 to line 395, column 5)",
-                                                      " (in 'dfa', line 392, column 4 to line 395, column 5)",
-                                                      " (in 'dfa', line 391, column 24 to line 396, column 3)",
-                                                      " (in 'dfa', line 391, column 2 to line 396, column 3)",
-                                                      " (in 'dfa', line 399, column 2 to column 15)",
-                                                      " (in 'dfa', line 402, column 4 to column 26)",
-                                                      " (in 'dfa', line 401, column 20 to line 403, column 3)",
-                                                      " (in 'dfa', line 401, column 2 to line 403, column 3)",
-                                                      " (in 'dfa', line 416, column 8 to column 117)",
-                                                      " (in 'dfa', line 415, column 32 to line 417, column 7)",
-                                                      " (in 'dfa', line 415, column 6 to line 417, column 7)",
-                                                      " (in 'dfa', line 412, column 11 to line 418, column 5)",
-                                                      " (in 'dfa', line 410, column 8 to column 130)",
-                                                      " (in 'dfa', line 407, column 32 to line 411, column 7)",
-                                                      " (in 'dfa', line 407, column 6 to line 411, column 7)",
-                                                      " (in 'dfa', line 406, column 23 to line 412, column 5)",
-                                                      " (in 'dfa', line 406, column 4 to line 418, column 5)",
-                                                      " (in 'dfa', line 405, column 24 to line 419, column 3)",
-                                                      " (in 'dfa', line 405, column 2 to line 419, column 3)",
-                                                      " (in 'dfa', line 424, column 8 to column 29)",
-                                                      " (in 'dfa', line 425, column 8 to column 31)",
-                                                      " (in 'dfa', line 423, column 20 to line 426, column 7)",
-                                                      " (in 'dfa', line 423, column 6 to line 426, column 7)",
-                                                      " (in 'dfa', line 422, column 18 to line 427, column 5)",
-                                                      " (in 'dfa', line 422, column 4 to line 427, column 5)",
-                                                      " (in 'dfa', line 429, column 6 to column 99)",
-                                                      " (in 'dfa', line 430, column 6 to column 56)",
-                                                      " (in 'dfa', line 428, column 22 to line 431, column 5)",
-                                                      " (in 'dfa', line 428, column 4 to line 431, column 5)",
-                                                      " (in 'dfa', line 435, column 8 to column 57)",
-                                                      " (in 'dfa', line 433, column 20 to line 436, column 7)",
-                                                      " (in 'dfa', line 433, column 6 to line 436, column 7)",
-                                                      " (in 'dfa', line 432, column 18 to line 437, column 5)",
-                                                      " (in 'dfa', line 432, column 4 to line 437, column 5)",
-                                                      " (in 'dfa', line 439, column 4 to column 88)",
-                                                      " (in 'dfa', line 441, column 6 to column 35)",
-                                                      " (in 'dfa', line 442, column 6 to column 56)",
-                                                      " (in 'dfa', line 443, column 6 to column 51)",
-                                                      " (in 'dfa', line 445, column 6 to column 113)",
-                                                      " (in 'dfa', line 447, column 6 to column 107)",
-                                                      " (in 'dfa', line 440, column 18 to line 448, column 5)",
-                                                      " (in 'dfa', line 440, column 4 to line 448, column 5)",
-                                                      " (in 'dfa', line 420, column 35 to line 449, column 3)",
-                                                      " (in 'dfa', line 420, column 2 to line 449, column 3)",
-                                                      " (in 'dfa', line 558, column 2 to column 27)",
-                                                      " (in 'dfa', line 559, column 2 to column 31)",
-                                                      " (in 'dfa', line 560, column 2 to column 31)",
-                                                      " (in 'dfa', line 561, column 2 to column 20)",
-                                                      " (in 'dfa', line 562, column 2 to column 24)",
-                                                      " (in 'dfa', line 563, column 2 to column 43)",
-                                                      " (in 'dfa', line 564, column 2 to column 40)",
-                                                      " (in 'dfa', line 565, column 2 to column 17)",
-                                                      " (in 'dfa', line 566, column 2 to column 8)",
-                                                      " (in 'dfa', line 568, column 4 to column 53)",
-                                                      " (in 'dfa', line 569, column 4 to column 45)",
-                                                      " (in 'dfa', line 567, column 19 to line 570, column 3)",
-                                                      " (in 'dfa', line 567, column 2 to line 570, column 3)",
-                                                      " (in 'dfa', line 597, column 8 to column 208)",
-                                                      " (in 'dfa', line 595, column 24 to line 598, column 7)",
-                                                      " (in 'dfa', line 595, column 6 to line 598, column 7)",
-                                                      " (in 'dfa', line 594, column 11 to line 599, column 5)",
-                                                      " (in 'dfa', line 592, column 8 to column 112)",
-                                                      " (in 'dfa', line 591, column 20 to line 593, column 7)",
-                                                      " (in 'dfa', line 591, column 6 to line 593, column 7)",
-                                                      " (in 'dfa', line 590, column 23 to line 594, column 5)",
-                                                      " (in 'dfa', line 590, column 4 to line 599, column 5)",
-                                                      " (in 'dfa', line 589, column 9 to line 600, column 3)",
-                                                      " (in 'dfa', line 582, column 44 to column 206)",
-                                                      " (in 'dfa', line 582, column 26 to column 206)",
-                                                      " (in 'dfa', line 582, column 25 to column 207)",
-                                                      " (in 'dfa', line 582, column 6 to column 207)",
-                                                      " (in 'dfa', line 583, column 44 to column 212)",
-                                                      " (in 'dfa', line 583, column 26 to column 212)",
-                                                      " (in 'dfa', line 583, column 25 to column 213)",
-                                                      " (in 'dfa', line 583, column 6 to column 213)",
-                                                      " (in 'dfa', line 584, column 44 to column 156)",
-                                                      " (in 'dfa', line 584, column 26 to column 156)",
-                                                      " (in 'dfa', line 584, column 25 to column 157)",
-                                                      " (in 'dfa', line 584, column 6 to column 157)",
-                                                      " (in 'dfa', line 585, column 44 to column 192)",
-                                                      " (in 'dfa', line 585, column 26 to column 192)",
-                                                      " (in 'dfa', line 585, column 25 to column 193)",
-                                                      " (in 'dfa', line 585, column 6 to column 193)",
-                                                      " (in 'dfa', line 586, column 44 to column 160)",
-                                                      " (in 'dfa', line 586, column 26 to column 160)",
-                                                      " (in 'dfa', line 586, column 25 to column 161)",
-                                                      " (in 'dfa', line 586, column 6 to column 161)",
-                                                      " (in 'dfa', line 587, column 44 to column 178)",
-                                                      " (in 'dfa', line 587, column 26 to column 178)",
-                                                      " (in 'dfa', line 587, column 25 to column 179)",
-                                                      " (in 'dfa', line 587, column 6 to column 179)",
-                                                      " (in 'dfa', line 581, column 11 to line 588, column 5)",
-                                                      " (in 'dfa', line 574, column 6 to column 12)",
-                                                      " (in 'dfa', line 577, column 10 to column 20)",
-                                                      " (in 'dfa', line 578, column 10 to column 72)",
-                                                      " (in 'dfa', line 576, column 22 to line 579, column 9)",
-                                                      " (in 'dfa', line 576, column 8 to line 579, column 9)",
-                                                      " (in 'dfa', line 575, column 20 to line 580, column 7)",
-                                                      " (in 'dfa', line 575, column 6 to line 580, column 7)",
-                                                      " (in 'dfa', line 573, column 23 to line 581, column 5)",
-                                                      " (in 'dfa', line 573, column 4 to line 588, column 5)",
-                                                      " (in 'dfa', line 572, column 19 to line 589, column 3)",
-                                                      " (in 'dfa', line 572, column 2 to line 600, column 3)",
-                                                      " (in 'dfa', line 602, column 4 to column 23)",
-                                                      " (in 'dfa', line 601, column 16 to line 603, column 3)",
-                                                      " (in 'dfa', line 601, column 2 to line 603, column 3)",
-                                                      " (in 'dfa', line 616, column 8 to column 76)",
-                                                      " (in 'dfa', line 614, column 13 to line 617, column 7)",
-                                                      " (in 'dfa', line 612, column 10 to column 91)",
-                                                      " (in 'dfa', line 611, column 15 to line 613, column 9)",
-                                                      " (in 'dfa', line 610, column 10 to column 88)",
-                                                      " (in 'dfa', line 609, column 30 to line 611, column 9)",
-                                                      " (in 'dfa', line 609, column 8 to line 613, column 9)",
-                                                      " (in 'dfa', line 607, column 26 to line 614, column 7)",
-                                                      " (in 'dfa', line 607, column 6 to line 617, column 7)",
-                                                      " (in 'dfa', line 618, column 6 to column 43)",
-                                                      " (in 'dfa', line 606, column 18 to line 619, column 5)",
-                                                      " (in 'dfa', line 606, column 4 to line 619, column 5)",
-                                                      " (in 'dfa', line 605, column 16 to line 620, column 3)",
-                                                      " (in 'dfa', line 605, column 2 to line 620, column 3)",
-                                                      " (in 'dfa', line 624, column 6 to column 67)",
-                                                      " (in 'dfa', line 623, column 18 to line 625, column 5)",
-                                                      " (in 'dfa', line 623, column 4 to line 625, column 5)",
-                                                      " (in 'dfa', line 621, column 22 to line 626, column 3)",
-                                                      " (in 'dfa', line 621, column 2 to line 626, column 3)",
-                                                      " (in 'dfa', line 629, column 6 to column 75)",
-                                                      " (in 'dfa', line 631, column 8 to column 41)",
-                                                      " (in 'dfa', line 630, column 26 to line 632, column 7)",
-                                                      " (in 'dfa', line 630, column 6 to line 632, column 7)",
-                                                      " (in 'dfa', line 634, column 6 to column 147)",
-                                                      " (in 'dfa', line 635, column 6 to column 91)",
-                                                      " (in 'dfa', line 628, column 19 to line 636, column 5)",
-                                                      " (in 'dfa', line 628, column 4 to line 636, column 5)",
-                                                      " (in 'dfa', line 627, column 18 to line 637, column 3)",
-                                                      " (in 'dfa', line 627, column 2 to line 637, column 3)",
-                                                      " (in 'dfa', line 453, column 2 to column 20)",
-                                                      " (in 'dfa', line 455, column 4 to column 22)",
-                                                      " (in 'dfa', line 454, column 29 to line 456, column 3)",
-                                                      " (in 'dfa', line 454, column 2 to line 456, column 3)",
-                                                      " (in 'dfa', line 459, column 4 to column 26)",
-                                                      " (in 'dfa', line 458, column 24 to line 460, column 3)",
-                                                      " (in 'dfa', line 458, column 2 to line 460, column 3)",
-                                                      " (in 'dfa', line 463, column 4 to column 22)",
-                                                      " (in 'dfa', line 462, column 19 to line 464, column 3)",
-                                                      " (in 'dfa', line 462, column 2 to line 464, column 3)",
-                                                      " (in 'dfa', line 467, column 4 to column 24)",
-                                                      " (in 'dfa', line 466, column 21 to line 468, column 3)",
-                                                      " (in 'dfa', line 466, column 2 to line 468, column 3)",
-                                                      " (in 'dfa', line 471, column 4 to column 32)",
-                                                      " (in 'dfa', line 470, column 24 to line 472, column 3)",
-                                                      " (in 'dfa', line 470, column 2 to line 472, column 3)",
-                                                      " (in 'dfa', line 474, column 26 to column 53)",
-                                                      " (in 'dfa', line 474, column 2 to column 53)",
-                                                      " (in 'dfa', line 475, column 26 to column 55)",
-                                                      " (in 'dfa', line 475, column 2 to column 55)",
-                                                      " (in 'dfa', line 476, column 24 to column 53)",
-                                                      " (in 'dfa', line 476, column 2 to column 53)",
-                                                      " (in 'dfa', line 479, column 4 to column 33)",
-                                                      " (in 'dfa', line 478, column 19 to line 480, column 3)",
-                                                      " (in 'dfa', line 478, column 2 to line 480, column 3)",
-                                                      " (in 'dfa', line 486, column 4 to column 63)",
-                                                      " (in 'dfa', line 489, column 6 to column 37)",
-                                                      " (in 'dfa', line 488, column 18 to line 490, column 5)",
-                                                      " (in 'dfa', line 488, column 4 to line 490, column 5)",
-                                                      " (in 'dfa', line 481, column 16 to line 491, column 3)",
-                                                      " (in 'dfa', line 481, column 2 to line 491, column 3)",
-                                                      " (in 'dfa', line 514, column 8 to column 33)",
-                                                      " (in 'dfa', line 517, column 10 to column 69)",
-                                                      " (in 'dfa', line 515, column 26 to line 518, column 9)",
-                                                      " (in 'dfa', line 515, column 8 to line 518, column 9)",
-                                                      " (in 'dfa', line 513, column 13 to line 519, column 7)",
-                                                      " (in 'dfa', line 502, column 12 to column 61)",
-                                                      " (in 'dfa', line 501, column 17 to line 503, column 11)",
-                                                      " (in 'dfa', line 500, column 12 to column 58)",
-                                                      " (in 'dfa', line 499, column 32 to line 501, column 11)",
-                                                      " (in 'dfa', line 499, column 10 to line 503, column 11)",
-                                                      " (in 'dfa', line 498, column 22 to line 504, column 9)",
-                                                      " (in 'dfa', line 498, column 8 to line 504, column 9)",
-                                                      " (in 'dfa', line 510, column 12 to column 84)",
-                                                      " (in 'dfa', line 509, column 17 to line 511, column 11)",
-                                                      " (in 'dfa', line 508, column 12 to column 81)",
-                                                      " (in 'dfa', line 507, column 32 to line 509, column 11)",
-                                                      " (in 'dfa', line 507, column 10 to line 511, column 11)",
-                                                      " (in 'dfa', line 505, column 26 to line 512, column 9)",
-                                                      " (in 'dfa', line 505, column 8 to line 512, column 9)",
-                                                      " (in 'dfa', line 497, column 26 to line 513, column 7)",
-                                                      " (in 'dfa', line 497, column 6 to line 519, column 7)",
-                                                      " (in 'dfa', line 496, column 18 to line 520, column 5)",
-                                                      " (in 'dfa', line 496, column 4 to line 520, column 5)",
-                                                      " (in 'dfa', line 495, column 18 to line 521, column 3)",
-                                                      " (in 'dfa', line 495, column 2 to line 521, column 3)",
-                                                      " (in 'dfa', line 524, column 6 to column 33)",
-                                                      " (in 'dfa', line 523, column 18 to line 525, column 5)",
-                                                      " (in 'dfa', line 523, column 4 to line 525, column 5)",
-                                                      " (in 'dfa', line 522, column 20 to line 526, column 3)",
-                                                      " (in 'dfa', line 522, column 2 to line 526, column 3)",
-                                                      " (in 'dfa', line 533, column 6 to column 36)",
-                                                      " (in 'dfa', line 532, column 18 to line 534, column 5)",
-                                                      " (in 'dfa', line 532, column 4 to line 534, column 5)",
-                                                      " (in 'dfa', line 531, column 9 to line 535, column 3)",
-                                                      " (in 'dfa', line 529, column 4 to column 21)",
-                                                      " (in 'dfa', line 530, column 4 to column 24)",
-                                                      " (in 'dfa', line 527, column 30 to line 531, column 3)",
-                                                      " (in 'dfa', line 527, column 2 to line 535, column 3)",
-                                                      " (in 'dfa', line 553, column 44 to column 241)",
-                                                      " (in 'dfa', line 553, column 26 to column 241)",
-                                                      " (in 'dfa', line 553, column 25 to column 242)",
-                                                      " (in 'dfa', line 553, column 6 to column 242)",
-                                                      " (in 'dfa', line 552, column 11 to line 554, column 5)",
-                                                      " (in 'dfa', line 551, column 40 to column 141)",
-                                                      " (in 'dfa', line 551, column 26 to column 141)",
-                                                      " (in 'dfa', line 551, column 25 to column 142)",
-                                                      " (in 'dfa', line 551, column 6 to column 142)",
-                                                      " (in 'dfa', line 550, column 23 to line 552, column 5)",
-                                                      " (in 'dfa', line 550, column 4 to line 554, column 5)",
-                                                      " (in 'dfa', line 548, column 9 to line 555, column 3)",
-                                                      " (in 'dfa', line 541, column 46 to column 205)",
-                                                      " (in 'dfa', line 541, column 28 to column 205)",
-                                                      " (in 'dfa', line 541, column 27 to column 206)",
-                                                      " (in 'dfa', line 541, column 8 to column 206)",
-                                                      " (in 'dfa', line 542, column 46 to column 211)",
-                                                      " (in 'dfa', line 542, column 28 to column 211)",
-                                                      " (in 'dfa', line 542, column 27 to column 212)",
-                                                      " (in 'dfa', line 542, column 8 to column 212)",
-                                                      " (in 'dfa', line 543, column 46 to column 155)",
-                                                      " (in 'dfa', line 543, column 28 to column 155)",
-                                                      " (in 'dfa', line 543, column 27 to column 156)",
-                                                      " (in 'dfa', line 543, column 8 to column 156)",
-                                                      " (in 'dfa', line 544, column 46 to column 191)",
-                                                      " (in 'dfa', line 544, column 28 to column 191)",
-                                                      " (in 'dfa', line 544, column 27 to column 192)",
-                                                      " (in 'dfa', line 544, column 8 to column 192)",
-                                                      " (in 'dfa', line 545, column 46 to column 159)",
-                                                      " (in 'dfa', line 545, column 28 to column 159)",
-                                                      " (in 'dfa', line 545, column 27 to column 160)",
-                                                      " (in 'dfa', line 545, column 8 to column 160)",
-                                                      " (in 'dfa', line 546, column 46 to column 177)",
-                                                      " (in 'dfa', line 546, column 28 to column 177)",
-                                                      " (in 'dfa', line 546, column 27 to column 178)",
-                                                      " (in 'dfa', line 546, column 8 to column 178)",
-                                                      " (in 'dfa', line 540, column 11 to line 547, column 5)",
-                                                      " (in 'dfa', line 539, column 40 to column 95)",
-                                                      " (in 'dfa', line 539, column 26 to column 95)",
-                                                      " (in 'dfa', line 539, column 25 to column 96)",
-                                                      " (in 'dfa', line 539, column 6 to column 96)",
-                                                      " (in 'dfa', line 538, column 23 to line 540, column 5)",
-                                                      " (in 'dfa', line 538, column 4 to line 547, column 5)",
-                                                      " (in 'dfa', line 537, column 19 to line 548, column 3)",
-                                                      " (in 'dfa', line 537, column 2 to line 555, column 3)",
+                                                      " (in 'dfa', line 250, column 6 to column 52)",
+                                                      " (in 'dfa', line 249, column 22 to line 251, column 5)",
+                                                      " (in 'dfa', line 249, column 4 to line 251, column 5)",
+                                                      " (in 'dfa', line 255, column 8 to column 56)",
+                                                      " (in 'dfa', line 254, column 23 to line 256, column 7)",
+                                                      " (in 'dfa', line 254, column 6 to line 256, column 7)",
+                                                      " (in 'dfa', line 253, column 17 to line 257, column 5)",
+                                                      " (in 'dfa', line 253, column 4 to line 257, column 5)",
+                                                      " (in 'dfa', line 247, column 21 to line 258, column 3)",
+                                                      " (in 'dfa', line 247, column 2 to line 258, column 3)",
+                                                      " (in 'dfa', line 261, column 6 to column 40)",
+                                                      " (in 'dfa', line 260, column 19 to line 262, column 5)",
+                                                      " (in 'dfa', line 260, column 4 to line 262, column 5)",
+                                                      " (in 'dfa', line 266, column 8 to column 43)",
+                                                      " (in 'dfa', line 265, column 28 to line 267, column 7)",
+                                                      " (in 'dfa', line 265, column 6 to line 267, column 7)",
+                                                      " (in 'dfa', line 264, column 18 to line 268, column 5)",
+                                                      " (in 'dfa', line 264, column 4 to line 268, column 5)",
+                                                      " (in 'dfa', line 270, column 6 to column 23)",
+                                                      " (in 'dfa', line 269, column 18 to line 271, column 5)",
+                                                      " (in 'dfa', line 269, column 4 to line 271, column 5)",
+                                                      " (in 'dfa', line 278, column 10 to column 27)",
+                                                      " (in 'dfa', line 277, column 15 to line 279, column 9)",
+                                                      " (in 'dfa', line 276, column 10 to column 28)",
+                                                      " (in 'dfa', line 275, column 24 to line 277, column 9)",
+                                                      " (in 'dfa', line 275, column 8 to line 279, column 9)",
+                                                      " (in 'dfa', line 281, column 8 to column 35)",
+                                                      " (in 'dfa', line 284, column 10 to column 59)",
+                                                      " (in 'dfa', line 282, column 22 to line 285, column 9)",
+                                                      " (in 'dfa', line 282, column 8 to line 285, column 9)",
+                                                      " (in 'dfa', line 274, column 20 to line 286, column 7)",
+                                                      " (in 'dfa', line 274, column 6 to line 286, column 7)",
+                                                      " (in 'dfa', line 273, column 31 to line 287, column 5)",
+                                                      " (in 'dfa', line 273, column 4 to line 287, column 5)",
+                                                      " (in 'dfa', line 291, column 8 to column 23)",
+                                                      " (in 'dfa', line 296, column 10 to column 53)",
+                                                      " (in 'dfa', line 295, column 22 to line 297, column 9)",
+                                                      " (in 'dfa', line 295, column 8 to line 297, column 9)",
+                                                      " (in 'dfa', line 290, column 20 to line 298, column 7)",
+                                                      " (in 'dfa', line 290, column 6 to line 298, column 7)",
+                                                      " (in 'dfa', line 289, column 20 to line 299, column 5)",
+                                                      " (in 'dfa', line 289, column 4 to line 299, column 5)",
+                                                      " (in 'dfa', line 303, column 20 to column 67)",
+                                                      " (in 'dfa', line 303, column 6 to column 67)",
+                                                      " (in 'dfa', line 304, column 6 to column 37)",
+                                                      " (in 'dfa', line 305, column 21 to column 41)",
+                                                      " (in 'dfa', line 305, column 20 to column 42)",
+                                                      " (in 'dfa', line 305, column 6 to column 42)",
+                                                      " (in 'dfa', line 300, column 22 to line 306, column 5)",
+                                                      " (in 'dfa', line 300, column 4 to line 306, column 5)",
+                                                      " (in 'dfa', line 310, column 8 to column 78)",
+                                                      " (in 'dfa', line 313, column 10 to column 41)",
+                                                      " (in 'dfa', line 312, column 28 to line 314, column 9)",
+                                                      " (in 'dfa', line 312, column 8 to line 314, column 9)",
+                                                      " (in 'dfa', line 326, column 10 to column 180)",
+                                                      " (in 'dfa', line 325, column 15 to line 327, column 9)",
+                                                      " (in 'dfa', line 324, column 10 to column 84)",
+                                                      " (in 'dfa', line 322, column 25 to line 325, column 9)",
+                                                      " (in 'dfa', line 322, column 8 to line 327, column 9)",
+                                                      " (in 'dfa', line 309, column 21 to line 328, column 7)",
+                                                      " (in 'dfa', line 309, column 6 to line 328, column 7)",
+                                                      " (in 'dfa', line 307, column 20 to line 329, column 5)",
+                                                      " (in 'dfa', line 307, column 4 to line 329, column 5)",
+                                                      " (in 'dfa', line 335, column 8 to column 49)",
+                                                      " (in 'dfa', line 332, column 20 to line 336, column 7)",
+                                                      " (in 'dfa', line 332, column 6 to line 336, column 7)",
+                                                      " (in 'dfa', line 331, column 31 to line 337, column 5)",
+                                                      " (in 'dfa', line 331, column 4 to line 337, column 5)",
+                                                      " (in 'dfa', line 259, column 30 to line 338, column 3)",
+                                                      " (in 'dfa', line 259, column 2 to line 338, column 3)",
+                                                      " (in 'dfa', line 343, column 8 to column 23)",
+                                                      " (in 'dfa', line 348, column 10 to column 53)",
+                                                      " (in 'dfa', line 347, column 22 to line 349, column 9)",
+                                                      " (in 'dfa', line 347, column 8 to line 349, column 9)",
+                                                      " (in 'dfa', line 342, column 20 to line 350, column 7)",
+                                                      " (in 'dfa', line 342, column 6 to line 350, column 7)",
+                                                      " (in 'dfa', line 341, column 20 to line 351, column 5)",
+                                                      " (in 'dfa', line 341, column 4 to line 351, column 5)",
+                                                      " (in 'dfa', line 353, column 20 to column 67)",
+                                                      " (in 'dfa', line 353, column 6 to column 67)",
+                                                      " (in 'dfa', line 354, column 6 to column 37)",
+                                                      " (in 'dfa', line 355, column 21 to column 41)",
+                                                      " (in 'dfa', line 355, column 20 to column 42)",
+                                                      " (in 'dfa', line 355, column 6 to column 42)",
+                                                      " (in 'dfa', line 352, column 22 to line 356, column 5)",
+                                                      " (in 'dfa', line 352, column 4 to line 356, column 5)",
+                                                      " (in 'dfa', line 359, column 8 to column 78)",
+                                                      " (in 'dfa', line 362, column 10 to column 41)",
+                                                      " (in 'dfa', line 361, column 28 to line 363, column 9)",
+                                                      " (in 'dfa', line 361, column 8 to line 363, column 9)",
+                                                      " (in 'dfa', line 375, column 10 to column 180)",
+                                                      " (in 'dfa', line 374, column 15 to line 376, column 9)",
+                                                      " (in 'dfa', line 373, column 10 to column 84)",
+                                                      " (in 'dfa', line 371, column 25 to line 374, column 9)",
+                                                      " (in 'dfa', line 371, column 8 to line 376, column 9)",
+                                                      " (in 'dfa', line 358, column 21 to line 377, column 7)",
+                                                      " (in 'dfa', line 358, column 6 to line 377, column 7)",
+                                                      " (in 'dfa', line 357, column 20 to line 378, column 5)",
+                                                      " (in 'dfa', line 357, column 4 to line 378, column 5)",
+                                                      " (in 'dfa', line 384, column 6 to column 35)",
+                                                      " (in 'dfa', line 380, column 18 to line 385, column 5)",
+                                                      " (in 'dfa', line 380, column 4 to line 385, column 5)",
+                                                      " (in 'dfa', line 339, column 30 to line 386, column 3)",
+                                                      " (in 'dfa', line 339, column 2 to line 386, column 3)",
+                                                      " (in 'dfa', line 391, column 6 to column 125)",
+                                                      " (in 'dfa', line 389, column 30 to line 392, column 5)",
+                                                      " (in 'dfa', line 389, column 4 to line 392, column 5)",
+                                                      " (in 'dfa', line 388, column 24 to line 393, column 3)",
+                                                      " (in 'dfa', line 388, column 2 to line 393, column 3)",
+                                                      " (in 'dfa', line 396, column 2 to column 15)",
+                                                      " (in 'dfa', line 399, column 4 to column 26)",
+                                                      " (in 'dfa', line 398, column 20 to line 400, column 3)",
+                                                      " (in 'dfa', line 398, column 2 to line 400, column 3)",
+                                                      " (in 'dfa', line 413, column 8 to column 117)",
+                                                      " (in 'dfa', line 412, column 32 to line 414, column 7)",
+                                                      " (in 'dfa', line 412, column 6 to line 414, column 7)",
+                                                      " (in 'dfa', line 409, column 11 to line 415, column 5)",
+                                                      " (in 'dfa', line 407, column 8 to column 130)",
+                                                      " (in 'dfa', line 404, column 32 to line 408, column 7)",
+                                                      " (in 'dfa', line 404, column 6 to line 408, column 7)",
+                                                      " (in 'dfa', line 403, column 23 to line 409, column 5)",
+                                                      " (in 'dfa', line 403, column 4 to line 415, column 5)",
+                                                      " (in 'dfa', line 402, column 24 to line 416, column 3)",
+                                                      " (in 'dfa', line 402, column 2 to line 416, column 3)",
+                                                      " (in 'dfa', line 421, column 8 to column 29)",
+                                                      " (in 'dfa', line 422, column 8 to column 31)",
+                                                      " (in 'dfa', line 420, column 20 to line 423, column 7)",
+                                                      " (in 'dfa', line 420, column 6 to line 423, column 7)",
+                                                      " (in 'dfa', line 419, column 18 to line 424, column 5)",
+                                                      " (in 'dfa', line 419, column 4 to line 424, column 5)",
+                                                      " (in 'dfa', line 426, column 6 to column 99)",
+                                                      " (in 'dfa', line 427, column 6 to column 56)",
+                                                      " (in 'dfa', line 425, column 22 to line 428, column 5)",
+                                                      " (in 'dfa', line 425, column 4 to line 428, column 5)",
+                                                      " (in 'dfa', line 432, column 8 to column 57)",
+                                                      " (in 'dfa', line 430, column 20 to line 433, column 7)",
+                                                      " (in 'dfa', line 430, column 6 to line 433, column 7)",
+                                                      " (in 'dfa', line 429, column 18 to line 434, column 5)",
+                                                      " (in 'dfa', line 429, column 4 to line 434, column 5)",
+                                                      " (in 'dfa', line 436, column 4 to column 88)",
+                                                      " (in 'dfa', line 438, column 6 to column 35)",
+                                                      " (in 'dfa', line 439, column 6 to column 56)",
+                                                      " (in 'dfa', line 440, column 6 to column 51)",
+                                                      " (in 'dfa', line 442, column 6 to column 113)",
+                                                      " (in 'dfa', line 444, column 6 to column 107)",
+                                                      " (in 'dfa', line 437, column 18 to line 445, column 5)",
+                                                      " (in 'dfa', line 437, column 4 to line 445, column 5)",
+                                                      " (in 'dfa', line 417, column 35 to line 446, column 3)",
+                                                      " (in 'dfa', line 417, column 2 to line 446, column 3)",
+                                                      " (in 'dfa', line 555, column 2 to column 27)",
+                                                      " (in 'dfa', line 556, column 2 to column 31)",
+                                                      " (in 'dfa', line 557, column 2 to column 31)",
+                                                      " (in 'dfa', line 558, column 2 to column 20)",
+                                                      " (in 'dfa', line 559, column 2 to column 24)",
+                                                      " (in 'dfa', line 560, column 2 to column 43)",
+                                                      " (in 'dfa', line 561, column 2 to column 40)",
+                                                      " (in 'dfa', line 562, column 2 to column 17)",
+                                                      " (in 'dfa', line 563, column 2 to column 8)",
+                                                      " (in 'dfa', line 565, column 4 to column 53)",
+                                                      " (in 'dfa', line 566, column 4 to column 45)",
+                                                      " (in 'dfa', line 564, column 19 to line 567, column 3)",
+                                                      " (in 'dfa', line 564, column 2 to line 567, column 3)",
+                                                      " (in 'dfa', line 594, column 8 to column 208)",
+                                                      " (in 'dfa', line 592, column 24 to line 595, column 7)",
+                                                      " (in 'dfa', line 592, column 6 to line 595, column 7)",
+                                                      " (in 'dfa', line 591, column 11 to line 596, column 5)",
+                                                      " (in 'dfa', line 589, column 8 to column 112)",
+                                                      " (in 'dfa', line 588, column 20 to line 590, column 7)",
+                                                      " (in 'dfa', line 588, column 6 to line 590, column 7)",
+                                                      " (in 'dfa', line 587, column 23 to line 591, column 5)",
+                                                      " (in 'dfa', line 587, column 4 to line 596, column 5)",
+                                                      " (in 'dfa', line 586, column 9 to line 597, column 3)",
+                                                      " (in 'dfa', line 579, column 44 to column 206)",
+                                                      " (in 'dfa', line 579, column 26 to column 206)",
+                                                      " (in 'dfa', line 579, column 25 to column 207)",
+                                                      " (in 'dfa', line 579, column 6 to column 207)",
+                                                      " (in 'dfa', line 580, column 44 to column 218)",
+                                                      " (in 'dfa', line 580, column 26 to column 218)",
+                                                      " (in 'dfa', line 580, column 25 to column 219)",
+                                                      " (in 'dfa', line 580, column 6 to column 219)",
+                                                      " (in 'dfa', line 581, column 44 to column 162)",
+                                                      " (in 'dfa', line 581, column 26 to column 162)",
+                                                      " (in 'dfa', line 581, column 25 to column 163)",
+                                                      " (in 'dfa', line 581, column 6 to column 163)",
+                                                      " (in 'dfa', line 582, column 44 to column 198)",
+                                                      " (in 'dfa', line 582, column 26 to column 198)",
+                                                      " (in 'dfa', line 582, column 25 to column 199)",
+                                                      " (in 'dfa', line 582, column 6 to column 199)",
+                                                      " (in 'dfa', line 583, column 44 to column 166)",
+                                                      " (in 'dfa', line 583, column 26 to column 166)",
+                                                      " (in 'dfa', line 583, column 25 to column 167)",
+                                                      " (in 'dfa', line 583, column 6 to column 167)",
+                                                      " (in 'dfa', line 584, column 44 to column 184)",
+                                                      " (in 'dfa', line 584, column 26 to column 184)",
+                                                      " (in 'dfa', line 584, column 25 to column 185)",
+                                                      " (in 'dfa', line 584, column 6 to column 185)",
+                                                      " (in 'dfa', line 578, column 11 to line 585, column 5)",
+                                                      " (in 'dfa', line 571, column 6 to column 12)",
+                                                      " (in 'dfa', line 574, column 10 to column 20)",
+                                                      " (in 'dfa', line 575, column 10 to column 72)",
+                                                      " (in 'dfa', line 573, column 22 to line 576, column 9)",
+                                                      " (in 'dfa', line 573, column 8 to line 576, column 9)",
+                                                      " (in 'dfa', line 572, column 20 to line 577, column 7)",
+                                                      " (in 'dfa', line 572, column 6 to line 577, column 7)",
+                                                      " (in 'dfa', line 570, column 23 to line 578, column 5)",
+                                                      " (in 'dfa', line 570, column 4 to line 585, column 5)",
+                                                      " (in 'dfa', line 569, column 19 to line 586, column 3)",
+                                                      " (in 'dfa', line 569, column 2 to line 597, column 3)",
+                                                      " (in 'dfa', line 599, column 4 to column 23)",
+                                                      " (in 'dfa', line 598, column 16 to line 600, column 3)",
+                                                      " (in 'dfa', line 598, column 2 to line 600, column 3)",
+                                                      " (in 'dfa', line 613, column 8 to column 76)",
+                                                      " (in 'dfa', line 611, column 13 to line 614, column 7)",
+                                                      " (in 'dfa', line 609, column 10 to column 91)",
+                                                      " (in 'dfa', line 608, column 15 to line 610, column 9)",
+                                                      " (in 'dfa', line 607, column 10 to column 88)",
+                                                      " (in 'dfa', line 606, column 30 to line 608, column 9)",
+                                                      " (in 'dfa', line 606, column 8 to line 610, column 9)",
+                                                      " (in 'dfa', line 604, column 26 to line 611, column 7)",
+                                                      " (in 'dfa', line 604, column 6 to line 614, column 7)",
+                                                      " (in 'dfa', line 615, column 6 to column 43)",
+                                                      " (in 'dfa', line 603, column 18 to line 616, column 5)",
+                                                      " (in 'dfa', line 603, column 4 to line 616, column 5)",
+                                                      " (in 'dfa', line 602, column 16 to line 617, column 3)",
+                                                      " (in 'dfa', line 602, column 2 to line 617, column 3)",
+                                                      " (in 'dfa', line 621, column 6 to column 67)",
+                                                      " (in 'dfa', line 620, column 18 to line 622, column 5)",
+                                                      " (in 'dfa', line 620, column 4 to line 622, column 5)",
+                                                      " (in 'dfa', line 618, column 22 to line 623, column 3)",
+                                                      " (in 'dfa', line 618, column 2 to line 623, column 3)",
+                                                      " (in 'dfa', line 626, column 6 to column 78)",
+                                                      " (in 'dfa', line 628, column 8 to column 41)",
+                                                      " (in 'dfa', line 627, column 26 to line 629, column 7)",
+                                                      " (in 'dfa', line 627, column 6 to line 629, column 7)",
+                                                      " (in 'dfa', line 631, column 6 to column 147)",
+                                                      " (in 'dfa', line 632, column 6 to column 91)",
+                                                      " (in 'dfa', line 625, column 19 to line 633, column 5)",
+                                                      " (in 'dfa', line 625, column 4 to line 633, column 5)",
+                                                      " (in 'dfa', line 624, column 18 to line 634, column 3)",
+                                                      " (in 'dfa', line 624, column 2 to line 634, column 3)",
+                                                      " (in 'dfa', line 450, column 2 to column 20)",
+                                                      " (in 'dfa', line 452, column 4 to column 22)",
+                                                      " (in 'dfa', line 451, column 29 to line 453, column 3)",
+                                                      " (in 'dfa', line 451, column 2 to line 453, column 3)",
+                                                      " (in 'dfa', line 456, column 4 to column 26)",
+                                                      " (in 'dfa', line 455, column 24 to line 457, column 3)",
+                                                      " (in 'dfa', line 455, column 2 to line 457, column 3)",
+                                                      " (in 'dfa', line 460, column 4 to column 22)",
+                                                      " (in 'dfa', line 459, column 19 to line 461, column 3)",
+                                                      " (in 'dfa', line 459, column 2 to line 461, column 3)",
+                                                      " (in 'dfa', line 464, column 4 to column 24)",
+                                                      " (in 'dfa', line 463, column 21 to line 465, column 3)",
+                                                      " (in 'dfa', line 463, column 2 to line 465, column 3)",
+                                                      " (in 'dfa', line 468, column 4 to column 32)",
+                                                      " (in 'dfa', line 467, column 24 to line 469, column 3)",
+                                                      " (in 'dfa', line 467, column 2 to line 469, column 3)",
+                                                      " (in 'dfa', line 471, column 26 to column 53)",
+                                                      " (in 'dfa', line 471, column 2 to column 53)",
+                                                      " (in 'dfa', line 472, column 26 to column 55)",
+                                                      " (in 'dfa', line 472, column 2 to column 55)",
+                                                      " (in 'dfa', line 473, column 24 to column 53)",
+                                                      " (in 'dfa', line 473, column 2 to column 53)",
+                                                      " (in 'dfa', line 476, column 4 to column 33)",
+                                                      " (in 'dfa', line 475, column 19 to line 477, column 3)",
+                                                      " (in 'dfa', line 475, column 2 to line 477, column 3)",
+                                                      " (in 'dfa', line 483, column 4 to column 63)",
+                                                      " (in 'dfa', line 486, column 6 to column 37)",
+                                                      " (in 'dfa', line 485, column 18 to line 487, column 5)",
+                                                      " (in 'dfa', line 485, column 4 to line 487, column 5)",
+                                                      " (in 'dfa', line 478, column 16 to line 488, column 3)",
+                                                      " (in 'dfa', line 478, column 2 to line 488, column 3)",
+                                                      " (in 'dfa', line 511, column 8 to column 33)",
+                                                      " (in 'dfa', line 514, column 10 to column 69)",
+                                                      " (in 'dfa', line 512, column 26 to line 515, column 9)",
+                                                      " (in 'dfa', line 512, column 8 to line 515, column 9)",
+                                                      " (in 'dfa', line 510, column 13 to line 516, column 7)",
+                                                      " (in 'dfa', line 499, column 12 to column 61)",
+                                                      " (in 'dfa', line 498, column 17 to line 500, column 11)",
+                                                      " (in 'dfa', line 497, column 12 to column 58)",
+                                                      " (in 'dfa', line 496, column 32 to line 498, column 11)",
+                                                      " (in 'dfa', line 496, column 10 to line 500, column 11)",
+                                                      " (in 'dfa', line 495, column 22 to line 501, column 9)",
+                                                      " (in 'dfa', line 495, column 8 to line 501, column 9)",
+                                                      " (in 'dfa', line 507, column 12 to column 84)",
+                                                      " (in 'dfa', line 506, column 17 to line 508, column 11)",
+                                                      " (in 'dfa', line 505, column 12 to column 81)",
+                                                      " (in 'dfa', line 504, column 32 to line 506, column 11)",
+                                                      " (in 'dfa', line 504, column 10 to line 508, column 11)",
+                                                      " (in 'dfa', line 502, column 26 to line 509, column 9)",
+                                                      " (in 'dfa', line 502, column 8 to line 509, column 9)",
+                                                      " (in 'dfa', line 494, column 26 to line 510, column 7)",
+                                                      " (in 'dfa', line 494, column 6 to line 516, column 7)",
+                                                      " (in 'dfa', line 493, column 18 to line 517, column 5)",
+                                                      " (in 'dfa', line 493, column 4 to line 517, column 5)",
+                                                      " (in 'dfa', line 492, column 18 to line 518, column 3)",
+                                                      " (in 'dfa', line 492, column 2 to line 518, column 3)",
+                                                      " (in 'dfa', line 521, column 6 to column 33)",
+                                                      " (in 'dfa', line 520, column 18 to line 522, column 5)",
+                                                      " (in 'dfa', line 520, column 4 to line 522, column 5)",
+                                                      " (in 'dfa', line 519, column 20 to line 523, column 3)",
+                                                      " (in 'dfa', line 519, column 2 to line 523, column 3)",
+                                                      " (in 'dfa', line 530, column 6 to column 36)",
+                                                      " (in 'dfa', line 529, column 18 to line 531, column 5)",
+                                                      " (in 'dfa', line 529, column 4 to line 531, column 5)",
+                                                      " (in 'dfa', line 528, column 9 to line 532, column 3)",
+                                                      " (in 'dfa', line 526, column 4 to column 21)",
+                                                      " (in 'dfa', line 527, column 4 to column 24)",
+                                                      " (in 'dfa', line 524, column 30 to line 528, column 3)",
+                                                      " (in 'dfa', line 524, column 2 to line 532, column 3)",
+                                                      " (in 'dfa', line 550, column 44 to column 258)",
+                                                      " (in 'dfa', line 550, column 26 to column 258)",
+                                                      " (in 'dfa', line 550, column 25 to column 259)",
+                                                      " (in 'dfa', line 550, column 6 to column 259)",
+                                                      " (in 'dfa', line 549, column 11 to line 551, column 5)",
+                                                      " (in 'dfa', line 548, column 40 to column 141)",
+                                                      " (in 'dfa', line 548, column 26 to column 141)",
+                                                      " (in 'dfa', line 548, column 25 to column 142)",
+                                                      " (in 'dfa', line 548, column 6 to column 142)",
+                                                      " (in 'dfa', line 547, column 23 to line 549, column 5)",
+                                                      " (in 'dfa', line 547, column 4 to line 551, column 5)",
+                                                      " (in 'dfa', line 545, column 9 to line 552, column 3)",
+                                                      " (in 'dfa', line 538, column 46 to column 222)",
+                                                      " (in 'dfa', line 538, column 28 to column 222)",
+                                                      " (in 'dfa', line 538, column 27 to column 223)",
+                                                      " (in 'dfa', line 538, column 8 to column 223)",
+                                                      " (in 'dfa', line 539, column 46 to column 234)",
+                                                      " (in 'dfa', line 539, column 28 to column 234)",
+                                                      " (in 'dfa', line 539, column 27 to column 235)",
+                                                      " (in 'dfa', line 539, column 8 to column 235)",
+                                                      " (in 'dfa', line 540, column 46 to column 178)",
+                                                      " (in 'dfa', line 540, column 28 to column 178)",
+                                                      " (in 'dfa', line 540, column 27 to column 179)",
+                                                      " (in 'dfa', line 540, column 8 to column 179)",
+                                                      " (in 'dfa', line 541, column 46 to column 214)",
+                                                      " (in 'dfa', line 541, column 28 to column 214)",
+                                                      " (in 'dfa', line 541, column 27 to column 215)",
+                                                      " (in 'dfa', line 541, column 8 to column 215)",
+                                                      " (in 'dfa', line 542, column 46 to column 182)",
+                                                      " (in 'dfa', line 542, column 28 to column 182)",
+                                                      " (in 'dfa', line 542, column 27 to column 183)",
+                                                      " (in 'dfa', line 542, column 8 to column 183)",
+                                                      " (in 'dfa', line 543, column 46 to column 200)",
+                                                      " (in 'dfa', line 543, column 28 to column 200)",
+                                                      " (in 'dfa', line 543, column 27 to column 201)",
+                                                      " (in 'dfa', line 543, column 8 to column 201)",
+                                                      " (in 'dfa', line 537, column 11 to line 544, column 5)",
+                                                      " (in 'dfa', line 536, column 40 to column 95)",
+                                                      " (in 'dfa', line 536, column 26 to column 95)",
+                                                      " (in 'dfa', line 536, column 25 to column 96)",
+                                                      " (in 'dfa', line 536, column 6 to column 96)",
+                                                      " (in 'dfa', line 535, column 23 to line 537, column 5)",
+                                                      " (in 'dfa', line 535, column 4 to line 544, column 5)",
+                                                      " (in 'dfa', line 534, column 19 to line 545, column 3)",
+                                                      " (in 'dfa', line 534, column 2 to line 552, column 3)",
                                                       " (in 'dfa', line 58, column 2 to column 17)",
                                                       " (in 'dfa', line 59, column 2 to column 17)",
                                                       " (in 'dfa', line 60, column 2 to column 17)",
                                                       " (in 'dfa', line 61, column 2 to column 18)",
-                                                      " (in 'dfa', line 62, column 24 to column 26)",
-                                                      " (in 'dfa', line 62, column 2 to column 28)",
-                                                      " (in 'dfa', line 63, column 24 to column 26)",
-                                                      " (in 'dfa', line 63, column 2 to column 28)",
+                                                      " (in 'dfa', line 62, column 8 to column 10)",
+                                                      " (in 'dfa', line 62, column 2 to column 34)",
+                                                      " (in 'dfa', line 63, column 8 to column 10)",
+                                                      " (in 'dfa', line 63, column 2 to column 34)",
                                                       " (in 'dfa', line 64, column 2 to column 26)",
-                                                      " (in 'dfa', line 65, column 23 to column 24)",
-                                                      " (in 'dfa', line 65, column 2 to column 26)",
+                                                      " (in 'dfa', line 65, column 8 to column 9)",
+                                                      " (in 'dfa', line 65, column 2 to column 32)",
                                                       " (in 'dfa', line 66, column 2 to column 21)",
-                                                      " (in 'dfa', line 67, column 26 to column 31)",
-                                                      " (in 'dfa', line 67, column 2 to column 33)",
-                                                      " (in 'dfa', line 68, column 26 to column 31)",
-                                                      " (in 'dfa', line 68, column 2 to column 33)",
+                                                      " (in 'dfa', line 67, column 8 to column 13)",
+                                                      " (in 'dfa', line 67, column 2 to column 39)",
+                                                      " (in 'dfa', line 68, column 8 to column 13)",
+                                                      " (in 'dfa', line 68, column 2 to column 39)",
                                                       " (in 'dfa', line 69, column 2 to column 21)",
-                                                      " (in 'dfa', line 70, column 28 to column 33)",
-                                                      " (in 'dfa', line 70, column 2 to column 35)",
-                                                      " (in 'dfa', line 71, column 28 to column 33)",
-                                                      " (in 'dfa', line 71, column 2 to column 35)",
-                                                      " (in 'dfa', line 72, column 9 to column 14)",
-                                                      " (in 'dfa', line 72, column 2 to column 16)",
-                                                      " (in 'dfa', line 73, column 21 to column 26)",
-                                                      " (in 'dfa', line 73, column 2 to column 28)",
-                                                      " (in 'dfa', line 74, column 14 to column 19)",
-                                                      " (in 'dfa', line 74, column 2 to column 21)",
+                                                      " (in 'dfa', line 70, column 8 to column 13)",
+                                                      " (in 'dfa', line 70, column 2 to column 41)",
+                                                      " (in 'dfa', line 71, column 8 to column 13)",
+                                                      " (in 'dfa', line 71, column 2 to column 41)",
+                                                      " (in 'dfa', line 72, column 8 to column 13)",
+                                                      " (in 'dfa', line 72, column 2 to column 22)",
+                                                      " (in 'dfa', line 73, column 8 to column 13)",
+                                                      " (in 'dfa', line 73, column 2 to column 34)",
+                                                      " (in 'dfa', line 74, column 8 to column 13)",
+                                                      " (in 'dfa', line 74, column 2 to column 33)",
                                                       " (in 'dfa', line 75, column 2 to column 20)",
-                                                      " (in 'dfa', line 76, column 27 to column 31)",
-                                                      " (in 'dfa', line 76, column 2 to column 33)",
-                                                      " (in 'dfa', line 77, column 27 to column 31)",
-                                                      " (in 'dfa', line 77, column 2 to column 33)",
+                                                      " (in 'dfa', line 76, column 8 to column 12)",
+                                                      " (in 'dfa', line 76, column 2 to column 39)",
+                                                      " (in 'dfa', line 77, column 8 to column 12)",
+                                                      " (in 'dfa', line 77, column 2 to column 39)",
                                                       " (in 'dfa', line 78, column 2 to column 25)",
                                                       " (in 'dfa', line 79, column 2 to column 18)",
                                                       " (in 'dfa', line 80, column 2 to column 17)",
@@ -555,19 +555,19 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'dfa', line 83, column 2 to column 16)",
                                                       " (in 'dfa', line 84, column 2 to column 29)",
                                                       " (in 'dfa', line 85, column 2 to column 27)",
-                                                      " (in 'dfa', line 86, column 22 to column 35)",
-                                                      " (in 'dfa', line 86, column 2 to column 39)",
-                                                      " (in 'dfa', line 87, column 23 to column 36)",
-                                                      " (in 'dfa', line 87, column 2 to column 38)",
-                                                      " (in 'dfa', line 88, column 22 to column 35)",
-                                                      " (in 'dfa', line 88, column 2 to column 37)",
+                                                      " (in 'dfa', line 86, column 8 to column 21)",
+                                                      " (in 'dfa', line 86, column 2 to column 45)",
+                                                      " (in 'dfa', line 87, column 8 to column 21)",
+                                                      " (in 'dfa', line 87, column 2 to column 44)",
+                                                      " (in 'dfa', line 88, column 8 to column 21)",
+                                                      " (in 'dfa', line 88, column 2 to column 43)",
                                                       " (in 'dfa', line 89, column 2 to column 29)",
                                                       " (in 'dfa', line 90, column 2 to column 27)",
-                                                      " (in 'dfa', line 91, column 22 to column 35)",
-                                                      " (in 'dfa', line 91, column 2 to column 39)",
-                                                      " (in 'dfa', line 92, column 23 to column 36)",
-                                                      " (in 'dfa', line 92, column 2 to column 38)",
-                                                      " (in 'dfa', line 93, column 2 to column 18)",
+                                                      " (in 'dfa', line 91, column 8 to column 21)",
+                                                      " (in 'dfa', line 91, column 2 to column 45)",
+                                                      " (in 'dfa', line 92, column 8 to column 21)",
+                                                      " (in 'dfa', line 92, column 2 to column 44)",
+                                                      " (in 'dfa', line 93, column 2 to column 24)",
                                                       " (in 'dfa', line 94, column 2 to column 27)",
                                                       " (in 'dfa', line 95, column 2 to column 34)",
                                                       " (in 'dfa', line 96, column 2 to column 33)",
@@ -579,8 +579,8 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'dfa', line 102, column 9 to column 10)",
                                                       " (in 'dfa', line 102, column 12 to column 19)",
                                                       " (in 'dfa', line 102, column 2 to column 30)",
-                                                      " (in 'dfa', line 103, column 17 to column 24)",
-                                                      " (in 'dfa', line 103, column 2 to column 26)",
+                                                      " (in 'dfa', line 103, column 8 to column 15)",
+                                                      " (in 'dfa', line 103, column 2 to column 32)",
                                                       " (in 'dfa', line 107, column 12 to column 19)",
                                                       " (in 'dfa', line 107, column 2 to column 38)",
                                                       " (in 'dfa', line 108, column 2 to column 16)",
@@ -588,129 +588,126 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'dfa', line 110, column 2 to column 41)",
                                                       " (in 'dfa', line 111, column 2 to column 39)",
                                                       " (in 'dfa', line 112, column 2 to column 44)",
-                                                      " (in 'dfa', line 113, column 2 to column 25)",
-                                                      " (in 'dfa', line 114, column 19 to column 24)",
-                                                      " (in 'dfa', line 114, column 2 to column 26)",
-                                                      " (in 'dfa', line 117, column 2 to column 13)",
-                                                      " (in 'dfa', line 118, column 2 to column 15)",
-                                                      " (in 'dfa', line 119, column 9 to column 10)",
-                                                      " (in 'dfa', line 119, column 2 to column 18)",
-                                                      " (in 'dfa', line 120, column 17 to column 18)",
-                                                      " (in 'dfa', line 120, column 2 to column 20)",
-                                                      " (in 'dfa', line 121, column 23 to column 28)",
-                                                      " (in 'dfa', line 121, column 2 to column 30)",
+                                                      " (in 'dfa', line 113, column 2 to column 31)",
+                                                      " (in 'dfa', line 114, column 8 to column 13)",
+                                                      " (in 'dfa', line 114, column 2 to column 40)",
+                                                      " (in 'dfa', line 115, column 8 to column 13)",
+                                                      " (in 'dfa', line 115, column 2 to column 32)",
+                                                      " (in 'dfa', line 118, column 2 to column 13)",
+                                                      " (in 'dfa', line 119, column 2 to column 15)",
+                                                      " (in 'dfa', line 120, column 9 to column 10)",
+                                                      " (in 'dfa', line 120, column 2 to column 18)",
+                                                      " (in 'dfa', line 121, column 8 to column 9)",
+                                                      " (in 'dfa', line 121, column 2 to column 26)",
                                                       " (in 'dfa', line 122, column 9 to column 29)",
                                                       " (in 'dfa', line 122, column 2 to column 41)",
                                                       " (in 'dfa', line 123, column 9 to column 16)",
                                                       " (in 'dfa', line 123, column 2 to column 26)",
                                                       " (in 'dfa', line 124, column 2 to column 23)",
                                                       " (in 'dfa', line 125, column 2 to column 21)",
-                                                      " (in 'dfa', line 127, column 4 to column 45)",
-                                                      " (in 'dfa', line 126, column 20 to line 128, column 3)",
+                                                      " (in 'dfa', line 127, column 4 to column 21)",
+                                                      " (in 'dfa', line 126, column 16 to line 128, column 3)",
                                                       " (in 'dfa', line 126, column 2 to line 128, column 3)",
-                                                      " (in 'dfa', line 130, column 4 to column 21)",
+                                                      " (in 'dfa', line 130, column 4 to column 17)",
                                                       " (in 'dfa', line 129, column 16 to line 131, column 3)",
                                                       " (in 'dfa', line 129, column 2 to line 131, column 3)",
-                                                      " (in 'dfa', line 133, column 4 to column 17)",
-                                                      " (in 'dfa', line 132, column 16 to line 134, column 3)",
+                                                      " (in 'dfa', line 133, column 4 to column 19)",
+                                                      " (in 'dfa', line 132, column 22 to line 134, column 3)",
                                                       " (in 'dfa', line 132, column 2 to line 134, column 3)",
-                                                      " (in 'dfa', line 136, column 4 to column 19)",
-                                                      " (in 'dfa', line 135, column 22 to line 137, column 3)",
-                                                      " (in 'dfa', line 135, column 2 to line 137, column 3)",
-                                                      " (in 'dfa', line 139, column 2 to column 19)",
-                                                      " (in 'dfa', line 144, column 6 to column 19)",
-                                                      " (in 'dfa', line 143, column 11 to line 145, column 5)",
-                                                      " (in 'dfa', line 142, column 6 to column 23)",
-                                                      " (in 'dfa', line 141, column 21 to line 143, column 5)",
-                                                      " (in 'dfa', line 141, column 4 to line 145, column 5)",
-                                                      " (in 'dfa', line 140, column 21 to line 146, column 3)",
-                                                      " (in 'dfa', line 140, column 2 to line 146, column 3)",
-                                                      " (in 'dfa', line 156, column 4 to column 15)",
-                                                      " (in 'dfa', line 154, column 9 to line 157, column 3)",
-                                                      " (in 'dfa', line 149, column 4 to column 15)",
-                                                      " (in 'dfa', line 152, column 6 to column 17)",
-                                                      " (in 'dfa', line 150, column 23 to line 153, column 5)",
-                                                      " (in 'dfa', line 150, column 4 to line 153, column 5)",
-                                                      " (in 'dfa', line 147, column 19 to line 154, column 3)",
-                                                      " (in 'dfa', line 147, column 2 to line 157, column 3)",
-                                                      " (in 'dfa', line 160, column 18 to column 35)",
-                                                      " (in 'dfa', line 160, column 4 to column 35)",
-                                                      " (in 'dfa', line 159, column 28 to line 161, column 3)",
-                                                      " (in 'dfa', line 159, column 2 to line 161, column 3)",
-                                                      " (in 'dfa', line 163, column 2 to column 23)",
-                                                      " (in 'dfa', line 164, column 29 to column 47)",
-                                                      " (in 'dfa', line 164, column 2 to column 47)",
-                                                      " (in 'dfa', line 167, column 9 to column 19)",
-                                                      " (in 'dfa', line 167, column 20 to column 34)",
-                                                      " (in 'dfa', line 168, column 9 to column 10)",
-                                                      " (in 'dfa', line 169, column 18 to column 62)",
-                                                      " (in 'dfa', line 170, column 44 to column 69)",
-                                                      " (in 'dfa', line 171, column 30 to column 54)",
-                                                      " (in 'dfa', line 172, column 17 to column 37)",
-                                                      " (in 'dfa', line 172, column 10 to column 11)",
-                                                      " (in 'dfa', line 173, column 9 to column 23)",
-                                                      " (in 'dfa', line 173, column 25 to column 45)",
-                                                      " (in 'dfa', line 174, column 9 to column 20)",
-                                                      " (in 'dfa', line 174, column 22 to column 23)",
-                                                      " (in 'dfa', line 175, column 9 to column 20)",
-                                                      " (in 'dfa', line 175, column 22 to column 23)",
-                                                      " (in 'dfa', line 176, column 22 to column 49)",
-                                                      " (in 'dfa', line 177, column 24 to column 51)",
-                                                      " (in 'dfa', line 178, column 24 to column 49)",
-                                                      " (in 'dfa', line 179, column 19 to column 30)",
-                                                      " (in 'dfa', line 180, column 13 to column 17)",
-                                                      " (in 'dfa', line 181, column 29 to column 38)",
-                                                      " (in 'dfa', line 182, column 31 to column 42)",
-                                                      " (in 'dfa', line 183, column 25 to column 33)",
-                                                      " (in 'dfa', line 184, column 23 to column 29)",
-                                                      " (in 'dfa', line 185, column 30 to column 65)",
-                                                      " (in 'dfa', line 186, column 39 to column 49)",
-                                                      " (in 'dfa', line 186, column 9 to column 24)",
-                                                      " (in 'dfa', line 189, column 9 to column 10)",
-                                                      " (in 'dfa', line 189, column 11 to column 12)",
-                                                      " (in 'dfa', line 190, column 9 to column 10)",
-                                                      " (in 'dfa', line 190, column 11 to column 12)",
-                                                      " (in 'dfa', line 191, column 9 to column 10)",
-                                                      " (in 'dfa', line 191, column 11 to column 12)",
-                                                      " (in 'dfa', line 192, column 18 to column 36)",
-                                                      " (in 'dfa', line 193, column 18 to column 36)",
-                                                      " (in 'dfa', line 194, column 18 to column 34)",
+                                                      " (in 'dfa', line 136, column 2 to column 19)",
+                                                      " (in 'dfa', line 141, column 6 to column 19)",
+                                                      " (in 'dfa', line 140, column 11 to line 142, column 5)",
+                                                      " (in 'dfa', line 139, column 6 to column 23)",
+                                                      " (in 'dfa', line 138, column 21 to line 140, column 5)",
+                                                      " (in 'dfa', line 138, column 4 to line 142, column 5)",
+                                                      " (in 'dfa', line 137, column 21 to line 143, column 3)",
+                                                      " (in 'dfa', line 137, column 2 to line 143, column 3)",
+                                                      " (in 'dfa', line 153, column 4 to column 15)",
+                                                      " (in 'dfa', line 151, column 9 to line 154, column 3)",
+                                                      " (in 'dfa', line 146, column 4 to column 15)",
+                                                      " (in 'dfa', line 149, column 6 to column 17)",
+                                                      " (in 'dfa', line 147, column 23 to line 150, column 5)",
+                                                      " (in 'dfa', line 147, column 4 to line 150, column 5)",
+                                                      " (in 'dfa', line 144, column 19 to line 151, column 3)",
+                                                      " (in 'dfa', line 144, column 2 to line 154, column 3)",
+                                                      " (in 'dfa', line 157, column 18 to column 35)",
+                                                      " (in 'dfa', line 157, column 4 to column 35)",
+                                                      " (in 'dfa', line 156, column 28 to line 158, column 3)",
+                                                      " (in 'dfa', line 156, column 2 to line 158, column 3)",
+                                                      " (in 'dfa', line 160, column 2 to column 23)",
+                                                      " (in 'dfa', line 161, column 29 to column 47)",
+                                                      " (in 'dfa', line 161, column 2 to column 47)",
+                                                      " (in 'dfa', line 164, column 9 to column 19)",
+                                                      " (in 'dfa', line 164, column 20 to column 34)",
+                                                      " (in 'dfa', line 165, column 9 to column 10)",
+                                                      " (in 'dfa', line 166, column 18 to column 62)",
+                                                      " (in 'dfa', line 167, column 44 to column 69)",
+                                                      " (in 'dfa', line 168, column 30 to column 54)",
+                                                      " (in 'dfa', line 169, column 8 to column 28)",
+                                                      " (in 'dfa', line 169, column 38 to column 39)",
+                                                      " (in 'dfa', line 170, column 9 to column 23)",
+                                                      " (in 'dfa', line 170, column 25 to column 45)",
+                                                      " (in 'dfa', line 171, column 9 to column 20)",
+                                                      " (in 'dfa', line 171, column 22 to column 23)",
+                                                      " (in 'dfa', line 172, column 9 to column 20)",
+                                                      " (in 'dfa', line 172, column 22 to column 23)",
+                                                      " (in 'dfa', line 173, column 8 to column 35)",
+                                                      " (in 'dfa', line 174, column 8 to column 35)",
+                                                      " (in 'dfa', line 175, column 8 to column 33)",
+                                                      " (in 'dfa', line 176, column 8 to column 19)",
+                                                      " (in 'dfa', line 177, column 8 to column 12)",
+                                                      " (in 'dfa', line 178, column 8 to column 17)",
+                                                      " (in 'dfa', line 179, column 8 to column 19)",
+                                                      " (in 'dfa', line 180, column 8 to column 16)",
+                                                      " (in 'dfa', line 181, column 23 to column 29)",
+                                                      " (in 'dfa', line 182, column 8 to column 43)",
+                                                      " (in 'dfa', line 183, column 8 to column 18)",
+                                                      " (in 'dfa', line 183, column 27 to column 42)",
+                                                      " (in 'dfa', line 186, column 9 to column 10)",
+                                                      " (in 'dfa', line 186, column 11 to column 12)",
+                                                      " (in 'dfa', line 187, column 9 to column 10)",
+                                                      " (in 'dfa', line 187, column 11 to column 12)",
+                                                      " (in 'dfa', line 188, column 9 to column 10)",
+                                                      " (in 'dfa', line 188, column 11 to column 12)",
+                                                      " (in 'dfa', line 189, column 18 to column 36)",
+                                                      " (in 'dfa', line 190, column 18 to column 36)",
+                                                      " (in 'dfa', line 191, column 18 to column 34)",
+                                                      " (in 'dfa', line 192, column 9 to column 10)",
+                                                      " (in 'dfa', line 193, column 9 to column 10)",
+                                                      " (in 'dfa', line 194, column 9 to column 10)",
+                                                      " (in 'dfa', line 194, column 11 to column 12)",
                                                       " (in 'dfa', line 195, column 9 to column 10)",
-                                                      " (in 'dfa', line 196, column 9 to column 10)",
-                                                      " (in 'dfa', line 197, column 9 to column 10)",
-                                                      " (in 'dfa', line 197, column 11 to column 12)",
-                                                      " (in 'dfa', line 198, column 9 to column 10)",
-                                                      " (in 'dfa', line 199, column 18 to column 39)",
-                                                      " (in 'dfa', line 200, column 9 to column 35)",
-                                                      " (in 'dfa', line 200, column 37 to column 63)",
-                                                      " (in 'dfa', line 201, column 9 to column 39)",
-                                                      " (in 'dfa', line 201, column 41 to column 71)",
-                                                      " (in 'dfa', line 202, column 9 to column 17)",
-                                                      " (in 'dfa', line 202, column 18 to column 19)",
+                                                      " (in 'dfa', line 196, column 18 to column 39)",
+                                                      " (in 'dfa', line 197, column 9 to column 35)",
+                                                      " (in 'dfa', line 197, column 37 to column 63)",
+                                                      " (in 'dfa', line 198, column 9 to column 39)",
+                                                      " (in 'dfa', line 198, column 41 to column 71)",
+                                                      " (in 'dfa', line 199, column 9 to column 17)",
+                                                      " (in 'dfa', line 199, column 18 to column 19)",
+                                                      " (in 'dfa', line 200, column 9 to column 30)",
+                                                      " (in 'dfa', line 200, column 32 to column 53)",
+                                                      " (in 'dfa', line 201, column 9 to column 30)",
+                                                      " (in 'dfa', line 201, column 32 to column 53)",
+                                                      " (in 'dfa', line 202, column 9 to column 30)",
                                                       " (in 'dfa', line 203, column 9 to column 30)",
-                                                      " (in 'dfa', line 203, column 32 to column 53)",
-                                                      " (in 'dfa', line 204, column 9 to column 30)",
-                                                      " (in 'dfa', line 204, column 32 to column 53)",
-                                                      " (in 'dfa', line 205, column 9 to column 30)",
-                                                      " (in 'dfa', line 206, column 9 to column 30)",
-                                                      " (in 'dfa', line 208, column 9 to column 10)",
-                                                      " (in 'dfa', line 209, column 9 to column 23)",
-                                                      " (in 'dfa', line 209, column 25 to column 45)",
-                                                      " (in 'dfa', line 210, column 38 to column 39)",
-                                                      " (in 'dfa', line 210, column 9 to column 16)",
-                                                      " (in 'dfa', line 210, column 18 to column 25)",
-                                                      " (in 'dfa', line 213, column 9 to column 14)",
-                                                      " (in 'dfa', line 558, column 9 to column 17)",
-                                                      " (in 'dfa', line 559, column 9 to column 15)",
-                                                      " (in 'dfa', line 559, column 17 to column 23)",
-                                                      " (in 'dfa', line 560, column 9 to column 15)",
-                                                      " (in 'dfa', line 560, column 17 to column 23)",
-                                                      " (in 'dfa', line 561, column 9 to column 10)",
-                                                      " (in 'dfa', line 561, column 11 to column 12)",
-                                                      " (in 'dfa', line 562, column 9 to column 10)",
-                                                      " (in 'dfa', line 563, column 9 to column 16)",
-                                                      " (in 'dfa', line 563, column 18 to column 25)",
-                                                      " (in 'dfa', line 564, column 13 to column 20)",
+                                                      " (in 'dfa', line 205, column 9 to column 10)",
+                                                      " (in 'dfa', line 206, column 9 to column 23)",
+                                                      " (in 'dfa', line 206, column 25 to column 45)",
+                                                      " (in 'dfa', line 207, column 8 to column 9)",
+                                                      " (in 'dfa', line 207, column 18 to column 25)",
+                                                      " (in 'dfa', line 207, column 27 to column 34)",
+                                                      " (in 'dfa', line 210, column 9 to column 14)",
+                                                      " (in 'dfa', line 555, column 9 to column 17)",
+                                                      " (in 'dfa', line 556, column 9 to column 15)",
+                                                      " (in 'dfa', line 556, column 17 to column 23)",
+                                                      " (in 'dfa', line 557, column 9 to column 15)",
+                                                      " (in 'dfa', line 557, column 17 to column 23)",
+                                                      " (in 'dfa', line 558, column 9 to column 10)",
+                                                      " (in 'dfa', line 558, column 11 to column 12)",
+                                                      " (in 'dfa', line 559, column 9 to column 10)",
+                                                      " (in 'dfa', line 560, column 9 to column 16)",
+                                                      " (in 'dfa', line 560, column 18 to column 25)",
+                                                      " (in 'dfa', line 561, column 13 to column 20)",
                                                       " (in 'dfa', line 7, column 13 to column 16)",
                                                       " (in 'dfa', line 7, column 17 to column 20)",
                                                       " (in 'dfa', line 7, column 6 to column 29)",
@@ -771,9 +768,9 @@ subset(const T0__& x_arg__, const int& drop, const int& P,
   
   try {
     {
-      current_statement__ = 637;
+      current_statement__ = 634;
       validate_non_negative_index("result", "P - 1", (P - 1));
-      current_statement__ = 638;
+      current_statement__ = 635;
       validate_non_negative_index("result", "P - 1", (P - 1));
       Eigen::Matrix<local_scalar_t__, -1, -1> result;
       result = Eigen::Matrix<local_scalar_t__, -1, -1>((P - 1), (P - 1));
@@ -785,23 +782,23 @@ subset(const T0__& x_arg__, const int& drop, const int& P,
       int colindx;
       colindx = std::numeric_limits<int>::min();
       
-      current_statement__ = 642;
+      current_statement__ = 639;
       rowindx = 0;
-      current_statement__ = 654;
+      current_statement__ = 651;
       for (int i = 1; i <= P; ++i) {
-        current_statement__ = 652;
+        current_statement__ = 649;
         if (logical_neq(i, drop)) {
-          current_statement__ = 643;
+          current_statement__ = 640;
           rowindx = (rowindx + 1);
-          current_statement__ = 644;
+          current_statement__ = 641;
           colindx = 0;
-          current_statement__ = 650;
+          current_statement__ = 647;
           for (int j = 1; j <= P; ++j) {
-            current_statement__ = 648;
+            current_statement__ = 645;
             if (logical_neq(j, drop)) {
-              current_statement__ = 645;
+              current_statement__ = 642;
               colindx = (colindx + 1);
-              current_statement__ = 646;
+              current_statement__ = 643;
               assign(result,
                 cons_list(index_uni(rowindx),
                   cons_list(index_uni(colindx), nil_index_list())),
@@ -811,7 +808,7 @@ subset(const T0__& x_arg__, const int& drop, const int& P,
                 "assigning variable result");
             } }
         } }
-      current_statement__ = 655;
+      current_statement__ = 652;
       return result;
     }
   } catch (const std::exception& e) {
@@ -843,7 +840,7 @@ subsetvec(const T0__& x_arg__, const int& drop, const int& P,
   
   try {
     {
-      current_statement__ = 658;
+      current_statement__ = 655;
       validate_non_negative_index("result", "P - 1", (P - 1));
       Eigen::Matrix<local_scalar_t__, -1, -1> result;
       result = Eigen::Matrix<local_scalar_t__, -1, -1>((P - 1), 1);
@@ -852,15 +849,15 @@ subsetvec(const T0__& x_arg__, const int& drop, const int& P,
       int rowindx;
       rowindx = std::numeric_limits<int>::min();
       
-      current_statement__ = 661;
+      current_statement__ = 658;
       rowindx = 0;
-      current_statement__ = 667;
+      current_statement__ = 664;
       for (int i = 1; i <= P; ++i) {
-        current_statement__ = 665;
+        current_statement__ = 662;
         if (logical_neq(i, drop)) {
-          current_statement__ = 662;
+          current_statement__ = 659;
           rowindx = (rowindx + 1);
-          current_statement__ = 663;
+          current_statement__ = 660;
           assign(result,
             cons_list(index_uni(rowindx),
               cons_list(index_uni(1), nil_index_list())),
@@ -869,7 +866,7 @@ subsetvec(const T0__& x_arg__, const int& drop, const int& P,
                 cons_list(index_uni(drop), nil_index_list())), "x"),
             "assigning variable result");
         } }
-      current_statement__ = 668;
+      current_statement__ = 665;
       return result;
     }
   } catch (const std::exception& e) {
@@ -901,7 +898,7 @@ subsetvec2(const T0__& x_arg__, const int& drop, const int& P,
   
   try {
     {
-      current_statement__ = 671;
+      current_statement__ = 668;
       validate_non_negative_index("result", "P - 1", (P - 1));
       Eigen::Matrix<local_scalar_t__, -1, -1> result;
       result = Eigen::Matrix<local_scalar_t__, -1, -1>((P - 1), 1);
@@ -910,21 +907,21 @@ subsetvec2(const T0__& x_arg__, const int& drop, const int& P,
       int rowindx;
       rowindx = std::numeric_limits<int>::min();
       
-      current_statement__ = 674;
+      current_statement__ = 671;
       rowindx = 0;
-      current_statement__ = 680;
+      current_statement__ = 677;
       for (int i = 1; i <= P; ++i) {
-        current_statement__ = 678;
+        current_statement__ = 675;
         if (logical_neq(i, drop)) {
-          current_statement__ = 675;
+          current_statement__ = 672;
           rowindx = (rowindx + 1);
-          current_statement__ = 676;
+          current_statement__ = 673;
           assign(result,
             cons_list(index_uni(rowindx),
               cons_list(index_uni(1), nil_index_list())), x[(i - 1)],
             "assigning variable result");
         } }
-      current_statement__ = 681;
+      current_statement__ = 678;
       return result;
     }
   } catch (const std::exception& e) {
@@ -962,7 +959,7 @@ private:
   std::vector<int> col_indx_pos;
   std::vector<double> y;
   std::vector<int> y_int;
-  std::vector<double> offset;
+  std::vector<double> input_offset;
   int n_na;
   std::vector<int> row_indx_na;
   std::vector<int> col_indx_na;
@@ -999,12 +996,12 @@ private:
   int est_nb2_params;
   int use_expansion_prior;
   std::vector<double> gp_theta_prior;
+  std::vector<double> inv_var_weights_vec;
   std::vector<double> weights_vec;
   int n_pcor;
   int n_loglik;
   Eigen::Matrix<double, -1, 1> zeros;
   std::vector<double> data_locs;
-  std::vector<double> log_weights_vec;
   Eigen::Matrix<double, -1, 1> alpha_vec;
   Eigen::Matrix<double, -1, 1> muZeros;
   double gp_delta;
@@ -1278,15 +1275,15 @@ public:
         check_greater_or_equal(function__, "y_int[sym1__]",
                                y_int[(sym1__ - 1)], 0);}
       current_statement__ = 466;
-      validate_non_negative_index("offset", "n_pos", n_pos);
+      validate_non_negative_index("input_offset", "n_pos", n_pos);
       current_statement__ = 467;
-      context__.validate_dims("data initialization","offset","double",
+      context__.validate_dims("data initialization","input_offset","double",
           context__.to_vec(n_pos));
-      offset = std::vector<double>(n_pos, std::numeric_limits<double>::quiet_NaN());
+      input_offset = std::vector<double>(n_pos, std::numeric_limits<double>::quiet_NaN());
       
       current_statement__ = 467;
-      assign(offset, nil_index_list(), context__.vals_r("offset"),
-        "assigning variable offset");
+      assign(input_offset, nil_index_list(),
+        context__.vals_r("input_offset"), "assigning variable input_offset");
       current_statement__ = 468;
       context__.validate_dims("data initialization","n_na","int",
           context__.to_vec());
@@ -1740,36 +1737,42 @@ public:
         context__.vals_r("gp_theta_prior"),
         "assigning variable gp_theta_prior");
       current_statement__ = 515;
-      validate_non_negative_index("weights_vec", "n_pos", n_pos);
+      validate_non_negative_index("inv_var_weights_vec", "n_pos", n_pos);
       current_statement__ = 516;
+      context__.validate_dims("data initialization","inv_var_weights_vec",
+          "double",context__.to_vec(n_pos));
+      inv_var_weights_vec = std::vector<double>(n_pos, std::numeric_limits<double>::quiet_NaN());
+      
+      current_statement__ = 516;
+      assign(inv_var_weights_vec, nil_index_list(),
+        context__.vals_r("inv_var_weights_vec"),
+        "assigning variable inv_var_weights_vec");
+      current_statement__ = 517;
+      validate_non_negative_index("weights_vec", "n_pos", n_pos);
+      current_statement__ = 518;
       context__.validate_dims("data initialization","weights_vec","double",
           context__.to_vec(n_pos));
       weights_vec = std::vector<double>(n_pos, std::numeric_limits<double>::quiet_NaN());
       
-      current_statement__ = 516;
+      current_statement__ = 518;
       assign(weights_vec, nil_index_list(), context__.vals_r("weights_vec"),
         "assigning variable weights_vec");
-      current_statement__ = 517;
+      current_statement__ = 519;
       n_pcor = std::numeric_limits<int>::min();
       
-      current_statement__ = 518;
+      current_statement__ = 520;
       n_loglik = std::numeric_limits<int>::min();
       
-      current_statement__ = 519;
+      current_statement__ = 521;
       validate_non_negative_index("zeros", "K", K);
-      current_statement__ = 520;
+      current_statement__ = 522;
       zeros = Eigen::Matrix<double, -1, 1>(K);
       stan::math::fill(zeros, std::numeric_limits<double>::quiet_NaN());
       
-      current_statement__ = 521;
-      validate_non_negative_index("data_locs", "N", N);
-      current_statement__ = 522;
-      data_locs = std::vector<double>(N, std::numeric_limits<double>::quiet_NaN());
-      
       current_statement__ = 523;
-      validate_non_negative_index("log_weights_vec", "n_pos", n_pos);
+      validate_non_negative_index("data_locs", "N", N);
       current_statement__ = 524;
-      log_weights_vec = std::vector<double>(n_pos, std::numeric_limits<double>::quiet_NaN());
+      data_locs = std::vector<double>(N, std::numeric_limits<double>::quiet_NaN());
       
       current_statement__ = 525;
       validate_non_negative_index("alpha_vec", "K * proportional_model",
@@ -1793,416 +1796,410 @@ public:
       lower_bound_z = std::numeric_limits<double>::quiet_NaN();
       
       current_statement__ = 533;
-      for (int i = 1; i <= n_pos; ++i) {
-        current_statement__ = 531;
-        assign(log_weights_vec, cons_list(index_uni(i), nil_index_list()),
-          stan::math::log(weights_vec[(i - 1)]),
-          "assigning variable log_weights_vec");}
-      current_statement__ = 536;
       for (int i = 1; i <= N; ++i) {
-        current_statement__ = 534;
+        current_statement__ = 531;
         assign(data_locs, cons_list(index_uni(i), nil_index_list()), i,
           "assigning variable data_locs");}
-      current_statement__ = 539;
+      current_statement__ = 536;
       for (int k = 1; k <= K; ++k) {
-        current_statement__ = 537;
+        current_statement__ = 534;
         assign(zeros, cons_list(index_uni(k), nil_index_list()), 0,
           "assigning variable zeros");}
-      current_statement__ = 542;
+      current_statement__ = 539;
       for (int k = 1; k <= n_knots; ++k) {
-        current_statement__ = 540;
+        current_statement__ = 537;
         assign(muZeros, cons_list(index_uni(k), nil_index_list()), 0,
           "assigning variable muZeros");}
-      current_statement__ = 543;
+      current_statement__ = 540;
       n_loglik = n_pos;
-      current_statement__ = 550;
+      current_statement__ = 547;
       if (logical_eq(long_format, 0)) {
-        current_statement__ = 548;
+        current_statement__ = 545;
         if (logical_eq(est_cor, 0)) {
-          current_statement__ = 546;
+          current_statement__ = 543;
           n_loglik = (P * N);
         } else {
-          current_statement__ = 544;
+          current_statement__ = 541;
           n_loglik = N;
         }
       } 
-      current_statement__ = 558;
+      current_statement__ = 555;
       if (logical_eq(est_cor, 0)) {
-        current_statement__ = 553;
+        current_statement__ = 550;
         n_pcor = P;
-        current_statement__ = 556;
+        current_statement__ = 553;
         if (logical_lt(nVariances, 2)) {
-          current_statement__ = 554;
+          current_statement__ = 551;
           n_pcor = 2;
         } 
       } else {
-        current_statement__ = 551;
+        current_statement__ = 548;
         n_pcor = P;
       }
-      current_statement__ = 562;
+      current_statement__ = 559;
       if (logical_eq(proportional_model, 1)) {
-        current_statement__ = 560;
+        current_statement__ = 557;
         for (int k = 1; k <= K; ++k) {
-          current_statement__ = 559;
+          current_statement__ = 556;
           assign(alpha_vec, cons_list(index_uni(k), nil_index_list()), 1,
             "assigning variable alpha_vec");}
       } 
-      current_statement__ = 563;
+      current_statement__ = 560;
       lower_bound_z = -100;
-      current_statement__ = 565;
+      current_statement__ = 562;
       if (logical_eq(use_expansion_prior, 1)) {
-        current_statement__ = 564;
+        current_statement__ = 561;
         lower_bound_z = 0;
       } 
-      current_statement__ = 566;
+      current_statement__ = 563;
       devs_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 566;
+      current_statement__ = 563;
       devs_1dim__ = (K * est_rw);
-      current_statement__ = 566;
+      current_statement__ = 563;
       validate_non_negative_index("devs", "K * est_rw", devs_1dim__);
-      current_statement__ = 567;
+      current_statement__ = 564;
       devs_2dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 567;
+      current_statement__ = 564;
       devs_2dim__ = ((N - 1) * est_rw);
-      current_statement__ = 567;
+      current_statement__ = 564;
       validate_non_negative_index("devs", "(N - 1) * est_rw", devs_2dim__);
-      current_statement__ = 568;
+      current_statement__ = 565;
       validate_non_negative_index("x0", "K", K);
-      current_statement__ = 569;
+      current_statement__ = 566;
       psi_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 569;
+      current_statement__ = 566;
       psi_1dim__ = ((K * (1 - proportional_model)) * use_expansion_prior);
-      current_statement__ = 569;
+      current_statement__ = 566;
       validate_non_negative_index("psi",
                                   "K * (1 - proportional_model) * use_expansion_prior",
                                   psi_1dim__);
-      current_statement__ = 570;
+      current_statement__ = 567;
       z_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 570;
+      current_statement__ = 567;
       z_1dim__ = (nZ * (1 - proportional_model));
-      current_statement__ = 570;
+      current_statement__ = 567;
       validate_non_negative_index("z", "nZ * (1 - proportional_model)",
                                   z_1dim__);
-      current_statement__ = 571;
+      current_statement__ = 568;
       zpos_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 571;
+      current_statement__ = 568;
       zpos_1dim__ = (K * (1 - proportional_model));
-      current_statement__ = 571;
+      current_statement__ = 568;
       validate_non_negative_index("zpos", "K * (1 - proportional_model)",
                                   zpos_1dim__);
-      current_statement__ = 572;
+      current_statement__ = 569;
       p_z_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 572;
+      current_statement__ = 569;
       p_z_1dim__ = (P * proportional_model);
-      current_statement__ = 572;
+      current_statement__ = 569;
       validate_non_negative_index("p_z", "P * proportional_model", p_z_1dim__);
-      current_statement__ = 573;
+      current_statement__ = 570;
       validate_positive_index("p_z", "K", K);
-      current_statement__ = 574;
+      current_statement__ = 571;
       spline_a_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 574;
+      current_statement__ = 571;
       spline_a_1dim__ = (K * est_spline);
-      current_statement__ = 574;
+      current_statement__ = 571;
       validate_non_negative_index("spline_a", "K * est_spline",
                                   spline_a_1dim__);
-      current_statement__ = 575;
+      current_statement__ = 572;
       spline_a_2dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 575;
+      current_statement__ = 572;
       spline_a_2dim__ = (n_knots * est_spline);
-      current_statement__ = 575;
+      current_statement__ = 572;
       validate_non_negative_index("spline_a", "n_knots * est_spline",
                                   spline_a_2dim__);
-      current_statement__ = 576;
+      current_statement__ = 573;
       validate_non_negative_index("b_obs", "n_obs_covar", n_obs_covar);
-      current_statement__ = 577;
+      current_statement__ = 574;
       validate_non_negative_index("b_obs", "P", P);
-      current_statement__ = 578;
+      current_statement__ = 575;
       validate_non_negative_index("b_pro", "n_pro_covar", n_pro_covar);
-      current_statement__ = 579;
+      current_statement__ = 576;
       validate_non_negative_index("b_pro", "K", K);
-      current_statement__ = 580;
+      current_statement__ = 577;
       sigma_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 580;
+      current_statement__ = 577;
       sigma_1dim__ = (nVariances * est_sigma_params);
-      current_statement__ = 580;
+      current_statement__ = 577;
       validate_non_negative_index("sigma", "nVariances * est_sigma_params",
                                   sigma_1dim__);
-      current_statement__ = 581;
+      current_statement__ = 578;
       gamma_a_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 581;
+      current_statement__ = 578;
       gamma_a_1dim__ = (nVariances * est_gamma_params);
-      current_statement__ = 581;
+      current_statement__ = 578;
       validate_non_negative_index("gamma_a", "nVariances * est_gamma_params",
                                   gamma_a_1dim__);
-      current_statement__ = 582;
+      current_statement__ = 579;
       nb2_phi_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 582;
+      current_statement__ = 579;
       nb2_phi_1dim__ = (nVariances * est_nb2_params);
-      current_statement__ = 582;
+      current_statement__ = 579;
       validate_non_negative_index("nb2_phi", "nVariances * est_nb2_params",
                                   nb2_phi_1dim__);
-      current_statement__ = 583;
+      current_statement__ = 580;
       validate_non_negative_index("nu", "estimate_nu", estimate_nu);
-      current_statement__ = 584;
+      current_statement__ = 581;
       validate_non_negative_index("ymiss", "n_na", n_na);
-      current_statement__ = 585;
+      current_statement__ = 582;
       phi_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 585;
+      current_statement__ = 582;
       phi_1dim__ = (est_phi * K);
-      current_statement__ = 585;
+      current_statement__ = 582;
       validate_non_negative_index("phi", "est_phi * K", phi_1dim__);
-      current_statement__ = 586;
+      current_statement__ = 583;
       theta_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 586;
+      current_statement__ = 583;
       theta_1dim__ = (est_theta * K);
-      current_statement__ = 586;
+      current_statement__ = 583;
       validate_non_negative_index("theta", "est_theta * K", theta_1dim__);
-      current_statement__ = 587;
+      current_statement__ = 584;
       gp_theta_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 587;
+      current_statement__ = 584;
       gp_theta_1dim__ = (est_gp * K);
-      current_statement__ = 587;
+      current_statement__ = 584;
       validate_non_negative_index("gp_theta", "est_gp * K", gp_theta_1dim__);
-      current_statement__ = 588;
+      current_statement__ = 585;
       validate_non_negative_index("Lcorr", "n_pcor", n_pcor);
-      current_statement__ = 588;
+      current_statement__ = 585;
       validate_non_negative_index("Lcorr", "n_pcor", n_pcor);
-      current_statement__ = 589;
+      current_statement__ = 586;
       sigma_process_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 589;
+      current_statement__ = 586;
       sigma_process_1dim__ = (est_sigma_process * n_sigma_process);
-      current_statement__ = 589;
+      current_statement__ = 586;
       validate_non_negative_index("sigma_process",
                                   "est_sigma_process * n_sigma_process",
                                   sigma_process_1dim__);
-      current_statement__ = 590;
+      current_statement__ = 587;
       effectsKnots_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 590;
+      current_statement__ = 587;
       effectsKnots_1dim__ = (K * est_gp);
-      current_statement__ = 590;
+      current_statement__ = 587;
       validate_non_negative_index("effectsKnots", "K * est_gp",
                                   effectsKnots_1dim__);
-      current_statement__ = 591;
+      current_statement__ = 588;
       effectsKnots_2dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 591;
+      current_statement__ = 588;
       effectsKnots_2dim__ = (n_knots * est_gp);
-      current_statement__ = 591;
+      current_statement__ = 588;
       validate_non_negative_index("effectsKnots", "n_knots * est_gp",
                                   effectsKnots_2dim__);
-      current_statement__ = 592;
+      current_statement__ = 589;
       validate_non_negative_index("pred", "P", P);
-      current_statement__ = 593;
+      current_statement__ = 590;
       validate_non_negative_index("pred", "N", N);
-      current_statement__ = 594;
+      current_statement__ = 591;
       validate_non_negative_index("Z", "P", P);
-      current_statement__ = 595;
+      current_statement__ = 592;
       validate_non_negative_index("Z", "K", K);
-      current_statement__ = 596;
+      current_statement__ = 593;
       validate_non_negative_index("yall", "P", P);
-      current_statement__ = 597;
+      current_statement__ = 594;
       validate_non_negative_index("yall", "N", N);
-      current_statement__ = 598;
+      current_statement__ = 595;
       sigma_vec_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 598;
+      current_statement__ = 595;
       sigma_vec_1dim__ = (P * est_sigma_params);
-      current_statement__ = 598;
+      current_statement__ = 595;
       validate_non_negative_index("sigma_vec", "P * est_sigma_params",
                                   sigma_vec_1dim__);
-      current_statement__ = 599;
+      current_statement__ = 596;
       gamma_a_vec_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 599;
+      current_statement__ = 596;
       gamma_a_vec_1dim__ = (P * est_gamma_params);
-      current_statement__ = 599;
+      current_statement__ = 596;
       validate_non_negative_index("gamma_a_vec", "P * est_gamma_params",
                                   gamma_a_vec_1dim__);
-      current_statement__ = 600;
+      current_statement__ = 597;
       nb_phi_vec_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 600;
+      current_statement__ = 597;
       nb_phi_vec_1dim__ = (P * est_nb2_params);
-      current_statement__ = 600;
+      current_statement__ = 597;
       validate_non_negative_index("nb_phi_vec", "P * est_nb2_params",
                                   nb_phi_vec_1dim__);
-      current_statement__ = 601;
+      current_statement__ = 598;
       validate_non_negative_index("phi_vec", "K", K);
-      current_statement__ = 602;
+      current_statement__ = 599;
       validate_non_negative_index("theta_vec", "K", K);
-      current_statement__ = 603;
+      current_statement__ = 600;
       validate_non_negative_index("x", "K", K);
-      current_statement__ = 604;
+      current_statement__ = 601;
       validate_non_negative_index("x", "N", N);
-      current_statement__ = 605;
+      current_statement__ = 602;
       validate_non_negative_index("indicator", "K", K);
-      current_statement__ = 606;
+      current_statement__ = 603;
       psi_root_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 606;
+      current_statement__ = 603;
       psi_root_1dim__ = (K * use_expansion_prior);
-      current_statement__ = 606;
+      current_statement__ = 603;
       validate_non_negative_index("psi_root", "K * use_expansion_prior",
                                   psi_root_1dim__);
-      current_statement__ = 607;
+      current_statement__ = 604;
       Sigma_derived_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 607;
+      current_statement__ = 604;
       Sigma_derived_1dim__ = ((n_pcor * long_format) * est_cor);
-      current_statement__ = 607;
+      current_statement__ = 604;
       validate_non_negative_index("Sigma_derived",
                                   "n_pcor * long_format * est_cor",
                                   Sigma_derived_1dim__);
-      current_statement__ = 608;
+      current_statement__ = 605;
       Sigma_derived_2dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 608;
+      current_statement__ = 605;
       Sigma_derived_2dim__ = ((n_pcor * long_format) * est_cor);
-      current_statement__ = 608;
+      current_statement__ = 605;
       validate_non_negative_index("Sigma_derived",
                                   "n_pcor * long_format * est_cor",
                                   Sigma_derived_2dim__);
-      current_statement__ = 609;
+      current_statement__ = 606;
       Sigma_temp_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 609;
+      current_statement__ = 606;
       Sigma_temp_1dim__ = (((n_pcor - 1) * long_format) * est_cor);
-      current_statement__ = 609;
+      current_statement__ = 606;
       validate_non_negative_index("Sigma_temp",
                                   "(n_pcor - 1) * long_format * est_cor",
                                   Sigma_temp_1dim__);
-      current_statement__ = 610;
+      current_statement__ = 607;
       Sigma_temp_2dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 610;
+      current_statement__ = 607;
       Sigma_temp_2dim__ = (((n_pcor - 1) * long_format) * est_cor);
-      current_statement__ = 610;
+      current_statement__ = 607;
       validate_non_negative_index("Sigma_temp",
                                   "(n_pcor - 1) * long_format * est_cor",
                                   Sigma_temp_2dim__);
-      current_statement__ = 611;
+      current_statement__ = 608;
       sigma12_vec_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 611;
+      current_statement__ = 608;
       sigma12_vec_1dim__ = (n_pcor - 1);
-      current_statement__ = 611;
+      current_statement__ = 608;
       validate_non_negative_index("sigma12_vec", "n_pcor - 1",
                                   sigma12_vec_1dim__);
-      current_statement__ = 612;
+      current_statement__ = 609;
       validate_non_negative_index("sigma12_vec", "1", 1);
-      current_statement__ = 613;
+      current_statement__ = 610;
       temp_sums_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 613;
+      current_statement__ = 610;
       temp_sums_1dim__ = ((P * long_format) * est_cor);
-      current_statement__ = 613;
+      current_statement__ = 610;
       validate_non_negative_index("temp_sums", "P * long_format * est_cor",
                                   temp_sums_1dim__);
-      current_statement__ = 614;
+      current_statement__ = 611;
       temp_sums_2dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 614;
+      current_statement__ = 611;
       temp_sums_2dim__ = ((N * long_format) * est_cor);
-      current_statement__ = 614;
+      current_statement__ = 611;
       validate_non_negative_index("temp_sums", "N * long_format * est_cor",
                                   temp_sums_2dim__);
-      current_statement__ = 615;
+      current_statement__ = 612;
       temp_counts_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 615;
+      current_statement__ = 612;
       temp_counts_1dim__ = ((P * long_format) * est_cor);
-      current_statement__ = 615;
+      current_statement__ = 612;
       validate_non_negative_index("temp_counts", "P * long_format * est_cor",
                                   temp_counts_1dim__);
-      current_statement__ = 616;
+      current_statement__ = 613;
       temp_counts_2dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 616;
+      current_statement__ = 613;
       temp_counts_2dim__ = ((N * long_format) * est_cor);
-      current_statement__ = 616;
+      current_statement__ = 613;
       validate_non_negative_index("temp_counts", "N * long_format * est_cor",
                                   temp_counts_2dim__);
-      current_statement__ = 617;
+      current_statement__ = 614;
       cond_sigma_vec_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 617;
+      current_statement__ = 614;
       cond_sigma_vec_1dim__ = ((P * long_format) * est_cor);
-      current_statement__ = 617;
+      current_statement__ = 614;
       validate_non_negative_index("cond_sigma_vec",
                                   "P * long_format * est_cor",
                                   cond_sigma_vec_1dim__);
-      current_statement__ = 618;
+      current_statement__ = 615;
       cond_mean_vec_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 618;
+      current_statement__ = 615;
       cond_mean_vec_1dim__ = ((P * long_format) * est_cor);
-      current_statement__ = 618;
+      current_statement__ = 615;
       validate_non_negative_index("cond_mean_vec",
                                   "P * long_format * est_cor",
                                   cond_mean_vec_1dim__);
-      current_statement__ = 619;
+      current_statement__ = 616;
       validate_non_negative_index("sigma_pro", "K", K);
-      current_statement__ = 620;
+      current_statement__ = 617;
       spline_a_trans_1dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 620;
+      current_statement__ = 617;
       spline_a_trans_1dim__ = (K * est_spline);
-      current_statement__ = 620;
+      current_statement__ = 617;
       validate_non_negative_index("spline_a_trans", "K * est_spline",
                                   spline_a_trans_1dim__);
-      current_statement__ = 621;
+      current_statement__ = 618;
       spline_a_trans_2dim__ = std::numeric_limits<int>::min();
       
-      current_statement__ = 621;
+      current_statement__ = 618;
       spline_a_trans_2dim__ = (n_knots * est_spline);
-      current_statement__ = 621;
+      current_statement__ = 618;
       validate_non_negative_index("spline_a_trans", "n_knots * est_spline",
                                   spline_a_trans_2dim__);
-      current_statement__ = 622;
+      current_statement__ = 619;
       validate_non_negative_index("SigmaKnots", "K", K);
-      current_statement__ = 623;
+      current_statement__ = 620;
       validate_non_negative_index("SigmaKnots", "n_knots", n_knots);
-      current_statement__ = 624;
+      current_statement__ = 621;
       validate_non_negative_index("SigmaKnots", "n_knots", n_knots);
-      current_statement__ = 625;
+      current_statement__ = 622;
       validate_non_negative_index("obs_cov_offset", "n_pos", n_pos);
-      current_statement__ = 626;
+      current_statement__ = 623;
       validate_non_negative_index("log_lik", "n_loglik", n_loglik);
+      current_statement__ = 624;
+      validate_non_negative_index("Omega", "n_pcor", n_pcor);
+      current_statement__ = 625;
+      validate_non_negative_index("Omega", "n_pcor", n_pcor);
+      current_statement__ = 626;
+      validate_non_negative_index("Sigma", "n_pcor", n_pcor);
       current_statement__ = 627;
-      validate_non_negative_index("Omega", "n_pcor", n_pcor);
+      validate_non_negative_index("Sigma", "n_pcor", n_pcor);
       current_statement__ = 628;
-      validate_non_negative_index("Omega", "n_pcor", n_pcor);
-      current_statement__ = 629;
-      validate_non_negative_index("Sigma", "n_pcor", n_pcor);
-      current_statement__ = 630;
-      validate_non_negative_index("Sigma", "n_pcor", n_pcor);
-      current_statement__ = 631;
       validate_non_negative_index("xstar", "K", K);
-      current_statement__ = 632;
+      current_statement__ = 629;
       validate_non_negative_index("xstar", "1", 1);
-      current_statement__ = 633;
+      current_statement__ = 630;
       validate_non_negative_index("future_devs", "K", K);
-      current_statement__ = 634;
+      current_statement__ = 631;
       validate_non_negative_index("SigmaKnots_pred", "n_knots", n_knots);
-      current_statement__ = 635;
+      current_statement__ = 632;
       validate_non_negative_index("SigmaKnots_pred", "n_knots", n_knots);
-      current_statement__ = 636;
+      current_statement__ = 633;
       validate_non_negative_index("SigmaOffDiag_pred", "n_knots", n_knots);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -2883,8 +2880,8 @@ public:
           for (int k = 1; k <= K; ++k) {
             current_statement__ = 137;
             assign(SigmaKnots, cons_list(index_uni(k), nil_index_list()),
-              cov_exp_quad(knot_locs, sigma_pro[(k - 1)], gp_theta[(k - 1)]),
-              "assigning variable SigmaKnots");
+              gp_exp_quad_cov(knot_locs, sigma_pro[(k - 1)],
+                gp_theta[(k - 1)]), "assigning variable SigmaKnots");
             current_statement__ = 140;
             for (int i = 1; i <= n_knots; ++i) {
               current_statement__ = 138;
@@ -2912,7 +2909,7 @@ public:
                   multiply(
                     multiply(
                       multiply(
-                        cov_exp_quad(data_locs, knot_locs,
+                        gp_exp_quad_cov(data_locs, knot_locs,
                           sigma_pro[(k - 1)], gp_theta[(k - 1)]),
                         inverse_spd(SigmaKnots[(k - 1)])),
                       cholesky_decompose(SigmaKnots[(k - 1)])),
@@ -2989,8 +2986,8 @@ public:
           for (int k = 1; k <= K; ++k) {
             current_statement__ = 173;
             assign(SigmaKnots, cons_list(index_uni(k), nil_index_list()),
-              cov_exp_quad(knot_locs, sigma_pro[(k - 1)], gp_theta[(k - 1)]),
-              "assigning variable SigmaKnots");
+              gp_exp_quad_cov(knot_locs, sigma_pro[(k - 1)],
+                gp_theta[(k - 1)]), "assigning variable SigmaKnots");
             current_statement__ = 176;
             for (int i = 1; i <= n_knots; ++i) {
               current_statement__ = 174;
@@ -3018,7 +3015,7 @@ public:
                   multiply(
                     multiply(
                       multiply(
-                        cov_exp_quad(data_locs, knot_locs,
+                        gp_exp_quad_cov(data_locs, knot_locs,
                           sigma_pro[(k - 1)], gp_theta[(k - 1)]),
                         inverse_spd(SigmaKnots[(k - 1)])),
                       cholesky_decompose(SigmaKnots[(k - 1)])),
@@ -3392,17 +3389,16 @@ public:
               for (int i = 1; i <= n_pos; ++i) {
                 current_statement__ = 408;
                 lp_accum__.add(
-                  normal_lpdf<false>(y[(i - 1)],
-                    ((offset[(i - 1)] +
-                       rvalue(pred,
-                         cons_list(index_uni(row_indx_pos[(i - 1)]),
-                           cons_list(index_uni(col_indx_pos[(i - 1)]),
-                             nil_index_list())), "pred")) +
-                      obs_cov_offset[(i - 1)]),
-                    stan::math::exp(
-                      (stan::math::log(
-                         sigma_vec[(row_indx_pos[(i - 1)] - 1)]) -
-                        log_weights_vec[(i - 1)]))));}
+                  (weights_vec[(i - 1)] *
+                    normal_lpdf<false>(y[(i - 1)],
+                      ((input_offset[(i - 1)] +
+                         rvalue(pred,
+                           cons_list(index_uni(row_indx_pos[(i - 1)]),
+                             cons_list(index_uni(col_indx_pos[(i - 1)]),
+                               nil_index_list())), "pred")) +
+                        obs_cov_offset[(i - 1)]),
+                      (sigma_vec[(row_indx_pos[(i - 1)] - 1)] *
+                        inv_var_weights_vec[(i - 1)]))));}
             } 
             current_statement__ = 415;
             if (logical_eq(obs_model, 2)) {
@@ -3410,16 +3406,17 @@ public:
               for (int i = 1; i <= n_pos; ++i) {
                 current_statement__ = 412;
                 lp_accum__.add(
-                  gamma_lpdf<false>(y[(i - 1)],
-                    gamma_a_vec[(row_indx_pos[(i - 1)] - 1)],
-                    (gamma_a_vec[(row_indx_pos[(i - 1)] - 1)] /
-                      stan::math::exp(
-                        ((offset[(i - 1)] +
-                           rvalue(pred,
-                             cons_list(index_uni(row_indx_pos[(i - 1)]),
-                               cons_list(index_uni(col_indx_pos[(i - 1)]),
-                                 nil_index_list())), "pred")) +
-                          obs_cov_offset[(i - 1)])))));}
+                  (weights_vec[(i - 1)] *
+                    gamma_lpdf<false>(y[(i - 1)],
+                      gamma_a_vec[(row_indx_pos[(i - 1)] - 1)],
+                      (gamma_a_vec[(row_indx_pos[(i - 1)] - 1)] /
+                        stan::math::exp(
+                          ((input_offset[(i - 1)] +
+                             rvalue(pred,
+                               cons_list(index_uni(row_indx_pos[(i - 1)]),
+                                 cons_list(index_uni(col_indx_pos[(i - 1)]),
+                                   nil_index_list())), "pred")) +
+                            obs_cov_offset[(i - 1)]))))));}
             } 
             current_statement__ = 419;
             if (logical_eq(obs_model, 3)) {
@@ -3427,13 +3424,14 @@ public:
               for (int i = 1; i <= n_pos; ++i) {
                 current_statement__ = 416;
                 lp_accum__.add(
-                  poisson_log_lpmf<false>(y_int[(i - 1)],
-                    ((offset[(i - 1)] +
-                       rvalue(pred,
-                         cons_list(index_uni(row_indx_pos[(i - 1)]),
-                           cons_list(index_uni(col_indx_pos[(i - 1)]),
-                             nil_index_list())), "pred")) +
-                      obs_cov_offset[(i - 1)])));}
+                  (weights_vec[(i - 1)] *
+                    poisson_log_lpmf<false>(y_int[(i - 1)],
+                      ((input_offset[(i - 1)] +
+                         rvalue(pred,
+                           cons_list(index_uni(row_indx_pos[(i - 1)]),
+                             cons_list(index_uni(col_indx_pos[(i - 1)]),
+                               nil_index_list())), "pred")) +
+                        obs_cov_offset[(i - 1)]))));}
             } 
             current_statement__ = 423;
             if (logical_eq(obs_model, 4)) {
@@ -3441,14 +3439,15 @@ public:
               for (int i = 1; i <= n_pos; ++i) {
                 current_statement__ = 420;
                 lp_accum__.add(
-                  neg_binomial_2_log_lpmf<false>(y_int[(i - 1)],
-                    ((offset[(i - 1)] +
-                       rvalue(pred,
-                         cons_list(index_uni(row_indx_pos[(i - 1)]),
-                           cons_list(index_uni(col_indx_pos[(i - 1)]),
-                             nil_index_list())), "pred")) +
-                      obs_cov_offset[(i - 1)]),
-                    nb_phi_vec[(row_indx_pos[(i - 1)] - 1)]));}
+                  (weights_vec[(i - 1)] *
+                    neg_binomial_2_log_lpmf<false>(y_int[(i - 1)],
+                      ((input_offset[(i - 1)] +
+                         rvalue(pred,
+                           cons_list(index_uni(row_indx_pos[(i - 1)]),
+                             cons_list(index_uni(col_indx_pos[(i - 1)]),
+                               nil_index_list())), "pred")) +
+                        obs_cov_offset[(i - 1)]),
+                      nb_phi_vec[(row_indx_pos[(i - 1)] - 1)])));}
             } 
             current_statement__ = 427;
             if (logical_eq(obs_model, 5)) {
@@ -3456,13 +3455,14 @@ public:
               for (int i = 1; i <= n_pos; ++i) {
                 current_statement__ = 424;
                 lp_accum__.add(
-                  bernoulli_logit_lpmf<false>(y_int[(i - 1)],
-                    ((offset[(i - 1)] +
-                       rvalue(pred,
-                         cons_list(index_uni(row_indx_pos[(i - 1)]),
-                           cons_list(index_uni(col_indx_pos[(i - 1)]),
-                             nil_index_list())), "pred")) +
-                      obs_cov_offset[(i - 1)])));}
+                  (weights_vec[(i - 1)] *
+                    bernoulli_logit_lpmf<false>(y_int[(i - 1)],
+                      ((input_offset[(i - 1)] +
+                         rvalue(pred,
+                           cons_list(index_uni(row_indx_pos[(i - 1)]),
+                             cons_list(index_uni(col_indx_pos[(i - 1)]),
+                               nil_index_list())), "pred")) +
+                        obs_cov_offset[(i - 1)]))));}
             } 
             current_statement__ = 431;
             if (logical_eq(obs_model, 6)) {
@@ -3470,14 +3470,15 @@ public:
               for (int i = 1; i <= n_pos; ++i) {
                 current_statement__ = 428;
                 lp_accum__.add(
-                  lognormal_lpdf<false>(y[(i - 1)],
-                    ((offset[(i - 1)] +
-                       rvalue(pred,
-                         cons_list(index_uni(row_indx_pos[(i - 1)]),
-                           cons_list(index_uni(col_indx_pos[(i - 1)]),
-                             nil_index_list())), "pred")) +
-                      obs_cov_offset[(i - 1)]),
-                    sigma_vec[(row_indx_pos[(i - 1)] - 1)]));}
+                  (weights_vec[(i - 1)] *
+                    lognormal_lpdf<false>(y[(i - 1)],
+                      ((input_offset[(i - 1)] +
+                         rvalue(pred,
+                           cons_list(index_uni(row_indx_pos[(i - 1)]),
+                             cons_list(index_uni(col_indx_pos[(i - 1)]),
+                               nil_index_list())), "pred")) +
+                        obs_cov_offset[(i - 1)]),
+                      sigma_vec[(row_indx_pos[(i - 1)] - 1)])));}
             } 
           }
         } else {
@@ -3499,18 +3500,17 @@ public:
               for (int i = 1; i <= n_pos; ++i) {
                 current_statement__ = 396;
                 lp_accum__.add(
-                  normal_lpdf<false>(y[(i - 1)],
-                    (((offset[(i - 1)] +
-                        rvalue(pred,
-                          cons_list(index_uni(row_indx_pos[(i - 1)]),
-                            cons_list(index_uni(col_indx_pos[(i - 1)]),
-                              nil_index_list())), "pred")) +
-                       obs_cov_offset[(i - 1)]) +
-                      cond_mean_vec[(row_indx_pos[(i - 1)] - 1)]),
-                    stan::math::exp(
-                      (stan::math::log(
-                         cond_sigma_vec[(row_indx_pos[(i - 1)] - 1)]) -
-                        log_weights_vec[(i - 1)]))));}
+                  (weights_vec[(i - 1)] *
+                    normal_lpdf<false>(y[(i - 1)],
+                      (((input_offset[(i - 1)] +
+                          rvalue(pred,
+                            cons_list(index_uni(row_indx_pos[(i - 1)]),
+                              cons_list(index_uni(col_indx_pos[(i - 1)]),
+                                nil_index_list())), "pred")) +
+                         obs_cov_offset[(i - 1)]) +
+                        cond_mean_vec[(row_indx_pos[(i - 1)] - 1)]),
+                      (cond_sigma_vec[(row_indx_pos[(i - 1)] - 1)] *
+                        inv_var_weights_vec[(i - 1)]))));}
             } 
           }
         }
@@ -4134,8 +4134,8 @@ public:
           for (int k = 1; k <= K; ++k) {
             current_statement__ = 137;
             assign(SigmaKnots, cons_list(index_uni(k), nil_index_list()),
-              cov_exp_quad(knot_locs, sigma_pro[(k - 1)], gp_theta[(k - 1)]),
-              "assigning variable SigmaKnots");
+              gp_exp_quad_cov(knot_locs, sigma_pro[(k - 1)],
+                gp_theta[(k - 1)]), "assigning variable SigmaKnots");
             current_statement__ = 140;
             for (int i = 1; i <= n_knots; ++i) {
               current_statement__ = 138;
@@ -4163,7 +4163,7 @@ public:
                   multiply(
                     multiply(
                       multiply(
-                        cov_exp_quad(data_locs, knot_locs,
+                        gp_exp_quad_cov(data_locs, knot_locs,
                           sigma_pro[(k - 1)], gp_theta[(k - 1)]),
                         inverse_spd(SigmaKnots[(k - 1)])),
                       cholesky_decompose(SigmaKnots[(k - 1)])),
@@ -4240,8 +4240,8 @@ public:
           for (int k = 1; k <= K; ++k) {
             current_statement__ = 173;
             assign(SigmaKnots, cons_list(index_uni(k), nil_index_list()),
-              cov_exp_quad(knot_locs, sigma_pro[(k - 1)], gp_theta[(k - 1)]),
-              "assigning variable SigmaKnots");
+              gp_exp_quad_cov(knot_locs, sigma_pro[(k - 1)],
+                gp_theta[(k - 1)]), "assigning variable SigmaKnots");
             current_statement__ = 176;
             for (int i = 1; i <= n_knots; ++i) {
               current_statement__ = 174;
@@ -4269,7 +4269,7 @@ public:
                   multiply(
                     multiply(
                       multiply(
-                        cov_exp_quad(data_locs, knot_locs,
+                        gp_exp_quad_cov(data_locs, knot_locs,
                           sigma_pro[(k - 1)], gp_theta[(k - 1)]),
                         inverse_spd(SigmaKnots[(k - 1)])),
                       cholesky_decompose(SigmaKnots[(k - 1)])),
@@ -4636,15 +4636,14 @@ public:
               current_statement__ = 259;
               assign(log_lik, cons_list(index_uni(i), nil_index_list()),
                 normal_lpdf<false>(y[(i - 1)],
-                  ((offset[(i - 1)] +
+                  ((input_offset[(i - 1)] +
                      rvalue(pred,
                        cons_list(index_uni(row_indx_pos[(i - 1)]),
                          cons_list(index_uni(col_indx_pos[(i - 1)]),
                            nil_index_list())), "pred")) +
                     obs_cov_offset[(i - 1)]),
-                  stan::math::exp(
-                    (stan::math::log(sigma_vec[(row_indx_pos[(i - 1)] - 1)])
-                      - log_weights_vec[(i - 1)]))),
+                  (sigma_vec[(row_indx_pos[(i - 1)] - 1)] *
+                    inv_var_weights_vec[(i - 1)])),
                 "assigning variable log_lik");}
           } 
           current_statement__ = 266;
@@ -4657,7 +4656,7 @@ public:
                   gamma_a_vec[(row_indx_pos[(i - 1)] - 1)],
                   (gamma_a_vec[(row_indx_pos[(i - 1)] - 1)] /
                     stan::math::exp(
-                      ((offset[(i - 1)] +
+                      ((input_offset[(i - 1)] +
                          rvalue(pred,
                            cons_list(index_uni(row_indx_pos[(i - 1)]),
                              cons_list(index_uni(col_indx_pos[(i - 1)]),
@@ -4672,7 +4671,7 @@ public:
               current_statement__ = 267;
               assign(log_lik, cons_list(index_uni(i), nil_index_list()),
                 poisson_log_lpmf<false>(y_int[(i - 1)],
-                  ((offset[(i - 1)] +
+                  ((input_offset[(i - 1)] +
                      rvalue(pred,
                        cons_list(index_uni(row_indx_pos[(i - 1)]),
                          cons_list(index_uni(col_indx_pos[(i - 1)]),
@@ -4687,7 +4686,7 @@ public:
               current_statement__ = 271;
               assign(log_lik, cons_list(index_uni(i), nil_index_list()),
                 neg_binomial_2_log_lpmf<false>(y_int[(i - 1)],
-                  ((offset[(i - 1)] +
+                  ((input_offset[(i - 1)] +
                      rvalue(pred,
                        cons_list(index_uni(row_indx_pos[(i - 1)]),
                          cons_list(index_uni(col_indx_pos[(i - 1)]),
@@ -4703,7 +4702,7 @@ public:
               current_statement__ = 275;
               assign(log_lik, cons_list(index_uni(i), nil_index_list()),
                 bernoulli_logit_lpmf<false>(y_int[(i - 1)],
-                  ((offset[(i - 1)] +
+                  ((input_offset[(i - 1)] +
                      rvalue(pred,
                        cons_list(index_uni(row_indx_pos[(i - 1)]),
                          cons_list(index_uni(col_indx_pos[(i - 1)]),
@@ -4718,7 +4717,7 @@ public:
               current_statement__ = 279;
               assign(log_lik, cons_list(index_uni(i), nil_index_list()),
                 lognormal_lpdf<false>(y[(i - 1)],
-                  (offset[(i - 1)] +
+                  (input_offset[(i - 1)] +
                     rvalue(pred,
                       cons_list(index_uni(row_indx_pos[(i - 1)]),
                         cons_list(index_uni(col_indx_pos[(i - 1)]),
@@ -4744,18 +4743,16 @@ public:
             current_statement__ = 249;
             assign(log_lik, cons_list(index_uni(i), nil_index_list()),
               normal_lpdf<false>(y[(i - 1)],
-                (((offset[(i - 1)] +
+                (((input_offset[(i - 1)] +
                     rvalue(pred,
                       cons_list(index_uni(row_indx_pos[(i - 1)]),
                         cons_list(index_uni(col_indx_pos[(i - 1)]),
                           nil_index_list())), "pred")) +
                    obs_cov_offset[(i - 1)]) +
                   cond_mean_vec[(row_indx_pos[(i - 1)] - 1)]),
-                stan::math::exp(
-                  (stan::math::log(
-                     cond_sigma_vec[(row_indx_pos[(i - 1)] - 1)]) -
-                    log_weights_vec[(i - 1)]))), "assigning variable log_lik");
-          }
+                (cond_sigma_vec[(row_indx_pos[(i - 1)] - 1)] *
+                  inv_var_weights_vec[(i - 1)])),
+              "assigning variable log_lik");}
         }
       }
       current_statement__ = 297;
@@ -4834,7 +4831,7 @@ public:
         for (int k = 1; k <= K; ++k) {
           current_statement__ = 317;
           assign(SigmaKnots_pred, nil_index_list(),
-            cov_exp_quad(knot_locs, sigma_pro[(k - 1)], gp_theta[(k - 1)]),
+            gp_exp_quad_cov(knot_locs, sigma_pro[(k - 1)], gp_theta[(k - 1)]),
             "assigning variable SigmaKnots_pred");
           current_statement__ = 320;
           for (int i = 1; i <= n_knots; ++i) {

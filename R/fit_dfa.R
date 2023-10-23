@@ -79,9 +79,16 @@
 #'   of diagnostic functions -- but making the models a lot larger for storage. Finally, this argument may be a custom string
 #'   of parameters to monitor, e.g. c("x","sigma")
 #' @param verbose Whether to print iterations and information from Stan, defaults to FALSE.
-#' @param weights Optional name of "weights" argument in data frame. This is only implemented when data
-#'   are in long format. If not entered, defaults to weights = 1 for all observations. The implementation of weights
-#'   varies slightly by family: Gaussian family models use -log(w_i) in the dispersion formula
+#' @param inv_var_weights Optional name of inverse variance weights argument in data frame. This is only implemented when data
+#'   are in long format. If not entered, defaults to inv_var_weights = 1 for all observations. The implementation of inv_var_weights
+#'   relies on inverse variance weightings, so that if you have standard errors associated with each observation,
+#'   the inverse variance weights are calculated as inv_var_weights <- 1 / (standard_errors^2) . The observation error sigma
+#'   in the likelihood then becomes sigma / sqrt(inv_var_weights)
+#' @param likelihood_weights Optional name of likelihood weights argument in data frame. These
+#'   are used in the same way weights are implemented in packages `glmmTMB`, `brms`, `sdmTMB`, etc.
+#'   Weights are used as multipliers on the log-likelihood, with higher weights allowing observations
+#'   to contribute more. Currently only implemented with univariate distributions, when data is in long
+#'   format
 #' @param ... Any other arguments to pass to [rstan::sampling()].
 #' @details Note that there is nothing restricting the loadings and trends from
 #'   being inverted (i.e. multiplied by `-1`) for a given chain. Therefore, if
@@ -187,7 +194,8 @@ fit_dfa <- function(y = y,
                     par_list = NULL,
                     family = "gaussian",
                     verbose = FALSE,
-                    weights = NULL,
+                    inv_var_weights = NULL,
+                    likelihood_weights = NULL,
                     gp_theta_prior = c(3, 1),
                     expansion_prior = FALSE,
                     ...) {
@@ -234,9 +242,14 @@ fit_dfa <- function(y = y,
     y$ts <- as.numeric(as.factor(y[["ts"]]))
     N <- max(y[["time"]])
     P <- max(y[["ts"]])
-    if (!is.null(weights)) {
-      if(weights %in% names(y) == FALSE) {
-        stop("Error: weight name is not found in long data frame")
+    if (!is.null(inv_var_weights)) {
+      if(inv_var_weights %in% names(y) == FALSE) {
+        stop("Error: inverse variance weight name is not found in long data frame")
+      }
+    }
+    if (!is.null(likelihood_weights)) {
+      if(likelihood_weights %in% names(y) == FALSE) {
+        stop("Error: likelihood weight name is not found in long data frame")
       }
     }
   }
@@ -333,7 +346,8 @@ fit_dfa <- function(y = y,
   }
   nVariances <- length(unique(varIndx))
 
-  weights_vec <- NULL
+  inv_var_weights_vec <- NULL
+  likelihood_weights_vec <- NULL
   # indices of positive values - Stan can't handle NAs
   if (data_shape[1] == "wide") {
     row_indx_pos <- matrix(rep(seq_len(P), N), P, N)[!is.na(y)]
@@ -343,7 +357,8 @@ fit_dfa <- function(y = y,
     col_indx_na <- matrix(sort(rep(seq_len(N), P)), P, N)[is.na(y)]
     n_na <- length(row_indx_na)
     y <- y[!is.na(y)]
-    weights_vec <- rep(1, length(y))
+    inv_var_weights_vec <- rep(1, length(y))
+    likelihood_weights_vec <- rep(1, length(y))
     if(!is.null(offset)) {
       stop("Error: if offset is included, data shape must be long")
     }
@@ -358,10 +373,15 @@ fit_dfa <- function(y = y,
     col_indx_na <- matrix(1, 1, 1)[is.na(runif(1))]
     n_na <- length(row_indx_na)
 
-    if(!is.null(weights)) {
-      weights_vec <- y[[weights]]
+    if(!is.null(inv_var_weights)) {
+      inv_var_weights_vec <- y[[inv_var_weights]]
     } else {
-      weights_vec <- rep(1, nrow(y))
+      inv_var_weights_vec <- rep(1, nrow(y))
+    }
+    if(!is.null(likelihood_weights)) {
+      likelihood_weights_vec <- y[[likelihood_weights]]
+    } else {
+      likelihood_weights_vec <- rep(1, nrow(y))
     }
 
     offset_vec <- rep(0, nrow(y))
@@ -543,7 +563,8 @@ fit_dfa <- function(y = y,
     gp_theta_prior = gp_theta_prior,
     use_expansion_prior = as.integer(expansion_prior),
     input_offset = offset_vec,
-    weights_vec = weights_vec
+    inv_var_weights_vec = sqrt(1.0/inv_var_weights_vec),
+    weights_vec = likelihood_weights_vec
   )
 
   if (is.null(par_list)) {

@@ -77,7 +77,7 @@ static int current_statement__= 0;
 static const std::vector<string> locations_array__ = {" (found before start of program)",
                                                       " (in 'regime_1', line 9, column 2 to column 12)",
                                                       " (in 'regime_1', line 10, column 2 to column 24)",
-                                                      " (in 'regime_1', line 13, column 2 to column 17)",
+                                                      " (in 'regime_1', line 13, column 2 to column 23)",
                                                       " (in 'regime_1', line 17, column 18 to column 41)",
                                                       " (in 'regime_1', line 17, column 4 to column 41)",
                                                       " (in 'regime_1', line 16, column 9 to line 18, column 3)",
@@ -94,12 +94,12 @@ static const std::vector<string> locations_array__ = {" (found before start of p
                                                       " (in 'regime_1', line 23, column 2 to column 29)",
                                                       " (in 'regime_1', line 2, column 2 to column 17)",
                                                       " (in 'regime_1', line 3, column 2 to column 17)",
-                                                      " (in 'regime_1', line 4, column 11 to column 12)",
-                                                      " (in 'regime_1', line 4, column 2 to column 14)",
+                                                      " (in 'regime_1', line 4, column 8 to column 9)",
+                                                      " (in 'regime_1', line 4, column 2 to column 20)",
                                                       " (in 'regime_1', line 5, column 2 to column 25)",
-                                                      " (in 'regime_1', line 6, column 15 to column 16)",
-                                                      " (in 'regime_1', line 6, column 2 to column 18)",
-                                                      " (in 'regime_1', line 13, column 14 to column 15)",
+                                                      " (in 'regime_1', line 6, column 8 to column 9)",
+                                                      " (in 'regime_1', line 6, column 2 to column 24)",
+                                                      " (in 'regime_1', line 13, column 8 to column 9)",
                                                       " (in 'regime_1', line 26, column 9 to column 10)"};
 #include <stan_meta_header.hpp>
 class model_regime_1 final : public model_base_crtp<model_regime_1> {
