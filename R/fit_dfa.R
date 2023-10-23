@@ -542,7 +542,7 @@ fit_dfa <- function(y = y,
     est_nb2_params = est_nb2_params,
     gp_theta_prior = gp_theta_prior,
     use_expansion_prior = as.integer(expansion_prior),
-    offset = offset_vec,
+    input_offset = offset_vec,
     weights_vec = weights_vec
   )
 

@@ -10,26 +10,26 @@ functions {
 data {
   int<lower=1> T;                   // number of observations (length)
   int<lower=1> K;                   // number of hidden states
-  real x_t[T];                      // observations
+  array[T] real x_t;                      // observations
   int<lower=0> est_sigma;           // flag, whether to estimate sigma (1) or use values passed in (0)
-  real sigma_t[T];               // estimated sigma for each observation
+  array[T] real sigma_t;               // estimated sigma for each observation
 }
 
 parameters {
   // Discrete state model
   simplex[K] p_1k;                  // initial state probabilities
-  simplex[K] A_ij[K];               // transition probabilities
+  array[K] simplex[K] A_ij;               // transition probabilities
                                     // A_ij[i][j] = p(z_t = j | z_{t-1} = i)
   // Continuous observation model
   ordered[K] mu_k;                  // observation means
-  real<lower=0> sigma_k[K];         // observation standard deviations, optionally estimated if est_sigma == 1. Can the quantity K * est_sigma be used to dimension sigma_k?
+  array[K] real<lower=0> sigma_k;         // observation standard deviations, optionally estimated if est_sigma == 1. Can the quantity K * est_sigma be used to dimension sigma_k?
 }
 
 transformed parameters {
-  vector[K] unalpha_tk[T];
+  array[T] vector[K] unalpha_tk;
 
   { // Forward algorithm log p(z_t = j | x_{1:t})
-    real accumulator[K];
+    array[K] real accumulator;
 
     if(est_sigma == 1) {
       // use estimated sigma values
@@ -66,13 +66,13 @@ model {
 }
 
 generated quantities {
-  vector[K] unbeta_tk[T];
-  vector[K] ungamma_tk[T];
-  vector[K] alpha_tk[T];
-  vector[K] beta_tk[T];
-  vector[K] gamma_tk[T];
+  array[T] vector[K] unbeta_tk;
+  array[T] vector[K] ungamma_tk;
+  array[T] vector[K] alpha_tk;
+  array[T] vector[K] beta_tk;
+  array[T] vector[K] gamma_tk;
   vector[T] log_lik; // added to store log-likelihood for calculation of LOOIC
-  int<lower=1, upper=K> zstar_t[T];
+  array[T] int<lower=1, upper=K> zstar_t;
   real logp_zstar_t;
 
   { // Forward algortihm
@@ -81,7 +81,7 @@ generated quantities {
   } // Forward
 
   { // Backward algorithm log p(x_{t+1:T} | z_t = j)
-    real accumulator[K];
+    array[K] real accumulator;
 
     for (j in 1:K)
       unbeta_tk[T, j] = 1;
@@ -136,8 +136,8 @@ generated quantities {
   } // Forwards-backwards
 
   { // Viterbi algorithm
-    int a_tk[T, K];                 // backpointer to the most likely previous state on the most probable path
-    real delta_tk[T, K];            // max prob for the seq up to t
+    array[T, K] int a_tk;                 // backpointer to the most likely previous state on the most probable path
+    array[T, K] real delta_tk;            // max prob for the seq up to t
                                     // with final output from state k for time t
     if(est_sigma == 1) {
     for (j in 1:K)
