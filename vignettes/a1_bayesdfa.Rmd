@@ -322,7 +322,7 @@ plot_regime_model(reg_mod, flip_regimes = TRUE)
 
 ## DFA model with weights
 
-Just as the `weights` argument can be ueed with `glm`, `lmer` or `glmmTMB`, we allow weights to be used in DFA models. Weights are currently only used for Gaussian reponses and when data is in long format. Specifically, the weights are included by modifying each variance to be $$\sigma^2 / w_i$$. As a concrete example, we'll simulate a dataset, add some examples of standard errors on the survey indices, and then perform the DFA.
+We allow weights to be used in DFA models in two ways. In the first form, inverse variance weighting is used to adjust observations based on some standard error associated with each observation. Specifically, the weights are included by modifying each variance to be $$\sigma^2 / w_i$$. As a concrete example, we'll simulate a dataset, add some examples of standard errors on the survey indices, and then perform the DFA.
 
 Our simulated standard errors are the same for all surveys -- except time series 2, which is much more precise.  
 
@@ -352,7 +352,16 @@ And fit the model with the weights argument
 f2 <- fit_dfa(
   y = df, num_trends = 2, scale="zscore",
   iter = 500, chains = 1, thin = 1,
-  weights = "weights", data_shape = "long"
+  inv_var_weights = "weights", data_shape = "long"
 )
 ```
 
+As a second type of weighting, we also have implemented weights in the same form used in other widely used packages (glmmTMB, sdmTMB, brms, etc). In this case, weights are used as multipliers on the log-likelihood of each observation. To specify these kinds of weights, we use the `likelihood_weights` argument instead, where observations with higher weights contribute more to the total log likelihood.
+
+```{r eval=FALSE}
+f2 <- fit_dfa(
+  y = df, num_trends = 2, scale="zscore",
+  iter = 500, chains = 1, thin = 1,
+  likelihood_weights = "weights", data_shape = "long"
+)
+```

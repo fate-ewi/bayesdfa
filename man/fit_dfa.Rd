@@ -33,7 +33,8 @@ fit_dfa(
   par_list = NULL,
   family = "gaussian",
   verbose = FALSE,
-  weights = NULL,
+  inv_var_weights = NULL,
+  likelihood_weights = NULL,
   gp_theta_prior = c(3, 1),
   expansion_prior = FALSE,
   ...
@@ -143,9 +144,17 @@ gaussian family is assumed to be identity, and the rest are log-link.}
 
 \item{verbose}{Whether to print iterations and information from Stan, defaults to FALSE.}
 
-\item{weights}{Optional name of "weights" argument in data frame. This is only implemented when data
-are in long format. If not entered, defaults to weights = 1 for all observations. The implementation of weights
-varies slightly by family: Gaussian family models use -log(w_i) in the dispersion formula}
+\item{inv_var_weights}{Optional name of inverse variance weights argument in data frame. This is only implemented when data
+are in long format. If not entered, defaults to inv_var_weights = 1 for all observations. The implementation of inv_var_weights
+relies on inverse variance weightings, so that if you have standard errors associated with each observation,
+the inverse variance weights are calculated as inv_var_weights <- 1 / (standard_errors^2) . The observation error sigma
+in the likelihood then becomes sigma / sqrt(inv_var_weights)}
+
+\item{likelihood_weights}{Optional name of likelihood weights argument in data frame. These
+are used in the same way weights are implemented in packages \code{glmmTMB}, \code{brms}, \code{sdmTMB}, etc.
+Weights are used as multipliers on the log-likelihood, with higher weights allowing observations
+to contribute more. Currently only implemented with univariate distributions, when data is in long
+format}
 
 \item{gp_theta_prior}{A 2-element vector controlling the prior on the Gaussian process parameter in cov_exp_quad.
 This prior is a half-Student t prior, with the first argument of gp_theta_prior being the degrees of freedom (nu),
