@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">bayesdfa</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.2</span>
       </span>
     </div>
 
@@ -110,7 +110,8 @@
 <span>  par_list <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  family <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  inv_var_weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  likelihood_weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  gp_theta_prior <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  expansion_prior <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -278,10 +279,20 @@ gaussian family is assumed to be identity, and the rest are log-link.</p></dd>
 <dd><p>Whether to print iterations and information from Stan, defaults to FALSE.</p></dd>
 
 
-<dt>weights</dt>
-<dd><p>Optional name of "weights" argument in data frame. This is only implemented when data
-are in long format. If not entered, defaults to weights = 1 for all observations. The implementation of weights
-varies slightly by family: Gaussian family models use -log(w_i) in the dispersion formula</p></dd>
+<dt>inv_var_weights</dt>
+<dd><p>Optional name of inverse variance weights argument in data frame. This is only implemented when data
+are in long format. If not entered, defaults to inv_var_weights = 1 for all observations. The implementation of inv_var_weights
+relies on inverse variance weightings, so that if you have standard errors associated with each observation,
+the inverse variance weights are calculated as inv_var_weights &lt;- 1 / (standard_errors^2) . The observation error sigma
+in the likelihood then becomes sigma / sqrt(inv_var_weights)</p></dd>
+
+
+<dt>likelihood_weights</dt>
+<dd><p>Optional name of likelihood weights argument in data frame. These
+are used in the same way weights are implemented in packages <code>glmmTMB</code>, <code>brms</code>, <code>sdmTMB</code>, etc.
+Weights are used as multipliers on the log-likelihood, with higher weights allowing observations
+to contribute more. Currently only implemented with univariate distributions, when data is in long
+format</p></dd>
 
 
 <dt>gp_theta_prior</dt>
@@ -319,8 +330,8 @@ need to be inverted using the function <code><a href="find_inverted_chains.html"
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'dfa' NOW (CHAIN 1).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 4e-05 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.4 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 3.5e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.35 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
@@ -345,9 +356,9 @@ need to be inverted using the function <code><a href="find_inverted_chains.html"
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 50 / 50 [100%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.006447 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.107739 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.114186 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.006 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.109 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.115 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 16 divergent transitions after warmup. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>

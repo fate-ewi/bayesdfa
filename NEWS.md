@@ -47,3 +47,8 @@ Change to new Stan syntax
 # bayesdfa 1.3.1
 
 Versioning
+
+# bayesdfa 1.3.2
+
+- Add compatibility with new rstan 
+- Changed weights argument to 'inv_var_weights' and 'likelihood_weights' for the glmmTMB/sdmTMB/brms style
