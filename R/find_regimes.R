@@ -33,8 +33,14 @@ find_regimes <- function(y,
       chains = chains, ...
     )
     looic <- loo.bayesdfa(fit)
-    loo_bad <- loo::pareto_k_table(looic)["(0.7, 1]", "Count"]
-    loo_very_bad <- loo::pareto_k_table(looic)["(1, Inf)", "Count"]
+    k_table <- loo::pareto_k_table(looic)
+    if (utils::packageVersion("loo") <= "2.6.0") {
+      loo_bad <- k_table["(0.7, 1]", "Count"]
+      loo_very_bad <- k_table["(1, Inf)", "Count"]
+    } else {
+      loo_bad <- k_table[2, "Count"]
+      loo_very_bad <- k_table[3, "Count"]
+    }
     df$looic[which(df$regimes == regime)] <- looic$estimates["looic", "Estimate"]
 
     if (fit$looic < best_loo) {
