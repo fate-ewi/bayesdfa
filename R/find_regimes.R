@@ -34,7 +34,7 @@ find_regimes <- function(y,
     )
     looic <- loo.bayesdfa(fit)
     k_table <- loo::pareto_k_table(looic)
-    if (utils::packageVersion("loo") <= "2.6.0") {
+    if (nrow(k_table) == 4) {
       loo_bad <- k_table["(0.7, 1]", "Count"]
       loo_very_bad <- k_table["(1, Inf)", "Count"]
     } else {
