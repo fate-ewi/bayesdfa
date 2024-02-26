@@ -11,3 +11,32 @@ A DESCRIPTION OF THE PACKAGE
 \references{
 Stan Development Team (2020). RStan: the R interface to Stan. R package version 2.21.2. https://mc-stan.org
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://fate-ewi.github.io/bayesdfa/}
+  \item Report bugs at \url{https://github.com/fate-ewi/bayesdfa/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Eric J. Ward \email{eric.ward@noaa.gov}
+
+Authors:
+\itemize{
+  \item Sean C. Anderson
+  \item Luis A. Damiano
+  \item Michael J. Malick
+}
+
+Other contributors:
+\itemize{
+  \item Mary E. Hunsicker, [contributor]
+  \item Mike A. Litzow [contributor]
+  \item Mark D. Scheuerell [contributor]
+  \item Elizabeth E. Holmes [contributor]
+  \item Nick  Tolimieri [contributor]
+  \item Trustees of Columbia University [copyright holder]
+}
+
+}

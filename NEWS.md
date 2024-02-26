@@ -52,3 +52,7 @@ Versioning
 
 - Add compatibility with new rstan 
 - Changed weights argument to 'inv_var_weights' and 'likelihood_weights' for the glmmTMB/sdmTMB/brms style
+
+# bayesdfa 1.3.3
+
+- Add compatibility with new loo 2.7
