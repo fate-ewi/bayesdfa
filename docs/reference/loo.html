@@ -27,7 +27,7 @@ joint likelihood of all variables under the multivariate normal distribution."><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">bayesdfa</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.3</span>
       </span>
     </div>
 
@@ -125,8 +125,8 @@ joint likelihood of all variables under the multivariate normal distribution.</p
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> SAMPLING FOR MODEL 'dfa' NOW (CHAIN 1).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 3.8e-05 seconds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.38 seconds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Gradient evaluation took 3.5e-05 seconds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 0.35 seconds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Adjust your expectations accordingly!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
@@ -151,17 +151,17 @@ joint likelihood of all variables under the multivariate normal distribution.</p
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 45 / 50 [ 90%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: Iteration: 50 / 50 [100%]  (Sampling)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.006 seconds (Warm-up)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.252 seconds (Sampling)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.258 seconds (Total)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:  Elapsed Time: 0.01 seconds (Warm-up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.28 seconds (Sampling)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1:                0.29 seconds (Total)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Chain 1: </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 4 divergent transitions after warmup. See</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 3 divergent transitions after warmup. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#divergent-transitions-after-warmup</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> to find out why this is a problem and how to eliminate them.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>There were 1 chains where the estimated Bayesian Fraction of Missing Information was low. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#bfmi-low</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Examine the pairs() plot to diagnose sampling problems</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 1.95, indicating chains have not mixed.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The largest R-hat is 2.1, indicating chains have not mixed.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Running the chains for more iterations may help. See</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> https://mc-stan.org/misc/warnings.html#r-hat</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.</span>
@@ -173,92 +173,92 @@ joint likelihood of all variables under the multivariate normal distribution.</p
 <span class="r-out co"><span class="r-pr">#&gt;</span> Inference for the input samples (1 chains: each with iter = 25; warmup = 12):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                Q5   Q50   Q95  Mean  SD  Rhat Bulk_ESS Tail_ESS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,1]       -2.1  -1.8  -1.5  -1.8 0.2  1.05       13       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,2]       -2.1  -1.3  -1.2  -1.6 0.3  1.18        6       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,3]       -1.6  -1.1  -0.7  -1.2 0.4  1.71        8       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,4]       -1.3  -0.8  -0.3  -0.8 0.4  1.21       13       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,5]       -0.3  -0.1   0.8   0.2 0.5  1.71        5       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,6]        0.7   1.2   1.7   1.3 0.4  1.15        8       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,7]        0.4   1.6   2.2   1.5 0.6  1.27        6       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,8]        1.3   1.9   2.3   1.8 0.4  1.07       10       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,9]        0.6   0.9   1.4   0.9 0.3  1.02       13       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,10]       0.2   0.6   1.1   0.6 0.3  1.05        9       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,11]      -0.2   0.1   0.6   0.2 0.3  1.30        6       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,12]      -0.6   0.4   1.1   0.3 0.7  1.01       10       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,13]       0.0   0.3   1.0   0.4 0.4  1.47        5       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,14]      -0.3   0.5   1.3   0.5 0.6  1.58        5       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,15]      -1.1  -0.8  -0.4  -0.8 0.2  1.01       13       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,16]      -0.9  -0.6  -0.1  -0.5 0.3  1.10        7       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,17]      -1.8  -1.3   0.0  -1.1 0.7  1.58        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,18]      -0.6   0.0   0.5  -0.1 0.4  0.93       13       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,19]      -1.1  -0.2   1.5   0.1 1.0  1.45        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,20]      -0.4   1.0   1.6   0.8 0.7  1.13        7       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Z[1,1]       -1.0  -0.7  -0.4  -0.7 0.2  1.19       13       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Z[2,1]        0.0   0.3   0.4   0.2 0.1  2.06        9       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Z[3,1]       -0.9  -0.7  -0.6  -0.7 0.1  1.87        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[1]   -3.0  -1.4  -0.8  -1.6 0.8  0.93       13       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[2]   -2.2  -1.1  -0.7  -1.2 0.5  2.06        8       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[3]   -1.4  -1.0  -0.6  -1.0 0.3  1.87        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[4]   -1.3  -0.7  -0.5  -0.8 0.3  1.47        5       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[5]   -3.6  -1.7  -1.4  -2.1 0.8  1.47        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[6]   -1.2  -0.6  -0.4  -0.7 0.3  1.18        6       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[7]   -0.9  -0.7  -0.5  -0.7 0.1  1.00        7       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[8]   -1.0  -0.7  -0.4  -0.7 0.2  1.20        7       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[9]   -0.8  -0.6  -0.5  -0.7 0.1  2.06        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[10]  -1.3  -0.7  -0.6  -0.8 0.3  1.21        7       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[11]  -0.8  -0.6  -0.5  -0.6 0.1  1.71        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[12]  -1.1  -0.7  -0.5  -0.7 0.2  1.47        5       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[13]  -1.1  -0.6  -0.5  -0.7 0.2  2.06        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[14]  -1.5  -1.2  -1.0  -1.2 0.2  1.33        6       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[15]  -0.9  -0.7  -0.6  -0.7 0.1  1.16       13       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[16]  -1.0  -0.7  -0.5  -0.7 0.2  1.33        5       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[17]  -2.9  -1.6  -1.3  -1.8 0.6  1.71        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[18]  -0.9  -0.6  -0.4  -0.6 0.2  1.71        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[19]  -3.1  -0.8  -0.5  -1.4 1.1  1.27        6       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[20]  -0.9  -0.7  -0.5  -0.7 0.2  1.37        8       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[21]  -1.2  -0.8  -0.5  -0.8 0.3  1.12       13       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[22]  -1.8  -0.9  -0.4  -1.0 0.5  1.45        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[23]  -1.3  -0.9  -0.5  -0.8 0.3  1.21        9       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[24]  -1.5  -0.7  -0.4  -0.8 0.4  1.87        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[25]  -1.8  -0.7  -0.5  -0.9 0.5  1.71        6       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[26]  -2.1  -1.6  -1.3  -1.7 0.3  1.09        8       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[27]  -0.9  -0.6  -0.4  -0.6 0.2  1.58        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[28]  -1.0  -0.7  -0.5  -0.7 0.2  1.39        5       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[29]  -2.0  -1.3  -1.1  -1.4 0.4  1.10       11       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[30]  -1.1  -0.7  -0.6  -0.8 0.2  1.87        6       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[31]  -0.9  -0.6  -0.4  -0.6 0.2  1.58        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[32]  -0.8  -0.6  -0.4  -0.6 0.1  1.87        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[33]  -0.9  -0.6  -0.5  -0.6 0.2  1.71        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[34]  -1.4  -0.7  -0.4  -0.8 0.4  1.18        6       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[35]  -2.2  -1.4  -1.1  -1.5 0.4  1.09        8       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[36]  -2.1  -0.9  -0.4  -1.0 0.6  1.18        6       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[37]  -1.0  -0.6  -0.5  -0.7 0.2  1.71        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[38]  -1.1  -0.8  -0.6  -0.8 0.2  1.71        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[39]  -1.0  -0.6  -0.4  -0.7 0.2  2.06        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[40]  -1.0  -0.8  -0.5  -0.8 0.2  1.19        8       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[41]  -2.4  -1.8  -1.3  -1.9 0.4  0.96       13       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[42]  -1.3  -0.7  -0.5  -0.8 0.3  1.87        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[43]  -2.2  -1.6  -0.9  -1.5 0.5  0.92       13       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[44]  -5.6  -4.4  -3.0  -4.3 0.9  1.47        5       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[45]  -2.3  -1.7  -1.1  -1.7 0.4  0.99       12       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[46]  -1.2  -0.8  -0.5  -0.8 0.2  1.01       13       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[47]  -1.2  -1.1  -0.9  -1.1 0.1  0.98       10       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[48]  -0.9  -0.6  -0.5  -0.7 0.1  1.19        6       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[49]  -1.9  -0.9  -0.7  -1.1 0.5  1.87        6       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[50]  -0.9  -0.8  -0.5  -0.7 0.1  1.09       13       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[51]  -1.9  -0.8  -0.5  -1.0 0.5  1.39        5       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[52]  -1.0  -0.6  -0.5  -0.7 0.2  1.33        6       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[53]  -6.6  -5.1  -3.7  -5.3 1.1  1.71        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[54]  -1.9  -1.0  -0.5  -1.1 0.5  0.96       10       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[55]  -2.0  -0.7  -0.5  -1.0 0.6  2.06        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[56]  -1.1  -0.8  -0.5  -0.8 0.2  0.94       13       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[57]  -2.0  -1.0  -0.5  -1.1 0.5  1.19        6       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[58]  -2.1  -0.7  -0.4  -0.9 0.8  1.45        5       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[59]  -1.2  -0.7  -0.5  -0.8 0.3  1.00        8       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[60]  -2.4  -0.9  -0.5  -1.1 0.8  1.47        5       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> xstar[1,1]   -1.2   0.5   2.8   0.5 1.4  1.19        8       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sigma[1]      0.6   0.7   0.9   0.7 0.1  1.87        4       13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> lp__        -68.1 -64.4 -60.4 -64.2 2.8  1.87        4       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,1]       -2.6  -2.1  -1.4  -2.0 0.4  1.07        8       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,2]       -1.8  -1.3  -0.8  -1.3 0.3  0.91       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,3]       -1.8  -1.1  -0.4  -1.1 0.5  1.16        8       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,4]       -1.2  -0.7  -0.2  -0.7 0.4  0.93       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,5]       -0.7  -0.1   0.6  -0.1 0.4  2.06        4       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,6]        0.2   1.0   1.6   0.9 0.5  1.71        4       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,7]        1.1   1.7   2.2   1.7 0.4  0.93       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,8]        1.0   1.7   2.3   1.7 0.4  1.45       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,9]        0.3   0.8   1.2   0.8 0.3  0.96       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,10]       0.3   0.9   1.6   0.9 0.5  1.19       11       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,11]      -0.3   0.2   0.7   0.2 0.4  1.01       11       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,12]      -0.1   0.7   1.0   0.6 0.5  1.09       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,13]      -0.9   0.0   1.4   0.0 0.7  2.06       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,14]      -0.1   0.5   1.0   0.5 0.4  1.18       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,15]      -1.5  -0.9  -0.1  -0.9 0.5  1.33       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,16]      -0.9  -0.3   0.0  -0.4 0.3  1.25       12       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,17]      -1.5  -0.8  -0.2  -0.8 0.4  0.94       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,18]      -0.6   0.0   0.6   0.0 0.5  1.21        8       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,19]      -0.7  -0.1   0.3  -0.1 0.4  1.30       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x[1,20]       0.4   0.9   1.4   0.9 0.4  0.99       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z[1,1]       -0.9  -0.8  -0.5  -0.8 0.1  1.58        4       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z[2,1]        0.0   0.2   0.4   0.2 0.1  1.14       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Z[3,1]       -1.0  -0.9  -0.6  -0.8 0.1  0.95       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[1]   -2.3  -0.8  -0.5  -1.1 0.7  0.94        8       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[2]   -2.0  -1.0  -0.7  -1.2 0.5  0.99       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[3]   -1.5  -0.6  -0.5  -0.8 0.4  1.10        8       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[4]   -1.2  -0.7  -0.5  -0.8 0.3  1.21        6       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[5]   -3.2  -2.4  -1.7  -2.3 0.6  1.24       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[6]   -1.2  -0.6  -0.5  -0.7 0.3  1.06       10       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[7]   -0.9  -0.7  -0.5  -0.7 0.1  1.02       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[8]   -0.8  -0.6  -0.5  -0.6 0.1  1.07       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[9]   -0.9  -0.6  -0.5  -0.7 0.2  1.15       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[10]  -1.4  -0.7  -0.5  -0.8 0.4  1.08       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[11]  -0.7  -0.5  -0.5  -0.6 0.1  1.00       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[12]  -1.2  -0.6  -0.5  -0.7 0.3  0.96       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[13]  -0.9  -0.6  -0.5  -0.6 0.2  0.92       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[14]  -1.5  -1.1  -0.9  -1.1 0.2  2.06        4       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[15]  -1.1  -0.6  -0.5  -0.7 0.2  2.06        4       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[16]  -1.4  -0.6  -0.5  -0.8 0.3  1.71        5       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[17]  -2.6  -2.1  -1.2  -2.0 0.5  1.13       10       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[18]  -1.3  -0.6  -0.5  -0.7 0.3  1.01       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[19]  -2.1  -0.7  -0.5  -1.0 0.6  1.19       10       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[20]  -0.8  -0.6  -0.5  -0.6 0.1  1.14       11       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[21]  -1.5  -0.7  -0.6  -0.9 0.4  1.07       10       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[22]  -1.5  -0.7  -0.5  -0.9 0.4  1.12       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[23]  -1.3  -0.9  -0.6  -0.9 0.2  0.95       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[24]  -1.4  -0.6  -0.5  -0.8 0.3  1.19       12       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[25]  -1.1  -0.7  -0.5  -0.7 0.2  0.92       11       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[26]  -2.0  -1.5  -1.3  -1.5 0.3  1.00       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[27]  -0.8  -0.6  -0.5  -0.6 0.1  1.04       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[28]  -0.9  -0.7  -0.5  -0.7 0.2  0.97       10       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[29]  -2.1  -1.5  -1.1  -1.5 0.4  0.95       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[30]  -0.9  -0.6  -0.5  -0.7 0.1  1.15       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[31]  -0.8  -0.6  -0.5  -0.6 0.1  1.08       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[32]  -0.6  -0.5  -0.5  -0.5 0.1  1.48       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[33]  -0.9  -0.6  -0.5  -0.6 0.1  1.04       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[34]  -1.1  -0.6  -0.5  -0.6 0.3  1.21       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[35]  -1.9  -1.6  -1.2  -1.6 0.3  1.15       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[36]  -1.5  -0.6  -0.5  -0.7 0.5  1.12       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[37]  -1.9  -0.8  -0.5  -1.0 0.5  2.06        4       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[38]  -0.8  -0.7  -0.5  -0.7 0.1  1.37        9       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[39]  -1.5  -0.7  -0.5  -0.8 0.4  2.06        4       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[40]  -1.0  -0.6  -0.5  -0.6 0.2  1.11       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[41]  -2.1  -1.9  -1.5  -1.8 0.2  1.39       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[42]  -1.1  -0.6  -0.5  -0.7 0.2  1.06       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[43]  -2.7  -1.3  -0.6  -1.5 0.8  1.01       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[44]  -5.2  -4.3  -3.6  -4.4 0.6  0.99       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[45]  -3.1  -1.5  -0.8  -1.7 0.9  1.58       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[46]  -1.2  -0.6  -0.5  -0.7 0.3  0.99       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[47]  -1.2  -1.1  -0.8  -1.1 0.2  0.98       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[48]  -0.8  -0.6  -0.5  -0.6 0.1  0.95       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[49]  -1.5  -0.7  -0.6  -0.9 0.4  0.93       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[50]  -0.8  -0.7  -0.5  -0.7 0.1  0.93       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[51]  -1.4  -0.8  -0.6  -0.9 0.3  0.98       11       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[52]  -1.1  -0.6  -0.5  -0.7 0.2  0.93       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[53]  -6.4  -5.4  -4.6  -5.5 0.7  0.94       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[54]  -2.1  -1.1  -0.6  -1.2 0.6  1.21        8       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[55]  -1.0  -0.7  -0.6  -0.7 0.2  0.92       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[56]  -0.9  -0.8  -0.8  -0.8 0.0  1.20        9       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[57]  -1.0  -0.6  -0.5  -0.6 0.2  1.30       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[58]  -0.9  -0.6  -0.5  -0.7 0.2  1.15       12       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[59]  -1.0  -0.7  -0.6  -0.7 0.1  0.92       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log_lik[60]  -1.4  -0.8  -0.5  -0.9 0.3  1.05       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> xstar[1,1]   -0.8   0.4   2.1   0.4 1.0  1.03        7       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma[1]      0.6   0.7   0.7   0.7 0.0  1.87       13       13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> lp__        -64.4 -61.3 -57.9 -61.1 2.2  1.31        5       13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> For each parameter, Bulk_ESS and Tail_ESS are crude measures of </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> effective sample size for bulk and tail quantities respectively (an ESS &gt; 100 </span>
@@ -267,21 +267,21 @@ joint likelihood of all variables under the multivariate normal distribution.</p
 <span class="r-in"><span><span class="fu">loo</span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Some Pareto k diagnostic values are too high. See help('pareto-k-diagnostic') for details.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Computed from 25 by 60 log-likelihood matrix</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Computed from 25 by 60 log-likelihood matrix.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          Estimate   SE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> elpd_loo   -261.0 12.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> p_loo       178.6 13.3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> elpd_loo   -261.1 12.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> p_loo       180.5 13.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> looic       522.1 25.6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Monte Carlo SE of elpd_loo is NA.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MCSE of elpd_loo is NA.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> MCSE and ESS estimates assume MCMC draws (r_eff in [0.1, 0.6]).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Pareto k diagnostic values:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                          Count Pct.    Min. n_eff</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (-Inf, 0.5]   (good)     42    70.0%   1         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  (0.5, 0.7]   (ok)        3     5.0%   1         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    (0.7, 1]   (bad)       5     8.3%   1         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    (1, Inf)   (very bad) 10    16.7%   0         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           Count Pct.    Min. ESS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (-Inf, 0.28]   (good)     37    61.7%   1       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    (0.28, 1]   (bad)      14    23.3%   &lt;NA&gt;    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     (1, Inf)   (very bad)  9    15.0%   &lt;NA&gt;    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> See help('pareto-k-diagnostic') for details.</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
