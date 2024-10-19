@@ -68,7 +68,7 @@ find_inverted_chains <- function(model, trend = 1, plot = FALSE) {
       sq_err <- sum((zzz[, i] - pred0_loadings)^2) + sum((vvv[, i] - pred0_trend)^2)
       # if flipped trends/loadings more similar to chain 1, flip
       if (flipped_sq_err < sq_err) {
-        if (flipped_chains == 0) {
+        if (min(flipped_chains) == 0) {
           flipped_chains <- i
         }
         else {
