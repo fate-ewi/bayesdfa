@@ -1,7 +1,6 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-bayesdfa
-========
+# bayesdfa
 
 [![R build
 status](https://github.com/fate-ewi/bayesdfa/workflows/R-CMD-check/badge.svg)](https://github.com/fate-ewi/bayesdfa/actions)
@@ -15,8 +14,7 @@ You can install the development version of the package with:
 devtools::install_github("fate-ewi/bayesdfa")
 ```
 
-Overview
---------
+## Overview
 
 A brief video overview of the package is here,
 
@@ -25,29 +23,29 @@ A brief video overview of the package is here,
 </iframe>
 </figure>
 
-Vignettes
----------
+## Vignettes
 
 We’ve put together several vignettes for using the `bayesdfa` package.  
-[Overview](https://fate-ewi.github.io/bayesdfa/articles/bayesdfa.html)  
+[Overview](https://fate-ewi.github.io/bayesdfa/articles/a1_bayesdfa.html)  
 [Combining
-data](https://fate-ewi.github.io/bayesdfa/articles/combining_data.html)  
-[Compositional
-models](https://fate-ewi.github.io/bayesdfa/articles/compositional.html)  
+data](https://fate-ewi.github.io/bayesdfa/articles/a2_combining_data.html)  
 [Including
-covariates](https://fate-ewi.github.io/bayesdfa/articles/covariates.html)  
+covariates](https://fate-ewi.github.io/bayesdfa/articles/a3_covariates.html)  
+[Smooth trend
+models](https://fate-ewi.github.io/bayesdfa/articles/a4_smooth.html)  
 [Estimating process
-variance](https://fate-ewi.github.io/bayesdfa/articles/estimate_process_sigma.html)  
+variance](https://fate-ewi.github.io/bayesdfa/articles/a5_estimate_process_sigma.html)  
+[Compositional
+models](https://fate-ewi.github.io/bayesdfa/articles/a6_compositional.html)  
 [DFA for big
-data](https://fate-ewi.github.io/bayesdfa/articles/bigdata.html)
+data](https://fate-ewi.github.io/bayesdfa/articles/a7_bigdata.html).
 
 Additional examples can be found in the course that Eli Holmes, Mark
 Scheuerell, and Eric Ward teach at the University of Washington:  
 [Course webpage](https://nwfsc-timeseries.github.io/atsa/)  
 [Lab book](https://nwfsc-timeseries.github.io/atsa/)
 
-Citing
-------
+## Citing
 
 For DFA models in general, we recommend citing the MARSS package or user
 guide.
@@ -73,7 +71,7 @@ guide.
 For citing the `bayesdfa` package using Bayesian estimation, or models
 with extra features (such as extremes), cite
 
-<a href="https://journal.r-project.org/archive/2019/RJ-2019-007/index.html" class="uri">https://journal.r-project.org/archive/2019/RJ-2019-007/index.html</a>
+<https://journal.r-project.org/archive/2019/RJ-2019-007/index.html>
 
     @article{ward_etal_2019,
       author = {Eric J. Ward and Sean C. Anderson and Luis A. Damiano and
@@ -92,7 +90,7 @@ with extra features (such as extremes), cite
 The ‘bayesdfa’ models were presented to the PFMC’s SSC in November 2017
 and have been included in the 2018 California Current Integrated
 Ecosystem Report,
-<a href="https://www.integratedecosystemassessment.noaa.gov/Assets/iea/california/Report/pdf/CCIEA-status-report-2018.pdf" class="uri">https://www.integratedecosystemassessment.noaa.gov/Assets/iea/california/Report/pdf/CCIEA-status-report-2018.pdf</a>
+<https://www.integratedecosystemassessment.noaa.gov/Assets/iea/california/Report/pdf/CCIEA-status-report-2018.pdf>
 
 ### Funding
 
