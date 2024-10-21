@@ -2,7 +2,6 @@
 #'
 #' @description A DESCRIPTION OF THE PACKAGE
 #'
-#' @docType package
 #' @name bayesdfa-package
 #' @aliases bayesdfa
 #' @useDynLib bayesdfa, .registration = TRUE

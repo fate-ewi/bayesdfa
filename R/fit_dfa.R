@@ -238,7 +238,11 @@ fit_dfa <- function(y = y,
       stop("Error: data shape is long, and must contain a field 'obs' representing observations")
     }
     # rescale if needed
-    # y$time <- y$time - min(y[["time"]]) + 1 # min time now = 1
+    if(min(y[["time"]]) > 1) {
+      warning("Minimum time column in long data is greater than 1; this column has been rescaled")
+      y$time <- y$time - min(y[["time"]]) + 1 # min time now = 1
+    }
+
     y$ts <- as.numeric(as.factor(y[["ts"]]))
     N <- max(y[["time"]])
     P <- max(y[["ts"]])

@@ -8,6 +8,7 @@ Authors@R: c(
     person(c("Sean", "C."), "Anderson", role = "aut"),
     person(c("Luis", "A."), "Damiano", role = "aut"),
     person(c("Michael", "J."), "Malick", role="aut"),
+    person(c("Philina", "A."), "English", role="aut"),
     person(c("Mary", "E."), "Hunsicker,", role = "ctb"),
     person(c("Mike", "A."), "Litzow", role = "ctb"),
     person(c("Mark", "D."), "Scheuerell", role = "ctb"),
@@ -53,7 +54,7 @@ Suggests:
     rmarkdown
 URL: https://fate-ewi.github.io/bayesdfa/
 BugReports: https://github.com/fate-ewi/bayesdfa/issues
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 SystemRequirements: GNU make
