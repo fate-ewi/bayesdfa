@@ -56,3 +56,7 @@ Versioning
 # bayesdfa 1.3.3
 
 - Add compatibility with new loo 2.7
+
+# bayesdfa 1.3.4
+
+- Update Stan linking
