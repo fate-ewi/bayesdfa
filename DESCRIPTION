@@ -50,7 +50,8 @@ Suggests:
     testthat,
     parallel,
     knitr,
-    rmarkdown
+    rmarkdown,
+    rstantools
 URL: https://fate-ewi.github.io/bayesdfa/
 BugReports: https://github.com/fate-ewi/bayesdfa/issues
 RoxygenNote: 7.3.2
