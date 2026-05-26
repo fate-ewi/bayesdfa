@@ -1,5 +1,5 @@
-pandoc: 3.1.11
-pkgdown: 2.0.9
+pandoc: '3.4'
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   a1_bayesdfa: a1_bayesdfa.html
@@ -9,5 +9,4 @@ articles:
   a5_estimate_process_sigma: a5_estimate_process_sigma.html
   a6_compositional: a6_compositional.html
   a7_bigdata: a7_bigdata.html
-last_built: 2024-10-20T20:49Z
-
+last_built: 2026-05-26T18:01Z
